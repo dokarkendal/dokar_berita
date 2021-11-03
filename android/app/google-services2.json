@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "922684861950",
+    "firebase_url": "https://dokar-kendalkab.firebaseio.com",
+    "project_id": "dokar-kendalkab",
+    "storage_bucket": "dokar-kendalkab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922684861950:android:576ad7f907ae01ef9d64af",
+        "android_client_info": {
+          "package_name": "com.dokar.kendalkab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922684861950-fdtdj3n3rdtqms6pn0sauk46akrd05hn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDChmRHcO2nq8US5jgcRxdmGcl5PON-N-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922684861950-fdtdj3n3rdtqms6pn0sauk46akrd05hn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

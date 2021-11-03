@@ -1,10 +1,7 @@
-import 'package:dokar_aplikasi/berita/hal_admin_tes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:dokar_aplikasi/style/constants.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -142,7 +139,7 @@ class _LoginState extends State<Login> {
           pref.setBool("isLogin", true);
 
           //pindah form
-           Navigator.pushReplacementNamed(context, '/AdminTes');
+          Navigator.pushReplacementNamed(context, '/AdminTes');
         } else {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("isLogin", false);

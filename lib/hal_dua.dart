@@ -1,12 +1,16 @@
 import 'dart:convert';
-
+import 'package:dokar_aplikasi/berita/detail_galeri.dart';
 import 'package:flutter/material.dart';
+import 'package:open_appstore/open_appstore.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dokar_aplikasi/daftar_admin.dart';
 import 'dart:async';
-import 'package:dokar_aplikasi/berita/cek.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info/package_info.dart';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Haldua extends StatefulWidget {
   @override
@@ -15,9 +19,34 @@ class Haldua extends StatefulWidget {
 
 class _HalduaState extends State<Haldua> {
   String username = "";
+  String kecamatan = "";
+  String namadesa = "";
+  String status = "";
   String id = "";
   List dataJSON;
+  String versi = "";
+  String update = "";
+  String newversi = "";
+  String descript = "";
 
+  final firebaseMessaging = FirebaseMessaging();
+  bool isSubscribed = false;
+
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+    descStyle: TextStyle(fontWeight: FontWeight.bold),
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      side: BorderSide(
+        color: Colors.grey,
+      ),
+    ),
+  );
+
+  // ignore: unused_field
   bool _isLoggedIn = false;
   Future _cekLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -31,39 +60,88 @@ class _HalduaState extends State<Haldua> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getBool("_isLoggedIn") == null) {
       _isLoggedIn = false;
-      Navigator.pushReplacementNamed(context, '/DaftarAdmin');
+      Navigator.pushReplacementNamed(context, '/PilihAkun');
     } else {
       _isLoggedIn = true;
     }
   }
 
+  // ignore: missing_return
   Future<String> ambildata() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
         Uri.encodeFull(
-            "http://dokar.kendalkab.go.id/webservice/android/agenda/showevent"),
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/galeri/" +
+                pref.getString("IdDesa")),
         headers: {"Accept": "application/json"});
 
-    this.setState(() {
-      dataJSON = json.decode(hasil.body);
-      // if (!mounted) return;
-    });
+    this.setState(
+      () {
+        dataJSON = json.decode(hasil.body);
+      },
+    );
   }
-
-  //String html = "";
-
-  /*Future _cekLogout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("_isLoggedIn", false);
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => new DaftarAdmin()));
-  }*/
 
   Future _cekUser() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userAdmin") != null) {
       setState(() {
         username = pref.getString("userAdmin");
+        kecamatan = pref.getString("kecamatan");
+        namadesa = pref.getString("data_nama");
         id = pref.getString("IdDesa");
+        status = pref.getString("status");
+      });
+    }
+  }
+
+  // ignore: missing_return
+  Future<String> _cekVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String versionName = packageInfo.version;
+    String versionCode = packageInfo.buildNumber;
+    versi = versionName + versionCode;
+    print(versi);
+
+    http.Response cekversi = await http.get(
+        Uri.encodeFull(
+            "http://dokar.kendalkab.go.id/webservice/android/dashbord/androidversion"),
+        headers: {"Accept": "application/json"});
+    var data = json.decode(cekversi.body);
+
+    if (data['version'] + data['versioncode'] == versi) {
+      setState(() {
+        update = "Updated";
+        newversi = data['version'];
+        descript = data['description'];
+      });
+      print(update);
+      print(newversi + data['versioncode']);
+      print(descript);
+    } else {
+      setState(() {
+        update = "NotUpdate";
+        newversi = data['version'];
+        descript = data['description'];
+      });
+      print(update);
+      print(newversi + data['versioncode']);
+      print(descript);
+    }
+  }
+
+  void _cekSubscribe() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.getString("userStatus") == null ||
+        pref.getString("userStatus") == "Warga") {
+      firebaseMessaging.subscribeToTopic("Warga");
+      setState(() {
+        isSubscribed = true;
+      });
+    } else {
+      firebaseMessaging.subscribeToTopic("Admin");
+      setState(() {
+        isSubscribed = true;
       });
     }
   }
@@ -71,58 +149,325 @@ class _HalduaState extends State<Haldua> {
   @override
   void initState() {
     super.initState();
+    _cekVersion();
     _cekUser();
     _cekLogin();
+    _cekSubscribe();
     this.ambildata();
-    //_cekLogout();
   }
 
   void dispose() {
     super.dispose();
   }
 
+  Widget updateNotification() {
+    if (update == 'Updated') {
+      return Container(
+        width: 1,
+        height: 1,
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.only(top: 15.0, right: 15.0, left: 15.0),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              FlatButton(
+                color: Colors.orange[300],
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(5.0),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Update tersedia, klik untuk update.",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  Alert(
+                    context: context,
+                    type: AlertType.info,
+                    style: alertStyle,
+                    title: "Versi " + newversi,
+                    desc: descript,
+                    buttons: [
+                      DialogButton(
+                        child: Text(
+                          "Update",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          OpenAppstore.launch(
+                              androidAppId: "com.dokar.kendalkab");
+                        },
+                        color: Colors.blue[300],
+                      ),
+                    ],
+                  ).show();
+                },
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget penulis() {
+    if (status == '02') {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 40.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Material(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.orange.withOpacity(0.1),
+                  child: IconButton(
+                    padding: EdgeInsets.all(15.0),
+                    icon: Icon(Icons.help),
+                    color: Colors.orange,
+                    iconSize: 30.0,
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/ExpansionTileSample');
+                    },
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text('Bantuan',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.0))
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                Material(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.red,
+                  child: IconButton(
+                    padding: EdgeInsets.all(15.0),
+                    icon: Icon(Icons.exit_to_app),
+                    color: Colors.white,
+                    iconSize: 30.0,
+                    onPressed: () async {
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      pref.clear();
+                      // _cekUser();
+                      int launchCount = 0;
+                      pref.setInt('counter', launchCount + 1);
+                      _cekLogout();
+                    },
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text('Log Out',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.0))
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                IconButton(
+                  padding: EdgeInsets.all(15.0),
+                  icon: Icon(Icons.launch),
+                  color: Colors.white,
+                  iconSize: 30.0,
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 40.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Material(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.lightBlueAccent.withOpacity(0.1),
+                  child: IconButton(
+                    padding: EdgeInsets.all(15.0),
+                    icon: Icon(Icons.account_box),
+                    color: Colors.lightBlueAccent,
+                    iconSize: 30.0,
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/ListPenulis');
+                    },
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text('Penulis',
+                    style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold))
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                Material(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.orange.withOpacity(0.1),
+                  child: IconButton(
+                    padding: EdgeInsets.all(15.0),
+                    icon: Icon(Icons.help),
+                    color: Colors.orange,
+                    iconSize: 30.0,
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/ExpansionTileSample');
+                    },
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text('Bantuan',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.0))
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                Material(
+                  borderRadius: BorderRadius.circular(100.0),
+                  color: Colors.red,
+                  child: IconButton(
+                    padding: EdgeInsets.all(15.0),
+                    icon: Icon(Icons.exit_to_app),
+                    color: Colors.white,
+                    iconSize: 30.0,
+                    onPressed: () {
+                      Alert(
+                        context: context,
+                        style: alertStyle,
+                        type: AlertType.warning,
+                        title: "Log out?",
+                        desc: "Yakin ingin keluar aplikasi?",
+                        buttons: [
+                          DialogButton(
+                            child: Text(
+                              "Kembali",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.green,
+                          ),
+                          DialogButton(
+                            child: Text(
+                              "Log Out",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              SharedPreferences pref =
+                                  await SharedPreferences.getInstance();
+                              pref.clear();
+                              // _cekUser();
+                              int launchCount = 0;
+                              pref.setInt('counter', launchCount + 1);
+                              _cekLogout();
+                            },
+                            color: Colors.red,
+                          )
+                        ],
+                      ).show();
+                    },
+                    // onPressed: () async {
+                    //   SharedPreferences pref =
+                    //       await SharedPreferences.getInstance();
+                    //   pref.clear();
+                    //   // _cekUser();
+                    //   int launchCount = 0;
+                    //   pref.setInt('counter', launchCount + 1);
+                    //   _cekLogout();
+                    // },
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text('Log Out',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.0))
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+////////////////////////ADMIN/////
   @override
   Widget build(BuildContext context) {
-    Color primaryColor = Color(0xFFee002d);
-
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: Color.fromRGBO(244, 244, 244, 1),
+      appBar: AppBar(
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.account_circle),
+          color: Colors.white,
+          iconSize: 28.0,
+          onPressed: () {
+            Navigator.pushNamed(context, '/HalAkun');
+          },
+        ),
+        centerTitle: true,
+        title: Text(
+          "DOKAR ",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 26.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        // actions: <Widget>[
+        //   IconButton(
+        //     icon: Icon(Icons.logout),
+        //     color: Colors.white,
+        //     iconSize: 28.0,
+        //     onPressed: () {
+        //       // Navigator.pushNamed(context, '/HalAkun');
+        //     },
+        //   )
+        // ],
+      ),
+      // backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: primaryColor, border: Border.all(color: primaryColor)),
-              child: Padding(
-                padding: EdgeInsets.only(top: 30.0, right: 15.0, left: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.menu),
-                      color: Colors.white,
-                      iconSize: 30.0,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.notifications_none),
-                      color: Colors.white,
-                      iconSize: 30.0,
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-            ),
             Stack(
               children: <Widget>[
                 ClipPath(
                   clipper: CustomShapeClipper(),
                   child: Container(
-                    height: 350.0,
-                    decoration: BoxDecoration(color: primaryColor),
+                    height: mediaQueryData.size.height * 0.4,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor  ,
+                    ),
                   ),
                 ),
                 Padding(
@@ -135,57 +480,47 @@ class _HalduaState extends State<Haldua> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            "Halo " + username,
+                          AutoSizeText(
+                            "Hai " + username,
+                            minFontSize: 16,
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold),
+                              color: Colors.white,
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           SizedBox(height: 15.0),
                           Text(
-                            'Desa Online Kendal Terintegrasi',
+                            'Desa dan Kelurahan Online Kab. Kendal',
                             style:
-                                TextStyle(color: Colors.white, fontSize: 14.0),
-                          )
+                                TextStyle(color: Colors.white, fontSize: 18.0),
+                          ),
                         ],
                       ),
-                      Material(
-                          /*elevation: 1.0,
-                        borderRadius: BorderRadius.circular(100.0),
-                        color: Colors.blue[300],
-                        child: MaterialButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OnboardingScreen()));
-                          },
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 30.0),
-                          child: Text(
-                            'TOP UP',
-                            style:
-                                TextStyle(fontSize: 16.0, color: Colors.white),
-                          ),
-                        ),*/
-                          )
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 120.0, right: 25.0, left: 25.0),
+                  padding: EdgeInsets.only(
+                    top: mediaQueryData.size.height * 0.15,
+
+                    left: mediaQueryData.size.height * 0.015,
+                    right: mediaQueryData.size.height * 0.015,
+                    // bottom: mediaQueryData.size.height * 0.03,
+                  ),
                   child: Container(
                     width: double.infinity,
-                    height: 370.0,
+                    height: 350.0,
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0.0, 3.0),
-                              blurRadius: 15.0)
-                        ]),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0.0, 3.0),
+                            blurRadius: 15.0)
+                      ],
+                    ),
                     child: Column(
                       children: <Widget>[
                         Padding(
@@ -211,7 +546,7 @@ class _HalduaState extends State<Haldua> {
                                     ),
                                   ),
                                   SizedBox(height: 8.0),
-                                  Text('Berita',
+                                  Text('Beranda',
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontWeight: FontWeight.bold,
@@ -230,53 +565,18 @@ class _HalduaState extends State<Haldua> {
                                       iconSize: 30.0,
                                       onPressed: () {
                                         Navigator.pushNamed(
-                                            context, '/FormBeritaDashbord');
+                                            context, '/EditSemua');
                                       },
                                     ),
                                   ),
                                   SizedBox(height: 8.0),
-                                  Text('Edit Berita',
+                                  Text('Dashbord',
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12.0))
                                 ],
                               ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.pink.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.local_convenience_store),
-                                      color: Colors.pink,
-                                      iconSize: 30.0,
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        DoctorsInfo()));
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Layanan',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.0))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
                               Column(
                                 children: <Widget>[
                                   Material(
@@ -284,76 +584,30 @@ class _HalduaState extends State<Haldua> {
                                     color: Colors.green.withOpacity(0.1),
                                     child: IconButton(
                                       padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.help),
+                                      icon: Icon(Icons.create),
                                       color: Colors.green,
                                       iconSize: 30.0,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Bantuan',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.0))
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.red,
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.exit_to_app),
-                                      color: Colors.white,
-                                      iconSize: 30.0,
-                                      onPressed: () async {
-                                        SharedPreferences pref =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        pref.clear();
-                                        // _cekUser();
-                                        int launchCount = 0;
-                                        pref.setInt('counter', launchCount + 1);
-                                        _cekLogout();
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/InputSemua');
                                       },
                                     ),
                                   ),
                                   SizedBox(height: 8.0),
-                                  Text('Log Out',
+                                  Text('Tulis',
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12.0))
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.white.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.check_box_outline_blank),
-                                      color: Colors.white,
-                                      iconSize: 30.0,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('kosong',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold))
                                 ],
                               )
                             ],
                           ),
                         ),
+                        penulis(),
                         SizedBox(height: 15.0),
                         Divider(),
-                        SizedBox(height: 15.0),
+                        SizedBox(height: 5.0),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 25.0),
                           child: Row(
@@ -361,43 +615,84 @@ class _HalduaState extends State<Haldua> {
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  'Kritik dan saran ke Dokar',
+                                  'Kritik dan saran',
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
-                                      color: Colors.grey, fontSize: 12.0),
+                                      color: Colors.grey, fontSize: 14.0),
                                 ),
                               ),
-                              SizedBox(width: 40.0),
                               Material(
                                 borderRadius: BorderRadius.circular(100.0),
                                 color: Colors.blueAccent.withOpacity(0.1),
                                 child: IconButton(
                                   icon: Icon(Icons.arrow_forward_ios),
                                   color: Colors.blueAccent,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/KritikSaran');
+                                  },
                                 ),
                               )
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
+            updateNotification(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-              child: Text(
-                'Event Desa',
-                style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      'Galeri Desa',
+                      style: TextStyle(
+                          color: Colors.black.withOpacity(0.7),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 25,
+                    child: FlatButton(
+                      color: Colors.grey[350],
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(15.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Lihat semua  ',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            size: 16,
+                            color: Colors.grey[600],
+                          )
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/Galeri');
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 30.0, bottom: 20.0),
+              padding: EdgeInsets.only(left: 15.0, bottom: 20.0),
               child: Container(
                 height: 200,
                 child: ListView(
@@ -423,7 +718,7 @@ class _HalduaState extends State<Haldua> {
                                           size: 50.0, color: Colors.grey[350]),
                                     ),
                                     new Text(
-                                      "Belum ada event",
+                                      "Belum ada gambar",
                                       style: new TextStyle(
                                         fontSize: 20.0,
                                         color: Colors.grey[350],
@@ -436,84 +731,114 @@ class _HalduaState extends State<Haldua> {
                           } else {
                             return new Container(
                               child: new Container(
-                                padding: new EdgeInsets.all(5.0),
+                                padding: new EdgeInsets.all(2.0),
                                 child: new GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        new MaterialPageRoute(
-                                          builder: (context) => new DoctorsInfo(
-                                            judulEvent: dataJSON[i]
-                                                ["judul_agenda"],
-                                            uraianEvent: dataJSON[i]
-                                                ["uraian_agenda"],
-                                            mulaiEvent: dataJSON[i]
-                                                ["jam_mulai"],
-                                            selesaiEvent: dataJSON[i]
-                                                ["jam_selesai"],
-                                            gambarEvent: dataJSON[i]
-                                                ["gambar_agenda"],
-                                            penyelenggaraEvent: dataJSON[i]
-                                                ["penyelenggara"],
+                                  onTap: () {},
+                                  child: new Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Stack(
+                                        children: <Widget>[
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            child: GestureDetector(
+                                              child: Image.network(
+                                                dataJSON[i]["kabar_gambar"],
+                                                fit: BoxFit.cover,
+                                                height: 180.0,
+                                                width: 120.0,
+                                              ),
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailGaleri(
+                                                      dGambar: dataJSON[i]
+                                                          ["kabar_gambar"],
+                                                      dDesa: dataJSON[i]
+                                                          ["data_nama"],
+                                                      dJudul: dataJSON[i]
+                                                          ["kabar_judul"],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    child: new Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          child: Image.network(
-                                            dataJSON[i]["gambar_agenda"],
-                                            fit: BoxFit.cover,
-                                            height: 150.0,
-                                            width: 110.0,
-                                          ),
-                                        ),
-                                        /*new CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        dataJSON[i]["gambar_agenda"]),
-                                    radius: 50,
-                                  ),*/
-                                        Container(
-                                          height: 3.0,
-                                        ),
-                                        SizedBox(
-                                          width: 120.0,
-                                          child: AutoSizeText(
-                                            dataJSON[i]["judul_agenda"],
-                                            overflow: TextOverflow.ellipsis,
-                                            style: new TextStyle(
-                                                //fontSize: 16.0,
-                                                color: Colors.redAccent,
-                                                fontWeight: FontWeight.bold),
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                        new Wrap(
-                                          //crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            /* Icon(Icons.account_circle,
-                                          size: 16, color: Colors.black45),*/
-                                            SizedBox(
-                                              width: 100.0,
-                                              child: AutoSizeText(
-                                                dataJSON[i]["data_nama"],
-                                                overflow: TextOverflow.ellipsis,
-                                                style: new TextStyle(
-                                                    fontSize: 12.0,
-                                                    color: Colors.grey,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                maxLines: 1,
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              top: 140.0,
+                                              left: 0.0,
+                                            ),
+                                            child: SizedBox(
+                                              height: 40.0,
+                                              width: 120,
+                                              child: Material(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                color: Colors.black45
+                                                    .withOpacity(0.4),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    Container(
+                                                      padding:
+                                                          new EdgeInsets.all(
+                                                              5.0),
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                              dataJSON[i]
+                                                                  ["data_nama"],
+                                                              style: TextStyle(
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: AutoSizeText(
+                                                              dataJSON[i][
+                                                                  "kabar_judul"],
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style:
+                                                                  new TextStyle(
+                                                                fontSize: 12.0,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              maxLines: 1,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    )),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        height: 3.0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             );
                           }
@@ -556,6 +881,7 @@ class UpcomingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     double widthsize = MediaQuery.of(context).size.width * 0.80;
     return Padding(
       padding: EdgeInsets.only(right: 15.0),
@@ -585,463 +911,3 @@ class UpcomingCard extends StatelessWidget {
     );
   }
 }
-
-/*import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dokar_aplikasi/daftar_admin.dart';
-import 'dart:async';
-
-class Haldua extends StatefulWidget {
-  @override
-  _HalduaState createState() => _HalduaState();
-}
-
-class _HalduaState extends State<Haldua> {
-  String username = "";
-  String id = "";
-
-  bool _isLoggedIn = false;
-  Future _cekLogin() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getBool("_isLoggedIn") == false) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => new DaftarAdmin()));
-    }
-  }
-
-  Future _cekLogout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getBool("_isLoggedIn") == null) {
-      _isLoggedIn = false;
-      Navigator.pushReplacementNamed(context, '/DaftarAdmin');
-    } else {
-      _isLoggedIn = true;
-    }
-  }
-
-  /*Future _cekLogout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setBool("_isLoggedIn", false);
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => new DaftarAdmin()));
-  }*/
-
-  Future _cekUser() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getString("userAdmin") != null) {
-      setState(() {
-        username = pref.getString("userAdmin");
-        id = pref.getString("IdDesa");
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _cekUser();
-    _cekLogin();
-    //_cekLogout();
-  }
-
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Color primaryColor = Color(0xFFee002d);
-
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(244, 244, 244, 1),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: primaryColor, border: Border.all(color: primaryColor)),
-              child: Padding(
-                padding: EdgeInsets.only(top: 30.0, right: 15.0, left: 15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.menu),
-                      color: Colors.white,
-                      iconSize: 30.0,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.notifications_none),
-                      color: Colors.white,
-                      iconSize: 30.0,
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Stack(
-              children: <Widget>[
-                ClipPath(
-                  clipper: CustomShapeClipper(),
-                  child: Container(
-                    height: 350.0,
-                    decoration: BoxDecoration(color: primaryColor),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "Halo " + username,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 15.0),
-                          Text(
-                            'Desa Online Kendal Terintegrasi',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 14.0),
-                          )
-                        ],
-                      ),
-                      Material(
-                          /*elevation: 1.0,
-                        borderRadius: BorderRadius.circular(100.0),
-                        color: Colors.blue[300],
-                        child: MaterialButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OnboardingScreen()));
-                          },
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 30.0),
-                          child: Text(
-                            'TOP UP',
-                            style:
-                                TextStyle(fontSize: 16.0, color: Colors.white),
-                          ),
-                        ),*/
-                          )
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 120.0, right: 25.0, left: 25.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 370.0,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0.0, 3.0),
-                              blurRadius: 15.0)
-                        ]),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 40.0, vertical: 40.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.purple.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.library_books),
-                                      color: Colors.purple,
-                                      iconSize: 30.0,
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/HalamanBeritaadmin');
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Berita',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.blue.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.view_agenda),
-                                      color: Colors.blue,
-                                      iconSize: 30.0,
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/FormBeritaDashbord');
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Edit Berita',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.pink.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.local_convenience_store),
-                                      color: Colors.pink,
-                                      iconSize: 30.0,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Layanan',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.green.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.help),
-                                      color: Colors.green,
-                                      iconSize: 30.0,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Bantuan',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.red,
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.exit_to_app),
-                                      color: Colors.white,
-                                      iconSize: 30.0,
-                                      onPressed: () async {
-                                        SharedPreferences pref =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        pref.clear();
-                                        // _cekUser();
-                                        int launchCount = 0;
-                                        pref.setInt('counter', launchCount + 1);
-                                        _cekLogout();
-                                      },
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('Log Out',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.white.withOpacity(0.1),
-                                    child: IconButton(
-                                      padding: EdgeInsets.all(15.0),
-                                      icon: Icon(Icons.check_box_outline_blank),
-                                      color: Colors.white,
-                                      iconSize: 30.0,
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Text('kosong',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 15.0),
-                        Divider(),
-                        SizedBox(height: 15.0),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  'Kirim masukan dan saran untuk DOKAR Kabupaten Kendal',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              SizedBox(width: 40.0),
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.blueAccent.withOpacity(0.1),
-                                child: IconButton(
-                                  icon: Icon(Icons.arrow_forward_ios),
-                                  color: Colors.blueAccent,
-                                  onPressed: () {},
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 30.0),
-              child: Text(
-                'Event Desa',
-                style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 35.0, bottom: 25.0),
-              child: Container(
-                height: 150.0,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    UpcomingCard(
-                      title: 'Judul Event Desa',
-                      value: 000.0,
-                      color: Colors.purple,
-                    ),
-                    UpcomingCard(
-                      title: 'Judul Event Desa',
-                      value: 000.0,
-                      color: Colors.blue,
-                    ),
-                    UpcomingCard(
-                      title: 'Judul Event Desa',
-                      value: 000.0,
-                      color: Colors.orange,
-                    ),
-                    UpcomingCard(
-                      title: 'Judul Event Desa',
-                      value: 000.0,
-                      color: Colors.pink,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CustomShapeClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-
-    path.lineTo(0.0, 390.0 - 200);
-    path.quadraticBezierTo(size.width / 2, 280, size.width, 390.0 - 200);
-    path.lineTo(size.width, 0.0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
-}
-
-class UpcomingCard extends StatelessWidget {
-  final String title;
-  final double value;
-  final Color color;
-
-  UpcomingCard({this.title, this.value, this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(right: 15.0),
-      child: Container(
-        width: 120.0,
-        decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.all(Radius.circular(25.0))),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(title,
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
-              SizedBox(height: 30.0),
-              Text('$value',
-                  style: TextStyle(
-                      fontSize: 22.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/

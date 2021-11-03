@@ -1,13 +1,14 @@
-import 'dart:ffi';
-
-import 'package:dokar_aplikasi/berita/hal_berita.dart';
-import 'package:dokar_aplikasi/bottom-bar.dart';
-import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
+import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
+import 'package:dokar_aplikasi/style/size_config.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+// ignore: must_be_immutable
 class Search extends StatefulWidget {
   String value;
   Search({Key key, this.value = 'text'}) : super(key: key);
@@ -18,176 +19,341 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List dataJSON;
+  List dataDesa;
   String value;
+
   _SearchState(this.value);
 
+  // ignore: missing_return
   Future<String> ambildata() async {
-    http.Response hasil = await http.get(
-        Uri.encodeFull(
-            "http://dokar.kendalkab.go.id/webservice/android/searchkabar?search=${value}"),
+    http.Response hasil = await http.get(Uri.encodeFull(
+            // ignore: unnecessary_brace_in_string_interps
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/search?key=${value}"),
         headers: {"Accept": "application/json"});
 
-    this.setState(() {
-      dataJSON = json.decode(hasil.body);
-    });
+    this.setState(
+      () {
+        dataJSON = json.decode(hasil.body);
+      },
+    );
   }
 
-  //String html = "";
+  // ignore: missing_return
+  Future<String> searchdesa() async {
+    final response = await http.post(
+        "http://dokar.kendalkab.go.id/webservice/android/search/desa",
+        body: {
+          // ignore: unnecessary_brace_in_string_interps
+          "key": "${value}",
+        });
+    this.setState(
+      () {
+        dataDesa = json.decode(response.body);
+      },
+    );
+    print(dataDesa);
+  }
+
   @override
+  // ignore: must_call_super
   void initState() {
     this.ambildata();
+    this.searchdesa();
+  }
+
+  Widget hasilberita() {
+    return ListView.builder(
+      //scrollDirection: Axis.horizontal,
+      itemCount: dataJSON == null ? 0 : dataJSON.length,
+      itemBuilder: (context, i) {
+        if (dataJSON[i]["kabar_id"] == 'NotFound') {
+          print(dataJSON[i]["kabar_id"]);
+          return new Container(
+            child: new Center(
+              child: new Column(
+                children: <Widget>[
+                  new Padding(
+                    padding: new EdgeInsets.all(100.0),
+                  ),
+                  new Text(
+                    "Ops.. Berita tidak ada",
+                    style: new TextStyle(
+                      fontSize: 25.0,
+                      color: Colors.grey[350],
+                    ),
+                  ),
+                  new Padding(
+                    padding: new EdgeInsets.all(20.0),
+                  ),
+                  new Icon(Icons.event_note,
+                      size: 150.0, color: Colors.grey[350]),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return new Container(
+            padding: new EdgeInsets.all(2.0),
+            child: new Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              elevation: 1.0,
+              color: Colors.white,
+              margin:
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+              child: InkWell(
+                onTap: () {
+                  if (dataJSON[i]["kabar_kategori"] == 'Kegiatan' ||
+                      dataJSON[i]["kabar_kategori"] == 'KEGIATAN' ||
+                      dataJSON[i]["kabar_kategori"] == 'kegiatan') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPotensi(
+                            dId: dataJSON[i]["kabar_id"],
+                            dIdDesa: dataJSON[i]["id_desa"],
+                            dGambar: dataJSON[i]["kabar_gambar"],
+                            dKategori: dataJSON[i]["kabar_kategori"],
+                            dJudul: dataJSON[i]["kabar_judul"],
+                            dAdmin: dataJSON[i]["kabar_admin"],
+                            dTanggal: dataJSON[i]["kabar_tanggal"],
+                            dHtml: dataJSON[i]["kabar_isi"],
+                            dVideo: dataJSON[i]["kabar_video"],
+                            dBaca: dataJSON[i]["dibaca"],
+                            dKecamatan: dataJSON[i]["data_kecamatan"],
+                            dDesa: dataJSON[i]["data_nama"],
+                            dTempat: dataJSON[i]["kabar_tempat"]),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailBerita(
+                            dId: dataJSON[i]["kabar_id"],
+                            dIdDesa: dataJSON[i]["id_desa"],
+                            dGambar: dataJSON[i]["kabar_gambar"],
+                            dKategori: dataJSON[i]["kabar_kategori"],
+                            dJudul: dataJSON[i]["kabar_judul"],
+                            dAdmin: dataJSON[i]["kabar_admin"],
+                            dTanggal: dataJSON[i]["kabar_tanggal"],
+                            dHtml: dataJSON[i]["kabar_isi"],
+                            dVideo: dataJSON[i]["kabar_video"],
+                            dBaca: dataJSON[i]["dibaca"],
+                            dKecamatan: dataJSON[i]["data_kecamatan"],
+                            dDesa: dataJSON[i]["data_nama"]),
+                      ),
+                    );
+                  }
+                },
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Container(
+                      margin: const EdgeInsets.only(right: 15.0),
+                      width: 120.0,
+                      height: 100.0,
+                      child: Image(
+                        image: new NetworkImage(dataJSON[i]["kabar_gambar"]),
+                        fit: BoxFit.cover,
+                        height: 150.0,
+                        width: 110.0,
+                      ),
+                    ),
+                    new Expanded(
+                      child: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new Row(
+                            children: <Widget>[
+                              new Expanded(
+                                child: new Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 5.0, bottom: 10.0),
+                                  child: new Text(
+                                    dataJSON[i]["data_nama"],
+                                    style: new TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.black,
+                                      //fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          new Container(
+                            margin: const EdgeInsets.only(right: 10.0),
+                            child: new Text(
+                              dataJSON[i]["kabar_judul"],
+                              style: new TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          new Container(
+                            margin: const EdgeInsets.only(top: 10.0),
+                            child: new Row(
+                              children: <Widget>[
+                                new Text(
+                                  dataJSON[i]["kabar_kategori"],
+                                  style: new TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 11.0,
+                                  ),
+                                ),
+                                new Container(
+                                  margin: const EdgeInsets.only(left: 5.0),
+                                  child: new Text(
+                                    dataJSON[i]["kabar_tanggal"],
+                                    style: new TextStyle(
+                                      fontSize: 11.0,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget hasildesa() {
+    return GridView.builder(
+      shrinkWrap: true,
+      //scrollDirection: Axis.horizontal,
+      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: MediaQuery.of(context).size.width /
+            (MediaQuery.of(context).size.height / 5.5),
+      ),
+      itemCount: dataDesa == null ? 0 : dataDesa.length,
+      itemBuilder: (context, i) {
+        if (dataDesa[i]["id"] == 'NotFound') {
+          return new Container(
+            child: new Center(
+              child: new Row(
+                children: <Widget>[
+                  new Padding(
+                    padding: new EdgeInsets.all(5.0),
+                  ),
+                  new Text(
+                    "Desa tidak ada..",
+                    style: new TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey[350],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            padding: EdgeInsets.all(3.0),
+            child: FlatButton(
+              color: Colors.red,
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20.0),
+              ),
+              child: Column(
+                //mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 5.0,
+                    ),
+                    child: Text(
+                      dataDesa[i]["desa"],
+                      style: new TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Container(
+                    child: AutoSizeText(
+                      'Kec.' + dataDesa[i]["kecamatan"],
+                      style: new TextStyle(
+                        fontSize: 10,
+                        color: Colors.white,
+                      ),
+                      minFontSize: 5,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilDesa(
+                      id: dataDesa[i]["id"],
+                      desa: dataDesa[i]["desa"],
+                      kecamatan: dataDesa[i]["kecamatan"],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return new Scaffold(
-        appBar: AppBar(
-          title: new Text("Cari Berita"),
-          backgroundColor: Color(0xFFee002d),
-        ),
-        body: ListView.builder(
-          //scrollDirection: Axis.horizontal,
-
-          itemCount: dataJSON == null ? 0 : dataJSON.length,
-          itemBuilder: (context, i) {
-            //final nDataList = dataJSON[i];
-            return new Container(
-              padding: new EdgeInsets.all(5.0),
-              child: new Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: new Container(
-                  padding: new EdgeInsets.all(10.0),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      /* new Image(
-                    image: new NetworkImage(dataJSON[i]["kabar_gambar"]),
-                    width: 100,
-                  ),
-                  Container(
-                    height: 7.0,
-                  ),
-                  new Text(
-                    dataJSON[i]["kabar_kategori"],
-                    style: new TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Divider(),
-                  new Text(dataJSON[i]["kabar_tanggal"]),*/
-
-                      FlatButton(
-                        padding: EdgeInsets.all(0.0),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DetailBerita(
-                                        dGambar: dataJSON[i]["kabar_gambar"],
-                                        dKategori: dataJSON[i]
-                                            ["kabar_kategori"],
-                                        dJudul: dataJSON[i]["kabar_judul"],
-                                        dAdmin: dataJSON[i]["kabar_admin"],
-                                        dTanggal: dataJSON[i]["kabar_tanggal"],
-                                        dHtml: dataJSON[i]["kabar_isi"],
-                                      )));
-                        },
-                        child: Text(
-                          dataJSON[i]["kabar_judul"],
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.red[300],
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-
-                      /*new Text(
-                    dataJSON[i]["kabar_judul"],
-
-                    style: new TextStyle(
-                        fontSize: 15.0,
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold),
-                    //textAlign: TextAlign.justify,
-                  ),*/
-                      Divider(),
-                      new Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Icon(Icons.account_circle,
-                              size: 16, color: Colors.black45),
-                          new Text(
-                            dataJSON[i]["kabar_admin"],
-                            style: new TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black45,
-                            ),
-                          ),
-                          Container(
-                              height: 10,
-                              child: VerticalDivider(color: Colors.red)),
-                          Icon(Icons.date_range,
-                              size: 16, color: Colors.black45),
-                          new Text(
-                            dataJSON[i]["kabar_tanggal"],
-                            style: new TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black45),
-                          ),
-                          /*Container(
-                          height: 10,
-                          child: VerticalDivider(color: Colors.red)),*/
-                          /*SizedBox(
-                          height: 25.0,
-                          child: RaisedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailUser(
-                                            dGambar: dataJSON[i]
-                                                ["kabar_gambar"],
-                                            dKategori: dataJSON[i]
-                                                ["kabar_kategori"],
-                                            dJudul: dataJSON[i]["kabar_judul"],
-                                            dAdmin: dataJSON[i]["kabar_admin"],
-                                            dTanggal: dataJSON[i]
-                                                ["kabar_tanggal"],
-                                            dHtml: dataJSON[i]["kabar_isi"],
-                                          )));
-                            },
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.0)),
-                            color: Colors.green,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  'Lihat',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  size: 16,
-                                  color: Colors.white,
-                                )
-                              ],
-                            ),
-                          )),*/
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ));
+      appBar: AppBar(
+        title: new Text("Pencarian"),
+        backgroundColor: Color(0xFFee002d),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          new Container(
+            padding: new EdgeInsets.all(10.0),
+            child: Text(
+              "Hasil profil desa",
+              style: new TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600]),
+            ),
+          ),
+          hasildesa(),
+          new Container(
+            padding: new EdgeInsets.all(10.0),
+            child: Text(
+              "Hasil berita desa",
+              style: new TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600]),
+            ),
+          ),
+          Expanded(child: hasilberita()),
+        ],
+      ),
+    );
   }
 }

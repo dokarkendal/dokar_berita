@@ -1,261 +1,333 @@
+//ANCHOR PACKAGE halaman potensi
 import 'package:dokar_aplikasi/berita/detail_page_bumdes.dart';
+import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
-//import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'dart:convert';
-import 'package:auto_size_text/auto_size_text.dart';
-//String html = '';
+import 'package:dio/dio.dart';
+import 'package:shimmer/shimmer.dart';
 
+//ANCHOR StatefulWidget Potensi
 class Bumdes extends StatefulWidget {
+  //Bumdes(TabController controller);
+
   @override
   _BumdesState createState() => _BumdesState();
 }
 
 class _BumdesState extends State<Bumdes> {
-  List dataJSON;
+//ANCHOR Atribut
+
+  String nextPage =
+      "http://dokar.kendalkab.go.id/webservice/android/bumdes/loadmore"; //NOTE url api load berita
+  ScrollController _scrollController = new ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  var loading = false;
+  List databerita = new List();
+  bool isLoading = false;
+  final dio = new Dio();
+  String dibaca;
+  List dataJSON;
 
-  Future<String> ambildata() async {
-    http.Response hasil = await http.get(
-        Uri.encodeFull(
-            "http://dokar.kendalkab.go.id/webservice/android/bumdes"),
-        headers: {"Accept": "application/json"});
+  void _getMoreData() async {
+    //NOTE if else load more
+    if (!isLoading) {
+      setState(() {
+        isLoading = true;
+      });
 
-    this.setState(() {
-      dataJSON = json.decode(hasil.body);
-    });
+      final response = await dio.get(nextPage);
+      List tempList = new List();
+      nextPage = response.data['next'];
+
+      for (int i = 0; i < response.data['result'].length; i++) {
+        tempList.add(response.data['result'][i]);
+      }
+
+      setState(
+        () {
+          isLoading = false;
+          databerita.addAll(tempList);
+        },
+      );
+    }
   }
 
-  //String html = "";
+//ANCHOR inistate berita
   @override
   void initState() {
-    this.ambildata();
+    this._getMoreData();
+    super.initState();
+    _scrollController.addListener(
+      () {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          _getMoreData();
+        }
+      },
+    );
   }
 
+//ANCHOR dispose
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          //mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'Rekomendasi',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+//ANCHOR loading
+  Widget _buildProgressIndicator() {
+    SizeConfig().init(context);
+    return Padding(
+      padding: new EdgeInsets.all(10.0),
+      child: Shimmer.fromColors(
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
+        child: Container(
+          child: Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Container(
+                    height: SizeConfig.safeBlockVertical * 10,
+                    width: SizeConfig.safeBlockHorizontal * 30,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: SizeConfig.safeBlockVertical * 10,
+                    width: SizeConfig.safeBlockHorizontal * 30,
+                    color: Colors.grey,
+                  ),
+                ],
               ),
-            ),
-            SizedBox(
-              height: 230.0,
-              child: ListView.builder(
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: dataJSON == null ? 0 : dataJSON.length,
-                itemBuilder: (context, i) {
-                  return new Container(
-                    child: new Card(
-                        child: new Container(
-                      padding: new EdgeInsets.all(5.0),
-                      child: new Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          new Image(
-                            image:
-                                new NetworkImage(dataJSON[i]["bumdes_gambar"]),
-                            width: 300,
-                            height: 150,
-                          ),
-                          Container(
-                            height: 3.0,
-                          ),
-                          SizedBox(
-                            width: 200.0,
-                            child: AutoSizeText(
-                              dataJSON[i]["bumdes_judul"],
-                              style: new TextStyle(
-                                  fontSize: 16.0,
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.bold),
-                              maxLines: 2,
-                            ),
-                          ),
-                          new Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(Icons.account_circle,
-                                  size: 16, color: Colors.black45),
-                              SizedBox(
-                                width: 230.0,
-                                child: AutoSizeText(
-                                  dataJSON[i]["bumdes_admin"],
-                                  style: new TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold),
-                                  maxLines: 2,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+              SizedBox(width: 5),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    height: SizeConfig.safeBlockVertical * 2,
+                    width: SizeConfig.safeBlockHorizontal * 30,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                    height: SizeConfig.safeBlockVertical * 5,
+                    width: SizeConfig.safeBlockHorizontal * 60,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 5),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 20,
+                        color: Colors.grey,
                       ),
-                    )),
-                  );
-                },
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'Berita terkait',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(
-              //height: 200.0,
-              child: ListView.builder(
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: dataJSON == null ? 0 : dataJSON.length,
-                itemBuilder: (context, i) {
-                  return new Container(
-                    padding: new EdgeInsets.all(3.0),
-                    child: new Card(
-                      child: new Container(
-                        padding: new EdgeInsets.all(5.0),
-                        child: new Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            new Column(children: <Widget>[
-                              new Image(
-                                image: new NetworkImage(
-                                    dataJSON[i]["bumdes_gambar"]),
-                                width: 110,
-                                height: 100,
-                              ),
-                            ]),
-                            Container(
-                              width: 7,
-                            ),
-                            new Column(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 250.0,
-                                  child: FlatButton(
-                                      padding: EdgeInsets.all(0.0),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    DetailBumdes(
-                                                      dGambar: dataJSON[i]
-                                                          ["bumdes_gambar"],
-                                                      dJudul: dataJSON[i]
-                                                          ["bumdes_judul"],
-                                                      dTempat: dataJSON[i]
-                                                          ["bumdes_tempat"],
-                                                      dAdmin: dataJSON[i]
-                                                          ["bumdes_admin"],
-                                                      dHtml: dataJSON[i]
-                                                          ["bumdes_isi"],
-                                                    )));
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: AutoSizeText(
-                                          dataJSON[i]["bumdes_judul"],
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            color: Colors.red[300],
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          maxLines: 2,
-                                        ),
-                                      )),
-                                ),
-                                Divider(),
-                                new Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 10,
-                                    ),
-                                    Icon(Icons.account_circle,
-                                        size: 16, color: Colors.black45),
-                                    SizedBox(
-                                      width: 230.0,
-                                      child: AutoSizeText(
-                                        dataJSON[i]["bumdes_admin"],
-                                        style: new TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold),
-                                        maxLines: 2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                new Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      width: 10,
-                                    ),
-                                    Icon(Icons.location_on,
-                                        size: 16, color: Colors.black45),
-                                    SizedBox(
-                                      width: 230.0,
-                                      child: AutoSizeText(
-                                        dataJSON[i]["bumdes_tempat"],
-                                        style: new TextStyle(
-                                            fontSize: 12.0,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.bold),
-                                        maxLines: 2,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      SizedBox(width: 5),
+                      Container(
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 40,
+                        color: Colors.grey,
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: SizeConfig.safeBlockVertical * 2,
+                    width: SizeConfig.safeBlockHorizontal * 30,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 5),
+                  Container(
+                    height: SizeConfig.safeBlockVertical * 5,
+                    width: SizeConfig.safeBlockHorizontal * 60,
+                    color: Colors.grey,
+                  ),
+                  SizedBox(height: 5),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 20,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(width: 5),
+                      Container(
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 40,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
   }
+
+//ANCHOR listview berita
+  Widget _buildList() {
+    return ListView.builder(
+      //scrollDirection: Axis.horizontal,
+      physics: ClampingScrollPhysics(),
+      shrinkWrap: true,
+      controller: _scrollController,
+      itemCount: databerita.length + 1, //NOTE if else listview berita
+      // ignore: missing_return
+      itemBuilder: (BuildContext context, int index) {
+        if (index == databerita.length) {
+          return _buildProgressIndicator();
+        } else {
+          if (databerita[index]["bumdes_id"] == 'Notfound') {
+          } else {
+            return new Container(
+              padding: new EdgeInsets.all(2.0),
+              child: new Card(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                elevation: 1.0,
+                color: Colors.white,
+                margin:
+                    const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailBumdes(
+                          idDesa: databerita[index]["id_desa"],
+                          dDesa: databerita[index]["data_nama"],
+                          dKecamatan: databerita[index]["data_kecamatan"],
+                          dGambar: databerita[index]["bumdes_gambar"],
+                          dJudul: databerita[index]["bumdes_judul"],
+                          dTempat: databerita[index]["bumdes_tempat"],
+                          dAdmin: databerita[index]["bumdes_admin"],
+                          //dTanggal: databerita[index]["bumdes_tanggal"],
+                          dHtml: databerita[index]["bumdes_isi"],
+                          dVideo: databerita[index]["bumdes_video"],
+                          dUrl: databerita[index]["url"],
+                        ),
+                      ),
+                    );
+                  },
+                  child: new Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Container(
+                        margin: const EdgeInsets.only(right: 15.0),
+                        width: 120.0,
+                        height: 100.0,
+                        child: Image(
+                          image: new NetworkImage(
+                              databerita[index]["bumdes_gambar"]),
+                          fit: BoxFit.cover,
+                          height: 150.0,
+                          width: 110.0,
+                        ),
+                      ),
+                      new Expanded(
+                        child: new Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            new Row(
+                              children: <Widget>[
+                                new Expanded(
+                                  child: new Container(
+                                    margin: const EdgeInsets.only(
+                                        top: 5.0, bottom: 10.0),
+                                    child: new Text(
+                                      databerita[index]["data_nama"],
+                                      style: new TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.black,
+                                        //fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            new Container(
+                              margin: const EdgeInsets.only(right: 10.0),
+                              child: new Text(
+                                databerita[index]["bumdes_judul"],
+                                style: new TextStyle(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            new Container(
+                              margin: const EdgeInsets.only(top: 10.0),
+                              child: new Row(
+                                children: <Widget>[
+                                  new Expanded(
+                                    child: new Text(
+                                      databerita[index]["bumdes_tempat"],
+                                      style: new TextStyle(
+                                        fontSize: 11.0,
+                                        color: Colors.grey[500],
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+      },
+    );
+  }
+
+//ANCHOR body berita
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: RefreshIndicator(
+        key: refreshKey,
+        onRefresh: () async {
+          await Future.delayed(
+            Duration(seconds: 2),
+            () {
+              Navigator.pushReplacementNamed(context, '/HalamanBeritaadmin');
+            },
+          );
+        },
+        child: new Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Container(
+                padding: new EdgeInsets.all(10.0),
+                child: Text(
+                  "Bumdes Desa",
+                  style: new TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ),
+              Expanded(
+                child: _buildList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      resizeToAvoidBottomInset: false,
+    );
+  }
 }
-/*new HtmlView(
-                    data: html,
-                    onLaunchFail: (url) {
-                      // optional, type Function
-                      print("launch $url failed");
-                    },
-                    scrollable:
-                        false, //false to use MarksownBody and true to use Marksown
-                  )*/
-//String html = dataJSON[i]["kabar_isi"]
-//new Text(dataJSON[i]["kabar_admin"]),
-//new Text(dataJSON[i]["kabar_tanggal"]),
-//new Text(dataJSON[i]["kabar_isi"]),

@@ -1,6 +1,8 @@
+import 'package:dokar_aplikasi/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dokar_aplikasi/style/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DaftarWargaLogin extends StatefulWidget {
   @override
@@ -8,6 +10,30 @@ class DaftarWargaLogin extends StatefulWidget {
 }
 
 class _DaftarWargaLoginState extends State<DaftarWargaLogin> {
+  String cekUser = '';
+  var alertStyle = AlertStyle(
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+  );
+  @override
+  void initState() {
+    super.initState();
+    _cekLogin();
+  }
+
+  Future _cekLogin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.getString("userStatus") != null) {
+      setState(() {
+        cekUser = pref.getString("userStatus");
+      });
+    } else {
+      setState(() {
+        cekUser = 'null';
+      });
+    }
+  }
+
   bool _rememberMe = false;
 
   Widget _buildEmailTF() {
@@ -94,6 +120,7 @@ class _DaftarWargaLoginState extends State<DaftarWargaLogin> {
     );
   }
 
+  // ignore: unused_element
   Widget _buildRememberMeCheckbox() {
     return Container(
       height: 20.0,
@@ -128,7 +155,31 @@ class _DaftarWargaLoginState extends State<DaftarWargaLogin> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () {
-          Navigator.pushNamed(context, '/HalamanBeritaWarga');
+          if (cekUser == 'null' || cekUser == 'Warga') {
+            Navigator.pushNamed(context, '/HalamanBeritaWarga');
+          } else {
+            Alert(
+              context: context,
+              type: AlertType.error,
+              title: "Gagal!",
+              desc: 'Anda sudah login sebagai ' + cekUser,
+              buttons: [
+                DialogButton(
+                    color: Colors.red,
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'OpenSans',
+                          fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, '/PilihAkun');
+                    })
+              ],
+            ).show();
+          }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -156,7 +207,31 @@ class _DaftarWargaLoginState extends State<DaftarWargaLogin> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () {
-          Navigator.pushNamed(context, '/DaftarWarga');
+          if (cekUser == 'null' || cekUser == 'Warga') {
+            Navigator.pushNamed(context, '/HalamanBeritaWarga');
+          } else {
+            Alert(
+              context: context,
+              type: AlertType.error,
+              title: "Gagal!",
+              desc: 'Anda sudah login sebagai ' + cekUser,
+              buttons: [
+                DialogButton(
+                    color: Colors.red,
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'OpenSans',
+                          fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, '/PilihAkun');
+                    })
+              ],
+            ).show();
+          }
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(

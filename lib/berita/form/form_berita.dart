@@ -1,46 +1,58 @@
-////////////////////////////////PACKAGE//////////////////////////////////////
-import 'dart:async'; // api syn
-import 'dart:convert'; // api to json
+//ANCHOR package input form berita
+import 'dart:async'; //NOTE  api syn
+import 'dart:convert'; //NOTE api to json
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-
-import 'package:async/async.dart'; //upload gambar
+import 'package:async/async.dart'; //NOTE upload gambar
 import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/style/constants.dart';
-import 'package:image_picker/image_picker.dart'; //akses galeri dan camera
-import 'package:http/http.dart' as http; //api
-import 'package:path/path.dart'; //upload gambar path
-import 'package:shared_preferences/shared_preferences.dart'; //save session
-
+import 'package:image_picker/image_picker.dart'; //NOTE akses galeri dan camera
+import 'package:http/http.dart' as http; //NOTE api to http
+import 'package:path/path.dart'; //NOTE upload gambar path
+import 'package:shared_preferences/shared_preferences.dart'; //NOTE save session
 import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as Img;
-
+import 'package:image/image.dart' as Img; //NOTE image
 import 'dart:math' as Math;
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:status_alert/status_alert.dart';
 
-////////////////////////////////PROJECT///////////////////////////////////////
+//ANCHOR class Form berita
 class FormBerita extends StatefulWidget {
   @override
   FormBeritaState createState() => FormBeritaState();
 }
 
 class FormBeritaState extends State<FormBerita> {
-////////////////////////////////DEKLARASI////////////////////////////////////
+//ANCHOR variable form berita
   File _image;
   String username = "";
   String _mySelection;
+  bool _isInAsyncCall = false;
   List kategoriAdmin = List();
+  final formKey = GlobalKey<FormState>();
   final format = DateFormat("yyyy-MM-dd");
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  var alertStyle = AlertStyle(
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+    animationDuration: Duration(milliseconds: 400),
+  );
 
-////////////////////////////////CONTROLER/////////////////////////////////////
+  String _valKomentar;
+  List _listKomentar = ["Aktif", "Tidak"];
+
+//ANCHOR controller form berita
+  TextEditingController cYoutube = new TextEditingController();
   TextEditingController cJudul = new TextEditingController();
   TextEditingController cKategori = new TextEditingController();
   TextEditingController cIsi = new TextEditingController();
   TextEditingController cTanggal = new TextEditingController();
   TextEditingController cUsername = new TextEditingController();
   TextEditingController cStatus = new TextEditingController();
-  //TextEditingController cTempat = new TextEditingController();
-///////////////////////////////AKSES GALERI///////////////////////////////////
+
+//ANCHOR akses gallery form berita
   Future getImageGallery() async {
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -55,9 +67,11 @@ class FormBeritaState extends State<FormBerita> {
     var compressImg = new File("$path/image_$rand.jpg")
       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
-    setState(() {
-      _image = compressImg;
-    });
+    setState(
+      () {
+        _image = compressImg;
+      },
+    );
   }
 
   Future getImageCamera() async {
@@ -68,28 +82,38 @@ class FormBeritaState extends State<FormBerita> {
 
     int rand = new Math.Random().nextInt(100000);
 
-    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+    Img.Image image = Img.decodeImage(
+      imageFile.readAsBytesSync(),
+    );
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
     var compressImg = new File("$path/image_$rand.jpg")
-      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
+      ..writeAsBytesSync(
+        Img.encodeJpg(smallerImg, quality: 1000),
+      );
 
-    setState(() {
-      _image = compressImg;
-    });
+    setState(
+      () {
+        _image = compressImg;
+      },
+    );
   }
 
-///////////////////////////////CEK SESSION ADMIN///////////////////////////////////
+//ANCHOR cek session admin form berita
+  // ignore: unused_element
   Future _cekSession() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userAdmin") != null) {
-      setState(() {
-        username = pref.getString("userAdmin");
-      });
+      setState(
+        () {
+          username = pref.getString("userAdmin");
+        },
+      );
     }
   }
 
-///////////////////////////////API KATEGORI BERITA///////////////////////////////////
+//ANCHOR api kategori berita form berita
+  // ignore: missing_return
   Future<String> getKategori() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
@@ -100,9 +124,7 @@ class FormBeritaState extends State<FormBerita> {
     var kategori = json.decode(response.body);
     this.setState(() {
       kategoriAdmin = kategori;
-
       print(kategoriAdmin);
-      //print(id);
     });
   }
 
@@ -112,609 +134,432 @@ class FormBeritaState extends State<FormBerita> {
     this.getKategori();
   }
 
-///////////////////////////////FUNGSI UPLOAD API GAMBAR/////////////////////////////////
+//ANCHOR api gambar post form berita
   Future upload(File imageFile) async {
+    setState(
+      () {
+        _isInAsyncCall = true;
+      },
+    );
     SharedPreferences pref = await SharedPreferences.getInstance();
     var stream =
+        // ignore: deprecated_member_use
         new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
-    var uri =
-        Uri.parse("http://dokar.kendalkab.go.id/webservice/android/kabar/post");
+    var uri = Uri.parse(
+        "http://dokar.kendalkab.go.id/webservice/android/kabar/postberita");
 
     var request = new http.MultipartRequest("POST", uri);
 
     var multipartFile = new http.MultipartFile("image", stream, length,
         filename: basename(imageFile.path));
+    request.fields['video'] = cYoutube.text;
     request.fields['judul'] = cJudul.text;
     request.fields['kategori'] = _mySelection;
+    request.fields['komentar'] = _valKomentar;
     request.fields['isi'] = cIsi.text;
     request.fields['tanggal'] = cTanggal.text;
     request.fields['id_desa'] = pref.getString("IdDesa");
     request.fields['username'] = pref.getString("userAdmin");
     request.fields['status'] = pref.getString("status");
-    //request.fields['tempat'] = '';
+    request.fields['id_admin'] = pref.getString("IdAdmin");
     request.files.add(multipartFile);
-
     var response = await request.send();
 
     if (response.statusCode == 200) {
       print("Image Uploaded");
+      setState(
+        () {
+          _isInAsyncCall = false;
+        },
+      );
+      await Future.delayed(
+        Duration(seconds: 2),
+        () {
+          Navigator.of(this.context).pushNamedAndRemoveUntil(
+              '/Haldua', ModalRoute.withName('/Haldua'));
+        },
+      );
+      StatusAlert.show(
+        this.context,
+        duration: Duration(seconds: 2),
+        title: 'Sukses',
+        subtitle: 'Berita berhasil di upload',
+        configuration: IconConfiguration(icon: Icons.done),
+      );
     } else {
       print("Upload Failed");
     }
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
+    response.stream.transform(utf8.decoder).listen(
+      (value) {
+        print(value);
+      },
+    );
   }
 
-///////////////////////////////HALAMAN UTAMA//////////////////////////////////////
+//ANCHOR hal utama form berita
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Form Berita'),
         backgroundColor: Color(0xFFee002d),
       ),
-      body: ListView(children: <Widget>[
-        new Container(
-          padding: new EdgeInsets.all(10.0),
-          child: Column(
-            children: <Widget>[
-              new Padding(
-                padding: new EdgeInsets.only(top: 20.0),
-              ),
-///////////////////////////////INPUT JUDUL///////////////////////////////////
-              Container(
-                alignment: Alignment.centerLeft,
-                decoration: kBoxDecorationStyle2,
-                height: 60.0,
-                child: TextField(
-                  controller: cJudul,
-                  keyboardType: TextInputType.emailAddress,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontFamily: 'OpenSans',
-                  ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(
-                      Icons.person,
-                      color: Colors.grey[600],
-                    ),
-                    hintText: 'Judul Berita',
-                    hintStyle: kHintTextStyle2,
-                  ),
-                ),
-              ),
-              new Padding(
-                padding: new EdgeInsets.only(top: 20.0),
-              ),
-///////////////////////////////INPUT KATEGORI///////////////////////////////////
-              new Column(
-                children: <Widget>[
-                  Container(
-                    padding: new EdgeInsets.only(left: 20.0),
-                    alignment: Alignment.centerLeft,
-                    decoration: kBoxDecorationStyle2,
-                    height: 60.0,
-                    child: DropdownButton(
-                      //icon: Icon(Icons.accessibility_new),
-                      underline: SizedBox(),
-                      hint: Text('Pilih Kategori'),
-                      isExpanded: true,
-                      items: kategoriAdmin.map((item) {
-                        return new DropdownMenuItem(
-                          child: new Text(item['kategori_nama']),
-                          value: item['kategori_nama'].toString(),
-                        );
-                      }).toList(),
-                      onChanged: (newVal) {
-                        setState(() {
-                          _mySelection = newVal;
-                        });
-                      },
-                      value: _mySelection,
-                    ),
-                  )
-                ],
-              ),
-              new Padding(
-                padding: new EdgeInsets.only(top: 20.0),
-              ),
-///////////////////////////////INPUT URAIAN///////////////////////////////////
-              Container(
-                alignment: Alignment.topLeft,
-                decoration: kBoxDecorationStyle2,
-                height: 200.0,
-                child: TextField(
-                  controller: cIsi,
-                  // maxLines: 10,
-                  keyboardType: TextInputType.emailAddress,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontFamily: 'OpenSans',
-                  ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    //contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(
-                      Icons.person,
-                      color: Colors.grey[600],
-                    ),
-                    hintText: 'Uraian Berita',
-                    hintStyle: kHintTextStyle2,
-                  ),
-                ),
-              ),
-              new Padding(
-                padding: new EdgeInsets.only(top: 20.0),
-              ),
-///////////////////////////////INPUT TANGGAL///////////////////////////////////
-              Container(
-                alignment: Alignment.centerLeft,
-                decoration: kBoxDecorationStyle2,
-                height: 60.0,
-                child: DateTimeField(
-                  controller: cTanggal,
-                  format: format,
-                  onShowPicker: (context, currentValue) {
-                    return showDatePicker(
-                        context: context,
-                        firstDate: DateTime(1900),
-                        initialDate: currentValue ?? DateTime.now(),
-                        lastDate: DateTime(2100));
-                  },
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    //contentPadding: EdgeInsets.only(top: 14.0),
-                    prefixIcon: Icon(
-                      Icons.date_range,
-                      color: Colors.grey[600],
-                    ),
-                    hintText: 'Pilih tanggal',
-                    hintStyle: kHintTextStyle2,
-                  ),
-                ),
-              ),
-              new Padding(
-                padding: new EdgeInsets.only(top: 20.0),
-              ),
-///////////////////////////////INPUT GAMBAR///////////////////////////////////
-              Center(
-                child: _image == null
-                    ? new Image.asset(
-                        'assets/images/noimage.jpg',
-                        width: 100.0,
-                        height: 100.0,
-                      )
-                    : new Image.file(_image),
-              ),
-              /*TextField(
-                //controller: cJudul,
-                decoration: new InputDecoration(
-                  hintText: "Title",
-                ),
-              ),*/
-              Row(
-                children: <Widget>[
-                  RaisedButton(
-                    child: Icon(
-                      Icons.image,
-                      color: Colors.white,
-                    ),
-                    onPressed: getImageGallery,
-                    color: Color(0xFFee002d),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(17.0),
-                    ),
-                  ),
-                  RaisedButton(
-                    child: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                    ),
-                    onPressed: getImageCamera,
-                    color: Color(0xFFee002d),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(17.0),
-                    ),
-                  ),
-                ],
-              ),
-              new Padding(
-                padding: new EdgeInsets.only(top: 20.0),
-              ),
-              /*RaisedButton(
-                child: Text(
-                  "SIMPAN",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                    //fontWeight: FontWeight.bold,
-                    fontFamily: 'OpenSans',
-                  ),
-                ),
-                onPressed: () {
-                  upload(_image);
-                },
-                color: Colors.green[400],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17.0),
-                ),
-              ),*/
-
-              RaisedButton.icon(
-                icon: Icon(
-                  Icons.file_upload,
-                  color: Colors.white,
-                ),
-                label: Text("UPLOAD BERITA"),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/Haldua');
-                  upload(_image);
-                },
-                color: Colors.green,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(17.0),
-                ),
-              ),
-            ],
-          ),
-        )
-      ]),
-    );
-  }
-}
-
-/*import 'dart:io';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:intl/intl.dart';
-import 'package:dokar_aplikasi/style/constants.dart';
-import "package:image_picker/image_picker.dart"; //akses galeri dan camera
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; //api
-import 'package:async/async.dart'; //upload gambar
-import 'package:path/path.dart'; //upload gambar path
-import 'dart:async'; // api syn
-import 'dart:convert'; // api to json
-import 'package:shared_preferences/shared_preferences.dart'; //save session
-
-class FormBerita extends StatefulWidget {
-  @override
-  _FormBeritaState createState() => _FormBeritaState();
-}
-
-class _FormBeritaState extends State<FormBerita> {
-  final format = DateFormat("yyyy-MM-dd");
-  /*List<String> kategori = [
-    "-Pilih Kategori",
-    "BERITA",
-    "POTENSI",
-    "BUMDES",
-    "SOSIAL",
-  ];*/
-  String _kategori = "-Pilih Kategori";
-
-  String username = "";
-  String _mySelection;
-  List kategoriAdmin = List();
-
-  Future _cekSession() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getString("userAdmin") != null) {
-      setState(() {
-        username = pref.getString("userAdmin");
-      });
-    }
-  }
-
-  Future<String> getKategori() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/kategori",
-        body: {
-          "IdDesa": pref.getString("IdDesa"),
-        });
-    var kategori = json.decode(response.body);
-    this.setState(() {
-      kategoriAdmin = kategori;
-
-      print(kategoriAdmin);
-      //print(id);
-    });
-  }
-
-  File _image;
-
-  Future getImageGallery() async {
-    var imageFile = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 300.0,
-      maxWidth: 300.0,
-    );
-
-    setState(() {
-      _image = imageFile;
-      print('_image: $_image');
-    });
-  }
-
-  Future getImageCamera() async {
-    var imageFile = await ImagePicker.pickImage(
-      source: ImageSource.camera,
-      maxHeight: 300.0,
-      maxWidth: 300.0,
-    );
-
-    setState(() {
-      _image = imageFile;
-      print('_image: $_image');
-    });
-  }
-
-  Future upload(File imageFile) async {
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-    var length = await imageFile.length();
-    var uri =
-        Uri.parse("http://dokar.kendalkab.go.id/webservice/android/kabar/post");
-
-    var request = new http.MultipartRequest("POST", uri);
-    var multipleFile = new http.MultipartFile('image', stream, length,
-        filename: basename(imageFile.path));
-
-    request.files.add(multipleFile);
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      print("Upload Berhasil");
-      print('_image: $_image');
-    } else {
-      print("Upload Failed");
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    this.getKategori();
-  }
-
-  /*void pilihKategori(String value) {
-    setState(() {
-      _kategori = value;
-    });
-  }*/
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text('Form Berita'),
-        backgroundColor: Color(0xFFee002d),
-      ),
-      body: new ListView(
-        children: <Widget>[
-          new Container(
-            padding: new EdgeInsets.all(10.0),
-            child: new Column(
-              children: <Widget>[
-                new Padding(
-                  padding: new EdgeInsets.only(top: 20.0),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  decoration: kBoxDecorationStyle2,
-                  height: 60.0,
-                  child: TextField(
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontFamily: 'OpenSans',
-                    ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(top: 14.0),
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: Colors.grey[600],
-                      ),
-                      hintText: 'Judul Berita',
-                      hintStyle: kHintTextStyle2,
-                    ),
-                  ),
-                ),
-                /*new TextField(
-                  decoration: new InputDecoration(
-                      hintText: "Judul Berita",
-                      labelText: "Judul Berita",
-                      border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(20.0))),
-                ),*/
-                new Padding(
-                  padding: new EdgeInsets.only(top: 20.0),
-                ),
-                new Column(
+      body: ModalProgressHUD(
+        inAsyncCall: _isInAsyncCall,
+        opacity: 0.5,
+        progressIndicator:
+            CircularProgressIndicator(backgroundColor: Colors.red),
+        child: ListView(
+          children: <Widget>[
+            new Container(
+              padding: new EdgeInsets.all(10.0),
+              child: Form(
+                key: formKey,
+                child: Column(
                   children: <Widget>[
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+//ANCHOR input judul form berita
                     Container(
-                      padding: new EdgeInsets.only(left: 20.0),
                       alignment: Alignment.centerLeft,
                       decoration: kBoxDecorationStyle2,
                       height: 60.0,
-                      child: DropdownButton(
-                        //icon: Icon(Icons.accessibility_new),
-                        underline: SizedBox(),
-                        hint: Text('Pilih Kategori'),
-                        isExpanded: true,
-                        items: kategoriAdmin.map((item) {
-                          return new DropdownMenuItem(
-                            child: new Text(item['kategori_nama']),
-                            value: item['kategori_nama'].toString(),
+                      child: TextFormField(
+                        controller: cJudul,
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontFamily: 'OpenSans',
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.text_fields,
+                            color: Colors.grey[600],
+                          ),
+                          hintText: 'Judul Berita',
+                          hintStyle: kHintTextStyle2,
+                        ),
+                      ),
+                    ),
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+//ANCHOR input kategori form berita
+                    new Column(
+                      children: <Widget>[
+                        Container(
+                          padding: new EdgeInsets.only(left: 20.0),
+                          alignment: Alignment.centerLeft,
+                          decoration: kBoxDecorationStyle2,
+                          height: 60.0,
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            hint: Text('Pilih Kategori'),
+                            isExpanded: true,
+                            items: kategoriAdmin.map(
+                              (item) {
+                                return new DropdownMenuItem(
+                                  child: new Text(item['kategori_nama']),
+                                  value: item['kategori_nama'].toString(),
+                                );
+                              },
+                            ).toList(),
+                            onChanged: (newVal) {
+                              setState(
+                                () {
+                                  _mySelection = newVal;
+                                },
+                              );
+                            },
+                            value: _mySelection,
+                          ),
+                        )
+                      ],
+                    ),
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+//ANCHOR input uraian form berita
+                    Container(
+                      alignment: Alignment.topLeft,
+                      decoration: kBoxDecorationStyle2,
+                      height: 200.0,
+                      child: TextFormField(
+                        controller: cIsi,
+                        maxLines: null,
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontFamily: 'OpenSans',
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          //contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.library_books,
+                            color: Colors.grey[600],
+                          ),
+                          hintText: 'Uraian Berita',
+                          hintStyle: kHintTextStyle2,
+                        ),
+                      ),
+                    ),
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+//ANCHOR input tanggal form berita
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: kBoxDecorationStyle2,
+                      height: 60.0,
+                      child: DateTimeField(
+                        controller: cTanggal,
+                        format: format,
+                        onShowPicker: (context, currentValue) {
+                          return showDatePicker(
+                            context: context,
+                            firstDate: DateTime(1900),
+                            initialDate: currentValue ?? DateTime.now(),
+                            lastDate: DateTime(2100),
                           );
-                        }).toList(),
-                        onChanged: (newVal) {
-                          setState(() {
-                            _mySelection = newVal;
-                          });
                         },
-                        value: _mySelection,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          //contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.date_range,
+                            color: Colors.grey[600],
+                          ),
+                          hintText: 'Pilih tanggal',
+                          hintStyle: kHintTextStyle2,
+                        ),
                       ),
-
-                      /*new DropdownButton(
-                      isExpanded: true,
-                      onChanged: (String value) {
-                        pilihKategori(value);
-                      },
-                      value: _kategori,
-                      items: kategori.map((String value) {
-                        return new DropdownMenuItem(
-                          value: value,
-                          child: new Text(value),
-                        );
-                      }).toList(),
-                    ),*/
-                    )
-                  ],
-                ),
-                new Padding(
-                  padding: new EdgeInsets.only(top: 20.0),
-                ),
-                Container(
-                  alignment: Alignment.topLeft,
-                  decoration: kBoxDecorationStyle2,
-                  height: 200.0,
-                  child: TextField(
-                    // maxLines: 10,
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontFamily: 'OpenSans',
                     ),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      //contentPadding: EdgeInsets.only(top: 14.0),
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: Colors.grey[600],
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+                    new Column(
+                      children: <Widget>[
+                        Container(
+                          padding: new EdgeInsets.only(left: 20.0),
+                          alignment: Alignment.centerLeft,
+                          decoration: kBoxDecorationStyle2,
+                          height: 60.0,
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            isExpanded: true,
+                            hint: Text("Aktifkan Komentar"),
+                            items: _listKomentar.map(
+                              (value) {
+                                return DropdownMenuItem(
+                                  child: Text(value),
+                                  value: value,
+                                );
+                              },
+                            ).toList(),
+                            onChanged: (value) {
+                              setState(
+                                () {
+                                  _valKomentar = value;
+                                },
+                              );
+                            },
+                            value: _valKomentar,
+                          ),
+                        )
+                      ],
+                    ),
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+//ANCHOR input link youtube form berita
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: kBoxDecorationStyle2,
+                      height: 60.0,
+                      child: TextFormField(
+                        controller: cYoutube,
+                        keyboardType: TextInputType.emailAddress,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontFamily: 'OpenSans',
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.ondemand_video,
+                            color: Colors.grey[600],
+                          ),
+                          hintText: 'Embed video youtube',
+                          hintStyle: kHintTextStyle2,
+                        ),
                       ),
-                      hintText: 'Uraian Berita',
-                      hintStyle: kHintTextStyle2,
                     ),
-                  ),
-                ),
-                /*new TextField(
-                  decoration: new InputDecoration(
-                      hintText: "Pilih Kategori",
-                      labelText: "Pilih Kategori",
-                      border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(20.0))),
-                ),*/
-                new Padding(
-                  padding: new EdgeInsets.only(top: 20.0),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  decoration: kBoxDecorationStyle2,
-                  height: 60.0,
-                  child: DateTimeField(
-                    format: format,
-                    onShowPicker: (context, currentValue) {
-                      return showDatePicker(
-                          context: context,
-                          firstDate: DateTime(1900),
-                          initialDate: currentValue ?? DateTime.now(),
-                          lastDate: DateTime(2100));
-                    },
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      //contentPadding: EdgeInsets.only(top: 14.0),
-                      prefixIcon: Icon(
-                        Icons.date_range,
-                        color: Colors.grey[600],
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+//ANCHOR input gambar form berita
+                    Center(
+                      child: _image == null
+                          ? new Text("Gambar belum di pilih !")
+                          : new Image.file(_image),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        RaisedButton(
+                          child: Icon(
+                            Icons.image,
+                            color: Colors.white,
+                          ),
+                          onPressed: getImageGallery,
+                          color: Color(0xFFee002d),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(17.0),
+                          ),
+                        ),
+                        RaisedButton(
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                          ),
+                          onPressed: getImageCamera,
+                          color: Color(0xFFee002d),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(17.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                    new Padding(
+                      padding: new EdgeInsets.only(top: 20.0),
+                    ),
+                    RaisedButton.icon(
+                      icon: Icon(
+                        Icons.file_upload,
+                        color: Colors.white,
                       ),
-                      hintText: 'Pilih tanggal',
-                      hintStyle: kHintTextStyle2,
-                    ),
-                  ),
-                ),
-                //Text(' (${format.pattern})'),
-
-                /*new TextField(
-                  maxLines: 3,
-                  decoration: new InputDecoration(
-                      hintText: "Uraian Berita",
-                      labelText: "Uraian Berita",
-                      border: new OutlineInputBorder(
-                          borderRadius: new BorderRadius.circular(20.0))),
-                ),*/
-                new Padding(
-                  padding: new EdgeInsets.only(top: 20.0),
-                ),
-                //UPLOAD GAMBAR
-                Center(
-                  child: _image == null
-                      ? new Text("No image selected")
-                      : new Image.file(_image),
-                ),
-
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    RaisedButton(
-                      child: Icon(Icons.image),
-                      onPressed: getImageGallery,
-                    ),
-                    RaisedButton(
-                      child: Icon(Icons.camera_alt),
-                      onPressed: getImageCamera,
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    RaisedButton(
-                        child: Text("UPLOAD"),
-                        onPressed: () {
+                      label: Text("UPLOAD BERITA"),
+                      onPressed: () async {
+                        if (cJudul.text == null || cJudul.text == '') {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'Judul wajib di isi.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.orange[700],
+                            action: SnackBarAction(
+                              label: 'ULANGI',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          );
+                          scaffoldKey.currentState.showSnackBar(snackBar);
+                        } else if (_mySelection == null || _mySelection == '') {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'Kategori wajib di isi.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.orange[700],
+                            action: SnackBarAction(
+                              label: 'ULANGI',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          );
+                          scaffoldKey.currentState.showSnackBar(snackBar);
+                        } else if (cIsi.text == null || cIsi.text == '') {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'Judul wajib di isi.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.orange[700],
+                            action: SnackBarAction(
+                              label: 'ULANGI',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          );
+                          scaffoldKey.currentState.showSnackBar(snackBar);
+                        } else if (cTanggal.text == null ||
+                            cTanggal.text == '') {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'Tanggal wajib di isi.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.orange[700],
+                            action: SnackBarAction(
+                              label: 'ULANGI',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          );
+                          scaffoldKey.currentState.showSnackBar(snackBar);
+                        } else if (_valKomentar == null || _valKomentar == '') {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'Komentar wajib di pilih.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.orange[700],
+                            action: SnackBarAction(
+                              label: 'ULANGI',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          );
+                          scaffoldKey.currentState.showSnackBar(snackBar);
+                        } else if (_image == null) {
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                              'Gambar wajib di isi.',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.orange[700],
+                            action: SnackBarAction(
+                              label: 'ULANGI',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          );
+                          scaffoldKey.currentState.showSnackBar(snackBar);
+                        } else {
                           upload(_image);
-                        }),
+                        }
+                      },
+                      color: Colors.green,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(17.0),
+                      ),
+                    ),
                   ],
-                )
-              ],
-            ),
-          ),
-        ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
-}*/
-
-/*String _jk = "";
-
-  void _pilihJk(String value) {
-    setState(() {
-      _jk = value;
-    });
-  }*/
-/*new RadioListTile(
-                  value: "laki-laki",
-                  title: new Text("Laki-laki"),
-                  groupValue: _jk,
-                  onChanged: (String value) {
-                    _pilihJk(value);
-                  },
-                  activeColor: Colors.red,
-                ),
-                new RadioListTile(
-                  value: "Perempuan",
-                  title: new Text("Perempuan"),
-                  groupValue: _jk,
-                  onChanged: (String value) {
-                    _pilihJk(value);
-                  },
-                  activeColor: Colors.red,
-                ),
-                new Padding(
-                  padding: new EdgeInsets.only(top: 20.0),
-                ),*/
+}
