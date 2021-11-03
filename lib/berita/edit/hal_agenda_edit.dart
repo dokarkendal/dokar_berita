@@ -69,7 +69,9 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
 
 //ANCHOR input image size flutter agenda edit
   Future getImageGallery() async {
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var imageFile = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
 
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
