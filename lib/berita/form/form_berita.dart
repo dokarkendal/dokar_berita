@@ -74,7 +74,7 @@ class FormBeritaState extends State<FormBerita> {
       },
     );
   }
-
+//cek
   Future getImageCamera() async {
     // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
