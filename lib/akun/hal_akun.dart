@@ -9,7 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 const simplePeriodicTask = "simplePeriodicTask";
 final firebaseMessaging = FirebaseMessaging();
-//cek 2
+//cek 2d
 Future<void> _setNotification([String topik, String token]) async {
   WidgetsFlutterBinding.ensureInitialized();
 
