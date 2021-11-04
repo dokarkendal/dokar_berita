@@ -72,6 +72,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
 
 //ANCHOR input image size flutter berita edit
   Future getImageGallery() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     final tempDir = await getTemporaryDirectory();
@@ -91,6 +92,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
   }
 
   Future getImageCamera() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
 
     final tempDir = await getTemporaryDirectory();

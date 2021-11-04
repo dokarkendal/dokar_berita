@@ -46,6 +46,7 @@ class FormBumdesState extends State<FormBumdes> {
 
 //ANCHOR akses gallery bumdes
   Future getImageGallery() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     final tempDir = await getTemporaryDirectory();
@@ -67,6 +68,7 @@ class FormBumdesState extends State<FormBumdes> {
   }
 
   Future getImageCamera() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
 
     final tempDir = await getTemporaryDirectory();

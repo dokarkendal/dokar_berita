@@ -50,6 +50,7 @@ class FormKegiatanState extends State<FormKegiatan> {
 
 //ANCHOR akses gallery
   Future getImageGallery() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     final tempDir = await getTemporaryDirectory();
@@ -71,6 +72,7 @@ class FormKegiatanState extends State<FormKegiatan> {
   }
 
   Future getImageCamera() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
 
     final tempDir = await getTemporaryDirectory();

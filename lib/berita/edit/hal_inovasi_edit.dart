@@ -60,6 +60,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
 
 //ANCHOR input image size flutter inovasi edit
   Future getImageGallery() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     final tempDir = await getTemporaryDirectory();
@@ -81,6 +82,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
   }
 
   Future getImageCamera() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
 
     final tempDir = await getTemporaryDirectory();

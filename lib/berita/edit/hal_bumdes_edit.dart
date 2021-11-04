@@ -56,6 +56,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
 
 //ANCHOR input image size flutter bumdes edit
   Future getImageGallery() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     final tempDir = await getTemporaryDirectory();
@@ -77,6 +78,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
   }
 
   Future getImageCamera() async {
+    // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
 
     final tempDir = await getTemporaryDirectory();
