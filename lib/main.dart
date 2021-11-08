@@ -81,7 +81,7 @@ void main() {
       theme: ThemeData(
         // Define the default brightness and colors.
 
-        primaryColor: Colors.blue[800],
+        primaryColor: Color(0xFFfecd2e),
       ),
       debugShowCheckedModeBanner: false,
       title: 'Splash Screen',

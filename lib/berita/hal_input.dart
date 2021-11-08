@@ -36,8 +36,8 @@ class _InputSemuaState extends State<InputSemua> {
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Edit Konten'),
-          backgroundColor: Color(0xFFee002d),
+          title: Text('Tulis Konten'),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -57,8 +57,15 @@ class _InputSemuaState extends State<InputSemua> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Edit Konten'),
-          backgroundColor: Color(0xFFee002d),
+          title: Text(
+            'Tulis Konten',
+            style: TextStyle(
+              color: Color(0xFF2e2e2e),
+              fontWeight: FontWeight.bold,
+              fontSize: 25.0,
+            ),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -311,17 +318,7 @@ class _InputSemuaState extends State<InputSemua> {
       width: SizeConfig.safeBlockHorizontal * 100,
       height: SizeConfig.safeBlockVertical * 20,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFee002d),
-            Color(0xFFe3002a),
-            Color(0xFFd90028),
-            Color(0xFFcc0025),
-          ],
-          stops: [0.1, 0.4, 0.7, 0.9],
-        ),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [
           BoxShadow(
@@ -350,7 +347,7 @@ class _InputSemuaState extends State<InputSemua> {
                       'Ayo.. tulis beritamu',
                       minFontSize: 16,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFF2e2e2e),
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -358,12 +355,18 @@ class _InputSemuaState extends State<InputSemua> {
                     AutoSizeText(
                       'Berikan informasi aktual',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Color(0xFF2e2e2e),
+                        fontSize: 14.0,
+                      ),
                     ),
                     AutoSizeText(
                       'dan bermanfaat bagi warga',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Color(0xFF2e2e2e),
+                        fontSize: 14.0,
+                      ),
                     ),
                   ],
                 ),

@@ -31,19 +31,22 @@ class _EditSemuaState extends State<EditSemua> {
   Future<String> jumlahAgenda() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata",
-        body: {
-          "IdDesa": pref.getString("IdDesa"),
-        });
+      "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata",
+      body: {
+        "IdDesa": pref.getString("IdDesa"),
+      },
+    );
     var jumlahagenda = json.decode(response.body);
     print(jumlahagenda);
-    setState(() {
-      jumlah = jumlahagenda['kabar'];
-      jumlahkeg = jumlahagenda['kegiatan'];
-      jumlahB = jumlahagenda['bid'];
-      jumlahBum = jumlahagenda['bumdes'];
-      jumlahAgen = jumlahagenda['agenda'];
-    });
+    setState(
+      () {
+        jumlah = jumlahagenda['kabar'];
+        jumlahkeg = jumlahagenda['kegiatan'];
+        jumlahB = jumlahagenda['bid'];
+        jumlahBum = jumlahagenda['bumdes'];
+        jumlahAgen = jumlahagenda['agenda'];
+      },
+    );
   }
 
   @override
@@ -52,8 +55,15 @@ class _EditSemuaState extends State<EditSemua> {
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Edit Konten'),
-          backgroundColor: Color(0xFFee002d),
+          title: Text(
+            'Edit Konten',
+            style: TextStyle(
+              color: Color(0xFF2e2e2e),
+              fontWeight: FontWeight.bold,
+              fontSize: 25.0,
+            ),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -73,8 +83,15 @@ class _EditSemuaState extends State<EditSemua> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Edit Konten'),
-          backgroundColor: Color(0xFFee002d),
+          title: Text(
+            'Edit Konten',
+            style: TextStyle(
+              color: Color(0xFF2e2e2e),
+              fontWeight: FontWeight.bold,
+              fontSize: 25.0,
+            ),
+          ),
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -404,17 +421,7 @@ class _EditSemuaState extends State<EditSemua> {
               width: double.infinity,
               height: 110.0,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFee002d),
-                    Color(0xFFe3002a),
-                    Color(0xFFd90028),
-                    Color(0xFFcc0025),
-                  ],
-                  stops: [0.1, 0.4, 0.7, 0.9],
-                ),
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 boxShadow: [
                   BoxShadow(
@@ -443,9 +450,10 @@ class _EditSemuaState extends State<EditSemua> {
                             Text(
                               'Desa ' + namadesa,
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               'Kec. ' + kecamatan,
@@ -477,24 +485,15 @@ class _EditSemuaState extends State<EditSemua> {
               width: double.infinity,
               height: SizeConfig.safeBlockVertical * 23,
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFFee002d),
-                      Color(0xFFe3002a),
-                      Color(0xFFd90028),
-                      Color(0xFFcc0025),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        offset: Offset(0.0, 3.0),
-                        blurRadius: 15.0)
-                  ]),
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      offset: Offset(0.0, 3.0),
+                      blurRadius: 15.0)
+                ],
+              ),
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 15.0),
@@ -515,19 +514,24 @@ class _EditSemuaState extends State<EditSemua> {
                             Text(
                               'Desa ' + namadesa,
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold),
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               'Kec. ' + kecamatan,
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 14.0),
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 14.0,
+                              ),
                             ),
                             Text(
                               'Kab. Kendal',
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 14.0),
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 14.0,
+                              ),
                             ),
                           ],
                         ),
@@ -546,67 +550,95 @@ class _EditSemuaState extends State<EditSemua> {
                             Text(
                               "$jumlah",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Color(0xFF2e2e2e),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
                               ),
                             ),
                             SizedBox(height: 8.0),
-                            Text('Berita',
-                                style: TextStyle(
-                                    color: Colors.white70, fontSize: 13.0))
+                            Text(
+                              'Berita',
+                              style: TextStyle(
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 13.0,
+                              ),
+                            )
                           ],
                         ),
                         Column(
                           children: <Widget>[
-                            Text("$jumlahkeg",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0)),
+                            Text(
+                              "$jumlahkeg",
+                              style: TextStyle(
+                                  color: Color(0xFF2e2e2e),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0),
+                            ),
                             SizedBox(height: 8.0),
-                            Text('Kegiatan',
-                                style: TextStyle(
-                                    color: Colors.white70, fontSize: 13.0))
+                            Text(
+                              'Kegiatan',
+                              style: TextStyle(
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 13.0,
+                              ),
+                            )
                           ],
                         ),
                         Column(
                           children: <Widget>[
-                            Text("$jumlahB",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0)),
+                            Text(
+                              "$jumlahB",
+                              style: TextStyle(
+                                  color: Color(0xFF2e2e2e),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0),
+                            ),
                             SizedBox(height: 8.0),
-                            Text('Inovasi',
-                                style: TextStyle(
-                                    color: Colors.white70, fontSize: 13.0))
+                            Text(
+                              'Inovasi',
+                              style: TextStyle(
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 13.0,
+                              ),
+                            )
                           ],
                         ),
                         Column(
                           children: <Widget>[
-                            Text("$jumlahBum",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0)),
+                            Text(
+                              "$jumlahBum",
+                              style: TextStyle(
+                                  color: Color(0xFF2e2e2e),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0),
+                            ),
                             SizedBox(height: 8.0),
-                            Text('Bumdes',
-                                style: TextStyle(
-                                    color: Colors.white70, fontSize: 13.0))
+                            Text(
+                              'Bumdes',
+                              style: TextStyle(
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 13.0,
+                              ),
+                            )
                           ],
                         ),
                         Column(
                           children: <Widget>[
-                            Text("$jumlahAgen",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0)),
+                            Text(
+                              "$jumlahAgen",
+                              style: TextStyle(
+                                  color: Color(0xFF2e2e2e),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0),
+                            ),
                             SizedBox(height: 8.0),
-                            Text('Agenda',
-                                style: TextStyle(
-                                    color: Colors.white70, fontSize: 13.0))
+                            Text(
+                              'Agenda',
+                              style: TextStyle(
+                                color: Color(0xFF2e2e2e),
+                                fontSize: 13.0,
+                              ),
+                            )
                           ],
                         )
                       ],

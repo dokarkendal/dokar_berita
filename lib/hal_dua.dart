@@ -428,7 +428,7 @@ class _HalduaState extends State<Haldua> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.account_circle),
-          color: Colors.white,
+          color: Color(0xFF2e2e2e),
           iconSize: 28.0,
           onPressed: () {
             Navigator.pushNamed(context, '/HalAkun');
@@ -438,7 +438,7 @@ class _HalduaState extends State<Haldua> {
         title: Text(
           "DOKAR ",
           style: TextStyle(
-            color: Colors.white,
+            color: Color(0xFF2e2e2e),
             fontSize: 26.0,
             fontWeight: FontWeight.bold,
           ),
@@ -466,7 +466,7 @@ class _HalduaState extends State<Haldua> {
                   child: Container(
                     height: mediaQueryData.size.height * 0.4,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor  ,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
                 ),
@@ -484,7 +484,7 @@ class _HalduaState extends State<Haldua> {
                             "Hai " + username,
                             minFontSize: 16,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Color(0xFF2e2e2e),
                               fontSize: 28.0,
                               fontWeight: FontWeight.bold,
                             ),
@@ -492,8 +492,10 @@ class _HalduaState extends State<Haldua> {
                           SizedBox(height: 15.0),
                           Text(
                             'Desa dan Kelurahan Online Kab. Kendal',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18.0),
+                            style: TextStyle(
+                              color: Color(0xFF2e2e2e),
+                              fontSize: 18.0,
+                            ),
                           ),
                         ],
                       ),
@@ -652,7 +654,7 @@ class _HalduaState extends State<Haldua> {
                     child: Text(
                       'Galeri Desa',
                       style: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Color(0xFF2e2e2e),
                           fontWeight: FontWeight.bold,
                           fontSize: 20.0),
                     ),
@@ -660,7 +662,7 @@ class _HalduaState extends State<Haldua> {
                   SizedBox(
                     height: 25,
                     child: FlatButton(
-                      color: Colors.grey[350],
+                      color: Color(0xFFfecd2e),
                       textColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(15.0),
@@ -673,7 +675,7 @@ class _HalduaState extends State<Haldua> {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
-                              color: Colors.grey[600],
+                              color: Color(0xFF2e2e2e),
                             ),
                           ),
                           Icon(

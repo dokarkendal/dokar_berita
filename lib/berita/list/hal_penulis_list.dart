@@ -634,7 +634,12 @@ class ListPenulisState extends State<ListPenulis> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Tambah akun ',
+          'Tambah Akun',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
         ),
         backgroundColor: Color(0xFFee002d),
         actions: <Widget>[
