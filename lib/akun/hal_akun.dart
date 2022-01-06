@@ -108,8 +108,15 @@ class _HalAkunState extends State<HalAkun> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text("Akun"),
+        // centerTitle: true,
+        title: Text(
+          "Akun",
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
         backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
           notification(),
@@ -119,7 +126,7 @@ class _HalAkunState extends State<HalAkun> {
         child: Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(10),
               child: Column(
                 children: <Widget>[
                   cardAkun(),
@@ -208,7 +215,7 @@ class _HalAkunState extends State<HalAkun> {
           "$nama",
           style: new TextStyle(
             fontSize: 14.0,
-            color: Theme.of(context).primaryColor,
+            color: Colors.blue[800],
           ),
         ),
         dense: true,
@@ -244,7 +251,7 @@ class _HalAkunState extends State<HalAkun> {
           "$username",
           style: new TextStyle(
             fontSize: 14.0,
-            color: Theme.of(context).primaryColor,
+            color: Colors.blue[800],
           ),
         ),
         dense: true,
@@ -280,7 +287,7 @@ class _HalAkunState extends State<HalAkun> {
           "$email",
           style: new TextStyle(
             fontSize: 14.0,
-            color: Theme.of(context).primaryColor,
+            color: Colors.blue[800],
           ),
         ),
         dense: true,
@@ -308,7 +315,7 @@ class _HalAkunState extends State<HalAkun> {
           "$hp",
           style: new TextStyle(
             fontSize: 14.0,
-            color: Theme.of(context).primaryColor,
+            color: Colors.blue[800],
           ),
         ),
         dense: true,
@@ -336,7 +343,7 @@ class _HalAkunState extends State<HalAkun> {
           "*******",
           style: new TextStyle(
             fontSize: 14.0,
-            color: Theme.of(context).primaryColor,
+            color: Colors.blue[800],
           ),
         ),
         dense: true,
@@ -357,7 +364,7 @@ class _HalAkunState extends State<HalAkun> {
           onPressed: () {
             Navigator.pushNamed(context, '/FormAkunEdit');
           },
-          color: Colors.green,
+          color: Colors.blue[800],
           textColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -373,17 +380,6 @@ class _HalAkunState extends State<HalAkun> {
       width: mediaQueryData.size.width * 1,
       height: mediaQueryData.size.height * 0.2,
       decoration: BoxDecoration(
-        // gradient: LinearGradient(
-        //   begin: Alignment.topCenter,
-        //   end: Alignment.bottomCenter,
-        //   colors: [
-        //     Color(0xFFee002d),
-        //     Color(0xFFe3002a),
-        //     Color(0xFFd90028),
-        //     Color(0xFFcc0025),
-        //   ],
-        //   stops: [0.1, 0.4, 0.7, 0.9],
-        // ),
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [
@@ -416,7 +412,7 @@ class _HalAkunState extends State<HalAkun> {
                         minFontSize: 2,
                         maxLines: 2,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFF2e2e2e),
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -425,12 +421,18 @@ class _HalAkunState extends State<HalAkun> {
                     AutoSizeText(
                       '- Lihat informasi akun',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Color(0xFF2e2e2e),
+                        fontSize: 14.0,
+                      ),
                     ),
                     AutoSizeText(
                       '- Edit informasi akun',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Color(0xFF2e2e2e),
+                        fontSize: 14.0,
+                      ),
                     ),
                   ],
                 ),
