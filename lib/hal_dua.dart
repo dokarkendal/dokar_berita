@@ -168,7 +168,8 @@ class _HalduaState extends State<Haldua> {
       );
     } else {
       return Padding(
-        padding: EdgeInsets.only(top: 15.0, right: 15.0, left: 15.0),
+        padding: EdgeInsets.only(
+            top: 15.0, right: 15.0, left: 15.0), //NOTE ganti mediaquery
         child: Container(
           child: Column(
             children: <Widget>[
@@ -471,8 +472,7 @@ class _HalduaState extends State<Haldua> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.0, vertical: 20.0),
+                  padding: EdgeInsets.all(mediaQueryData.size.height * 0.03),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -505,22 +505,22 @@ class _HalduaState extends State<Haldua> {
                 Padding(
                   padding: EdgeInsets.only(
                     top: mediaQueryData.size.height * 0.15,
-
                     left: mediaQueryData.size.height * 0.015,
                     right: mediaQueryData.size.height * 0.015,
                     // bottom: mediaQueryData.size.height * 0.03,
                   ),
                   child: Container(
                     width: double.infinity,
-                    height: 350.0,
+                    height: mediaQueryData.size.height * 0.42,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       boxShadow: [
                         BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            offset: Offset(0.0, 3.0),
-                            blurRadius: 15.0)
+                          color: Colors.black.withOpacity(0.1),
+                          offset: Offset(0.0, 3.0),
+                          blurRadius: 15.0,
+                        )
                       ],
                     ),
                     child: Column(
@@ -610,32 +610,35 @@ class _HalduaState extends State<Haldua> {
                         SizedBox(height: 15.0),
                         Divider(),
                         SizedBox(height: 5.0),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  'Kritik dan saran',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 14.0),
+                        Container(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    'Kritik dan saran',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        color: Colors.grey[800],
+                                        fontSize: 16.0),
+                                  ),
                                 ),
-                              ),
-                              Material(
-                                borderRadius: BorderRadius.circular(100.0),
-                                color: Colors.blueAccent.withOpacity(0.1),
-                                child: IconButton(
-                                  icon: Icon(Icons.arrow_forward_ios),
-                                  color: Colors.blueAccent,
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, '/KritikSaran');
-                                  },
-                                ),
-                              )
-                            ],
+                                Material(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  color: Colors.blueAccent.withOpacity(0.1),
+                                  child: IconButton(
+                                    icon: Icon(Icons.arrow_forward_ios),
+                                    color: Colors.blueAccent,
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, '/KritikSaran');
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ],
