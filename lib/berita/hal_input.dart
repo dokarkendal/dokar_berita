@@ -36,12 +36,19 @@ class _InputSemuaState extends State<InputSemua> {
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Tulis Konten'),
+          title: Text(
+            'Tulis Konten',
+            style: TextStyle(
+              color: Color(0xFF2e2e2e),
+              fontWeight: FontWeight.bold,
+              fontSize: 25.0,
+            ),
+          ),
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: new EdgeInsets.all(5.0),
+            padding: new EdgeInsets.all(10.0),
             child: new GestureDetector(
               child: Column(
                 children: <Widget>[
@@ -69,7 +76,7 @@ class _InputSemuaState extends State<InputSemua> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: new EdgeInsets.all(5.0),
+            padding: new EdgeInsets.all(10.0),
             child: new GestureDetector(
               child: Column(
                 children: <Widget>[
