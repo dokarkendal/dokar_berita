@@ -225,10 +225,10 @@ class ListPenulisState extends State<ListPenulis> {
             actionExtentRatio: 0.25,
             child: new Container(
               color: Colors.grey[100],
-              padding: EdgeInsets.only(
-                left: 5.0,
-                right: 5.0,
-              ),
+              // padding: EdgeInsets.only(
+              //   left: 5.0,
+              //   right: 5.0,
+              // ),
               child: new Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -365,10 +365,10 @@ class ListPenulisState extends State<ListPenulis> {
             actionExtentRatio: 0.25,
             child: new Container(
               color: Colors.grey[100],
-              padding: EdgeInsets.only(
-                left: 5.0,
-                right: 5.0,
-              ),
+              // padding: EdgeInsets.only(
+              //   left: 5.0,
+              //   right: 5.0,
+              // ),
               child: new Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -536,17 +536,18 @@ class ListPenulisState extends State<ListPenulis> {
       width: SizeConfig.safeBlockHorizontal * 100,
       height: SizeConfig.safeBlockVertical * 20,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFee002d),
-            Color(0xFFe3002a),
-            Color(0xFFd90028),
-            Color(0xFFcc0025),
-          ],
-          stops: [0.1, 0.4, 0.7, 0.9],
-        ),
+        color: Theme.of(context).primaryColor,
+        // gradient: LinearGradient(
+        //   begin: Alignment.topCenter,
+        //   end: Alignment.bottomCenter,
+        //   colors: [
+        //     Color(0xFFee002d),
+        //     Color(0xFFe3002a),
+        //     Color(0xFFd90028),
+        //     Color(0xFFcc0025),
+        //   ],
+        //   stops: [0.1, 0.4, 0.7, 0.9],
+        // ),
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [
           BoxShadow(
@@ -576,7 +577,7 @@ class ListPenulisState extends State<ListPenulis> {
                       minFontSize: 2,
                       maxLines: 2,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFF2e2e2e),
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -584,12 +585,18 @@ class ListPenulisState extends State<ListPenulis> {
                     AutoSizeText(
                       '- Buatkan user',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Color(0xFF2e2e2e),
+                        fontSize: 14.0,
+                      ),
                     ),
                     AutoSizeText(
                       '- 2 admin dan 3 penulis',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Color(0xFF2e2e2e),
+                        fontSize: 14.0,
+                      ),
                     ),
                   ],
                 ),
@@ -641,11 +648,11 @@ class ListPenulisState extends State<ListPenulis> {
             fontSize: 25.0,
           ),
         ),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.person_add),
-            color: Colors.white,
+            color: Color(0xFF2e2e2e),
             iconSize: 20.0,
             onPressed: () {
               Navigator.pushNamed(context, '/FormAddAkun');
@@ -655,7 +662,7 @@ class ListPenulisState extends State<ListPenulis> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: new EdgeInsets.all(5.0),
+          padding: new EdgeInsets.all(10.0),
           child: Column(
             children: <Widget>[
               //_admin(),
