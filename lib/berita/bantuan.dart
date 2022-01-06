@@ -5,8 +5,15 @@ class ExpansionTileSample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bantuan"),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          "Bantuan",
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -34,10 +41,15 @@ Widget tMasuk() {
     child: ExpansionTile(
       leading: Icon(
         Icons.fingerprint,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("Masuk",
-          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+      title: Text(
+        "Masuk",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("Admin"),
@@ -191,11 +203,15 @@ Widget tBerita() {
     child: ExpansionTile(
       leading: Icon(
         Icons.library_books,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("Berita",
-          style:
-              TextStyle(color: Color(0xFFee002d), fontWeight: FontWeight.bold)),
+      title: Text(
+        "Berita",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("Konten"),
@@ -349,11 +365,15 @@ Widget tAkun() {
     child: ExpansionTile(
       leading: Icon(
         Icons.account_circle,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("Akun",
-          style:
-              TextStyle(color: Color(0xFFee002d), fontWeight: FontWeight.bold)),
+      title: Text(
+        "Akun",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("Edit akun Admin"),
@@ -648,11 +668,15 @@ Widget tEdit() {
     child: ExpansionTile(
       leading: Icon(
         Icons.spellcheck,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("Edit",
-          style:
-              TextStyle(color: Color(0xFFee002d), fontWeight: FontWeight.bold)),
+      title: Text(
+        "Edit",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("Edit Berita"),
@@ -1071,11 +1095,15 @@ Widget tPublish() {
     child: ExpansionTile(
       leading: Icon(
         Icons.undo,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("Publish",
-          style:
-              TextStyle(color: Color(0xFFee002d), fontWeight: FontWeight.bold)),
+      title: Text(
+        "Publish",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("Publish Berita"),
@@ -1419,11 +1447,15 @@ Widget tUnpublish() {
     child: ExpansionTile(
       leading: Icon(
         Icons.redo,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("UnPublish",
-          style:
-              TextStyle(color: Color(0xFFee002d), fontWeight: FontWeight.bold)),
+      title: Text(
+        "UnPublish",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("UnPublish Berita"),
@@ -1767,11 +1799,15 @@ Widget tDashbordInput() {
     child: ExpansionTile(
       leading: Icon(
         Icons.create,
-        color: Colors.red,
+        color: Color(0xFF2e2e2e),
       ),
-      title: Text("Input",
-          style:
-              TextStyle(color: Color(0xFFee002d), fontWeight: FontWeight.bold)),
+      title: Text(
+        "Input",
+        style: TextStyle(
+          color: Color(0xFF2e2e2e),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       children: <Widget>[
         ExpansionTile(
           title: Text("Input Berita"),
