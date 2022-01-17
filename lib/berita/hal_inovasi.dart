@@ -8,7 +8,7 @@ import 'package:shimmer/shimmer.dart';
 
 //ANCHOR StatefulWidget Potensi
 class Inovasi extends StatefulWidget {
-  Inovasi(TabController controller);
+  // Inovasi(TabController controller);
 
   @override
   _InovasiState createState() => _InovasiState();
