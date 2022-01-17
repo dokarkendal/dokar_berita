@@ -200,7 +200,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 ),
                 prefixIcon: Icon(
                   Icons.person,
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.brown[800],
                 ),
                 hintText: 'Masukan Username',
                 hintStyle: TextStyle(
@@ -240,11 +240,11 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 ),
                 prefixIcon: Icon(
                   Icons.lock,
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.brown[800],
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(Icons.remove_red_eye),
-                  color: Theme.of(context).primaryColor,
+                  color: Colors.brown[800],
                   iconSize: 20.0,
                   onPressed: _toggle,
                 ),
@@ -278,7 +278,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
         child: Text(
           'Lupa Password?',
           style: TextStyle(
-            color: Theme.of(context).primaryColor,
+            color: Colors.brown[800],
           ),
         ),
       ),
@@ -302,7 +302,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
         child: Text(
           'LOGIN',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.brown[800],
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -343,6 +343,11 @@ class _DaftarAdminState extends State<DaftarAdmin> {
           child: Stack(
             children: <Widget>[
               _logo(),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.15),
+                child: _textjudul(),
+              ),
               Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: mediaQueryData.size.height * 0.25),
@@ -361,7 +366,11 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                     child: ListView(
                       // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _textjudul(),
+                        // _textjudul(),
+                        new Padding(
+                          padding: new EdgeInsets.only(
+                              top: mediaQueryData.size.height * 0.02),
+                        ),
                         _formUsername(),
                         new Padding(
                           padding: new EdgeInsets.only(
@@ -404,10 +413,10 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     return Container(
       child: Padding(
         padding: EdgeInsets.only(
-          // left: mediaQueryData.size.height * 0.03,
-          // right: mediaQueryData.size.height * 0.03,
+          left: mediaQueryData.size.height * 0.03,
+          right: mediaQueryData.size.height * 0.03,
           bottom: mediaQueryData.size.height * 0.03,
-          top: mediaQueryData.size.height * 0.01,
+          // top: mediaQueryData.size.height * 0.010,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,8 +427,8 @@ class _DaftarAdminState extends State<DaftarAdmin> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 28.0,
-                color: Theme.of(context).primaryColor,
+                fontSize: 40.0,
+                color: Colors.brown[800],
               ),
               maxLines: 1,
             ),
