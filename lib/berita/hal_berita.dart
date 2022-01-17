@@ -6,6 +6,7 @@ import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,7 +30,9 @@ class BeritaState extends State<Berita> {
   final dio = new Dio();
   String dibaca;
   List dataJSON;
+  int maxLines;
 
+  BeritaState({this.maxLines});
   void _getMoreData() async {
     //NOTE if else load more
     if (!isLoading) {
@@ -337,6 +340,17 @@ class BeritaState extends State<Berita> {
                         //textAlign: TextAlign.justify,
                       ),
                     ),
+                    // HtmlView(
+                    //   // stylingOptions: ,
+                    //   padding: new EdgeInsets.all(10.0),
+                    //   data: databerita[index]["kabar_isi"].substring(0, 200),
+                    //   onLaunchFail: (url) {
+                    //     // optional, type Function
+                    //     print("launch $url failed");
+                    //   },
+
+                    //   scrollable: false,
+                    // ),
                     Divider(),
                     Container(
                       padding: new EdgeInsets.only(
@@ -488,79 +502,79 @@ class BeritaState extends State<Berita> {
           await Future.delayed(
             Duration(seconds: 2),
             () {
-              Navigator.pushReplacementNamed(context, '/HalamanBeritaadmin');
+              Navigator.pushReplacementNamed(context, '/HalamanBeritaWarga');
             },
           );
         },
         child: Builder(
           builder: (BuildContext context) {
-            return OfflineBuilder(
-              connectivityBuilder: (BuildContext context,
-                  ConnectivityResult connectivity, Widget child) {
-                final bool connected = connectivity != ConnectivityResult.none;
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    child,
-                    Positioned(
-                      left: 0.0,
-                      right: 0.0,
-                      height: 32.0,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        color: connected ? null : Colors.orange,
-                        child: connected
-                            ? null
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    "Periksa jaringan internet",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  SizedBox(
-                                    width: 8.0,
-                                  ),
-                                  SizedBox(
-                                    width: 12.0,
-                                    height: 12.0,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.0,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                      ),
+            // return OfflineBuilder(
+            //   connectivityBuilder: (BuildContext context,
+            //       ConnectivityResult connectivity, Widget child) {
+            //     final bool connected = connectivity != ConnectivityResult.none;
+            //     return Stack(
+            //       fit: StackFit.expand,
+            //       children: [
+            //         child,
+            //         Positioned(
+            //           left: 0.0,
+            //           right: 0.0,
+            //           height: 32.0,
+            //           child: AnimatedContainer(
+            //             duration: const Duration(milliseconds: 300),
+            //             color: connected ? null : Colors.orange,
+            //             child: connected
+            //                 ? null
+            //                 : Row(
+            //                     mainAxisAlignment: MainAxisAlignment.center,
+            //                     children: <Widget>[
+            //                       Text(
+            //                         "Periksa jaringan internet",
+            //                         style: TextStyle(color: Colors.white),
+            //                       ),
+            //                       SizedBox(
+            //                         width: 8.0,
+            //                       ),
+            //                       SizedBox(
+            //                         width: 12.0,
+            //                         height: 12.0,
+            //                         child: CircularProgressIndicator(
+            //                           strokeWidth: 2.0,
+            //                           valueColor: AlwaysStoppedAnimation<Color>(
+            //                               Colors.white),
+            //                         ),
+            //                       ),
+            //                     ],
+            //                   ),
+            //           ),
+            //         ),
+            //       ],
+            //     );
+            //   },
+            //   child: new Container(
+            return Container(
+              padding: new EdgeInsets.all(5.0),
+              child: Column(
+                children: <Widget>[
+                  new Container(
+                    alignment: Alignment.centerLeft,
+                    padding: new EdgeInsets.all(10.0),
+                    child: Text(
+                      "Berita Semua Desa",
+                      style: new TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     ),
-                  ],
-                );
-              },
-              child: new Container(
-                child: Container(
-                  padding: new EdgeInsets.all(5.0),
-                  child: Column(
-                    children: <Widget>[
-                      new Container(
-                        alignment: Alignment.centerLeft,
-                        padding: new EdgeInsets.all(10.0),
-                        child: Text(
-                          "Berita Semua Desa",
-                          style: new TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                      ),
-                      Expanded(
-                        child: _buildList(),
-                      ),
-                    ],
                   ),
-                ),
+                  Expanded(
+                    child: _buildList(),
+                  ),
+                ],
               ),
             );
+            // ),
+            // );
           },
         ),
       ),
