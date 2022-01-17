@@ -91,7 +91,7 @@ class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
         children: <Widget>[
           new berita.Berita(),
           new agenda.Agenda(),
-          new inovasi.Inovasi(controller),
+          new inovasi.Inovasi(),
           new bumdes.Bumdes(),
         ],
       ),
