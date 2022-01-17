@@ -7,16 +7,6 @@ import './hal_bumdes.dart' as bumdes;
 import './hal_inovasi.dart' as inovasi;
 import './hal_agenda.dart' as agenda;
 
-void main() {
-  runApp(
-    new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "DOKAR",
-      home: new HalamanBeritaWarga(),
-    ),
-  );
-}
-
 class HalamanBeritaWarga extends StatefulWidget {
   @override
   _HalamanBeritaWargaState createState() => _HalamanBeritaWargaState();
@@ -26,18 +16,24 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
     with SingleTickerProviderStateMixin {
   String value;
   TabController controller;
-
   String notifStatus = '';
   String token = '';
   // ignore: unused_field
   static String topik = '';
-
   Icon cusIcon = Icon(Icons.search);
   Widget custSearchBar = Text("DOKAR");
 
+  int _currentIndex = 0;
+  final tabs = [
+    berita.Berita(),
+    agenda.Agenda(),
+    inovasi.Inovasi(),
+    bumdes.Bumdes(),
+  ];
+
   @override
   void initState() {
-    controller = new TabController(vsync: this, length: 4);
+    controller = new TabController(vsync: this, length: 3);
     super.initState();
   }
 
@@ -54,13 +50,14 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.dehaze, color: Colors.white),
+          icon: Icon(Icons.dehaze, color: Colors.brown[800]),
           onPressed: () {
             Navigator.pushNamed(context, '/ListKecamatan');
           },
         ),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         actions: <Widget>[
           IconButton(
@@ -112,42 +109,79 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
         ],
         title: custSearchBar,
       ),
-      body: new TabBarView(
-        controller: controller,
-        children: <Widget>[
-          new berita.Berita(),
-          new agenda.Agenda(),
-          new inovasi.Inovasi(controller),
-          new bumdes.Bumdes(),
-        ],
-      ),
+      body: tabs[_currentIndex],
+      // body: new TabBarView(
+      //   controller: controller,
+      //   children: <Widget>[
+      //     new berita.Berita(),
+      //     new agenda.Agenda(),
+      //     new inovasi.Inovasi(),
+      //     new bumdes.Bumdes(),
+      //   ],
+      // ),
       /*floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
-      bottomNavigationBar: new Material(
-        color: Color(0xFFee002d),
-        child: new TabBar(
-          indicatorColor: Colors.white,
-          controller: controller,
-          tabs: <Widget>[
-            new Tab(
-              icon: new Icon(
-                Icons.library_books,
-              ),
-              text: 'Berita',
+      // bottomNavigationBar: new Material(
+      //   color: Theme.of(context).primaryColor,
+      //   child: new TabBar(
+      //     indicatorColor: Colors.white,
+      //     controller: controller,
+      //     tabs: <Widget>[
+      //       new Tab(
+      //         icon: new Icon(
+      //           Icons.library_books,
+      //         ),
+      //         text: 'Berita',
+      //       ),
+      //       new Tab(
+      //         icon: new Icon(Icons.event),
+      //         text: 'Agenda',
+      //       ),
+      //       new Tab(
+      //         icon: new Icon(Icons.assessment),
+      //         text: 'Inovasi',
+      //       ),
+      //       new Tab(
+      //         icon: new Icon(Icons.shopping_basket),
+      //         text: 'Bumdes',
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.brown[800],
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        //backgroundColor: Colors.blue,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            title: Text("Berita"),
+            backgroundColor: Colors.blue,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.calendar_today,
             ),
-            new Tab(
-              icon: new Icon(Icons.event),
-              text: 'Agenda',
-            ),
-            new Tab(
-              icon: new Icon(Icons.assessment),
-              text: 'Inovasi',
-            ),
-            new Tab(
-              icon: new Icon(Icons.shopping_basket),
-              text: 'Bumdes',
-            ),
-          ],
-        ),
+            title: Text("Event"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assessment),
+            title: Text("Inovasi"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag),
+            title: Text("Bumdes"),
+          ),
+        ],
+        onTap: (index) {
+          if (index != 4) {
+            setState(
+              () {
+                _currentIndex = index;
+              },
+            );
+          }
+        },
       ),
     );
   }
