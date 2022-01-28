@@ -193,7 +193,12 @@ class _PilihAKunState extends State<PilihAKun> {
                       _animatedButtonUI(),
                       new Padding(
                         padding: new EdgeInsets.only(
-                            top: mediaQueryData.size.height * 0.15),
+                            top: mediaQueryData.size.height * 0.02),
+                      ),
+                      _privacy(),
+                      new Padding(
+                        padding: new EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.11),
                       ),
                       _daftar(),
                     ],
@@ -391,6 +396,36 @@ class _PilihAKunState extends State<PilihAKun> {
             },
             child: Text(
               "  Lihat",
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[800],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _privacy() {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          // Text("Info tentang dokar?"),
+          GestureDetector(
+            onTap: () async {
+              const url = 'https://dokar.kendalkab.go.id/privacy';
+
+              if (await canLaunch(url)) {
+                await launch(url, forceSafariVC: false);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text(
+              "Syarat & Ketentuan",
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.bold,

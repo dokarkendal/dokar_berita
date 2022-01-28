@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
@@ -76,15 +78,29 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
                   fontSize: 18.0),
             ),
           ),
-          HtmlView(
-            padding: new EdgeInsets.all(15.0),
-            data: visi,
-            onLaunchFail: (url) {
-              // optional, type Function
-              print("launch $url failed");
+          Html(
+            style: {
+              "p": Style(
+                padding: EdgeInsets.all(10.0),
+              )
             },
-            scrollable: false,
+            // padding: new EdgeInsets.all(10.0),
+            data: visi,
+            // onLaunchFail: (url) {
+            //   // optional, type Function
+            //   print("launch $url failed");
+            // },
+            // scrollable: false,
           ),
+          // HtmlView(
+          //   padding: new EdgeInsets.all(15.0),
+          //   data: visi,
+          //   onLaunchFail: (url) {
+          //     // optional, type Function
+          //     print("launch $url failed");
+          //   },
+          //   scrollable: false,
+          // ),
           Text(
             'Misi',
             style: TextStyle(
@@ -92,15 +108,29 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0),
           ),
-          HtmlView(
-            padding: new EdgeInsets.all(15.0),
-            data: misi,
-            onLaunchFail: (url) {
-              // optional, type Function
-              print("launch $url failed");
+          Html(
+            style: {
+              "p": Style(
+                padding: EdgeInsets.all(10.0),
+              )
             },
-            scrollable: false,
+            // padding: new EdgeInsets.all(10.0),
+            data: misi,
+            // onLaunchFail: (url) {
+            //   // optional, type Function
+            //   print("launch $url failed");
+            // },
+            // scrollable: false,
           ),
+          // HtmlView(
+          //   padding: new EdgeInsets.all(15.0),
+          //   data: misi,
+          //   onLaunchFail: (url) {
+          //     // optional, type Function
+          //     print("launch $url failed");
+          //   },
+          //   scrollable: false,
+          // ),
         ],
       );
     }

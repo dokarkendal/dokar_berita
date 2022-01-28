@@ -1,6 +1,8 @@
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:share/share.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -294,14 +296,19 @@ class _DetailBumdesState extends State<DetailBumdes> {
       padding: EdgeInsets.all(10.0),
       child: Column(
         children: <Widget>[
-          HtmlView(
-            padding: new EdgeInsets.all(10.0),
-            data: '${widget.dHtml}',
-            onLaunchFail: (url) {
-              // optional, type Function
-              print("launch $url failed");
+          Html(
+            style: {
+              "p": Style(
+                padding: EdgeInsets.all(10.0),
+              )
             },
-            scrollable: false,
+            // padding: new EdgeInsets.all(10.0),
+            data: '${widget.dHtml}',
+            // onLaunchFail: (url) {
+            //   // optional, type Function
+            //   print("launch $url failed");
+            // },
+            // scrollable: false,
           ),
         ],
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
@@ -198,15 +200,29 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
       padding: EdgeInsets.all(10.0),
       child: Column(
         children: <Widget>[
-          HtmlView(
-            padding: new EdgeInsets.all(10.0),
-            data: '${widget.dDeskripsi}',
-            onLaunchFail: (url) {
-              // optional, type Function
-              print("launch $url failed");
+          Html(
+            style: {
+              "p": Style(
+                padding: EdgeInsets.all(10.0),
+              )
             },
-            scrollable: false,
+            // padding: new EdgeInsets.all(10.0),
+            data: '${widget.dDeskripsi}',
+            // onLaunchFail: (url) {
+            //   // optional, type Function
+            //   print("launch $url failed");
+            // },
+            // scrollable: false,
           ),
+          // HtmlView(
+          //   padding: new EdgeInsets.all(10.0),
+          //   data: '${widget.dDeskripsi}',
+          //   onLaunchFail: (url) {
+          //     // optional, type Function
+          //     print("launch $url failed");
+          //   },
+          //   scrollable: false,
+          // ),
         ],
       ),
     );

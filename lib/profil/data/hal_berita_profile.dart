@@ -171,6 +171,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                       onTap: () {
                         Navigator.push(
                           context,
+                          //TODO
                           MaterialPageRoute(
                             builder: (context) => DetailBerita(
                                 dBaca: databerita[i]["dibaca"],

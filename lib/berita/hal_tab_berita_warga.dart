@@ -48,6 +48,7 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
   }
 
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return new Scaffold(
       appBar: new AppBar(
         elevation: 0,
@@ -62,46 +63,61 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              setState(() {
-                if (this.cusIcon.icon == Icons.search) {
-                  this.cusIcon = Icon(Icons.cancel);
-                  this.custSearchBar = Container(
-                      height: 40,
-                      child: TextField(
-                        autofocus: false,
-                        onSubmitted: (text) {
-                          value = text;
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => Search(value: value),
-                          ));
-                        },
-                        textInputAction: TextInputAction.go,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: InputBorder.none,
-                          hintText: "Cari berita",
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(25.7),
+              setState(
+                () {
+                  if (this.cusIcon.icon == Icons.search) {
+                    this.cusIcon = Icon(Icons.cancel);
+                    this.custSearchBar = Container(
+                        height: mediaQueryData.size.height * 0.05,
+                        // width: mediaQueryData.size.width,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: TextField(
+                            autofocus: false,
+                            onSubmitted: (text) {
+                              value = text;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Search(value: value),
+                                ),
+                              );
+                            },
+                            textInputAction: TextInputAction.go,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: InputBorder.none,
+                              hintText: "Cari berita",
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              hintStyle: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                            ),
                           ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(25.7),
-                          ),
-                          hintStyle: TextStyle(
-                              fontSize: 16.0, color: Colors.grey[400]),
-                        ),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16.0,
-                        ),
-                      ));
-                } else {
-                  this.cusIcon = Icon(Icons.search);
-                  this.custSearchBar = Text("DOKAR");
-                }
-              });
+                        ));
+                  } else {
+                    this.cusIcon = Icon(Icons.search);
+                    this.custSearchBar = Text(
+                      "DOKAR",
+                      style: TextStyle(
+                        color: Colors.brown[800],
+                      ),
+                    );
+                  }
+                },
+              );
             },
             icon: cusIcon,
           ),

@@ -1,4 +1,5 @@
 //ANCHOR package halaman berita
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -6,7 +7,7 @@ import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -91,12 +92,14 @@ class BeritaState extends State<Berita> {
     this.setState(
       () {
         dataJSON = json.decode(hasil.body);
+        print(dataJSON);
       },
     );
   }
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     SizeConfig().init(context);
     return Padding(
       padding: new EdgeInsets.all(1.0),
@@ -105,92 +108,122 @@ class BeritaState extends State<Berita> {
         highlightColor: Colors.white,
         baseColor: Colors.grey[300],
         child: Container(
+          padding: new EdgeInsets.all(5.0),
           child: Column(
             children: <Widget>[
               Container(
-                height: SizeConfig.safeBlockVertical * 30,
-                width: SizeConfig.safeBlockHorizontal * 100,
-                color: Colors.grey,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.3,
+                width: mediaQueryData.size.width,
               ),
-              SizedBox(height: 5),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 5),
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 5),
                   Container(
-                    height: SizeConfig.safeBlockVertical * 5,
-                    width: SizeConfig.safeBlockHorizontal * 100,
-                    color: Colors.grey,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.05,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
                   ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 5),
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 5),
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 30,
-                        width: SizeConfig.safeBlockHorizontal * 100,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
+                  SizedBox(height: mediaQueryData.size.height * 0.01),
                   Row(
                     children: <Widget>[
                       Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
                         height: SizeConfig.safeBlockVertical * 2,
                         width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
+                        // color: Colors.grey,
                       ),
-                      SizedBox(width: 5),
+                      SizedBox(width: mediaQueryData.size.width * 0.35),
                       Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
                         height: SizeConfig.safeBlockVertical * 2,
                         width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.width * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 20,
+                        // color: Colors.grey,
                       )
                     ],
                   ),
-                  /*Container(
-                    height: containerHeight,
-                    width: containerWidth * 0.75,
-                    color: Colors.grey,
-                  )*/
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.3,
+                width: mediaQueryData.size.width,
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.05,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
+                  ),
+                  SizedBox(height: mediaQueryData.size.height * 0.01),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 20,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.width * 0.35),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 20,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.width * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: SizeConfig.safeBlockVertical * 2,
+                        width: SizeConfig.safeBlockHorizontal * 20,
+                        // color: Colors.grey,
+                      )
+                    ],
+                  ),
                 ],
               )
             ],
@@ -255,6 +288,7 @@ class BeritaState extends State<Berita> {
 
 //ANCHOR listview berita
   Widget _buildList() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return ListView.builder(
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
@@ -271,221 +305,375 @@ class BeritaState extends State<Berita> {
           }
           return new Container(
             padding: new EdgeInsets.all(1.0),
-            child: new Card(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              elevation: 1.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: new Container(
-                //padding: new EdgeInsets.all(10.0),
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Container(
-                      child: Image(
-                        image:
-                            new NetworkImage(databerita[index]["kabar_gambar"]),
-                        fit: BoxFit.cover,
+            // child: new Card(
+            //   clipBehavior: Clip.antiAliasWithSaveLayer,
+            //   elevation: 0,
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(10.0),
+            //   ),
+            child: Material(
+              child: InkWell(
+                onTap: () {
+                  print("tekan");
+                  print(dataJSON);
+                  if (databerita[index]["kabar_kategori"] == 'KEGIATAN' ||
+                      databerita[index]["kabar_kategori"] == 'Kegiatan' ||
+                      databerita[index]["kabar_kategori"] == 'kegiatan') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPotensi(
+                          dKategori: databerita[index]["kabar_kategori"],
+                          dBaca: databerita[index]["dibaca"],
+                          dId: databerita[index]["kabar_id"],
+                          dIdDesa: databerita[index]["id_desa"],
+                          dDesa: databerita[index]["data_nama"],
+                          dKecamatan: databerita[index]["data_kecamatan"],
+                          dGambar: databerita[index]["kabar_gambar"],
+                          dJudul: databerita[index]["kabar_judul"],
+                          dTempat: databerita[index]["kabar_tempat"],
+                          dAdmin: databerita[index]["kabar_admin"],
+                          dTanggal: databerita[index]["kabar_tanggal"],
+                          dHtml: databerita[index]["kabar_isi"],
+                          dVideo: databerita[index]["kabar_video"],
+                        ),
                       ),
-                    ),
-
-                    /*new Image(
-                      image: new NetworkImage(
-                        databerita[index]["kabar_gambar"],
-                        //NOTE api gambar berita
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailBerita(
+                          dId: databerita[index]["kabar_id"],
+                          dIdDesa: databerita[index]["id_desa"],
+                          dBaca: databerita[index]["dibaca"],
+                          dDesa: databerita[index]["data_nama"],
+                          dKecamatan: databerita[index]["data_kecamatan"],
+                          dGambar: databerita[index]["kabar_gambar"],
+                          dKategori: databerita[index]["kabar_kategori"],
+                          dJudul: databerita[index]["kabar_judul"],
+                          dAdmin: databerita[index]["kabar_admin"],
+                          dTanggal: databerita[index]["kabar_tanggal"],
+                          dHtml: databerita[index]["kabar_isi"],
+                          dVideo: databerita[index]["kabar_video"],
+                          dUrl: databerita[index]["url"],
+                          dWaktu: databerita[index]["kabar_waktu"],
+                        ),
                       ),
-                    ),*/
-                    Container(
-                      height: 7.0,
-                    ),
-                    Container(
-                      padding: new EdgeInsets.only(
-                          left: 10.0, right: 10.0, bottom: 5.0),
-                      child: Row(
-                        children: <Widget>[
-                          new Text(
-                            databerita[index]
-                                ["kabar_kategori"], //NOTE api kategori berita
-                            style: new TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          Container(
-                              height: 10,
-                              child: VerticalDivider(color: Colors.grey)),
-                          new Text(
-                            databerita[index]
-                                ["kabar_admin"], //NOTE api admin berita
-                            style: new TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: new EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: Text(
-                        databerita[index]
-                            ["kabar_judul"], //NOTE api judul berita
-                        style: new TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.redAccent,
-                            fontWeight: FontWeight.bold),
-                        //textAlign: TextAlign.justify,
-                      ),
-                    ),
-                    // HtmlView(
-                    //   // stylingOptions: ,
-                    //   padding: new EdgeInsets.all(10.0),
-                    //   data: databerita[index]["kabar_isi"].substring(0, 200),
-                    //   onLaunchFail: (url) {
-                    //     // optional, type Function
-                    //     print("launch $url failed");
-                    //   },
-
-                    //   scrollable: false,
-                    // ),
-                    Divider(),
-                    Container(
-                      padding: new EdgeInsets.only(
-                          left: 10.0, right: 10.0, bottom: 5.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Icon(Icons.remove_red_eye,
-                              size: 16, color: Colors.grey),
-                          new Text(
-                            ' ' + dibaca + '  lihat', //NOTE api banyak dilihat
-                            style: new TextStyle(
-                              color: Colors.black45,
-                              //fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Container(
-                              height: 10,
-                              child: VerticalDivider(color: Colors.grey)),
-                          Icon(Icons.date_range,
-                              size: 16, color: Colors.black45),
-                          new Text(
-                            databerita[index]
-                                ["kabar_tanggal"], //NOTE api tanggal berita
-                            style: new TextStyle(
-                                fontSize: 13, color: Colors.black45),
-                          ),
-                          Container(
-                            height: 10,
-                            child: VerticalDivider(color: Colors.grey),
-                          ),
-                          SizedBox(
-                            height: 25.0, //NOTE push detail berita
-                            child: InkWell(
-                              child: FlatButton(
-                                color: Colors.green,
-                                textColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(15.0),
+                    );
+                  }
+                },
+                child: new Container(
+                  //padding: new EdgeInsets.all(10.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Card(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        //    new Container(
+                        child: CachedNetworkImage(
+                          imageUrl: databerita[index]["kabar_gambar"],
+                          // new NetworkImage(databerita[index]["kabar_gambar"]),
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/load.png",
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Lihat  ',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      size: 16,
-                                      color: Colors.white,
-                                    )
-                                  ],
-                                ),
-                                onPressed: () {
-                                  print(dataJSON);
-                                  if (databerita[index]
-                                              ["kabar_kategori"] ==
-                                          'KEGIATAN' ||
-                                      databerita[index]["kabar_kategori"] ==
-                                          'Kegiatan' ||
-                                      databerita[index]["kabar_kategori"] ==
-                                          'kegiatan') {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailPotensi(
-                                          dKategori: databerita[index]
-                                              ["kabar_kategori"],
-                                          dBaca: databerita[index]["dibaca"],
-                                          dId: databerita[index]["kabar_id"],
-                                          dIdDesa: databerita[index]["id_desa"],
-                                          dDesa: databerita[index]["data_nama"],
-                                          dKecamatan: databerita[index]
-                                              ["data_kecamatan"],
-                                          dGambar: databerita[index]
-                                              ["kabar_gambar"],
-                                          dJudul: databerita[index]
-                                              ["kabar_judul"],
-                                          dTempat: databerita[index]
-                                              ["kabar_tempat"],
-                                          dAdmin: databerita[index]
-                                              ["kabar_admin"],
-                                          dTanggal: databerita[index]
-                                              ["kabar_tanggal"],
-                                          dHtml: databerita[index]["kabar_isi"],
-                                          dVideo: databerita[index]
-                                              ["kabar_video"],
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailBerita(
-                                          dId: databerita[index]["kabar_id"],
-                                          dIdDesa: databerita[index]["id_desa"],
-                                          dBaca: databerita[index]["dibaca"],
-                                          dDesa: databerita[index]["data_nama"],
-                                          dKecamatan: databerita[index]
-                                              ["data_kecamatan"],
-                                          dGambar: databerita[index]
-                                              ["kabar_gambar"],
-                                          dKategori: databerita[index]
-                                              ["kabar_kategori"],
-                                          dJudul: databerita[index]
-                                              ["kabar_judul"],
-                                          dAdmin: databerita[index]
-                                              ["kabar_admin"],
-                                          dTanggal: databerita[index]
-                                              ["kabar_tanggal"],
-                                          dHtml: databerita[index]["kabar_isi"],
-                                          dVideo: databerita[index]
-                                              ["kabar_video"],
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                        ],
+                          width: mediaQueryData.size.width,
+                          height: mediaQueryData.size.height * 0.3,
+                          fit: BoxFit.cover,
+                        ),
+                        // ),
+                        // child: Image(
+                        //   image:
+                        //       new NetworkImage(databerita[index]["kabar_gambar"]),
+                        //   fit: BoxFit.cover,
+                        // ),
                       ),
-                    ),
-                  ],
+
+                      /*new Image(
+                          image: new NetworkImage(
+                            databerita[index]["kabar_gambar"],
+                            //NOTE api gambar berita
+                          ),
+                        ),*/
+                      new Padding(
+                        padding: new EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.01),
+                      ),
+                      // Container(
+                      //   padding: new EdgeInsets.only(
+                      //       left: 10.0, right: 10.0, bottom: 5.0),
+                      //   child: Row(
+                      //     children: <Widget>[
+                      //       new Text(
+                      //         databerita[index]["kabar_kategori"]
+                      //             .toUpperCase(), //NOTE api kategori berita
+                      //         style: new TextStyle(
+                      //           fontSize: 13,
+                      //           fontWeight: FontWeight.bold,
+                      //           color: Colors.black87,
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //           height: 10,
+                      //           child: VerticalDivider(color: Colors.grey)),
+                      //       new Text(
+                      //         databerita[index]["kabar_admin"][0]
+                      //                 .toUpperCase() +
+                      //             databerita[index]["kabar_admin"]
+                      //                 .substring(1), //NOTE api admin berita
+                      //         style: new TextStyle(
+                      //           fontSize: 13,
+                      //           fontWeight: FontWeight.bold,
+                      //           color: Colors.black87,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: new EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Text(
+                          databerita[index]
+                              ["kabar_judul"], //NOTE api judul berita
+                          style: new TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.blue[800],
+                            fontWeight: FontWeight.bold,
+                          ),
+                          //textAlign: TextAlign.justify,
+                        ),
+                      ),
+
+                      // HtmlView(
+                      //   // stylingOptions: ,
+                      //   padding: new EdgeInsets.all(10.0),
+                      //   data: databerita[index]["kabar_isi"].substring(0, 200),
+                      //   onLaunchFail: (url) {
+                      //     // optional, type Function
+                      //     print("launch $url failed");
+                      //   },
+                      //   scrollable: false,
+                      // ),
+                      // Divider(),
+                      new Padding(
+                        padding: new EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.01),
+                      ),
+                      Container(
+                        padding: new EdgeInsets.only(
+                            left: 10.0, right: 10.0, bottom: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                new Text(
+                                  databerita[index]["kabar_kategori"]
+                                      .toUpperCase(), //NOTE api kategori berita
+                                  style: new TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown[800],
+                                  ),
+                                ),
+                                Container(
+                                    height: 10,
+                                    child: VerticalDivider(color: Colors.grey)),
+                                new Text(
+                                  databerita[index]["data_nama"]
+                                      .toUpperCase(), //NOTE api kategori berita
+                                  style: new TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown[800],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            // Container(
+                            //     height: 10,
+                            //     child: VerticalDivider(color: Colors.grey)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(
+                                  Icons.date_range,
+                                  size: 16,
+                                  color: Colors.brown[800],
+                                ),
+                                new Padding(
+                                  padding: new EdgeInsets.only(
+                                      right: mediaQueryData.size.height * 0.01),
+                                ),
+                                new Text(
+                                  databerita[index][
+                                      "kabar_tanggal"], //NOTE api tanggal berita
+                                  style: new TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.brown[800],
+                                  ),
+                                ),
+                                // Container(
+                                //   height: 10,
+                                //   child: VerticalDivider(color: Colors.grey),
+                                // ),
+                                new Padding(
+                                  padding: new EdgeInsets.only(
+                                      right: mediaQueryData.size.height * 0.01),
+                                ),
+                                Icon(
+                                  Icons.remove_red_eye,
+                                  size: 16,
+                                  color: Colors.brown[800],
+                                ),
+                                new Padding(
+                                  padding: new EdgeInsets.only(
+                                      right: mediaQueryData.size.height * 0.01),
+                                ),
+                                new Text(
+                                  dibaca, //NOTE api banyak dilihat
+                                  style: new TextStyle(
+                                    color: Colors.brown[800],
+                                    //fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                new Padding(
+                                  padding: new EdgeInsets.only(
+                                      right: mediaQueryData.size.height * 0.01),
+                                ),
+                              ],
+                            )
+
+                            // SizedBox(
+                            //   height: 25.0, //NOTE push detail berita
+                            //   child: InkWell(
+                            //     child: FlatButton(
+                            //       color: Colors.green,
+                            //       textColor: Colors.white,
+                            //       shape: RoundedRectangleBorder(
+                            //         borderRadius:
+                            //             new BorderRadius.circular(15.0),
+                            //       ),
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: <Widget>[
+                            //           Text(
+                            //             'Lihat  ',
+                            //             style: TextStyle(
+                            //               fontSize: 10,
+                            //               fontWeight: FontWeight.w700,
+                            //               color: Colors.white,
+                            //             ),
+                            //           ),
+                            //           Icon(
+                            //             Icons.arrow_forward,
+                            //             size: 16,
+                            //             color: Colors.white,
+                            //           )
+                            //         ],
+                            //       ),
+                            //       onPressed: () {
+                            //         print(dataJSON);
+                            //         if (databerita[index]
+                            //                     ["kabar_kategori"] ==
+                            //                 'KEGIATAN' ||
+                            //             databerita[index]["kabar_kategori"] ==
+                            //                 'Kegiatan' ||
+                            //             databerita[index]["kabar_kategori"] ==
+                            //                 'kegiatan') {
+                            //           Navigator.push(
+                            //             context,
+                            //             MaterialPageRoute(
+                            //               builder: (context) => DetailPotensi(
+                            //                 dKategori: databerita[index]
+                            //                     ["kabar_kategori"],
+                            //                 dBaca: databerita[index]
+                            //                     ["dibaca"],
+                            //                 dId: databerita[index]
+                            //                     ["kabar_id"],
+                            //                 dIdDesa: databerita[index]
+                            //                     ["id_desa"],
+                            //                 dDesa: databerita[index]
+                            //                     ["data_nama"],
+                            //                 dKecamatan: databerita[index]
+                            //                     ["data_kecamatan"],
+                            //                 dGambar: databerita[index]
+                            //                     ["kabar_gambar"],
+                            //                 dJudul: databerita[index]
+                            //                     ["kabar_judul"],
+                            //                 dTempat: databerita[index]
+                            //                     ["kabar_tempat"],
+                            //                 dAdmin: databerita[index]
+                            //                     ["kabar_admin"],
+                            //                 dTanggal: databerita[index]
+                            //                     ["kabar_tanggal"],
+                            //                 dHtml: databerita[index]
+                            //                     ["kabar_isi"],
+                            //                 dVideo: databerita[index]
+                            //                     ["kabar_video"],
+                            //               ),
+                            //             ),
+                            //           );
+                            //         } else {
+                            //           Navigator.push(
+                            //             context,
+                            //             MaterialPageRoute(
+                            //               builder: (context) => DetailBerita(
+                            //                 dId: databerita[index]
+                            //                     ["kabar_id"],
+                            //                 dIdDesa: databerita[index]
+                            //                     ["id_desa"],
+                            //                 dBaca: databerita[index]
+                            //                     ["dibaca"],
+                            //                 dDesa: databerita[index]
+                            //                     ["data_nama"],
+                            //                 dKecamatan: databerita[index]
+                            //                     ["data_kecamatan"],
+                            //                 dGambar: databerita[index]
+                            //                     ["kabar_gambar"],
+                            //                 dKategori: databerita[index]
+                            //                     ["kabar_kategori"],
+                            //                 dJudul: databerita[index]
+                            //                     ["kabar_judul"],
+                            //                 dAdmin: databerita[index]
+                            //                     ["kabar_admin"],
+                            //                 dTanggal: databerita[index]
+                            //                     ["kabar_tanggal"],
+                            //                 dHtml: databerita[index]
+                            //                     ["kabar_isi"],
+                            //                 dVideo: databerita[index]
+                            //                     ["kabar_video"],
+                            //               ),
+                            //             ),
+                            //           );
+                            //         }
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                    ],
+                  ),
                 ),
               ),
             ),
+            // ),
           );
         }
       },
@@ -553,14 +741,14 @@ class BeritaState extends State<Berita> {
             //   },
             //   child: new Container(
             return Container(
-              padding: new EdgeInsets.all(5.0),
+              padding: new EdgeInsets.all(1.0),
               child: Column(
                 children: <Widget>[
                   new Container(
                     alignment: Alignment.centerLeft,
                     padding: new EdgeInsets.all(10.0),
                     child: Text(
-                      "Berita Semua Desa",
+                      "Semua Berita",
                       style: new TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

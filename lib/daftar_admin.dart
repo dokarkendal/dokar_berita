@@ -383,6 +383,11 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                               top: mediaQueryData.size.height * 0.02),
                         ),
                         _tombolLogin(),
+                        new Padding(
+                          padding: new EdgeInsets.only(
+                              top: mediaQueryData.size.height * 0.02),
+                        ),
+                        _privacy(),
                       ],
                     ),
                   ),
@@ -391,6 +396,41 @@ class _DaftarAdminState extends State<DaftarAdmin> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _privacy() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Dengan login, saya menyetujui"),
+          new Padding(
+            padding:
+                new EdgeInsets.only(top: mediaQueryData.size.height * 0.01),
+          ),
+          GestureDetector(
+            onTap: () async {
+              const url = 'https://dokar.kendalkab.go.id/privacy';
+
+              if (await canLaunch(url)) {
+                await launch(url, forceSafariVC: false);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Text(
+              "Syarat & Ketentuan",
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue[800],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

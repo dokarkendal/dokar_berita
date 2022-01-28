@@ -1,7 +1,9 @@
 //ANCHOR package detail agenda
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:share/share.dart';
 
 //ANCHOR class
@@ -178,15 +180,29 @@ class _AgendaDetailState extends State<AgendaDetail> {
       padding: EdgeInsets.all(10.0),
       child: Column(
         children: <Widget>[
-          HtmlView(
-            padding: new EdgeInsets.all(10.0),
-            data: '${widget.uraianEvent}',
-            onLaunchFail: (url) {
-              // optional, type Function
-              print("launch $url failed");
+          Html(
+            style: {
+              "p": Style(
+                padding: EdgeInsets.all(10.0),
+              )
             },
-            scrollable: false,
+            // padding: new EdgeInsets.all(10.0),
+            data: '${widget.uraianEvent}',
+            // onLaunchFail: (url) {
+            //   // optional, type Function
+            //   print("launch $url failed");
+            // },
+            // scrollable: false,
           ),
+          // HtmlView(
+          //   padding: new EdgeInsets.all(10.0),
+          //   data: '${widget.uraianEvent}',
+          //   onLaunchFail: (url) {
+          //     // optional, type Function
+          //     print("launch $url failed");
+          //   },
+          //   scrollable: false,
+          // ),
         ],
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../rflutter_alert.dart';
@@ -437,14 +439,19 @@ class _DetailKritikSaranWargaState extends State<DetailKritikSaranWarga> {
   Widget _html() {
     return Padding(
       padding: EdgeInsets.only(top: 10, bottom: 40),
-      child: HtmlView(
-        padding: new EdgeInsets.all(5.0),
-        data: "${widget.dIsi}",
-        onLaunchFail: (url) {
-          // optional, type Function
-          print("launch $url failed");
+      child: Html(
+        style: {
+          "p": Style(
+            padding: EdgeInsets.all(10.0),
+          )
         },
-        scrollable: false,
+        // padding: new EdgeInsets.all(10.0),
+        data: '${widget.dIsi}',
+        // onLaunchFail: (url) {
+        //   // optional, type Function
+        //   print("launch $url failed");
+        // },
+        // scrollable: false,
       ),
     );
   }
