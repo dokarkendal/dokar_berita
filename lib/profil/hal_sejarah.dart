@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
@@ -43,6 +44,7 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
   }
 
   Widget _sejarah() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     if (sejarah == 'NotFound') {
       return new Container(
         child: Center(
@@ -68,9 +70,33 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
     } else {
       return Column(
         children: <Widget>[
-          Image.network(
-            gambar,
-            fit: BoxFit.cover,
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: gambar.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl: gambar,
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/images/load.png",
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.1,
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
           ),
           Html(
             style: {
@@ -104,8 +130,9 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sejarah Desa'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('SEJARAH'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: _sejarah(),

@@ -43,7 +43,7 @@ class _HalFasumPendidikanState extends State<HalFasumPendidikan> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fasilitas umum pendidikan'),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: ListView.builder(

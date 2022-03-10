@@ -84,7 +84,7 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.dNama}'),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: Column(

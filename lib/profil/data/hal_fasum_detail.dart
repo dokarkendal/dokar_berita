@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/profil/data/hal_fasum_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; //api
@@ -46,8 +47,12 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.dNama}'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          '${widget.dNama}'.toUpperCase(),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: ListView.builder(
@@ -73,7 +78,7 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
                       new Padding(
                         padding: new EdgeInsets.all(20.0),
                       ),
-                      new Icon(Icons.not_interested,
+                      new Icon(Icons.notes_sharp,
                           size: 150.0, color: Colors.grey[350]),
                     ],
                   ),
@@ -120,8 +125,18 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(5.0),
-                          child: Image(
-                            image: new NetworkImage(dataJSON[index]["gambar"]),
+                          child: CachedNetworkImage(
+                            imageUrl: dataJSON[index]["gambar"],
+                            placeholder: (context, url) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    "assets/images/load.png",
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                             fit: BoxFit.cover,
                             height: 150.0,
                             width: 110.0,

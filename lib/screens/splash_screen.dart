@@ -72,6 +72,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       body: Container(
         child: new Center(
           child: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               new Padding(
                 padding:
@@ -84,7 +86,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               ),
               new Padding(
                 padding:
-                    new EdgeInsets.only(top: mediaQueryData.size.height * 0.3),
+                    new EdgeInsets.only(top: mediaQueryData.size.height * 0.17),
               ),
               new Text(
                 "Versi " + versi,
@@ -92,6 +94,27 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                   fontSize: 14.0,
                   color: Colors.grey,
                 ),
+              ),
+              new Padding(
+                padding:
+                    new EdgeInsets.only(top: mediaQueryData.size.height * 0.07),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/logos/logokendal.png',
+                    width: 50.0,
+                    height: 50.0,
+                  ),
+                  new Text(
+                    " Pemerintah \n Kabupaten Kendal",
+                    style: new TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

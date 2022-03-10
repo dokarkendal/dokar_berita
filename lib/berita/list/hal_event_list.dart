@@ -1,6 +1,7 @@
 ////////////////////////////////PACKAGE//////////////////////////////////////
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/edit/hal_agenda_edit.dart';
 import 'package:flutter/material.dart';
@@ -132,8 +133,17 @@ class HalEventListState extends State<HalEventList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Event'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          'Edit Event',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -153,21 +163,120 @@ class HalEventListState extends State<HalEventList> {
             if (i == databerita.length) {
               return _buildProgressIndicator();
             } else {
-              if (databerita[i]["id_agenda"] == 'Notfound') {
+              if (databerita[i]["id_agenda"] == "Notfound") {
+                // return new Container(
+                //   child: Center(
+                //     child: new Column(
+                //       children: <Widget>[
+                //         new Padding(
+                //           padding: new EdgeInsets.all(100.0),
+                //         ),
+                //         new Text(
+                //           "DATA KOSONG",
+                //           style: new TextStyle(
+                //             fontSize: 30.0,
+                //             color: Colors.grey[350],
+                //             // fontWeight: FontWeight.bold,
+                //           ),
+                //         ),
+                //         new Padding(
+                //           padding: new EdgeInsets.all(10.0),
+                //         ),
+                //         new Icon(
+                //           Icons.list_alt_rounded,
+                //           size: 150.0,
+                //           color: Colors.grey[350],
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // );
               } else {
                 Widget _container() {
                   if (databerita[i]["device"] == '1') {
-                    return new Container(
-                      color: Colors.grey[100],
-                      padding: EdgeInsets.only(
-                        left: 5.0,
-                        right: 5.0,
-                      ),
+                    // return new Container(
+                    //   color: Colors.grey[100],
+                    //   padding: EdgeInsets.only(
+                    //     left: 5.0,
+                    //     right: 5.0,
+                    //   ),
+                    //   child: new Card(
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(10.0),
+                    //     ),
+                    //     child: new InkWell(
+                    //       onTap: () {
+                    //         Navigator.of(context).push(
+                    //           new MaterialPageRoute(
+                    //             builder: (context) => new FormAgendaEdit(
+                    //               cJudul: databerita[i]["judul_agenda"],
+                    //               cPenyelenggara: databerita[i]
+                    //                   ["penyelenggara"],
+                    //               cIsi: databerita[i]["uraian_agenda"],
+                    //               cTanggalmulai: databerita[i]
+                    //                   ["tglmulai_agenda"],
+                    //               cTanggalselesai: databerita[i]
+                    //                   ["tglselesai_agenda"],
+                    //               cJammulai: databerita[i]["jam_mulai"],
+                    //               cJamselesai: databerita[i]["jam_selesai"],
+                    //               cGambar: databerita[i]["gambar_agenda"],
+                    //               cIdAgenda: databerita[i]["id_agenda"],
+                    //             ),
+                    //           ),
+                    //         );
+                    //       },
+                    //       child: ListTile(
+                    //         leading: ConstrainedBox(
+                    //           constraints: BoxConstraints(
+                    //             minWidth: 64,
+                    //             minHeight: 64,
+                    //             maxWidth: 84,
+                    //             maxHeight: 84,
+                    //           ),
+                    //           child: ClipRRect(
+                    //             borderRadius: BorderRadius.circular(5.0),
+                    //             child: Image(
+                    //               image: new NetworkImage(
+                    //                   databerita[i]["gambar_agenda"]),
+                    //               fit: BoxFit.cover,
+                    //               height: 150.0,
+                    //               width: 110.0,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         subtitle: Row(
+                    //           children: <Widget>[
+                    //             Expanded(
+                    //               child: Text(
+                    //                 databerita[i]["penyelenggara"],
+                    //                 maxLines: 1,
+                    //                 overflow: TextOverflow.ellipsis,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         title: new Text(
+                    //           databerita[i]["judul_agenda"],
+                    //           style: new TextStyle(
+                    //               fontSize: 14.0, fontWeight: FontWeight.bold),
+                    //         ),
+                    //         trailing: Icon(
+                    //           Icons.phone_android,
+                    //           size: 14.0,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
+                    return Container(
                       child: new Card(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(5.0),
                         ),
-                        child: new InkWell(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: InkWell(
                           onTap: () {
                             Navigator.of(context).push(
                               new MaterialPageRoute(
@@ -188,61 +297,215 @@ class HalEventListState extends State<HalEventList> {
                               ),
                             );
                           },
-                          child: ListTile(
-                            leading: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 64,
-                                minHeight: 64,
-                                maxWidth: 84,
-                                maxHeight: 84,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image(
-                                  image: new NetworkImage(
-                                      databerita[i]["gambar_agenda"]),
+                          child: new Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              new Container(
+                                margin: const EdgeInsets.only(right: 15.0),
+                                width: 120.0,
+                                height: 100.0,
+                                child: CachedNetworkImage(
+                                  imageUrl: databerita[i]["gambar_agenda"],
+                                  placeholder: (context, url) => Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          "assets/images/load.png",
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
                                   fit: BoxFit.cover,
                                   height: 150.0,
                                   width: 110.0,
                                 ),
                               ),
-                            ),
-                            subtitle: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    databerita[i]["penyelenggara"],
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                              new Expanded(
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                      ),
+                                      child: new Text(
+                                        databerita[i]["judul_agenda"],
+                                        style: new TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    new Row(
+                                      children: <Widget>[
+                                        new Expanded(
+                                          child: new Container(
+                                            margin: const EdgeInsets.only(
+                                                top: 5.0, bottom: 10.0),
+                                            child: new Text(
+                                              databerita[i]["penyelenggara"],
+                                              style: new TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.black,
+                                                //fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        new Container(
+                                          margin: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: Icon(
+                                            Icons.phone_android,
+                                            size: 14.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    // new Container(
+                                    //   child: new Column(
+                                    //     children: <Widget>[
+                                    //       new Container(
+                                    //         child: new Text(
+                                    //           databerita[i]["kabar_kategori"],
+                                    //           style: new TextStyle(
+                                    //             fontSize: 11.0,
+                                    //             color: Colors.grey[500],
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            title: new Text(
-                              databerita[i]["judul_agenda"],
-                              style: new TextStyle(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.phone_android,
-                              size: 14.0,
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     );
                   } else {
-                    return new Container(
-                      color: Colors.grey[100],
-                      padding: EdgeInsets.only(
-                        left: 5.0,
-                        right: 5.0,
-                      ),
+                    // return new Container(
+                    //   color: Colors.grey[100],
+                    //   padding: EdgeInsets.only(
+                    //     left: 5.0,
+                    //     right: 5.0,
+                    //   ),
+                    //   child: new Card(
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(10.0),
+                    //     ),
+                    //     child: new InkWell(
+                    //       onTap: () {
+                    //         Alert(
+                    //           context: context,
+                    //           type: AlertType.warning,
+                    //           style: alertStyle,
+                    //           title: "Peringatan.",
+                    //           desc:
+                    //               "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
+                    //           buttons: [
+                    //             DialogButton(
+                    //               child: Text(
+                    //                 "Tidak",
+                    //                 style: TextStyle(
+                    //                     color: Colors.white, fontSize: 16),
+                    //               ),
+                    //               onPressed: () => Navigator.pop(context),
+                    //               color: Colors.green[300],
+                    //             ),
+                    //             DialogButton(
+                    //               child: Text(
+                    //                 "Edit",
+                    //                 style: TextStyle(
+                    //                     color: Colors.white, fontSize: 16),
+                    //               ),
+                    //               onPressed: () {
+                    //                 Navigator.pop(context);
+                    //                 Navigator.of(context).push(
+                    //                   new MaterialPageRoute(
+                    //                     builder: (context) =>
+                    //                         new FormAgendaEdit(
+                    //                       cJudul: databerita[i]["judul_agenda"],
+                    //                       cPenyelenggara: databerita[i]
+                    //                           ["penyelenggara"],
+                    //                       cIsi: databerita[i]["uraian_agenda"],
+                    //                       cTanggalmulai: databerita[i]
+                    //                           ["tglmulai_agenda"],
+                    //                       cTanggalselesai: databerita[i]
+                    //                           ["tglselesai_agenda"],
+                    //                       cJammulai: databerita[i]["jam_mulai"],
+                    //                       cJamselesai: databerita[i]
+                    //                           ["jam_selesai"],
+                    //                       cGambar: databerita[i]
+                    //                           ["gambar_agenda"],
+                    //                       cIdAgenda: databerita[i]["id_agenda"],
+                    //                     ),
+                    //                   ),
+                    //                 );
+                    //               },
+                    //               color: Colors.red[300],
+                    //             )
+                    //           ],
+                    //         ).show();
+                    //       },
+                    //       child: ListTile(
+                    //         leading: ConstrainedBox(
+                    //           constraints: BoxConstraints(
+                    //             minWidth: 64,
+                    //             minHeight: 64,
+                    //             maxWidth: 84,
+                    //             maxHeight: 84,
+                    //           ),
+                    //           child: ClipRRect(
+                    //             borderRadius: BorderRadius.circular(5.0),
+                    //             child: Image(
+                    //               image: new NetworkImage(
+                    //                   databerita[i]["gambar_agenda"]),
+                    //               fit: BoxFit.cover,
+                    //               height: 150.0,
+                    //               width: 110.0,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         subtitle: Row(
+                    //           children: <Widget>[
+                    //             SizedBox(
+                    //               width: 16.0,
+                    //             ),
+                    //             new Text(
+                    //               databerita[i]["penyelenggara"],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         title: new Text(
+                    //           databerita[i]["judul_agenda"],
+                    //           style: new TextStyle(
+                    //               fontSize: 14.0, fontWeight: FontWeight.bold),
+                    //         ),
+                    //         trailing: Icon(
+                    //           Icons.computer,
+                    //           size: 14.0,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
+
+                    return Container(
                       child: new Card(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(5.0),
                         ),
-                        child: new InkWell(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: InkWell(
                           onTap: () {
                             Alert(
                               context: context,
@@ -259,7 +522,7 @@ class HalEventListState extends State<HalEventList> {
                                         color: Colors.white, fontSize: 16),
                                   ),
                                   onPressed: () => Navigator.pop(context),
-                                  color: Colors.green[300],
+                                  color: Colors.green,
                                 ),
                                 DialogButton(
                                   child: Text(
@@ -291,49 +554,100 @@ class HalEventListState extends State<HalEventList> {
                                       ),
                                     );
                                   },
-                                  color: Colors.red[300],
+                                  color: Colors.red,
                                 )
                               ],
                             ).show();
                           },
-                          child: ListTile(
-                            leading: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 64,
-                                minHeight: 64,
-                                maxWidth: 84,
-                                maxHeight: 84,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image(
-                                  image: new NetworkImage(
-                                      databerita[i]["gambar_agenda"]),
+                          child: new Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              new Container(
+                                margin: const EdgeInsets.only(right: 15.0),
+                                width: 120.0,
+                                height: 100.0,
+                                child: CachedNetworkImage(
+                                  imageUrl: databerita[i]["gambar_agenda"],
+                                  placeholder: (context, url) => Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          "assets/images/load.png",
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
                                   fit: BoxFit.cover,
                                   height: 150.0,
                                   width: 110.0,
                                 ),
                               ),
-                            ),
-                            subtitle: Row(
-                              children: <Widget>[
-                                SizedBox(
-                                  width: 16.0,
+                              new Expanded(
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                      ),
+                                      child: new Text(
+                                        databerita[i]["judul_agenda"],
+                                        style: new TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    new Row(
+                                      children: <Widget>[
+                                        new Expanded(
+                                          child: new Container(
+                                            margin: const EdgeInsets.only(
+                                                top: 5.0, bottom: 10.0),
+                                            child: new Text(
+                                              databerita[i]["penyelenggara"],
+                                              style: new TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.black,
+                                                //fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        new Container(
+                                          margin: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: Icon(
+                                            Icons.laptop,
+                                            color: Colors.blue,
+                                            size: 14.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    // new Container(
+                                    //   child: new Column(
+                                    //     children: <Widget>[
+                                    //       new Container(
+                                    //         child: new Text(
+                                    //           databerita[i]["kabar_kategori"],
+                                    //           style: new TextStyle(
+                                    //             fontSize: 11.0,
+                                    //             color: Colors.grey[500],
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
-                                new Text(
-                                  databerita[i]["penyelenggara"],
-                                ),
-                              ],
-                            ),
-                            title: new Text(
-                              databerita[i]["judul_agenda"],
-                              style: new TextStyle(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.computer,
-                              size: 14.0,
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

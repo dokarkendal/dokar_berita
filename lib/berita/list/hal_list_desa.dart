@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import 'package:shimmer/shimmer.dart';
+
 class ListDesa extends StatefulWidget {
   final String dNama, dId;
   ListDesa({this.dNama, this.dId});
@@ -18,7 +20,7 @@ class _ListDesaState extends State<ListDesa> {
   List dataJSON;
   String id = '';
   String kecamatan = '';
-
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -30,6 +32,9 @@ class _ListDesaState extends State<ListDesa> {
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(() {
+      isLoading = true;
+    });
     //SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
         Uri.encodeFull(
@@ -39,6 +44,7 @@ class _ListDesaState extends State<ListDesa> {
     this.setState(
       () {
         dataJSON = json.decode(hasil.body);
+        isLoading = false;
         print(id);
       },
     );
@@ -49,20 +55,23 @@ class _ListDesaState extends State<ListDesa> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.dNama}'),
-        backgroundColor: Color(0xFFee002d),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: new EdgeInsets.all(5.0),
-          child: Column(
-            children: <Widget>[
-              cardDesa(),
-              SizedBox(height: 10.0),
-              _listDesa(),
-            ],
-          ),
-        ),
-      ),
+      body: isLoading
+          ? _buildProgressIndicator()
+          : Container(
+              padding: new EdgeInsets.all(5.0),
+              child: Column(
+                children: <Widget>[
+                  cardDesa(),
+                  SizedBox(height: 10.0),
+                  Expanded(
+                    child: _listDesa(),
+                  )
+                ],
+              ),
+            ),
     );
   }
 
@@ -80,7 +89,7 @@ class _ListDesaState extends State<ListDesa> {
         return Container(
           padding: EdgeInsets.all(3.0),
           child: FlatButton(
-            color: Colors.blue,
+            color: Colors.blue[800],
             textColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(5.0),
@@ -91,16 +100,21 @@ class _ListDesaState extends State<ListDesa> {
                 Expanded(
                     child: Align(
                   alignment: Alignment.center,
-                  child: Text(dataJSON[index]["desa"],
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12.0),
-                      textAlign: TextAlign.center),
+                  child: Text(
+                    dataJSON[index]["desa"],
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 )),
                 Icon(
                   Icons.arrow_forward_ios,
                   color: Colors.white,
-                  size: 12,
+                  size: 13,
                 ),
               ],
             ),
@@ -123,22 +137,24 @@ class _ListDesaState extends State<ListDesa> {
   }
 
   Widget cardDesa() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      padding: new EdgeInsets.all(5.0),
-      width: SizeConfig.safeBlockHorizontal * 100,
-      height: SizeConfig.safeBlockVertical * 20,
+      padding: new EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
+      width: mediaQueryData.size.width,
+      height: mediaQueryData.size.height * 0.2,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF2167c1),
-            Color(0xFF0d6dc4),
-            Color(0xFF1686c7),
-            Color(0xFF2c94cd),
-          ],
-          stops: [0.1, 0.4, 0.7, 0.9],
-        ),
+        // gradient: LinearGradient(
+        //   begin: Alignment.topCenter,
+        //   end: Alignment.bottomCenter,
+        //   colors: [
+        //     Color(0xFF2167c1),
+        //     Color(0xFF0d6dc4),
+        //     Color(0xFF1686c7),
+        //     Color(0xFF2c94cd),
+        //   ],
+        //   stops: [0.1, 0.4, 0.7, 0.9],
+        // ),
+        color: Colors.blue[800],
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [
           BoxShadow(
@@ -149,18 +165,21 @@ class _ListDesaState extends State<ListDesa> {
       ),
       child: Row(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Image.asset(
-                  'assets/images/desa1.png',
-                  width: SizeConfig.safeBlockHorizontal * 30,
-                  height: SizeConfig.safeBlockVertical * 30,
-                ),
-                SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
-                new Column(
+          // Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Image.asset(
+                'assets/images/desa1.png',
+                width: mediaQueryData.size.width * 0.25,
+                height: mediaQueryData.size.height * 0.25,
+              ),
+              SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.05),
+                child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     AutoSizeText(
@@ -185,10 +204,317 @@ class _ListDesaState extends State<ListDesa> {
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+          // ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
+    return Padding(
+      padding: new EdgeInsets.all(1.0),
+      child: Shimmer.fromColors(
+        direction: ShimmerDirection.ltr,
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
+        child: Container(
+          padding: new EdgeInsets.all(5.0),
+          child: Column(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.25,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
+                  ),
+
+                  // Row(
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -133,8 +133,9 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bumdes'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('BUMDES'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -155,13 +156,16 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
               if (databerita[i]["nama"] == 'NotFound') {
               } else {
                 return new Container(
-                  padding: new EdgeInsets.all(2.0),
+                  // padding: new EdgeInsets.all(2.0),
                   child: new Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     elevation: 1.0,
                     color: Colors.white,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 5.0, horizontal: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    // margin: const EdgeInsets.symmetric(
+                    //     vertical: 5.0, horizontal: 8.0),
                     child: InkWell(
                       onTap: () {
                         Navigator.push(

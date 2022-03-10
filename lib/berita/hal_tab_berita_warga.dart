@@ -1,5 +1,4 @@
 // ignore: unused_import
-import 'package:dokar_aplikasi/bottom-bar.dart';
 import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/berita/hal_search.dart';
 import './hal_berita.dart' as berita;
@@ -83,18 +82,20 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
                               );
                             },
                             textInputAction: TextInputAction.go,
+                            textAlign: TextAlign.center,
                             decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(left: 10),
                               filled: true,
                               fillColor: Colors.white,
                               border: InputBorder.none,
                               hintText: "Cari berita",
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               hintStyle: TextStyle(
                                 fontSize: 16.0,
@@ -121,7 +122,7 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
             },
             icon: cusIcon,
           ),
-          googleuseracount(),
+          // googleuseracount(),
         ],
         title: custSearchBar,
       ),

@@ -185,11 +185,21 @@ class FormAgendaState extends State<FormAgenda> {
 //ANCHOR body form kegiatan
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Form Agenda'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          'Form Agenda',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,
@@ -458,154 +468,158 @@ class FormAgendaState extends State<FormAgenda> {
                     new Padding(
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
-                    RaisedButton.icon(
-                      icon: Icon(
-                        Icons.file_upload,
-                        color: Colors.white,
-                      ),
-                      label: Text("UPLOAD AGENDA"),
-                      onPressed: () async {
-                        if (cJudul.text == null || cJudul.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Nama Agenda wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cPenyelenggara.text == null ||
-                            cPenyelenggara.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Penyelenggara wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cIsi.text == null || cIsi.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Uraian wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cTanggalmulai.text == null ||
-                            cTanggalmulai.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Tanggal Mulai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cTanggalselesai.text == null ||
-                            cTanggalselesai.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Tanggal Selesai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cJammulai.text == null ||
-                            cJammulai.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Jam Mulai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cJamselesai.text == null ||
-                            cJamselesai.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Jam Selesai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (_image == null) {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Gambar wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          upload(_image);
-                        }
-                      },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                    Container(
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.07,
+                      child: RaisedButton.icon(
+                        icon: Icon(
+                          Icons.file_upload,
+                          color: Colors.white,
+                        ),
+                        label: Text("UPLOAD AGENDA"),
+                        onPressed: () async {
+                          if (cJudul.text == null || cJudul.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Nama Agenda wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cPenyelenggara.text == null ||
+                              cPenyelenggara.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Penyelenggara wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cIsi.text == null || cIsi.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Uraian wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cTanggalmulai.text == null ||
+                              cTanggalmulai.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Tanggal Mulai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cTanggalselesai.text == null ||
+                              cTanggalselesai.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Tanggal Selesai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cJammulai.text == null ||
+                              cJammulai.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Jam Mulai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cJamselesai.text == null ||
+                              cJamselesai.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Jam Selesai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (_image == null) {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Gambar wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            upload(_image);
+                          }
+                        },
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(17.0),
+                        ),
                       ),
                     ),
                   ],

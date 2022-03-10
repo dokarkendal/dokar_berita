@@ -640,8 +640,10 @@ class ListPenulisState extends State<ListPenulis> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
         title: Text(
-          'Tambah Akun',
+          'Kelola Akun',
           style: TextStyle(
             color: Color(0xFF2e2e2e),
             fontWeight: FontWeight.bold,

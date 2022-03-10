@@ -1,4 +1,5 @@
 //ANCHOR PACKAGE halaman potensi
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_bumdes.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +76,7 @@ class _BumdesState extends State<Bumdes> {
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     SizeConfig().init(context);
     return Padding(
       padding: new EdgeInsets.all(10.0),
@@ -82,84 +84,109 @@ class _BumdesState extends State<Bumdes> {
         highlightColor: Colors.white,
         baseColor: Colors.grey[300],
         child: Container(
-          child: Row(
+          child: Column(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Container(
-                    height: SizeConfig.safeBlockVertical * 10,
-                    width: SizeConfig.safeBlockHorizontal * 30,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    height: SizeConfig.safeBlockVertical * 10,
-                    width: SizeConfig.safeBlockHorizontal * 30,
-                    color: Colors.grey,
-                  ),
-                ],
+              // Column(
+              //   children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.12,
+                width: mediaQueryData.size.width,
+                // color: Colors.grey,
               ),
-              SizedBox(width: 5),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    height: SizeConfig.safeBlockVertical * 2,
-                    width: SizeConfig.safeBlockHorizontal * 30,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 5),
-                  Container(
-                    height: SizeConfig.safeBlockVertical * 5,
-                    width: SizeConfig.safeBlockHorizontal * 60,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 5),
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 40,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    height: SizeConfig.safeBlockVertical * 2,
-                    width: SizeConfig.safeBlockHorizontal * 30,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 5),
-                  Container(
-                    height: SizeConfig.safeBlockVertical * 5,
-                    width: SizeConfig.safeBlockHorizontal * 60,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(width: 5),
-                      Container(
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 40,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                ],
-              )
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.12,
+                width: mediaQueryData.size.width,
+                // color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.12,
+                width: mediaQueryData.size.width,
+                // color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+
+              // Container(
+              //   height: SizeConfig.safeBlockVertical * 10,
+              //   width: SizeConfig.safeBlockHorizontal * 30,
+              //   color: Colors.grey,
+              // ),
+              //   ],
+              // ),
+              // SizedBox(width: 5),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: <Widget>[
+              //     Container(
+              //       height: SizeConfig.safeBlockVertical * 2,
+              //       width: SizeConfig.safeBlockHorizontal * 30,
+              //       color: Colors.grey,
+              //     ),
+              //     SizedBox(height: 5),
+              //     Container(
+              //       height: SizeConfig.safeBlockVertical * 5,
+              //       width: SizeConfig.safeBlockHorizontal * 60,
+              //       color: Colors.grey,
+              //     ),
+              //     SizedBox(height: 5),
+              //     Row(
+              //       children: <Widget>[
+              //         Container(
+              //           height: SizeConfig.safeBlockVertical * 2,
+              //           width: SizeConfig.safeBlockHorizontal * 20,
+              //           color: Colors.grey,
+              //         ),
+              //         SizedBox(width: 5),
+              //         Container(
+              //           height: SizeConfig.safeBlockVertical * 2,
+              //           width: SizeConfig.safeBlockHorizontal * 40,
+              //           color: Colors.grey,
+              //         ),
+              //       ],
+              //     ),
+              //     SizedBox(height: 10),
+              //     Container(
+              //       height: SizeConfig.safeBlockVertical * 2,
+              //       width: SizeConfig.safeBlockHorizontal * 30,
+              //       color: Colors.grey,
+              //     ),
+              //     SizedBox(height: 5),
+              //     Container(
+              //       height: SizeConfig.safeBlockVertical * 5,
+              //       width: SizeConfig.safeBlockHorizontal * 60,
+              //       color: Colors.grey,
+              //     ),
+              //     SizedBox(height: 5),
+              //     Row(
+              //       children: <Widget>[
+              //         Container(
+              //           height: SizeConfig.safeBlockVertical * 2,
+              //           width: SizeConfig.safeBlockHorizontal * 20,
+              //           color: Colors.grey,
+              //         ),
+              //         SizedBox(width: 5),
+              //         Container(
+              //           height: SizeConfig.safeBlockVertical * 2,
+              //           width: SizeConfig.safeBlockHorizontal * 40,
+              //           color: Colors.grey,
+              //         ),
+              //       ],
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ),
@@ -183,13 +210,16 @@ class _BumdesState extends State<Bumdes> {
           if (databerita[index]["bumdes_id"] == 'Notfound') {
           } else {
             return new Container(
-              padding: new EdgeInsets.all(2.0),
+              // padding: new EdgeInsets.all(2.0),
               child: new Card(
                 clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 elevation: 1.0,
                 color: Colors.white,
-                margin:
-                    const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+                // margin:
+                //     const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
@@ -218,9 +248,18 @@ class _BumdesState extends State<Bumdes> {
                         margin: const EdgeInsets.only(right: 15.0),
                         width: 120.0,
                         height: 100.0,
-                        child: Image(
-                          image: new NetworkImage(
-                              databerita[index]["bumdes_gambar"]),
+                        child: CachedNetworkImage(
+                          imageUrl: databerita[index]["bumdes_gambar"],
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/load.png",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                           fit: BoxFit.cover,
                           height: 150.0,
                           width: 110.0,
@@ -313,7 +352,7 @@ class _BumdesState extends State<Bumdes> {
               new Container(
                 padding: new EdgeInsets.all(10.0),
                 child: Text(
-                  "Bumdes Desa",
+                  "BADAN USAHA",
                   style: new TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

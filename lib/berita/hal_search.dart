@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
@@ -93,13 +94,16 @@ class _SearchState extends State<Search> {
           );
         } else {
           return new Container(
-            padding: new EdgeInsets.all(2.0),
+            // padding: new EdgeInsets.all(2.0),
             child: new Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
               elevation: 1.0,
               color: Colors.white,
-              margin:
-                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
+              // margin:
+              //     const EdgeInsets.symmetric(vertical: 5.0, horizontal: 8.0),
               child: InkWell(
                 onTap: () {
                   if (dataJSON[i]["kabar_kategori"] == 'Kegiatan' ||
@@ -109,19 +113,21 @@ class _SearchState extends State<Search> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailPotensi(
-                            dId: dataJSON[i]["kabar_id"],
-                            dIdDesa: dataJSON[i]["id_desa"],
-                            dGambar: dataJSON[i]["kabar_gambar"],
-                            dKategori: dataJSON[i]["kabar_kategori"],
-                            dJudul: dataJSON[i]["kabar_judul"],
-                            dAdmin: dataJSON[i]["kabar_admin"],
-                            dTanggal: dataJSON[i]["kabar_tanggal"],
-                            dHtml: dataJSON[i]["kabar_isi"],
-                            dVideo: dataJSON[i]["kabar_video"],
-                            dBaca: dataJSON[i]["dibaca"],
-                            dKecamatan: dataJSON[i]["data_kecamatan"],
-                            dDesa: dataJSON[i]["data_nama"],
-                            dTempat: dataJSON[i]["kabar_tempat"]),
+                          dId: dataJSON[i]["kabar_id"],
+                          dIdDesa: dataJSON[i]["id_desa"],
+                          dGambar: dataJSON[i]["kabar_gambar"],
+                          dKategori: dataJSON[i]["kabar_kategori"],
+                          dJudul: dataJSON[i]["kabar_judul"],
+                          dAdmin: dataJSON[i]["kabar_admin"],
+                          dTanggal: dataJSON[i]["kabar_tanggal"],
+                          dHtml: dataJSON[i]["kabar_isi"],
+                          dVideo: dataJSON[i]["kabar_video"],
+                          dBaca: dataJSON[i]["dibaca"],
+                          dKecamatan: dataJSON[i]["data_kecamatan"],
+                          dDesa: dataJSON[i]["data_nama"],
+                          dTempat: dataJSON[i]["kabar_tempat"],
+                          dUrl: dataJSON[i]["url"],
+                        ),
                       ),
                     );
                   } else {
@@ -129,18 +135,20 @@ class _SearchState extends State<Search> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DetailBerita(
-                            dId: dataJSON[i]["kabar_id"],
-                            dIdDesa: dataJSON[i]["id_desa"],
-                            dGambar: dataJSON[i]["kabar_gambar"],
-                            dKategori: dataJSON[i]["kabar_kategori"],
-                            dJudul: dataJSON[i]["kabar_judul"],
-                            dAdmin: dataJSON[i]["kabar_admin"],
-                            dTanggal: dataJSON[i]["kabar_tanggal"],
-                            dHtml: dataJSON[i]["kabar_isi"],
-                            dVideo: dataJSON[i]["kabar_video"],
-                            dBaca: dataJSON[i]["dibaca"],
-                            dKecamatan: dataJSON[i]["data_kecamatan"],
-                            dDesa: dataJSON[i]["data_nama"]),
+                          dId: dataJSON[i]["kabar_id"],
+                          dIdDesa: dataJSON[i]["id_desa"],
+                          dGambar: dataJSON[i]["kabar_gambar"],
+                          dKategori: dataJSON[i]["kabar_kategori"],
+                          dJudul: dataJSON[i]["kabar_judul"],
+                          dAdmin: dataJSON[i]["kabar_admin"],
+                          dTanggal: dataJSON[i]["kabar_tanggal"],
+                          dHtml: dataJSON[i]["kabar_isi"],
+                          dVideo: dataJSON[i]["kabar_video"],
+                          dBaca: dataJSON[i]["dibaca"],
+                          dKecamatan: dataJSON[i]["data_kecamatan"],
+                          dDesa: dataJSON[i]["data_nama"],
+                          dUrl: dataJSON[i]["url"],
+                        ),
                       ),
                     );
                   }
@@ -152,8 +160,18 @@ class _SearchState extends State<Search> {
                       margin: const EdgeInsets.only(right: 15.0),
                       width: 120.0,
                       height: 100.0,
-                      child: Image(
-                        image: new NetworkImage(dataJSON[i]["kabar_gambar"]),
+                      child: CachedNetworkImage(
+                        imageUrl: dataJSON[i]["kabar_gambar"],
+                        placeholder: (context, url) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/images/load.png",
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                         fit: BoxFit.cover,
                         height: 150.0,
                         width: 110.0,
@@ -264,24 +282,24 @@ class _SearchState extends State<Search> {
           return Container(
             padding: EdgeInsets.all(3.0),
             child: FlatButton(
-              color: Colors.red,
+              color: Theme.of(context).primaryColor,
               textColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+                borderRadius: new BorderRadius.circular(10.0),
               ),
               child: Column(
-                //mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 5.0,
-                    ),
+                  Container(
+                    // padding: EdgeInsets.only(
+                    //   top: 5.0,
+                    // ),
                     child: Text(
                       dataDesa[i]["desa"],
                       style: new TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.brown[800],
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -292,7 +310,7 @@ class _SearchState extends State<Search> {
                       'Kec.' + dataDesa[i]["kecamatan"],
                       style: new TextStyle(
                         fontSize: 10,
-                        color: Colors.white,
+                        color: Colors.brown[800],
                       ),
                       minFontSize: 5,
                       maxLines: 1,
@@ -324,8 +342,9 @@ class _SearchState extends State<Search> {
     SizeConfig().init(context);
     return new Scaffold(
       appBar: AppBar(
-        title: new Text("Pencarian"),
-        backgroundColor: Color(0xFFee002d),
+        title: new Text("PENCARIAN"),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -333,7 +352,7 @@ class _SearchState extends State<Search> {
           new Container(
             padding: new EdgeInsets.all(10.0),
             child: Text(
-              "Hasil profil desa",
+              "Hasil Profil",
               style: new TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -344,7 +363,7 @@ class _SearchState extends State<Search> {
           new Container(
             padding: new EdgeInsets.all(10.0),
             child: Text(
-              "Hasil berita desa",
+              "Hasil Berita",
               style: new TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

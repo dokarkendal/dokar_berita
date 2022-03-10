@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
-import 'dart:convert'; // api to json
+import 'dart:convert';
+
+import 'package:shimmer/shimmer.dart'; // api to json
 
 class EditSemua extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class EditSemua extends StatefulWidget {
 }
 
 class _EditSemuaState extends State<EditSemua> {
+  bool isLoading = false;
   String username = "";
   String kecamatan = "";
   String namadesa = "";
@@ -29,6 +32,9 @@ class _EditSemuaState extends State<EditSemua> {
 
   // ignore: missing_return
   Future<String> jumlahAgenda() async {
+    setState(() {
+      isLoading = true;
+    });
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata",
@@ -45,6 +51,8 @@ class _EditSemuaState extends State<EditSemua> {
         jumlahB = jumlahagenda['bid'];
         jumlahBum = jumlahagenda['bumdes'];
         jumlahAgen = jumlahagenda['agenda'];
+        isLoading = false;
+        print(pref.getString("IdDesa"));
       },
     );
   }
@@ -105,7 +113,7 @@ class _EditSemuaState extends State<EditSemua> {
                   bidEdit(),
                   bumdesEdit(),
                   eventEdit(),
-                  //penulisEdit(),
+                  // penulisEdit(),
                 ],
               ),
             ),
@@ -123,6 +131,7 @@ class _EditSemuaState extends State<EditSemua> {
         kecamatan = pref.getString("kecamatan");
         namadesa = pref.getString("desa");
         status = pref.getString("status");
+        print(pref.getString("desa"));
       });
     }
   }
@@ -413,243 +422,284 @@ class _EditSemuaState extends State<EditSemua> {
 
   Widget cardBerita() {
     if (status == '02') {
-      return Stack(
-        children: <Widget>[
-          Padding(
-            padding: new EdgeInsets.all(5.0),
-            child: Container(
-              width: double.infinity,
-              height: 110.0,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: Offset(0.0, 3.0),
-                      blurRadius: 15.0)
-                ],
-              ),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+      return isLoading
+          ? _buildProgressIndicator()
+          : Stack(
+              children: <Widget>[
+                Padding(
+                  padding: new EdgeInsets.all(5.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 110.0,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0.0, 3.0),
+                            blurRadius: 15.0)
+                      ],
+                    ),
+                    child: Column(
                       children: <Widget>[
-                        Image.asset(
-                          'assets/logos/logokendal.png',
-                          width: 70.0,
-                          height: 70.0,
-                        ),
-                        SizedBox(width: 20.0),
-                        new Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Desa ' + namadesa,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold,
+                        SizedBox(height: 15.0),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/logos/logokendal.png',
+                                width: 70.0,
+                                height: 70.0,
                               ),
-                            ),
-                            Text(
-                              'Kec. ' + kecamatan,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 14.0),
-                            ),
-                            Text(
-                              'Kab. Kendal',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 14.0),
-                            ),
-                          ],
+                              SizedBox(width: 20.0),
+                              new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Desa ' + namadesa,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Kec. ' + kecamatan,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14.0),
+                                  ),
+                                  Text(
+                                    'Kab. Kendal',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14.0),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
+                ),
+              ],
+            );
     } else {
-      return Stack(
-        children: <Widget>[
-          Padding(
-            padding: new EdgeInsets.all(5.0),
-            child: Container(
-              width: double.infinity,
-              height: SizeConfig.safeBlockVertical * 23,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      offset: Offset(0.0, 3.0),
-                      blurRadius: 15.0)
-                ],
-              ),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+      return isLoading
+          ? _buildProgressIndicator()
+          : Stack(
+              children: <Widget>[
+                Padding(
+                  padding: new EdgeInsets.all(5.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: SizeConfig.safeBlockVertical * 23,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            offset: Offset(0.0, 3.0),
+                            blurRadius: 15.0)
+                      ],
+                    ),
+                    child: Column(
                       children: <Widget>[
-                        Image.asset(
-                          'assets/logos/logokendal.png',
-                          width: 70.0,
-                          height: 70.0,
+                        SizedBox(height: 15.0),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Image.asset(
+                                'assets/logos/logokendal.png',
+                                width: 70.0,
+                                height: 70.0,
+                              ),
+                              SizedBox(width: 20.0),
+                              new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    'Desa ' + namadesa,
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Kec. ' + kecamatan,
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Kab. Kendal',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: 20.0),
-                        new Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Desa ' + namadesa,
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 25.0,
-                                fontWeight: FontWeight.bold,
+                        SizedBox(height: 15.0),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    "$jumlah",
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    'Berita',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 13.0,
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
-                            Text(
-                              'Kec. ' + kecamatan,
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 14.0,
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    "$jumlahkeg",
+                                    style: TextStyle(
+                                        color: Color(0xFF2e2e2e),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    'Kegiatan',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 13.0,
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
-                            Text(
-                              'Kab. Kendal',
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 14.0,
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    "$jumlahB",
+                                    style: TextStyle(
+                                        color: Color(0xFF2e2e2e),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    'Inovasi',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 13.0,
+                                    ),
+                                  )
+                                ],
                               ),
-                            ),
-                          ],
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    "$jumlahBum",
+                                    style: TextStyle(
+                                        color: Color(0xFF2e2e2e),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    'Bumdes',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 13.0,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    "$jumlahAgen",
+                                    style: TextStyle(
+                                        color: Color(0xFF2e2e2e),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    'Agenda',
+                                    style: TextStyle(
+                                      color: Color(0xFF2e2e2e),
+                                      fontSize: 13.0,
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              "$jumlah",
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
-                              ),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              'Berita',
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 13.0,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              "$jumlahkeg",
-                              style: TextStyle(
-                                  color: Color(0xFF2e2e2e),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              'Kegiatan',
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 13.0,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              "$jumlahB",
-                              style: TextStyle(
-                                  color: Color(0xFF2e2e2e),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              'Inovasi',
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 13.0,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              "$jumlahBum",
-                              style: TextStyle(
-                                  color: Color(0xFF2e2e2e),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              'Bumdes',
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 13.0,
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              "$jumlahAgen",
-                              style: TextStyle(
-                                  color: Color(0xFF2e2e2e),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              'Agenda',
-                              style: TextStyle(
-                                color: Color(0xFF2e2e2e),
-                                fontSize: 13.0,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
+                ),
+              ],
+            );
     }
+  }
+
+  Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
+    return Padding(
+      padding: new EdgeInsets.all(1.0),
+      child: Shimmer.fromColors(
+        direction: ShimmerDirection.ltr,
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
+        child: Container(
+          padding: new EdgeInsets.all(5.0),
+          child: Column(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.23,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
+                  ),
+
+                  // Row(
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

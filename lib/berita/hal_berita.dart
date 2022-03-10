@@ -7,10 +7,6 @@ import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-// import 'package:flutter_html_view/flutter_html_view.dart';
-import 'package:flutter_offline/flutter_offline.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -64,7 +60,7 @@ class BeritaState extends State<Berita> {
   void initState() {
     this._getMoreData();
     super.initState();
-    this.ambildata();
+    // this.ambildata();
     _scrollController.addListener(
       () {
         if (_scrollController.position.pixels ==
@@ -83,19 +79,19 @@ class BeritaState extends State<Berita> {
   }
 
   // ignore: missing_return
-  Future<String> ambildata() async {
-    http.Response hasil = await http.get(
-        Uri.encodeFull(
-            "http://dokar.kendalkab.go.id/webservice/android/kabar/beritarekomedasi"),
-        headers: {"Accept": "application/json"});
+  // Future<String> ambildata() async {
+  //   http.Response hasil = await http.get(
+  //       Uri.encodeFull(
+  //           "http://dokar.kendalkab.go.id/webservice/android/kabar/beritarekomedasi"),
+  //       headers: {"Accept": "application/json"});
 
-    this.setState(
-      () {
-        dataJSON = json.decode(hasil.body);
-        print(dataJSON);
-      },
-    );
-  }
+  //   this.setState(
+  //     () {
+  //       dataJSON = json.decode(hasil.body);
+  //       print(dataJSON);
+  //     },
+  //   );
+  // }
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
@@ -335,6 +331,7 @@ class BeritaState extends State<Berita> {
                           dAdmin: databerita[index]["kabar_admin"],
                           dTanggal: databerita[index]["kabar_tanggal"],
                           dHtml: databerita[index]["kabar_isi"],
+                          dUrl: databerita[index]["url"],
                           dVideo: databerita[index]["kabar_video"],
                         ),
                       ),
@@ -748,7 +745,7 @@ class BeritaState extends State<Berita> {
                     alignment: Alignment.centerLeft,
                     padding: new EdgeInsets.all(10.0),
                     child: Text(
-                      "Semua Berita",
+                      "BERITA",
                       style: new TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 ////////////////////////////////PACKAGE//////////////////////////////////////
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/edit/hal_kegiatan_edit.dart';
 import 'package:flutter/material.dart';
@@ -168,8 +169,17 @@ class HalKegiatanListState extends State<HalKegiatanList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Kegiatan'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          'Edit Kegiatan',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -190,17 +200,15 @@ class HalKegiatanListState extends State<HalKegiatanList> {
               } else {
                 Widget _container() {
                   if (databerita[i]["device"] == '1') {
-                    return new Container(
-                      color: Colors.grey[100],
-                      padding: EdgeInsets.only(
-                        left: 5.0,
-                        right: 5.0,
-                      ),
+                    return Container(
                       child: new Card(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(5.0),
                         ),
-                        child: new InkWell(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: InkWell(
                           onTap: () {
                             Navigator.of(context).push(
                               new MaterialPageRoute(
@@ -216,73 +224,113 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                               ),
                             );
                           },
-                          child: ListTile(
-                            leading: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 64,
-                                minHeight: 64,
-                                maxWidth: 84,
-                                maxHeight: 84,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image(
-                                  image: new NetworkImage(
-                                      databerita[i]["kabar_gambar"]),
+                          child: new Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              new Container(
+                                margin: const EdgeInsets.only(right: 15.0),
+                                width: 120.0,
+                                height: 100.0,
+                                child: CachedNetworkImage(
+                                  imageUrl: databerita[i]["kabar_gambar"],
+                                  placeholder: (context, url) => Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          "assets/images/load.png",
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
                                   fit: BoxFit.cover,
                                   height: 150.0,
                                   width: 110.0,
                                 ),
                               ),
-                            ),
-                            subtitle: Row(
-                              children: <Widget>[
-                                new Text(
-                                  databerita[i]["kabar_tanggal"],
+                              new Expanded(
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                      ),
+                                      child: new Text(
+                                        databerita[i]["kabar_judul"],
+                                        style: new TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    new Row(
+                                      children: <Widget>[
+                                        new Expanded(
+                                          child: new Container(
+                                            margin: const EdgeInsets.only(
+                                                top: 5.0, bottom: 10.0),
+                                            child: new Text(
+                                              databerita[i]["kabar_tanggal"],
+                                              style: new TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.black,
+                                                //fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        new Container(
+                                          margin: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: Icon(
+                                            Icons.phone_android,
+                                            size: 14.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    new Container(
+                                      child: new Column(
+                                        children: <Widget>[
+                                          new Container(
+                                            child: new Text(
+                                              databerita[i]["kabar_tempat"],
+                                              style: new TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey[500],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 16.0,
-                                ),
-                                new Text(
-                                  databerita[i]["kabar_tempat"],
-                                  style: new TextStyle(
-                                    fontSize: 2.0,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                            title: new Text(
-                              databerita[i]["kabar_judul"],
-                              style: new TextStyle(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.phone_android,
-                              size: 14.0,
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     );
                   } else {
-                    return new Container(
-                      color: Colors.grey[100],
-                      padding: EdgeInsets.only(
-                        left: 5.0,
-                        right: 5.0,
-                      ),
+                    return Container(
                       child: new Card(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(5.0),
                         ),
-                        child: new InkWell(
+                        elevation: 1.0,
+                        color: Colors.white,
+                        child: InkWell(
                           onTap: () {
                             Alert(
                               context: context,
                               type: AlertType.warning,
-                              style: alertStyle,
+                              // style: alertStyle,
                               title: "Peringatan.",
                               desc:
                                   "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
@@ -294,90 +342,130 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                                         color: Colors.white, fontSize: 16),
                                   ),
                                   onPressed: () => Navigator.pop(context),
-                                  color: Colors.green[300],
+                                  color: Colors.green,
                                 ),
                                 DialogButton(
-                                  child: Text(
-                                    "Edit",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.of(context).push(
-                                      new MaterialPageRoute(
-                                        builder: (context) =>
-                                            new FormKegiatanEdit(
-                                          dJudul: databerita[i]["kabar_judul"],
-                                          dKatTempat: databerita[i]
-                                              ["kabar_tempat"],
-                                          dIsi: databerita[i]["kabar_isi"],
-                                          dTanggal: databerita[i]
-                                              ["kabar_tanggal"],
-                                          dGambar: databerita[i]
-                                              ["kabar_gambar"],
-                                          dIdKegiatan: databerita[i]
-                                              ["kabar_id"],
-                                          dVideo: databerita[i]["kabar_video"],
+                                    child: Text(
+                                      "Edit",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                        new MaterialPageRoute(
+                                          builder: (context) =>
+                                              new FormKegiatanEdit(
+                                            dJudul: databerita[i]
+                                                ["kabar_judul"],
+                                            dKatTempat: databerita[i]
+                                                ["kabar_tempat"],
+                                            dIsi: databerita[i]["kabar_isi"],
+                                            dTanggal: databerita[i]
+                                                ["kabar_tanggal"],
+                                            dGambar: databerita[i]
+                                                ["kabar_gambar"],
+                                            dIdKegiatan: databerita[i]
+                                                ["kabar_id"],
+                                            dVideo: databerita[i]
+                                                ["kabar_video"],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  color: Colors.red[300],
-                                )
+                                      );
+                                    },
+                                    color: Colors.red)
                               ],
                             ).show();
                           },
-                          child: ListTile(
-                            leading: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minWidth: 64,
-                                minHeight: 64,
-                                maxWidth: 84,
-                                maxHeight: 84,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5.0),
-                                child: Image(
-                                  image: new NetworkImage(
-                                      databerita[i]["kabar_gambar"]),
+                          child: new Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              new Container(
+                                margin: const EdgeInsets.only(right: 15.0),
+                                width: 120.0,
+                                height: 100.0,
+                                child: CachedNetworkImage(
+                                  imageUrl: databerita[i]["kabar_gambar"],
+                                  placeholder: (context, url) => Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          "assets/images/load.png",
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
                                   fit: BoxFit.cover,
                                   height: 150.0,
                                   width: 110.0,
                                 ),
                               ),
-                            ),
-                            subtitle: Row(
-                              children: <Widget>[
-                                new Text(
-                                  databerita[i]["kabar_tanggal"],
-                                ),
-                                SizedBox(
-                                  width: 10.0,
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    databerita[i]["kabar_tempat"],
-                                    style: new TextStyle(
-                                      fontSize: 12.0,
+                              new Expanded(
+                                child: new Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    new Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                      ),
+                                      child: new Text(
+                                        databerita[i]["kabar_judul"],
+                                        style: new TextStyle(
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                    new Row(
+                                      children: <Widget>[
+                                        new Expanded(
+                                          child: new Container(
+                                            margin: const EdgeInsets.only(
+                                                top: 5.0, bottom: 10.0),
+                                            child: new Text(
+                                              databerita[i]["kabar_tanggal"],
+                                              style: new TextStyle(
+                                                fontSize: 14.0,
+                                                color: Colors.black,
+                                                //fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        new Container(
+                                          margin: const EdgeInsets.only(
+                                              right: 10.0),
+                                          child: Icon(
+                                            Icons.laptop,
+                                            color: Colors.blue,
+                                            size: 14.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    new Container(
+                                      child: new Column(
+                                        children: <Widget>[
+                                          new Container(
+                                            child: new Text(
+                                              databerita[i]["kabar_tempat"],
+                                              style: new TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey[500],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            title: new Text(
-                              databerita[i]["kabar_judul"],
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: new TextStyle(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.computer,
-                              size: 14.0,
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -400,7 +488,7 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                           Alert(
                             context: context,
                             type: AlertType.error,
-                            title: "Warning",
+                            title: "Unpubllish",
                             desc: "Berita Sudah di Unpublish",
                             buttons: [
                               DialogButton(

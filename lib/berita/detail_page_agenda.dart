@@ -1,9 +1,10 @@
 //ANCHOR package detail agenda
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 import 'package:share/share.dart';
 
 //ANCHOR class
@@ -43,130 +44,123 @@ class _AgendaDetailState extends State<AgendaDetail> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Agenda Desa'),
+        title: Text('AGENDA'),
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  wHeader(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 190.0,
-                      right: 10.0,
-                      left: 10.0,
-                    ),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            child: Column(
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    wHeader(),
+                    // Padding(
+                    //   padding: EdgeInsets.only(
+                    //     top: 190.0,
+                    //     right: 10.0,
+                    //     left: 10.0,
+                    //   ),
+                    //   child: Card(
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //     ),
+                    //     child: Container(
+                    //       padding: new EdgeInsets.all(15.0),
+                    //       child: IntrinsicHeight(
+                    //         child: Column(
+                    //           children: <Widget>[
+                    //             _card(),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    Container(
+                      padding: new EdgeInsets.only(
+                        left: mediaQueryData.size.height * 0.01,
+                        top: mediaQueryData.size.height * 0.3,
+                        // bottom: mediaQueryData.size.height * 0.01,
+                        right: mediaQueryData.size.height * 0.01,
                       ),
-                      child: Container(
-                        padding: new EdgeInsets.all(15.0),
-                        child: IntrinsicHeight(
+                      child: Card(
+                        elevation: 1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Container(
                           child: Column(
-                            children: <Widget>[
-                              _card(),
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  datadesa(),
+                                  share(),
+                                  // jam(),
+                                ],
+                              ),
+                              judul(),
+                              alamat(),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // admin(),
+                                  // share(),
+                                ],
+                              ),
                             ],
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              _html(),
-              _jam(),
-              wShare(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _card() {
-    return Expanded(
-      child: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Container(
-            child: new Text(
-              '${widget.judulEvent}',
-              style: new TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          new Row(
-            children: <Widget>[
-              GestureDetector(
-                child: Chip(
-                  backgroundColor: Colors.green,
-                  label: Text(
-                    '${widget.desaEvent}',
-                    style: new TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
-                    ),
-                  ),
+                  ],
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilDesa(
-                        id: "${widget.idDesa}",
-                        desa: "${widget.desaEvent}",
-                        kecamatan: "${widget.kecamatanEvent}",
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: mediaQueryData.size.height * 0.01,
+                    // top: mediaQueryData.size.height * 0.01,
+                    // bottom: mediaQueryData.size.height * 0.01,
+                    right: mediaQueryData.size.height * 0.01,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Html(
+                        style: {
+                          // "p": Style(
+                          //   padding: EdgeInsets.all(5.0),
+                          // )
+                        },
+                        // padding: new EdgeInsets.all(10.0),
+                        data: '${widget.uraianEvent}',
+                        // onLaunchFail: (url) {
+                        //   // optional, type Function
+                        //   print("launch $url failed");
+                        // },
+                        // scrollable: false,
                       ),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(width: 5.0),
-              Chip(
-                backgroundColor: Colors.green,
-                label: Text(
-                  '${widget.kecamatanEvent}',
-                  style: new TextStyle(
-                    color: Colors.white,
-                    fontSize: 12.0,
+                      // Divider(),
+                      // _playYoutube(youTube),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      // wShare(),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          new Container(
-            child: new Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Text(
-                  'Penyelenggara : ',
-                  maxLines: 3,
-                  style: new TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 12.0,
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    '${widget.penyelenggaraEvent}',
-                    maxLines: 3,
-                    style: new TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10.0),
+                // _html(),
+                _jam(),
+                // wShare(),
               ],
             ),
           ),
@@ -175,42 +169,306 @@ class _AgendaDetailState extends State<AgendaDetail> {
     );
   }
 
-  Widget _html() {
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          Html(
-            style: {
-              "p": Style(
-                padding: EdgeInsets.all(10.0),
-              )
+  Widget share() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+
+    // if ('${widget.dBaca}' == null) {
+    //   dibaca = '0';
+    // } else {
+    //   dibaca = '${widget.dBaca}';
+    // }
+    return Container(
+      padding: new EdgeInsets.only(
+        left: mediaQueryData.size.height * 0.02,
+        // top: mediaQueryData.size.height * 0.01,
+        // bottom: mediaQueryData.size.height * 0.01,
+      ),
+      child: Row(
+        children: [
+          // Icon(
+          //   Icons.remove_red_eye,
+          //   size: 14,
+          //   color: Colors.grey[500],
+          // ),
+          // new Padding(
+          //   padding:
+          //       new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
+          // ),
+          // Text(
+          //   '${widget.dBaca}',
+          //   maxLines: 3,
+          //   style: new TextStyle(
+          //     color: Colors.grey[500],
+          //     fontSize: 14.0,
+          //   ),
+          // ),
+          // new Padding(
+          //   padding:
+          //       new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
+          // ),
+          IconButton(
+            // padding: EdgeInsets.all(15.0),
+            icon: Icon(Icons.share),
+            color: Colors.blue[800],
+            iconSize: 20.0,
+            onPressed: () {
+              Share.share("${widget.urlEvent}");
             },
-            // padding: new EdgeInsets.all(10.0),
-            data: '${widget.uraianEvent}',
-            // onLaunchFail: (url) {
-            //   // optional, type Function
-            //   print("launch $url failed");
-            // },
-            // scrollable: false,
           ),
-          // HtmlView(
-          //   padding: new EdgeInsets.all(10.0),
-          //   data: '${widget.uraianEvent}',
-          //   onLaunchFail: (url) {
-          //     // optional, type Function
-          //     print("launch $url failed");
-          //   },
-          //   scrollable: false,
+          new Padding(
+            padding:
+                new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
+          ),
+          // Text(
+          //   '${widget.dTanggal}',
+          //   maxLines: 3,
+          //   style: new TextStyle(
+          //     color: Colors.grey[500],
+          //     fontSize: 14.0,
+          //   ),
           // ),
         ],
       ),
     );
   }
 
+  Widget judul() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      padding: new EdgeInsets.only(
+        left: mediaQueryData.size.height * 0.02,
+        // top: mediaQueryData.size.height * 0.01,
+        // bottom: mediaQueryData.size.height * 0.01,
+        right: mediaQueryData.size.height * 0.02,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${widget.judulEvent}',
+            style: new TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget alamat() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      padding: new EdgeInsets.only(
+        left: mediaQueryData.size.height * 0.01,
+        top: mediaQueryData.size.height * 0.01,
+        bottom: mediaQueryData.size.height * 0.02,
+        right: mediaQueryData.size.height * 0.02,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(width: 10.0),
+          Icon(
+            Icons.location_on,
+            size: 14,
+            color: Colors.grey[500],
+          ),
+          new Padding(
+            padding:
+                new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
+          ),
+          Container(
+            child: Expanded(
+              child: Text(
+                '${widget.penyelenggaraEvent}',
+                maxLines: 3,
+                style: new TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 14.0,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget datadesa() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      padding: new EdgeInsets.only(
+        left: mediaQueryData.size.height * 0.02,
+        top: mediaQueryData.size.height * 0.01,
+        // bottom: mediaQueryData.size.height * 0.01,
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            child: Chip(
+              backgroundColor: Colors.blue[800],
+              label: Text(
+                '${widget.desaEvent}',
+                style: new TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilDesa(
+                    id: "${widget.idDesa}",
+                    desa: "${widget.desaEvent}",
+                    kecamatan: "${widget.kecamatanEvent}",
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(width: 5.0),
+          Chip(
+            backgroundColor: Colors.blue[800],
+            label: Text(
+              '${widget.kecamatanEvent}',
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 12.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget _card() {
+  //   return Expanded(
+  //     child: new Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: <Widget>[
+  //         new Container(
+  //           child: new Text(
+  //             '${widget.judulEvent}',
+  //             style: new TextStyle(
+  //               fontSize: 20.0,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //             maxLines: 3,
+  //             overflow: TextOverflow.ellipsis,
+  //           ),
+  //         ),
+  //         new Row(
+  //           children: <Widget>[
+  //             GestureDetector(
+  //               child: Chip(
+  //                 backgroundColor: Colors.green,
+  //                 label: Text(
+  //                   '${widget.desaEvent}',
+  //                   style: new TextStyle(
+  //                     color: Colors.white,
+  //                     fontSize: 12.0,
+  //                   ),
+  //                 ),
+  //               ),
+  //               onTap: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(
+  //                     builder: (context) => ProfilDesa(
+  //                       id: "${widget.idDesa}",
+  //                       desa: "${widget.desaEvent}",
+  //                       kecamatan: "${widget.kecamatanEvent}",
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //             ),
+  //             SizedBox(width: 5.0),
+  //             Chip(
+  //               backgroundColor: Colors.green,
+  //               label: Text(
+  //                 '${widget.kecamatanEvent}',
+  //                 style: new TextStyle(
+  //                   color: Colors.white,
+  //                   fontSize: 12.0,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         new Container(
+  //           child: new Row(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: <Widget>[
+  //               new Text(
+  //                 'Penyelenggara : ',
+  //                 maxLines: 3,
+  //                 style: new TextStyle(
+  //                   color: Colors.grey[500],
+  //                   fontSize: 12.0,
+  //                 ),
+  //               ),
+  //               Expanded(
+  //                 child: Text(
+  //                   '${widget.penyelenggaraEvent}',
+  //                   maxLines: 3,
+  //                   style: new TextStyle(
+  //                     color: Colors.grey[500],
+  //                     fontSize: 12.0,
+  //                   ),
+  //                 ),
+  //               ),
+  //               SizedBox(width: 10.0),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // Widget _html() {
+  //   return Padding(
+  //     padding: EdgeInsets.all(10.0),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Html(
+  //           style: {
+  //             "p": Style(
+  //               padding: EdgeInsets.all(10.0),
+  //             )
+  //           },
+  //           // padding: new EdgeInsets.all(10.0),
+  //           data: '${widget.uraianEvent}',
+  //           // onLaunchFail: (url) {
+  //           //   // optional, type Function
+  //           //   print("launch $url failed");
+  //           // },
+  //           // scrollable: false,
+  //         ),
+  //         // HtmlView(
+  //         //   padding: new EdgeInsets.all(10.0),
+  //         //   data: '${widget.uraianEvent}',
+  //         //   onLaunchFail: (url) {
+  //         //     // optional, type Function
+  //         //     print("launch $url failed");
+  //         //   },
+  //         //   scrollable: false,
+  //         // ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   Widget _jam() {
     return Padding(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.only(left: 20.0, right: 20),
       child: Row(
         children: <Widget>[
           Row(
@@ -439,51 +697,53 @@ class _AgendaDetailState extends State<AgendaDetail> {
   }
 
   Widget wHeader() {
-    var screenWidth = MediaQuery.of(context).size.width;
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return ClipPath(
-      clipper: ArcClipper(),
-      child: GestureDetector(
-        child: Hero(
-          tag: 'imageHero',
-          child: Image.network(
-            '${widget.gambarEvent}',
-            width: screenWidth,
-            height: 230.0,
-            fit: BoxFit.cover,
+      // clipper: ArcClipper(),
+      child: CachedNetworkImage(
+        imageUrl: '${widget.gambarEvent}',
+        // new NetworkImage(databerita[index]["kabar_gambar"]),
+        placeholder: (context, url) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                "assets/images/load.png",
+              ),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) {
-                return _detail(context);
-              },
-            ),
-          );
-        },
+        width: mediaQueryData.size.width,
+        height: mediaQueryData.size.height * 0.4,
+        fit: BoxFit.cover,
       ),
+      // child: Image.network(
+      //   '${widget.dGambar}',
+      //   width: screenWidth,
+      //   height: 230.0,
+      //   fit: BoxFit.cover,
+      // ),
     );
   }
 
-  Widget _detail(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: GestureDetector(
-        child: Center(
-          child: Hero(
-            tag: 'imageHero',
-            child: Image.network(
-              "${widget.gambarEvent}", //NOTE api gambar detail event
-            ),
-          ),
-        ),
-        onTap: () {
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
+  // Widget _detail(BuildContext context) {
+  //   return Scaffold(
+  //     backgroundColor: Colors.black,
+  //     body: GestureDetector(
+  //       child: Center(
+  //         child: Hero(
+  //           tag: 'imageHero',
+  //           child: Image.network(
+  //             "${widget.gambarEvent}", //NOTE api gambar detail event
+  //           ),
+  //         ),
+  //       ),
+  //       onTap: () {
+  //         Navigator.pop(context);
+  //       },
+  //     ),
+  //   );
+  // }
 }
 
 // ignore: must_be_immutable

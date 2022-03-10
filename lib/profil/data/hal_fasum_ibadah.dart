@@ -42,8 +42,10 @@ class _HalFasumIbadahState extends State<HalFasumIbadah> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fasilitas umum Ibadah'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('RUMAH IBADAH'),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: ListView.builder(

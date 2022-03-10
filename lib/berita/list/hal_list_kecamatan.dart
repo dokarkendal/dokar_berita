@@ -2,10 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dokar_aplikasi/berita/list/hal_list_desa.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
+
+import 'package:shimmer/shimmer.dart';
 
 class ListKecamatan extends StatefulWidget {
   final String idDesa;
@@ -24,6 +25,9 @@ class _ListKecamatanState extends State<ListKecamatan> {
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(() {
+      isLoading = true;
+    });
     http.Response hasil = await http.get(
         Uri.encodeFull(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kecamatan"),
@@ -31,6 +35,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
     this.setState(
       () {
         dataJSON = json.decode(hasil.body);
+        isLoading = false;
       },
     );
   }
@@ -57,11 +62,12 @@ class _ListKecamatanState extends State<ListKecamatan> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('List Kecamatan'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('DOKAR'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -73,80 +79,329 @@ class _ListKecamatanState extends State<ListKecamatan> {
             },
           );
         },
-        child: OfflineBuilder(
-          connectivityBuilder: (BuildContext context,
-              ConnectivityResult connectivity, Widget child) {
-            final bool connected = connectivity != ConnectivityResult.none;
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                child,
-                Positioned(
-                  left: 0.0,
-                  right: 0.0,
-                  height: 32.0,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    color: connected ? null : Colors.orange,
-                    child: connected
-                        ? null
-                        : Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "Periksa jaringan internet",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                SizedBox(
-                                  width: 8.0,
-                                ),
-                                SizedBox(
-                                  width: 12.0,
-                                  height: 12.0,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                  ),
+        child: isLoading
+            ? _buildProgressIndicator()
+            : Container(
+                padding: new EdgeInsets.all(5.0),
+                child: Column(
+                  children: <Widget>[
+                    cardKecamatan(),
+                    new Padding(
+                      padding: new EdgeInsets.only(
+                          top: mediaQueryData.size.height * 0.01),
+                    ),
+                    Expanded(
+                      child: _listkecamatan(),
+                    )
+                  ],
                 ),
-              ],
-            );
-          },
-          child: new Container(
-            child: Container(
-              padding: new EdgeInsets.all(5.0),
-              child: Column(
-                children: <Widget>[
-                  cardKecamatan(),
-                  SizedBox(height: 10.0),
-                  Expanded(
-                    //child: cardKecamatan(),
-                    child: _listkecamatan(),
-                  )
-                ],
               ),
-            ),
-          ),
-        ),
+      ),
+    );
+  }
 
-        /*SingleChildScrollView(
+  Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
+    return Padding(
+      padding: new EdgeInsets.all(1.0),
+      child: Shimmer.fromColors(
+        direction: ShimmerDirection.ltr,
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
         child: Container(
           padding: new EdgeInsets.all(5.0),
           child: Column(
             children: <Widget>[
-              cardKecamatan(),
-              SizedBox(height: 10.0),
-              _listkecamatan(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.25,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
+                  ),
+
+                  // Row(
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                      SizedBox(width: mediaQueryData.size.height * 0.01),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.grey,
+                        ),
+                        height: mediaQueryData.size.height * 0.05,
+                        width: mediaQueryData.size.width * 0.47,
+                        // color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ),
-      ),*/
       ),
     );
   }
@@ -166,7 +421,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
         return Container(
           padding: EdgeInsets.all(3.0),
           child: FlatButton(
-            color: Color(0xFFee002d),
+            color: Theme.of(context).primaryColor,
             textColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(5.0),
@@ -174,7 +429,11 @@ class _ListKecamatanState extends State<ListKecamatan> {
             child: Align(
               alignment: Alignment.center,
               child: Text(dataJSON[index]["kecamatan"],
-                  style: TextStyle(fontSize: 12.0),
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    color: Colors.brown[800],
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center),
             ),
             onPressed: () {
@@ -195,22 +454,13 @@ class _ListKecamatanState extends State<ListKecamatan> {
   }
 
   Widget cardKecamatan() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      padding: new EdgeInsets.all(5.0),
-      width: SizeConfig.safeBlockHorizontal * 100,
-      height: SizeConfig.safeBlockVertical * 20,
+      padding: new EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
+      width: mediaQueryData.size.width,
+      height: mediaQueryData.size.height * 0.2,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFee002d),
-            Color(0xFFe3002a),
-            Color(0xFFd90028),
-            Color(0xFFcc0025),
-          ],
-          stops: [0.1, 0.4, 0.7, 0.9],
-        ),
+        color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [
           BoxShadow(
@@ -221,18 +471,19 @@ class _ListKecamatanState extends State<ListKecamatan> {
       ),
       child: Row(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Image.asset(
-                  'assets/images/kecamatan1.png',
-                  width: SizeConfig.safeBlockHorizontal * 30,
-                  height: SizeConfig.safeBlockVertical * 30,
-                ),
-                SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
-                new Column(
+          Row(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Image.asset(
+                'assets/images/kecamatan1.png',
+                width: mediaQueryData.size.width * 0.25,
+                height: mediaQueryData.size.height * 0.25,
+              ),
+              SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.05),
+                child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     AutoSizeText(
@@ -240,7 +491,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
                       minFontSize: 2,
                       maxLines: 2,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.brown[800],
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -248,13 +499,17 @@ class _ListKecamatanState extends State<ListKecamatan> {
                     AutoSizeText(
                       'Di KABUPATEN KENDAL',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Colors.brown[800],
+                        fontSize: 14.0,
+                      ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+          // ),
         ],
       ),
     );

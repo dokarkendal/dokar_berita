@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
 import 'package:flutter/material.dart';
 import 'package:open_appstore/open_appstore.dart';
@@ -655,7 +656,7 @@ class _HalduaState extends State<Haldua> {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                      'Galeri Desa',
+                      'Galeri Berita',
                       style: TextStyle(
                           color: Color(0xFF2e2e2e),
                           fontWeight: FontWeight.bold,
@@ -749,11 +750,23 @@ class _HalduaState extends State<Haldua> {
                                             borderRadius:
                                                 BorderRadius.circular(5.0),
                                             child: GestureDetector(
-                                              child: Image.network(
-                                                dataJSON[i]["kabar_gambar"],
+                                              child: CachedNetworkImage(
+                                                imageUrl: dataJSON[i]
+                                                    ["kabar_gambar"],
                                                 fit: BoxFit.cover,
                                                 height: 180.0,
                                                 width: 120.0,
+                                                placeholder: (context, url) =>
+                                                    Container(
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        "assets/images/load.png",
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                               onTap: () {
                                                 Navigator.push(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_agenda.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
@@ -138,8 +139,18 @@ class _AgendaState extends State<Agenda> {
                         children: <Widget>[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(5.0),
-                            child: Image.network(
-                              databerita[index]["gambar_agenda"],
+                            child: CachedNetworkImage(
+                              imageUrl: databerita[index]["gambar_agenda"],
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/load.png",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                               fit: BoxFit.cover,
                               height: SizeConfig.safeBlockVertical * 20,
                               width: SizeConfig.safeBlockHorizontal * 100,
@@ -246,7 +257,7 @@ class _AgendaState extends State<Agenda> {
               new Container(
                 padding: new EdgeInsets.all(10.0),
                 child: Text(
-                  "Semua Agenda Desa",
+                  "AGENDA",
                   style: new TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

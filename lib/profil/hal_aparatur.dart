@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
@@ -44,6 +45,7 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
   }
 
   Widget _aparatur() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return GridView.builder(
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -86,15 +88,35 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      // ClipRRect(
+                      //   borderRadius: BorderRadius.circular(5.0),
+                      //   child: Image.network(
+                      //     databerita[i]["foto"],
+                      //     fit: BoxFit.cover,
+                      //     height: 180.0,
+                      //     width: 200.0,
+                      //   ),
+                      // ),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(5.0),
-                        child: Image.network(
-                          databerita[i]["foto"],
+                        child: CachedNetworkImage(
+                          imageUrl: databerita[i]["foto"],
+                          // new NetworkImage(databerita[index]["kabar_gambar"]),
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/load.png",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          width: mediaQueryData.size.width,
+                          height: mediaQueryData.size.height * 0.23,
                           fit: BoxFit.cover,
-                          height: 200.0,
-                          width: 200.0,
                         ),
                       ),
                       Padding(
@@ -143,8 +165,9 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Aparatur Desa'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('APARATUR'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: _aparatur(),

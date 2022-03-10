@@ -543,7 +543,7 @@ class _DetailKritikSaranWargaState extends State<DetailKritikSaranWarga> {
             _publish(),
           ],*/
         ),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ListView(
         children: <Widget>[

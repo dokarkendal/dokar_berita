@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class DetailGaleri extends StatefulWidget {
@@ -32,10 +33,28 @@ class DetailGaleriState extends State<DetailGaleri> {
   }
 
   Widget gambar() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Column(
       children: <Widget>[
-        Image.network(
-          "${widget.dGambar}", //NOTE api gambar detail event
+        // Image.network(
+        //   "${widget.dGambar}", //NOTE api gambar detail event
+        // ),
+        CachedNetworkImage(
+          imageUrl: "${widget.dGambar}",
+          // new NetworkImage(databerita[index]["kabar_gambar"]),
+          placeholder: (context, url) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  "assets/images/load.png",
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          width: mediaQueryData.size.width,
+          height: mediaQueryData.size.height * 0.3,
+          fit: BoxFit.cover,
         ),
       ],
     );

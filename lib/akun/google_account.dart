@@ -62,6 +62,7 @@ class GoogleAccountState extends State<GoogleAccount> {
   String notifStatus = '';
   String token = '';
   static String topik = '';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -78,6 +79,9 @@ class GoogleAccountState extends State<GoogleAccount> {
   }
 
   Future<String> checkSignIGoogle() async {
+    // setState(() {
+    //   isLoading = true;
+    // });
     await Firebase.initializeApp();
     final GoogleSignInAccount googleSignInAccount =
         await _googleSignIn.signInSilently();
@@ -100,6 +104,7 @@ class GoogleAccountState extends State<GoogleAccount> {
         () {
           _currentUser = user;
           _addcurrentUser = userInfo;
+          // isLoading = false;
         },
       );
       print(_currentUser);
@@ -416,12 +421,12 @@ class GoogleAccountState extends State<GoogleAccount> {
                       ),
                     ),
                     AutoSizeText(
-                      'Untuk memberikan komentar',
+                      'Untuk mendapatkan notifikasi',
                       minFontSize: 10,
                       style: TextStyle(color: Colors.white, fontSize: 14.0),
                     ),
                     AutoSizeText(
-                      'pada berita desa',
+                      'berita setiap hari',
                       minFontSize: 10,
                       style: TextStyle(color: Colors.white, fontSize: 14.0),
                     ),
@@ -439,7 +444,7 @@ class GoogleAccountState extends State<GoogleAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text('Sign In'),
         actions: <Widget>[notification()],
       ),
@@ -449,15 +454,29 @@ class GoogleAccountState extends State<GoogleAccount> {
           children: <Widget>[
             Container(
               padding: EdgeInsets.all(10),
-              child: Column(
-                children: <Widget>[
-                  cardAkun(),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                  _buildBody(),
-                ],
-              ),
+              child: isLoading
+                  ? _buildProgressIndicator()
+                  : Column(
+                      children: <Widget>[
+                        cardAkun(),
+                        SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                        _buildBody(),
+                      ],
+                    ),
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Center(
+        child: new Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: new CircularProgressIndicator(),
         ),
       ),
     );

@@ -275,8 +275,17 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Form Edit Inovasi'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          'Form Inovasi Edit',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,

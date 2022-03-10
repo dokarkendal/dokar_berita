@@ -80,6 +80,7 @@ class _HalSiskeudesProfileState extends State<HalSiskeudesProfile> {
       });
     }
     print(dataBelanja);
+    print("${widget.kodeDesa}");
   }
 
   void pembiayaan() async {

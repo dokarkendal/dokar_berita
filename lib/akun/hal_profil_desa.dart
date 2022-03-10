@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
-import 'package:dokar_aplikasi/berita/form/hal_kritik_warga.dart';
-import 'package:dokar_aplikasi/berita/hal_siskeudes.dart';
+// import 'package:dokar_aplikasi/berita/form/hal_kritik_warga.dart';
+// import 'package:dokar_aplikasi/berita/hal_siskeudes.dart';
 import 'package:dokar_aplikasi/profil/data/hal_agenda_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_berita_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_bid_profile.dart';
@@ -19,7 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
-import 'dart:convert'; // api to json
+import 'dart:convert';
+
+import 'package:shimmer/shimmer.dart'; // api to json
 
 class ProfilDesa extends StatefulWidget {
   final String title, id, desa, kecamatan;
@@ -43,9 +46,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
   int jumlahBum;
   int jumlahAgen;
   List dataJSON;
+  bool isLoading = false;
 
   // ignore: missing_return
   Future<String> jumlahAgenda() async {
+    setState(() {
+      isLoading = true;
+    });
     final response = await http.post(
         "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata",
         body: {
@@ -61,6 +68,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
         jumlahBum = jumlahagenda['bumdes'];
         jumlahAgen = jumlahagenda['agenda'];
         kode = jumlahagenda['kode'];
+        isLoading = false;
       },
     );
   }
@@ -110,21 +118,22 @@ class _ProfilDesaState extends State<ProfilDesa> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profil Desa'),
+        title: Text('PROFIL'),
+        centerTitle: true,
         elevation: 0,
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.message),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FormKritikSaran(idDesa: "${widget.id}"),
-                ),
-              );
-            },
-          )
+          // IconButton(
+          //   icon: Icon(Icons.message),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => FormKritikSaran(idDesa: "${widget.id}"),
+          //       ),
+          //     );
+          //   },
+          // )
         ],
       ),
       body: SingleChildScrollView(
@@ -134,7 +143,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
             Container(
               padding: EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: red,
+                color: Theme.of(context).primaryColor,
               ),
               child: Column(
                 children: <Widget>[
@@ -156,19 +165,23 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               minFontSize: 10,
                               maxLines: 2,
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.brown[800],
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
                               "KEC. ${widget.kecamatan}",
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 14.0),
+                                color: Colors.brown[800],
+                                fontSize: 14.0,
+                              ),
                             ),
                             Text(
                               'KAB. KENDAL',
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 14.0),
+                                color: Colors.brown[800],
+                                fontSize: 14.0,
+                              ),
                             ),
                           ],
                         ),
@@ -176,8 +189,11 @@ class _ProfilDesaState extends State<ProfilDesa> {
                     ],
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 25),
+                    padding: const EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                      top: 25,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -195,11 +211,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
                             children: <Widget>[
                               Icon(
                                 Icons.account_circle,
-                                color: Colors.white,
+                                color: Colors.brown[800],
                               ),
                               Text(
                                 'Profil',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.brown[800],
+                                ),
                               ),
                             ],
                           ),
@@ -218,11 +236,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
                             children: <Widget>[
                               Icon(
                                 Icons.account_balance,
-                                color: Colors.white,
+                                color: Colors.brown[800],
                               ),
                               Text(
                                 'Visi Misi',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.brown[800],
+                                ),
                               ),
                             ],
                           ),
@@ -241,11 +261,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
                             children: <Widget>[
                               Icon(
                                 Icons.assistant_photo,
-                                color: Colors.white,
+                                color: Colors.brown[800],
                               ),
                               Text(
                                 'Sejarah',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.brown[800],
+                                ),
                               ),
                             ],
                           ),
@@ -264,11 +286,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
                             children: <Widget>[
                               Icon(
                                 Icons.people,
-                                color: Colors.white,
+                                color: Colors.brown[800],
                               ),
                               Text(
                                 'Aparatur',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.brown[800],
+                                ),
                               ),
                             ],
                           ),
@@ -280,119 +304,123 @@ class _ProfilDesaState extends State<ProfilDesa> {
               ),
             ),
             Container(
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: new EdgeInsets.all(10.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: 80.0,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow[800],
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0.0, 3.0),
-                              blurRadius: 15.0)
-                        ],
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 5.0),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 15.0, vertical: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: isLoading
+                  ? _buildProgressIndicator()
+                  : Stack(
+                      children: <Widget>[
+                        Padding(
+                          padding: new EdgeInsets.all(10.0),
+                          child: Container(
+                            width: double.infinity,
+                            height: 80.0,
+                            decoration: BoxDecoration(
+                              color: Colors.blue[800],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0.0, 3.0),
+                                    blurRadius: 15.0)
+                              ],
+                            ),
+                            child: Column(
                               children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      "$jumlah",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
+                                SizedBox(height: 5.0),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 15.0, vertical: 10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Column(
+                                        children: <Widget>[
+                                          Text(
+                                            "$jumlah",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                            ),
+                                          ),
+                                          SizedBox(height: 8.0),
+                                          Text('Berita',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13.0))
+                                        ],
                                       ),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    Text('Berita',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13.0))
-                                  ],
+                                      Column(
+                                        children: <Widget>[
+                                          Text("$jumlahkeg",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0)),
+                                          SizedBox(height: 8.0),
+                                          Text('Kegiatan',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13.0))
+                                        ],
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Text("$jumlahB",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0)),
+                                          SizedBox(height: 8.0),
+                                          Text('Inovasi',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13.0))
+                                        ],
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Text("$jumlahBum",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0)),
+                                          SizedBox(height: 8.0),
+                                          Text('Bumdes',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13.0))
+                                        ],
+                                      ),
+                                      Column(
+                                        children: <Widget>[
+                                          Text("$jumlahAgen",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20.0)),
+                                          SizedBox(height: 8.0),
+                                          Text('Agenda',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13.0))
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                Column(
-                                  children: <Widget>[
-                                    Text("$jumlahkeg",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0)),
-                                    SizedBox(height: 8.0),
-                                    Text('Kegiatan',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13.0))
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Text("$jumlahB",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0)),
-                                    SizedBox(height: 8.0),
-                                    Text('Inovasi',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13.0))
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Text("$jumlahBum",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0)),
-                                    SizedBox(height: 8.0),
-                                    Text('Bumdes',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13.0))
-                                  ],
-                                ),
-                                Column(
-                                  children: <Widget>[
-                                    Text("$jumlahAgen",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0)),
-                                    SizedBox(height: 8.0),
-                                    Text('Agenda',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13.0))
-                                  ],
-                                )
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
             Container(
               child: Column(
@@ -429,13 +457,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.grey[500],
+                                    color: Colors.brown[800],
                                   ),
                                 ),
                                 Icon(
                                   Icons.arrow_forward,
                                   size: 16,
-                                  color: Colors.grey[500],
+                                  color: Colors.brown[800],
                                 )
                               ],
                             ),
@@ -499,7 +527,19 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                     child: new Container(
                                       padding: new EdgeInsets.all(2.0),
                                       child: new GestureDetector(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailGaleri(
+                                                dGambar: dataJSON[i]["gambar"],
+                                                dDesa: dataJSON[i]["desa"],
+                                                dJudul: dataJSON[i]["judul"],
+                                              ),
+                                            ),
+                                          );
+                                        },
                                         child: new Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -510,29 +550,44 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           5.0),
-                                                  child: GestureDetector(
-                                                    child: Image.network(
-                                                      dataJSON[i]["gambar"],
-                                                      fit: BoxFit.cover,
-                                                      width: 160.0,
-                                                      height: 120.0,
-                                                    ),
-                                                    onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              DetailGaleri(
-                                                            dGambar: dataJSON[i]
-                                                                ["gambar"],
-                                                            dDesa: dataJSON[i]
-                                                                ["desa"],
-                                                            dJudul: dataJSON[i]
-                                                                ["judul"],
+                                                  child: CachedNetworkImage(
+                                                    // child: Image.network(
+                                                    //   dataJSON[i]["gambar"],
+                                                    fit: BoxFit.cover,
+                                                    width: 160.0,
+                                                    height: 120.0,
+                                                    // ),
+                                                    imageUrl: dataJSON[i]
+                                                        ["gambar"],
+                                                    // new NetworkImage(databerita[index]["kabar_gambar"]),
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            Container(
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: AssetImage(
+                                                            "assets/images/load.png",
                                                           ),
+                                                          fit: BoxFit.cover,
                                                         ),
-                                                      );
-                                                    },
+                                                      ),
+                                                    ),
+                                                    // onTap: () {
+                                                    //   Navigator.push(
+                                                    //     context,
+                                                    //     MaterialPageRoute(
+                                                    //       builder: (context) =>
+                                                    //           DetailGaleri(
+                                                    //         dGambar: dataJSON[i]
+                                                    //             ["gambar"],
+                                                    //         dDesa: dataJSON[i]
+                                                    //             ["desa"],
+                                                    //         dJudul: dataJSON[i]
+                                                    //             ["judul"],
+                                                    //       ),
+                                                    //     ),
+                                                    //   );
+                                                    // },
                                                   ),
                                                 ),
                                                 Padding(
@@ -741,6 +796,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                   SizedBox(height: SizeConfig.safeBlockVertical * 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Column(
                         children: <Widget>[
@@ -820,25 +876,25 @@ class _ProfilDesaState extends State<ProfilDesa> {
                         children: <Widget>[
                           IconButton(
                             padding: EdgeInsets.all(15.0),
-                            icon: Icon(Icons.attach_money),
-                            color: Colors.blueGrey[600],
+                            icon: Icon(Icons.check_box_outline_blank_outlined),
+                            color: Colors.white,
                             iconSize: 30.0,
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SimplePieChart(
-                                      idDesa: "${widget.id}",
-                                      kodeDesa: "$kode"),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => SimplePieChart(
+                              //         idDesa: "${widget.id}",
+                              //         kodeDesa: "$kode"),
+                              //   ),
+                              // );
                             },
                           ),
-                          Text("Siskeudes",
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12.0))
+                          // Text("Siskeudes",
+                          //     style: TextStyle(
+                          //         color: Colors.white,
+                          //         fontWeight: FontWeight.bold,
+                          //         fontSize: 12.0))
                         ],
                       ),
                     ],
@@ -847,6 +903,43 @@ class _ProfilDesaState extends State<ProfilDesa> {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
+    return Padding(
+      padding: new EdgeInsets.all(1.0),
+      child: Shimmer.fromColors(
+        direction: ShimmerDirection.ltr,
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
+        child: Container(
+          padding: new EdgeInsets.all(5.0),
+          child: Column(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.1,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
+                  ),
+
+                  // Row(
+                ],
+              ),
+              SizedBox(height: mediaQueryData.size.height * 0.01),
+            ],
+          ),
         ),
       ),
     );

@@ -140,8 +140,9 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Visi Misi'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('VISI MISI'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: _visimisi(),

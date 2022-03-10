@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 import 'dart:convert';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:share/share.dart';
@@ -387,7 +387,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
     );
   }
 
-Widget jam() {
+  Widget jam() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
       padding: new EdgeInsets.only(
@@ -411,7 +411,6 @@ Widget jam() {
                 new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
           ),
           Text(
-            //TODO
             '${widget.dKategori}',
             maxLines: 3,
             style: new TextStyle(
@@ -423,6 +422,7 @@ Widget jam() {
       ),
     );
   }
+
   Widget share() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
@@ -740,29 +740,29 @@ Widget jam() {
     );
   }
 
-  Widget _html() {
-    return Padding(
-      padding: EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          Html(
-            style: {
-              "p": Style(
-                padding: EdgeInsets.all(10.0),
-              )
-            },
-            // padding: new EdgeInsets.all(10.0),
-            data: '${widget.dHtml}',
-            // onLaunchFail: (url) {
-            //   // optional, type Function
-            //   print("launch $url failed");
-            // },
-            // scrollable: false,
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _html() {
+  //   return Padding(
+  //     padding: EdgeInsets.all(10.0),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Html(
+  //           style: {
+  //             "p": Style(
+  //               padding: EdgeInsets.all(10.0),
+  //             )
+  //           },
+  //           // padding: new EdgeInsets.all(10.0),
+  //           data: '${widget.dHtml}',
+  //           // onLaunchFail: (url) {
+  //           //   // optional, type Function
+  //           //   print("launch $url failed");
+  //           // },
+  //           // scrollable: false,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget wHeader() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);

@@ -5,6 +5,8 @@ class ExpansionTileSample extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
         title: Text(
           "Bantuan",
           style: TextStyle(

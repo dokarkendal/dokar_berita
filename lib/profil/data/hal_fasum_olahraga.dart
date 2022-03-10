@@ -44,7 +44,7 @@ class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fasilitas umum Olahrga'),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: ListView.builder(

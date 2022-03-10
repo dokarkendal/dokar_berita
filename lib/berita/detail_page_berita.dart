@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:share/share.dart';
 import 'package:http/http.dart' as http; //api
@@ -92,7 +92,7 @@ class _DetailBeritaState extends State<DetailBerita> {
       ),
     );
     super.initState();
-    checkSignIGoogle();
+    // checkSignIGoogle();
     print('${widget.dKategori}');
     print('${widget.dIdDesa}');
     print('${widget.dId}');
@@ -291,8 +291,8 @@ class _DetailBeritaState extends State<DetailBerita> {
           Container(
             // padding: new EdgeInsets.all(10.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Stack(
                   children: <Widget>[
@@ -595,7 +595,6 @@ class _DetailBeritaState extends State<DetailBerita> {
                 new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
           ),
           Text(
-            //TODO
             '${widget.dKategori}',
             maxLines: 3,
             style: new TextStyle(
@@ -713,9 +712,15 @@ class _DetailBeritaState extends State<DetailBerita> {
 
   Widget share() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
+
+    if ('${widget.dBaca}' == null) {
+      dibaca = '0';
+    } else {
+      dibaca = '${widget.dBaca}';
+    }
     return Container(
       padding: new EdgeInsets.only(
-        left: mediaQueryData.size.height * 0.02,
+        left: mediaQueryData.size.height * 0.01,
         // top: mediaQueryData.size.height * 0.01,
         // bottom: mediaQueryData.size.height * 0.01,
       ),

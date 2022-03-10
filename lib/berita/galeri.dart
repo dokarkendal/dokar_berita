@@ -1,4 +1,5 @@
 //import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
@@ -126,11 +127,21 @@ class _GaleriState extends State<Galeri> {
                         ClipRRect(
                           //borderRadius: BorderRadius.circular(5.0),
                           child: GestureDetector(
-                            child: Image.network(
-                              databerita[index]["kabar_gambar"],
+                            child: CachedNetworkImage(
+                              imageUrl: databerita[index]["kabar_gambar"],
                               fit: BoxFit.cover,
                               height: SizeConfig.safeBlockVertical * 20,
                               width: SizeConfig.safeBlockHorizontal * 32,
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/load.png",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                             ),
                             onTap: () {
                               Navigator.push(
@@ -164,8 +175,17 @@ class _GaleriState extends State<Galeri> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Galeri desa'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          'Galeri',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -184,7 +204,7 @@ class _GaleriState extends State<Galeri> {
               new Container(
                 padding: new EdgeInsets.all(10.0),
                 child: Text(
-                  "Gambar Desa",
+                  "Semua Gambar",
                   style: new TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

@@ -145,7 +145,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
             ),
           );
           scaffoldKey.currentState.showSnackBar(snackBar);
-        } else {
+        } else if (datauser[0]["active"] == "1") {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("_isLoggedIn", true);
           String userStatus = 'Admin';
@@ -169,6 +169,29 @@ class _DaftarAdminState extends State<DaftarAdmin> {
             },
           );
           print(datauser[0]);
+        } else {
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setBool("_isLoggedIn", false);
+          setState(
+            () {
+              _isInAsyncCall = false;
+            },
+          );
+          SnackBar snackBar = SnackBar(
+            content: Text(
+              'Akun anda telah nonaktif',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.grey,
+            action: SnackBarAction(
+              label: 'NON AKTIF',
+              textColor: Colors.white,
+              onPressed: () {
+                print('ULANGI snackbar');
+              },
+            ),
+          );
+          scaffoldKey.currentState.showSnackBar(snackBar);
         }
       },
     );

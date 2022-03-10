@@ -121,11 +121,21 @@ class FormAddAkunState extends State<FormAddAkun> {
 //ANCHOR Body add akun
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Form tambah penulis'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text(
+          'Tambah penulis',
+          style: TextStyle(
+            color: Color(0xFF2e2e2e),
+            fontWeight: FontWeight.bold,
+            fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,
@@ -314,87 +324,91 @@ class FormAddAkunState extends State<FormAddAkun> {
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
 //NOTE tombol upload add akun
-                    RaisedButton.icon(
-                      icon: Icon(
-                        Icons.person_add,
-                        color: Colors.white,
-                      ),
-                      label: Text("TAMBAH"),
-                      onPressed: () async {
-                        if (cNama.text == null || cNama.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Nama wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cUsername.text == null ||
-                            cUsername.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Username wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cPassword.text == null ||
-                            cPassword.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Password wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (_mySelection == null) {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Pilih Status wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          _login();
-                        }
-                      },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                    Container(
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.07,
+                      child: RaisedButton.icon(
+                        icon: Icon(
+                          Icons.person_add,
+                          color: Colors.white,
+                        ),
+                        label: Text("TAMBAH"),
+                        onPressed: () async {
+                          if (cNama.text == null || cNama.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Nama wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cUsername.text == null ||
+                              cUsername.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Username wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cPassword.text == null ||
+                              cPassword.text == '') {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Password wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (_mySelection == null) {
+                            SnackBar snackBar = SnackBar(
+                              content: Text(
+                                'Pilih Status wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            );
+                            scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            _login();
+                          }
+                        },
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(17.0),
+                        ),
                       ),
                     ),
                   ],

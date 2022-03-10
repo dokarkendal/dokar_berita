@@ -43,8 +43,10 @@ class _HalFasumProfileState extends State<HalFasumProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fasilitas umum desa'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('FASILITAS UMUM'),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
         child: GridView.builder(

@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_agenda.dart';
+import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 
 //ANCHOR
@@ -135,11 +137,21 @@ class _AgendaProfileState extends State<AgendaProfile> {
                         children: <Widget>[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(5.0),
-                            child: Image.network(
-                              databerita[index]["gambar"],
+                            child: CachedNetworkImage(
+                              imageUrl: databerita[index]["gambar"],
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/load.png",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                               fit: BoxFit.cover,
-                              height: 170.0,
-                              width: 130.0,
+                              height: SizeConfig.safeBlockVertical * 20,
+                              width: SizeConfig.safeBlockHorizontal * 100,
                             ),
                           ),
                           Padding(
@@ -225,8 +237,9 @@ class _AgendaProfileState extends State<AgendaProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agenda desa'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('AGENDA'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -245,7 +258,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
               new Container(
                 padding: new EdgeInsets.all(10.0),
                 child: Text(
-                  "Semua Agenda Desa",
+                  "Semua Agenda",
                   style: new TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

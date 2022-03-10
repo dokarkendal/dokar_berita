@@ -1,5 +1,6 @@
 ////////////////////////////////PACKAGE//////////////////////////////////////
 import 'dart:async'; // api syn
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'package:flutter/material.dart';
@@ -128,8 +129,9 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kegiatan'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('KEGIATAN'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -154,13 +156,16 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
                   dibaca = databerita[i]["dibaca"];
                 }
                 return new Container(
-                  padding: new EdgeInsets.all(2.0),
+                  // padding: new EdgeInsets.all(2.0),
                   child: new Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                     elevation: 1.0,
                     color: Colors.white,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 5.0, horizontal: 8.0),
+                    // margin: const EdgeInsets.symmetric(
+                    //     vertical: 5.0, horizontal: 8.0),
                     child: InkWell(
                       onTap: () {
                         Navigator.push(
@@ -190,8 +195,18 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
                             margin: const EdgeInsets.only(right: 15.0),
                             width: 120.0,
                             height: 100.0,
-                            child: Image(
-                              image: new NetworkImage(databerita[i]["gambar"]),
+                            child: CachedNetworkImage(
+                              imageUrl: databerita[i]["gambar"],
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/load.png",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                               fit: BoxFit.cover,
                               height: 150.0,
                               width: 110.0,

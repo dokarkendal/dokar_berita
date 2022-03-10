@@ -1,5 +1,6 @@
 //ANCHOR PACKAGE halaman potensi
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
@@ -91,8 +92,12 @@ class _GaleriProfileState extends State<GaleriProfile> {
 
 //ANCHOR listview berita
   Widget _buildList() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return GridView.builder(
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+        mainAxisSpacing: 1,
+        crossAxisSpacing: 1,
+        // childAspectRatio: 1,
         crossAxisCount: 3,
         childAspectRatio: MediaQuery.of(context).size.width /
             (MediaQuery.of(context).size.height / 1.65),
@@ -133,11 +138,21 @@ class _GaleriProfileState extends State<GaleriProfile> {
                         ClipRRect(
                           //borderRadius: BorderRadius.circular(5.0),
                           child: GestureDetector(
-                            child: Image.network(
-                              databerita[index]["gambar"],
+                            child: CachedNetworkImage(
+                              imageUrl: databerita[index]["gambar"],
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/load.png",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                               fit: BoxFit.cover,
-                              height: SizeConfig.safeBlockVertical * 20,
-                              width: SizeConfig.safeBlockHorizontal * 32,
+                              height: mediaQueryData.size.height * 0.2,
+                              width: mediaQueryData.size.width * 0.35,
                             ),
                             onTap: () {
                               Navigator.push(
@@ -218,8 +233,10 @@ class _GaleriProfileState extends State<GaleriProfile> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Galeri desa'),
-        backgroundColor: Color(0xFFee002d),
+        title: Text('GALERI'),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -232,19 +249,20 @@ class _GaleriProfileState extends State<GaleriProfile> {
           );
         },
         child: new Container(
+          padding: new EdgeInsets.only(top: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Container(
-                padding: new EdgeInsets.all(10.0),
-                child: Text(
-                  "Gambar desa",
-                  style: new TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-              ),
+              // new Container(
+              //   padding: new EdgeInsets.all(10.0),
+              //   child: Text(
+              //     "Gambar desa",
+              //     style: new TextStyle(
+              //         fontSize: 16,
+              //         fontWeight: FontWeight.bold,
+              //         color: Colors.black),
+              //   ),
+              // ),
               Expanded(
                 child: _buildList(),
               ),
@@ -252,7 +270,7 @@ class _GaleriProfileState extends State<GaleriProfile> {
           ),
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
     );
   }
 }

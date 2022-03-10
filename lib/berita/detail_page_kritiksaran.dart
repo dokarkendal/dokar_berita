@@ -79,7 +79,7 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
     return IconButton(
       padding: EdgeInsets.all(5.0),
       icon: Icon(Icons.redo),
-      color: Colors.white,
+      color: Colors.brown[800],
       iconSize: 20.0,
       onPressed: () {
         print("publish ${widget.dId}");
@@ -139,7 +139,7 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
     return IconButton(
       padding: EdgeInsets.all(5.0),
       icon: Icon(Icons.undo),
-      color: Colors.white,
+      color: Colors.brown[800],
       iconSize: 20.0,
       onPressed: () {
         print("unpublish ${widget.dId}");
@@ -199,7 +199,7 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
     return IconButton(
       padding: EdgeInsets.all(5.0),
       icon: Icon(Icons.delete),
-      color: Colors.white,
+      color: Colors.brown[800],
       iconSize: 20.0,
       onPressed: () {
         print("delete ${widget.dId}");
@@ -253,7 +253,7 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
                   Icon(
                     Icons.undo,
                     size: 20,
-                    color: Colors.white,
+                    color: Colors.brown[800],
                   ),
                   Text(
                     "  " + "Unpublish",
@@ -333,7 +333,7 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
                   Icon(
                     Icons.redo,
                     size: 20,
-                    color: Colors.white,
+                    color: Colors.brown[800],
                   ),
                   Text(
                     "  " + "Publish",
@@ -540,7 +540,7 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
             _publish(),
           ],
         ),
-        backgroundColor: Color(0xFFee002d),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ListView(
         children: <Widget>[

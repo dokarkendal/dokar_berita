@@ -4,7 +4,7 @@ import 'package:dokar_aplikasi/berita/detail_page_kritiksaran_warga.dart';
 import 'package:dokar_aplikasi/berita/form/form_kritik_warga.dart';
 import 'package:dokar_aplikasi/berita/form/hal_kritik_warga.dart';
 import 'package:dokar_aplikasi/berita/hal_siskeudes.dart';
-import 'package:dokar_aplikasi/berita/tes.dart';
+// import 'package:dokar_aplikasi/berita/tes.dart';
 import 'package:dokar_aplikasi/akun/google_account.dart';
 import 'package:dokar_aplikasi/akun/hal_akun_add.dart';
 import 'package:dokar_aplikasi/akun/hal_expansion_tes.dart';
@@ -56,9 +56,9 @@ import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
 import 'package:dokar_aplikasi/berita/form/form_berita.dart';
 import 'package:dokar_aplikasi/screens/splash_screen.dart';
 import 'package:dokar_aplikasi/berita/hal_admin_tes.dart';
-import 'package:dokar_aplikasi/daftar_warga_login.dart';
+// import 'package:dokar_aplikasi/daftar_warga_login.dart';
 import 'package:dokar_aplikasi/daftar_admin.dart';
-import 'package:dokar_aplikasi/daftar_warga.dart';
+// import 'package:dokar_aplikasi/daftar_warga.dart';
 import 'package:dokar_aplikasi/berita/hal_berita.dart';
 import 'package:dokar_aplikasi/login_warga.dart';
 import 'package:dokar_aplikasi/login_admin.dart';
@@ -82,6 +82,9 @@ void main() {
         // Define the default brightness and colors.
 
         primaryColor: Color(0xFFfecd2e),
+        // textTheme: TextTheme(
+        //   bodyText1: TextStyle(color: Colors.red),
+        // ),
       ),
       debugShowCheckedModeBanner: false,
       title: 'Splash Screen',
@@ -139,12 +142,12 @@ void main() {
         '/FormInovasi': (BuildContext context) => new FormInovasi(),
         '/FormBumdes': (BuildContext context) => new FormBumdes(),
         '/FormKegiatan': (BuildContext context) => new FormKegiatan(),
-        '/DaftarWarga': (BuildContext context) => new DaftarWarga(),
+        // '/DaftarWarga': (BuildContext context) => new DaftarWarga(),
         '/DaftarAdmin': (BuildContext context) => new DaftarAdmin(),
         '/AgendaDetail': (BuildContext context) => new AgendaDetail(),
         '/FormBeritaEdit': (BuildContext context) => new FormBeritaEdit(),
         '/OnboardingPage': (BuildContext context) => new OnboardingPage(),
-        '/DaftarWargaLogin': (BuildContext context) => new DaftarWargaLogin(),
+        // '/DaftarWargaLogin': (BuildContext context) => new DaftarWargaLogin(),
         '/HalamanBeritaWarga': (BuildContext context) =>
             new HalamanBeritaWarga(),
         '/HalamanBeritaadmin': (BuildContext context) =>
@@ -158,7 +161,7 @@ void main() {
         '/DetailBerita': (BuildContext context) => new DetailBerita(),
         '/FormAgenda': (BuildContext context) => new FormAgenda(),
         '/Galeri': (BuildContext context) => new Galeri(),
-        '/Tes': (BuildContext context) => new Tes(),
+        // '/Tes': (BuildContext context) => new Tes(),
         '/DetailGaleri': (BuildContext context) => new DetailGaleri(),
         '/KritikSaran': (BuildContext context) => new KritikSaran(),
         '/DetailKritikSaran': (BuildContext context) => new DetailKritikSaran(),

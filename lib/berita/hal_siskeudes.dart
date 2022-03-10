@@ -183,7 +183,11 @@ class _SimplePieChartState extends State<SimplePieChart> {
 
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Color(0xFFee002d), title: Text("Siskeudes")),
+          backgroundColor: Theme.of(context).primaryColor,
+          title: Text("${widget.kodeDesa}"),
+          centerTitle: true,
+          elevation: 0,
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(5.0),
