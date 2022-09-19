@@ -41,7 +41,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
   // ignore: unused_field
   String _mySelection;
 
-  List beritaAdmin = List();
+  List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -61,7 +61,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
   //NOTE url api load berita
   //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -80,7 +80,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
       });
       print(nextPage);
       final response = await dio.get(nextPage + "/${widget.idDesa}/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {

@@ -5,7 +5,7 @@ import 'package:dokar_aplikasi/berita/form/form_kritik_warga.dart';
 import 'package:dokar_aplikasi/berita/form/hal_kritik_warga.dart';
 import 'package:dokar_aplikasi/berita/hal_siskeudes.dart';
 // import 'package:dokar_aplikasi/berita/tes.dart';
-import 'package:dokar_aplikasi/akun/google_account.dart';
+// import 'package:dokar_aplikasi/akun/google_account.dart';
 import 'package:dokar_aplikasi/akun/hal_akun_add.dart';
 import 'package:dokar_aplikasi/akun/hal_expansion_tes.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
@@ -57,12 +57,12 @@ import 'package:dokar_aplikasi/berita/form/form_berita.dart';
 import 'package:dokar_aplikasi/screens/splash_screen.dart';
 import 'package:dokar_aplikasi/berita/hal_admin_tes.dart';
 // import 'package:dokar_aplikasi/daftar_warga_login.dart';
-import 'package:dokar_aplikasi/daftar_admin.dart';
+import 'package:dokar_aplikasi/hal_login_admin.dart';
 // import 'package:dokar_aplikasi/daftar_warga.dart';
 import 'package:dokar_aplikasi/berita/hal_berita.dart';
-import 'package:dokar_aplikasi/login_warga.dart';
-import 'package:dokar_aplikasi/login_admin.dart';
-import 'package:dokar_aplikasi/pilih_akun.dart';
+// import 'package:dokar_aplikasi/login_warga.dart';
+// import 'package:dokar_aplikasi/login_admin.dart';
+import 'package:dokar_aplikasi/hal_pilih_user.dart';
 import 'package:dokar_aplikasi/hal_dua.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -81,7 +81,7 @@ void main() {
       theme: ThemeData(
         // Define the default brightness and colors.
 
-        primaryColor: Color(0xFFfecd2e),
+        primaryColor: Colors.orange[300],
         // textTheme: TextTheme(
         //   bodyText1: TextStyle(color: Colors.red),
         // ),
@@ -96,7 +96,7 @@ void main() {
             new DetailKritikSaranWarga(),
         '/FormKritikSaran': (BuildContext context) => new FormKritikSaran(),
         '/ListKecamatan': (BuildContext context) => new ListKecamatan(),
-        '/GoogleAccount': (BuildContext context) => new GoogleAccount(),
+        // '/GoogleAccount': (BuildContext context) => new GoogleAccount(),
         '/ListDesa': (BuildContext context) => new ListDesa(),
         '/HalbumdesProfile': (BuildContext context) => new HalbumdesProfile(),
         '/AgendaProfile': (BuildContext context) => new AgendaProfile(),
@@ -122,7 +122,7 @@ void main() {
         '/ProfilDesa': (BuildContext context) => new ProfilDesa(),
         '/FormAkunEditSemua': (BuildContext context) => new FormAkunEditSemua(),
         '/ListPenulis': (BuildContext context) => new ListPenulis(),
-        '/Login': (BuildContext context) => new Login(),
+        // '/Login': (BuildContext context) => new Login(),
         '/HomePage': (BuildContext context) => new HomePage(),
         '/FormAddAkun': (BuildContext context) => new FormAddAkun(),
         '/Berita': (BuildContext context) => new Berita(),
@@ -134,7 +134,7 @@ void main() {
         '/AdminTes': (BuildContext context) => new AdminTes(),
         '/EditSemua': (BuildContext context) => new EditSemua(),
         '/InputSemua': (BuildContext context) => new InputSemua(),
-        '/LoginPage': (BuildContext context) => new LoginPage(),
+        // '/LoginPage': (BuildContext context) => new LoginPage(),
         '/ExpansionTileSample': (BuildContext context) =>
             new ExpansionTileSample(),
         '/PilihAkun': (BuildContext context) => new PilihAKun(),

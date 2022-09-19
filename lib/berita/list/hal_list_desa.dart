@@ -37,7 +37,7 @@ class _ListDesaState extends State<ListDesa> {
     });
     //SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/desa/${widget.dId}/"),
         headers: {"Accept": "application/json"});
 
@@ -54,7 +54,16 @@ class _ListDesaState extends State<ListDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.dNama}'),
+        iconTheme: IconThemeData(
+          color: Colors.brown[800], //change your color here
+        ),
+        title: Text(
+          '${widget.dNama}',
+          style: TextStyle(
+            color: Colors.brown[800],
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -64,6 +73,7 @@ class _ListDesaState extends State<ListDesa> {
               padding: new EdgeInsets.all(5.0),
               child: Column(
                 children: <Widget>[
+                  SizedBox(height: 10.0),
                   cardDesa(),
                   SizedBox(height: 10.0),
                   Expanded(

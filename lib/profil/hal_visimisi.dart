@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
@@ -23,7 +23,7 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
   // ignore: missing_return
   Future<String> ambildata() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/visimisi/" +
                 "${widget.idDesa}"),
         headers: {"Accept": "application/json"});

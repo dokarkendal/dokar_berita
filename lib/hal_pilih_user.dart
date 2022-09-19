@@ -1,46 +1,8 @@
+//ANCHOR Selesai
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:workmanager/workmanager.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-const simplePeriodicTask = "simplePeriodicTask";
-final firebaseMessaging = FirebaseMessaging();
-
-Future<void> _setNotification([String topik, String token]) async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Workmanager.initialize(callbackDispatcher,
-      isInDebugMode:
-          false); //to true if still in testing lev turn it to false whenever you are launching the app
-  await Workmanager.registerPeriodicTask(
-    "5", simplePeriodicTask,
-    inputData: <String, dynamic>{'topik': topik, 'token': token},
-    existingWorkPolicy: ExistingWorkPolicy.replace,
-    frequency: Duration(minutes: 15), //when should it check the link
-    initialDelay:
-        Duration(seconds: 5), //duration before showing the notification
-    constraints: Constraints(
-      networkType: NetworkType.connected,
-    ),
-  );
-}
-
-void callbackDispatcher() {
-  Workmanager.executeTask(
-    (task, inputData) async {
-      var response = await http.post(
-          "http://dokar.kendalkab.go.id/webservice/android/fcm",
-          body: {"topik": inputData['topik'], "token": inputData['token']});
-      var convert = json.decode(response.body);
-      print(convert);
-      return Future.value(true);
-    },
-  );
-}
 
 class PilihAKun extends StatefulWidget {
   @override
@@ -48,94 +10,18 @@ class PilihAKun extends StatefulWidget {
 }
 
 class _PilihAKunState extends State<PilihAKun> {
-  /*firebase konfiguration*/
-  final firebaseMessaging = FirebaseMessaging();
-  bool isSubscribed = false;
-  String token = '';
-  static String dataPage = '';
-  static String topik = '';
+//NOTE Variabel
+  String topik = '';
 
-  static Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) {
-    debugPrint('onBackgroundMessage: $message');
-    if (message.containsKey('data')) {
-      String page = '';
-      var data = message['data'];
-      page = data['screen'];
-      dataPage = page;
-      debugPrint('onBackgroundMessage: $dataPage');
-    }
-    return null;
-  }
-
-  void _cekSubscribe() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getString("userStatus") == null) {
-      firebaseMessaging.subscribeToTopic("Warga");
-      setState(
-        () {
-          isSubscribed = true;
-        },
-      );
-    } else {
-      firebaseMessaging.subscribeToTopic("Admin");
-      setState(() {
-        isSubscribed = true;
-      });
-    }
-  }
-
-  void getDataFcm(Map<String, dynamic> message) {
-    String page = '';
-
-    var data = message['data'];
-    page = data['screen'];
-
-    if (page.isNotEmpty) {
-      setState(
-        () {
-          dataPage = page;
-        },
-      );
-    }
-  }
-  //end firebase configuration
-
+//NOTE Inistate
   @override
   void initState() {
-    //firebase konfiguration
-    firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        debugPrint('onMessage: $message');
-        getDataFcm(message);
-      },
-      onBackgroundMessage: onBackgroundMessage,
-      onResume: (Map<String, dynamic> message) async {
-        debugPrint('onResume: $message');
-        getDataFcm(message);
-        if (dataPage.isNotEmpty) {
-          Navigator.pushNamed(context, '$dataPage');
-        }
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        debugPrint('onLaunch: $message');
-        getDataFcm(message);
-        if (dataPage.isNotEmpty) {
-          Navigator.pushNamed(context, '$dataPage');
-        }
-      },
-    );
-    firebaseMessaging.getToken().then((token) => setState(() {
-          this.token = token;
-        }));
-
-    //end firebase konfiguration
     super.initState();
     _cekLogin();
-    _cekSubscribe();
   }
 
-  // ignore: missing_return
-  Future<String> _cekLogin() async {
+//NOTE Fungsi Cek Login
+  Future _cekLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userStatus") == 'Admin') {
       if (pref.getString("NotifStatus") == null) {
@@ -143,7 +29,6 @@ class _PilihAKunState extends State<PilihAKun> {
         setState(() {
           topik = 'Admin';
         });
-        _setNotification(topik, token);
       }
       Navigator.pushReplacementNamed(context, '/Haldua');
     } else if (pref.getString("userStatus") == 'Warga') {
@@ -151,11 +36,11 @@ class _PilihAKunState extends State<PilihAKun> {
     } else {}
   }
 
+//NOTE Scaffold
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
-      // backgroundColor: Color(0xFFee002d),
       body: Center(
         child: Stack(
           children: <Widget>[
@@ -181,26 +66,26 @@ class _PilihAKunState extends State<PilihAKun> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      new Padding(
-                        padding: new EdgeInsets.only(
+                      Padding(
+                        padding: EdgeInsets.only(
                             top: mediaQueryData.size.height * 0.03),
                       ),
-                      _animatedButtonUII(),
-                      new Padding(
-                        padding: new EdgeInsets.only(
+                      _tombolAdmin(),
+                      Padding(
+                        padding: EdgeInsets.only(
                             top: mediaQueryData.size.height * 0.03),
                       ),
-                      _animatedButtonUI(),
-                      new Padding(
-                        padding: new EdgeInsets.only(
+                      _tombolWarga(),
+                      Padding(
+                        padding: EdgeInsets.only(
                             top: mediaQueryData.size.height * 0.02),
                       ),
                       _privacy(),
-                      new Padding(
-                        padding: new EdgeInsets.only(
+                      Padding(
+                        padding: EdgeInsets.only(
                             top: mediaQueryData.size.height * 0.11),
                       ),
-                      _daftar(),
+                      _youtubeDokar(),
                     ],
                   ),
                 ),
@@ -212,6 +97,7 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
+//NOTE Gambar Header
   Widget _logo() {
     return Container(
       decoration: BoxDecoration(
@@ -225,6 +111,7 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
+//NOTE Judul
   Widget _textjudul() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
@@ -264,6 +151,7 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
+//NOTE Subtitle
   Widget _text() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Center(
@@ -278,23 +166,17 @@ class _PilihAKunState extends State<PilihAKun> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             AutoSizeText(
-              "Portal Berita Desa dan Kelurahan",
+              "Portal Informasi Desa dan Kelurahan",
               minFontSize: 16,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 22.0,
-                  color: Colors.white),
+              style: TextStyle(fontSize: 22.0, color: Colors.white),
               maxLines: 1,
             ),
             AutoSizeText(
               "Kabupaten Kendal",
               minFontSize: 16,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  fontSize: 22.0,
-                  color: Colors.white),
+              style: TextStyle(fontSize: 22.0, color: Colors.white),
               maxLines: 1,
             ),
           ],
@@ -303,13 +185,12 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
-  Widget _animatedButtonUI() {
+//NOTE Tombol Warga
+  Widget _tombolWarga() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      //height: SizeConfig.safeBlockVertical * 7, //10 for example
       width: mediaQueryData.size.width,
-      child: RaisedButton(
-        elevation: 5.0,
+      child: ElevatedButton(
         onPressed: () async {
           SharedPreferences pref = await SharedPreferences.getInstance();
           setState(() {
@@ -317,15 +198,17 @@ class _PilihAKunState extends State<PilihAKun> {
           });
           if (pref.getString("NotifStatus") == null) {
             pref.setString('NotifStatus', '1');
-            _setNotification(topik, token);
           }
           Navigator.pushNamed(context, '/HalamanBeritaWarga');
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(15.0),
+          elevation: 2.0,
+          primary: Colors.orange[300],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
-        color: Colors.orange[300],
         child: Text(
           'Warga',
           style: TextStyle(
@@ -340,13 +223,12 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
-  Widget _animatedButtonUII() {
+//NOTE Tombol Admin
+  Widget _tombolAdmin() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      //height: SizeConfig.safeBlockVertical * 7, //10 for example
       width: mediaQueryData.size.width,
-      child: RaisedButton(
-        elevation: 5.0,
+      child: ElevatedButton(
         onPressed: () async {
           SharedPreferences pref = await SharedPreferences.getInstance();
           setState(() {
@@ -354,15 +236,17 @@ class _PilihAKunState extends State<PilihAKun> {
           });
           if (pref.getString("NotifStatus") == null) {
             pref.setString('NotifStatus', '1');
-            _setNotification(topik, token);
           }
           Navigator.pushNamed(context, '/DaftarAdmin');
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(15.0),
+          elevation: 2.0,
+          primary: Colors.blue[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
-        color: Colors.blue[800],
         child: Text(
           'Admin',
           style: TextStyle(
@@ -377,7 +261,8 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
-  Widget _daftar() {
+//NOTE Link youtube dokar
+  Widget _youtubeDokar() {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -385,12 +270,13 @@ class _PilihAKunState extends State<PilihAKun> {
           Text("Info tentang dokar?"),
           GestureDetector(
             onTap: () async {
-              const url =
-                  'https://www.youtube.com/watch?v=Aa7eKzqp3PA&list=PLkNaCvRUXZ8f3Kta00_Ks_hGMa_hlpyyy';
-
-              if (await canLaunch(url)) {
-                await launch(url, forceSafariVC: false);
-              } else {
+              //LINK Channel Youtube DOKAR
+              final Uri url = Uri.parse(
+                  'https://www.youtube.com/watch?v=Aa7eKzqp3PA&list=PLkNaCvRUXZ8f3Kta00_Ks_hGMa_hlpyyy');
+              if (!await launchUrl(
+                url,
+                mode: LaunchMode.externalApplication,
+              )) {
                 throw 'Could not launch $url';
               }
             },
@@ -408,19 +294,20 @@ class _PilihAKunState extends State<PilihAKun> {
     );
   }
 
+//NOTE Link Privacy Dokar
   Widget _privacy() {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // Text("Info tentang dokar?"),
           GestureDetector(
             onTap: () async {
-              const url = 'https://dokar.kendalkab.go.id/privacy';
-
-              if (await canLaunch(url)) {
-                await launch(url, forceSafariVC: false);
-              } else {
+              final Uri url =
+                  Uri.parse('https://dokar.kendalkab.go.id/privacy');
+              if (!await launchUrl(
+                url,
+                mode: LaunchMode.externalApplication,
+              )) {
                 throw 'Could not launch $url';
               }
             },

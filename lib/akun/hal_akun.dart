@@ -4,43 +4,45 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:workmanager/workmanager.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
-const simplePeriodicTask = "simplePeriodicTask";
-final firebaseMessaging = FirebaseMessaging();
+import '../style/styleset.dart';
+// import 'package:workmanager/workmanager.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+
+// const simplePeriodicTask = "simplePeriodicTask";
+// final firebaseMessaging = FirebaseMessaging();
 //cek 2dd
-Future<void> _setNotification([String topik, String token]) async {
-  WidgetsFlutterBinding.ensureInitialized();
+// Future<void> _setNotification([String topik, String token]) async {
+//   WidgetsFlutterBinding.ensureInitialized();
 
-  await Workmanager.initialize(callbackDispatcher,
-      isInDebugMode:
-          false); //to true if still in testing lev turn it to false whenever you are launching the app
-  await Workmanager.registerPeriodicTask(
-    "5", simplePeriodicTask,
-    inputData: <String, dynamic>{'topik': topik, 'token': token},
-    existingWorkPolicy: ExistingWorkPolicy.replace,
-    frequency: Duration(minutes: 15), //when should it check the link
-    initialDelay:
-        Duration(seconds: 5), //duration before showing the notification
-    constraints: Constraints(
-      networkType: NetworkType.connected,
-    ),
-  );
-}
+//   await Workmanager.initialize(callbackDispatcher,
+//       isInDebugMode:
+//           false); //to true if still in testing lev turn it to false whenever you are launching the app
+//   await Workmanager.registerPeriodicTask(
+//     "5", simplePeriodicTask,
+//     inputData: <String, dynamic>{'topik': topik, 'token': token},
+//     existingWorkPolicy: ExistingWorkPolicy.replace,
+//     frequency: Duration(minutes: 15), //when should it check the link
+//     initialDelay:
+//         Duration(seconds: 5), //duration before showing the notification
+//     constraints: Constraints(
+//       networkType: NetworkType.connected,
+//     ),
+//   );
+// }
 
-void callbackDispatcher() {
-  Workmanager.executeTask(
-    (task, inputData) async {
-      var response = await http.post(
-          "http://dokar.kendalkab.go.id/webservice/android/fcm",
-          body: {"topik": inputData['topik'], "token": inputData['token']});
-      var convert = json.decode(response.body);
-      print(convert);
-      return Future.value(true);
-    },
-  );
-}
+// void callbackDispatcher() {
+//   Workmanager.executeTask(
+//     (task, inputData) async {
+//       var response = await http.post(
+//           "http://dokar.kendalkab.go.id/webservice/android/fcm",
+//           body: {"topik": inputData['topik'], "token": inputData['token']});
+//       var convert = json.decode(response.body);
+//       print(convert);
+//       return Future.value(true);
+//     },
+//   );
+// }
 
 class HalAkun extends StatefulWidget {
   @override
@@ -56,40 +58,42 @@ class _HalAkunState extends State<HalAkun> {
   String namadesa = "";
   String notifStatus = '';
   String token = '';
-  static String topik = '';
+  String topik = '';
 
   // ignore: missing_return
   Future<String> detailAkun(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/account/detail",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/account/detail"),
       body: {
         "IdAdmin": pref.getString("IdAdmin"),
       },
     );
     var detailakun = json.decode(response.body);
-
-    setState(
-      () {
-        nama = detailakun['nama'];
-        email = detailakun['email'];
-        hp = detailakun['hp'];
-        username = detailakun['username'];
-        kecamatan = pref.getString("kecamatan");
-        namadesa = pref.getString("desa");
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          nama = detailakun['nama'];
+          email = detailakun['email'];
+          hp = detailakun['hp'];
+          username = detailakun['username'];
+          kecamatan = pref.getString("kecamatan");
+          namadesa = pref.getString("desa");
+        },
+      );
+    }
   }
 
   @override
   void initState() {
-    firebaseMessaging.getToken().then(
-          (token) => setState(
-            () {
-              this.token = token;
-            },
-          ),
-        );
+    // firebaseMessaging.getToken().then(
+    //       (token) => setState(
+    //         () {
+    //           this.token = token;
+    //         },
+    //       ),
+    //     );
     super.initState();
     detailAkun(context);
     cekNotif();
@@ -108,18 +112,22 @@ class _HalAkunState extends State<HalAkun> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         // centerTitle: true,
         title: Text(
-          "Akun",
+          "AKUN",
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),
         ),
+        centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
-          notification(),
+          // notification(),
         ],
       ),
       body: SingleChildScrollView(
@@ -156,38 +164,38 @@ class _HalAkunState extends State<HalAkun> {
     );
   }
 
-  Widget notification() {
-    if (notifStatus == '1') {
-      return IconButton(
-        onPressed: () async {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setString('NotifStatus', '0');
-          await Workmanager.cancelAll();
-          print('Notif sudah di turn OFF');
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/HalAkun', ModalRoute.withName('/Haldua'));
-        },
-        icon: Icon(Icons.notifications_active),
-      );
-    } else {
-      return IconButton(
-        onPressed: () async {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          setState(
-            () {
-              topik = 'Admin';
-            },
-          );
-          pref.setString('NotifStatus', '1');
-          _setNotification(topik, token);
-          print('Notif sudah di turn ON');
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              '/HalAkun', ModalRoute.withName('/Haldua'));
-        },
-        icon: Icon(Icons.notifications_off),
-      );
-    }
-  }
+  // Widget notification() {
+  //   if (notifStatus == '1') {
+  //     return IconButton(
+  //       onPressed: () async {
+  //         SharedPreferences pref = await SharedPreferences.getInstance();
+  //         pref.setString('NotifStatus', '0');
+  //         await Workmanager.cancelAll();
+  //         print('Notif sudah di turn OFF');
+  //         Navigator.of(context).pushNamedAndRemoveUntil(
+  //             '/HalAkun', ModalRoute.withName('/Haldua'));
+  //       },
+  //       icon: Icon(Icons.notifications_active),
+  //     );
+  //   } else {
+  //     return IconButton(
+  //       onPressed: () async {
+  //         SharedPreferences pref = await SharedPreferences.getInstance();
+  //         setState(
+  //           () {
+  //             topik = 'Admin';
+  //           },
+  //         );
+  //         pref.setString('NotifStatus', '1');
+  //         _setNotification(topik, token);
+  //         print('Notif sudah di turn ON');
+  //         Navigator.of(context).pushNamedAndRemoveUntil(
+  //             '/HalAkun', ModalRoute.withName('/Haldua'));
+  //       },
+  //       icon: Icon(Icons.notifications_off),
+  //     );
+  //   }
+  // }
 
   Widget namaEdit() {
     return InkWell(
@@ -211,13 +219,21 @@ class _HalAkunState extends State<HalAkun> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: new Text(
-          "$nama",
-          style: new TextStyle(
-            fontSize: 14.0,
-            color: Colors.blue[800],
-          ),
-        ),
+        subtitle: nama == null
+            ? Text(
+                "memuat..",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              )
+            : Text(
+                "$nama",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              ),
         dense: true,
         /*trailing:
             Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.black),*/
@@ -247,13 +263,21 @@ class _HalAkunState extends State<HalAkun> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: new Text(
-          "$username",
-          style: new TextStyle(
-            fontSize: 14.0,
-            color: Colors.blue[800],
-          ),
-        ),
+        subtitle: username == null
+            ? Text(
+                "memuat..",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              )
+            : Text(
+                "$username",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              ),
         dense: true,
         /*trailing:
             Icon(Icons.arrow_forward_ios, size: 14.0, color: Colors.black),*/
@@ -283,13 +307,21 @@ class _HalAkunState extends State<HalAkun> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: new Text(
-          "$email",
-          style: new TextStyle(
-            fontSize: 14.0,
-            color: Colors.blue[800],
-          ),
-        ),
+        subtitle: email == null
+            ? Text(
+                "memuat..",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              )
+            : Text(
+                "$email",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              ),
         dense: true,
       ),
     );
@@ -311,13 +343,21 @@ class _HalAkunState extends State<HalAkun> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: new Text(
-          "$hp",
-          style: new TextStyle(
-            fontSize: 14.0,
-            color: Colors.blue[800],
-          ),
-        ),
+        subtitle: hp == null
+            ? Text(
+                "memuat..",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              )
+            : Text(
+                "$hp",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.blue[800],
+                ),
+              ),
         dense: true,
       ),
     );
@@ -354,7 +394,7 @@ class _HalAkunState extends State<HalAkun> {
   Widget buttonEdit() {
     return Column(
       children: <Widget>[
-        RaisedButton.icon(
+        ElevatedButton.icon(
           icon: Icon(
             Icons.edit,
             color: Colors.white,
@@ -364,11 +404,19 @@ class _HalAkunState extends State<HalAkun> {
           onPressed: () {
             Navigator.pushNamed(context, '/FormAkunEdit');
           },
-          color: Colors.blue[800],
-          textColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+          style: ElevatedButton.styleFrom(
+            // padding: EdgeInsets.all(15.0),
+            elevation: 0,
+            primary: Colors.blue[800],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // <-- Radius
+            ),
           ),
+          // color: Colors.blue[800],
+          // textColor: Colors.white,
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.circular(10.0),
+          // ),
         ),
       ],
     );

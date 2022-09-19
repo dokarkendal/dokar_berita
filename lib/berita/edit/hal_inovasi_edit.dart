@@ -222,7 +222,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/bid/edit",
+      Uri.parse("http://dokar.kendalkab.go.id/webservice/android/bid/edit"),
       body: {
         "judul": dJudul.text,
         "kategori": _mySelection,

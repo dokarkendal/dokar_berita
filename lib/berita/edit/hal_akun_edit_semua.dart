@@ -34,7 +34,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
   String _mySelection;
   bool _obscureText = true;
   bool _isInAsyncCall = false;
-  List kategoriAkun = List();
+  List kategoriAkun = [];
   final format = DateFormat("yyyy-MM-dd");
   final formKey = GlobalKey<FormState>();
 
@@ -87,7 +87,8 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
     );
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/account/editpenulis",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/account/editpenulis"),
       body: {
         "IdAdmin": "${widget.dIdAdmin}",
         "nama": dNama.text,

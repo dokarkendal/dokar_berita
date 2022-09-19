@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -20,11 +20,11 @@ class BeritaState extends State<Berita> {
 //ANCHOR variable berita
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/loadmoreberita"; //NOTE url api load berita
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   String dibaca;
   List dataJSON;
   int maxLines;
@@ -40,7 +40,7 @@ class BeritaState extends State<Berita> {
       );
 
       final response = await dio.get(nextPage);
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
       for (int i = 0; i < response.data['result'].length; i++) {
         tempList.add(response.data['result'][i]);
@@ -81,7 +81,7 @@ class BeritaState extends State<Berita> {
   // ignore: missing_return
   // Future<String> ambildata() async {
   //   http.Response hasil = await http.get(
-  //       Uri.encodeFull(
+  //       Uri.parse(
   //           "http://dokar.kendalkab.go.id/webservice/android/kabar/beritarekomedasi"),
   //       headers: {"Accept": "application/json"});
 
@@ -98,13 +98,13 @@ class BeritaState extends State<Berita> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     SizeConfig().init(context);
     return Padding(
-      padding: new EdgeInsets.all(1.0),
+      padding: EdgeInsets.all(1.0),
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
         baseColor: Colors.grey[300],
         child: Container(
-          padding: new EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(5.0),
           child: Column(
             children: <Widget>[
               Container(
@@ -237,11 +237,11 @@ class BeritaState extends State<Berita> {
       scrollDirection: Axis.horizontal,
       itemCount: dataJSON == null ? 0 : dataJSON.length,
       itemBuilder: (context, i) {
-        return new Container(
-          child: new Card(
-            child: new Container(
-              padding: new EdgeInsets.all(6.0),
-              child: new Column(
+        return Container(
+          child: Card(
+            child: Container(
+              padding: EdgeInsets.all(6.0),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
@@ -268,8 +268,7 @@ class BeritaState extends State<Berita> {
                     child: AutoSizeText(
                       dataJSON[i]["kabar_judul"], // NOTE api judul berita
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          new TextStyle(fontSize: 10.0, color: Colors.black54),
+                      style: TextStyle(fontSize: 10.0, color: Colors.black54),
                       maxLines: 2,
                     ),
                   ),
@@ -299,9 +298,9 @@ class BeritaState extends State<Berita> {
           } else {
             dibaca = databerita[index]["dibaca"];
           }
-          return new Container(
-            padding: new EdgeInsets.all(1.0),
-            // child: new Card(
+          return Container(
+            padding: EdgeInsets.all(1.0),
+            // child:  Card(
             //   clipBehavior: Clip.antiAliasWithSaveLayer,
             //   elevation: 0,
             //   shape: RoundedRectangleBorder(
@@ -360,21 +359,21 @@ class BeritaState extends State<Berita> {
                     );
                   }
                 },
-                child: new Container(
-                  //padding: new EdgeInsets.all(10.0),
-                  child: new Column(
+                child: Container(
+                  //padding:  EdgeInsets.all(10.0),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      new Card(
+                      Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
-                        //    new Container(
+                        //     Container(
                         child: CachedNetworkImage(
                           imageUrl: databerita[index]["kabar_gambar"],
-                          // new NetworkImage(databerita[index]["kabar_gambar"]),
+                          //  NetworkImage(databerita[index]["kabar_gambar"]),
                           placeholder: (context, url) => Container(
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -392,30 +391,30 @@ class BeritaState extends State<Berita> {
                         // ),
                         // child: Image(
                         //   image:
-                        //       new NetworkImage(databerita[index]["kabar_gambar"]),
+                        //        NetworkImage(databerita[index]["kabar_gambar"]),
                         //   fit: BoxFit.cover,
                         // ),
                       ),
 
-                      /*new Image(
-                          image: new NetworkImage(
+                      /* Image(
+                          image:  NetworkImage(
                             databerita[index]["kabar_gambar"],
                             //NOTE api gambar berita
                           ),
                         ),*/
-                      new Padding(
-                        padding: new EdgeInsets.only(
+                      Padding(
+                        padding: EdgeInsets.only(
                             top: mediaQueryData.size.height * 0.01),
                       ),
                       // Container(
-                      //   padding: new EdgeInsets.only(
+                      //   padding:  EdgeInsets.only(
                       //       left: 10.0, right: 10.0, bottom: 5.0),
                       //   child: Row(
                       //     children: <Widget>[
-                      //       new Text(
+                      //        Text(
                       //         databerita[index]["kabar_kategori"]
                       //             .toUpperCase(), //NOTE api kategori berita
-                      //         style: new TextStyle(
+                      //         style:  TextStyle(
                       //           fontSize: 13,
                       //           fontWeight: FontWeight.bold,
                       //           color: Colors.black87,
@@ -424,12 +423,12 @@ class BeritaState extends State<Berita> {
                       //       Container(
                       //           height: 10,
                       //           child: VerticalDivider(color: Colors.grey)),
-                      //       new Text(
+                      //        Text(
                       //         databerita[index]["kabar_admin"][0]
                       //                 .toUpperCase() +
                       //             databerita[index]["kabar_admin"]
                       //                 .substring(1), //NOTE api admin berita
-                      //         style: new TextStyle(
+                      //         style:  TextStyle(
                       //           fontSize: 13,
                       //           fontWeight: FontWeight.bold,
                       //           color: Colors.black87,
@@ -439,22 +438,24 @@ class BeritaState extends State<Berita> {
                       //   ),
                       // ),
                       Padding(
-                        padding: new EdgeInsets.only(left: 10.0, right: 10.0),
+                        padding: EdgeInsets.only(left: 10.0, right: 10.0),
                         child: Text(
                           databerita[index]
                               ["kabar_judul"], //NOTE api judul berita
-                          style: new TextStyle(
-                            fontSize: 20.0,
+                          style: TextStyle(
+                            fontSize: 18.0,
                             color: Colors.blue[800],
                             fontWeight: FontWeight.bold,
                           ),
-                          //textAlign: TextAlign.justify,
+                          // textAlign: TextAlign.justify,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
 
                       // HtmlView(
                       //   // stylingOptions: ,
-                      //   padding: new EdgeInsets.all(10.0),
+                      //   padding:  EdgeInsets.all(10.0),
                       //   data: databerita[index]["kabar_isi"].substring(0, 200),
                       //   onLaunchFail: (url) {
                       //     // optional, type Function
@@ -463,22 +464,22 @@ class BeritaState extends State<Berita> {
                       //   scrollable: false,
                       // ),
                       // Divider(),
-                      new Padding(
-                        padding: new EdgeInsets.only(
+                      Padding(
+                        padding: EdgeInsets.only(
                             top: mediaQueryData.size.height * 0.01),
                       ),
                       Container(
-                        padding: new EdgeInsets.only(
+                        padding: EdgeInsets.only(
                             left: 10.0, right: 10.0, bottom: 5.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Row(
                               children: [
-                                new Text(
+                                Text(
                                   databerita[index]["kabar_kategori"]
                                       .toUpperCase(), //NOTE api kategori berita
-                                  style: new TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.brown[800],
@@ -487,10 +488,10 @@ class BeritaState extends State<Berita> {
                                 Container(
                                     height: 10,
                                     child: VerticalDivider(color: Colors.grey)),
-                                new Text(
+                                Text(
                                   databerita[index]["data_nama"]
                                       .toUpperCase(), //NOTE api kategori berita
-                                  style: new TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.brown[800],
@@ -510,14 +511,14 @@ class BeritaState extends State<Berita> {
                                   size: 16,
                                   color: Colors.brown[800],
                                 ),
-                                new Padding(
-                                  padding: new EdgeInsets.only(
+                                Padding(
+                                  padding: EdgeInsets.only(
                                       right: mediaQueryData.size.height * 0.01),
                                 ),
-                                new Text(
+                                Text(
                                   databerita[index][
                                       "kabar_tanggal"], //NOTE api tanggal berita
-                                  style: new TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
                                     color: Colors.brown[800],
                                   ),
@@ -526,8 +527,8 @@ class BeritaState extends State<Berita> {
                                 //   height: 10,
                                 //   child: VerticalDivider(color: Colors.grey),
                                 // ),
-                                new Padding(
-                                  padding: new EdgeInsets.only(
+                                Padding(
+                                  padding: EdgeInsets.only(
                                       right: mediaQueryData.size.height * 0.01),
                                 ),
                                 Icon(
@@ -535,19 +536,19 @@ class BeritaState extends State<Berita> {
                                   size: 16,
                                   color: Colors.brown[800],
                                 ),
-                                new Padding(
-                                  padding: new EdgeInsets.only(
+                                Padding(
+                                  padding: EdgeInsets.only(
                                       right: mediaQueryData.size.height * 0.01),
                                 ),
-                                new Text(
+                                Text(
                                   dibaca, //NOTE api banyak dilihat
-                                  style: new TextStyle(
+                                  style: TextStyle(
                                     color: Colors.brown[800],
                                     //fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                new Padding(
-                                  padding: new EdgeInsets.only(
+                                Padding(
+                                  padding: EdgeInsets.only(
                                       right: mediaQueryData.size.height * 0.01),
                                 ),
                               ],
@@ -561,7 +562,7 @@ class BeritaState extends State<Berita> {
                             //       textColor: Colors.white,
                             //       shape: RoundedRectangleBorder(
                             //         borderRadius:
-                            //             new BorderRadius.circular(15.0),
+                            //              BorderRadius.circular(15.0),
                             //       ),
                             //       child: Row(
                             //         mainAxisAlignment:
@@ -736,17 +737,17 @@ class BeritaState extends State<Berita> {
             //       ],
             //     );
             //   },
-            //   child: new Container(
+            //   child:  Container(
             return Container(
-              padding: new EdgeInsets.all(1.0),
+              padding: EdgeInsets.all(1.0),
               child: Column(
                 children: <Widget>[
-                  new Container(
+                  Container(
                     alignment: Alignment.centerLeft,
-                    padding: new EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Text(
                       "BERITA",
-                      style: new TextStyle(
+                      style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),

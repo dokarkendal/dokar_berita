@@ -220,7 +220,8 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (_mySelection == null) {
       final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/editkegiatan",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/editkegiatan"),
         body: {
           "judul": dJudul.text,
           "tempat": dKatTempat.text,

@@ -13,7 +13,7 @@
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!--tambah-->
     <application
         android:requestLegacyExternalStorage="true"
-        android:name=".Application"
+       android:name="${applicationName}"
         android:label="Dokar Kendal"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -34,21 +34,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!--tambah sampe-->
-            <intent-filter>
-                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-            <!--sini-->
         </activity>
-        <!--tambah sampe-->
-        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
-        <!--sini-->
          <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

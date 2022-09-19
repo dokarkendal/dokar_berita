@@ -7,6 +7,8 @@ import 'package:dokar_aplikasi/berita/form/form_kegiatan.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../style/styleset.dart';
 // api to json
 
 class InputSemua extends StatefulWidget {
@@ -36,14 +38,18 @@ class _InputSemuaState extends State<InputSemua> {
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: appbarIcon, //change your color here
+          ),
           title: Text(
-            'Tulis Konten',
+            'TULIS',
             style: TextStyle(
-              color: Color(0xFF2e2e2e),
+              color: appbarTitle,
               fontWeight: FontWeight.bold,
               fontSize: 25.0,
             ),
           ),
+          centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
@@ -64,14 +70,18 @@ class _InputSemuaState extends State<InputSemua> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: appbarIcon, //change your color here
+          ),
           title: Text(
-            'Tulis Konten',
+            'TULIS',
             style: TextStyle(
-              color: Color(0xFF2e2e2e),
+              color: appbarTitle,
               fontWeight: FontWeight.bold,
               fontSize: 25.0,
             ),
           ),
+          centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
@@ -303,11 +313,11 @@ class _InputSemuaState extends State<InputSemua> {
             ),
           ),
           subtitle: new Text(
-            "Agenda desa",
+            "Agenda desa dan kelurahan",
             style: new TextStyle(fontSize: 12.0, color: Colors.black54),
           ),
           title: new Text(
-            "Event",
+            "Agenda",
             style: new TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
@@ -342,7 +352,7 @@ class _InputSemuaState extends State<InputSemua> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Image.asset(
-                  'assets/images/input.png',
+                  'assets/images/tulis.png',
                   width: SizeConfig.safeBlockHorizontal * 30,
                   height: SizeConfig.safeBlockVertical * 30,
                 ),
@@ -359,6 +369,7 @@ class _InputSemuaState extends State<InputSemua> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(height: SizeConfig.safeBlockHorizontal * 1),
                     AutoSizeText(
                       'Berikan informasi aktual',
                       minFontSize: 10,

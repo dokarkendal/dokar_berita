@@ -8,12 +8,14 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import 'package:http/http.dart' as http; //api
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-final GoogleSignIn _googleSignIn = new GoogleSignIn();
-final FirebaseAuth _fireAuth = FirebaseAuth.instance;
+import '../style/styleset.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+
+// final GoogleSignIn _googleSignIn = new GoogleSignIn();
+// final FirebaseAuth _fireAuth = FirebaseAuth.instance;
 
 class DetailBerita extends StatefulWidget {
   final String dGambar,
@@ -53,31 +55,34 @@ class DetailBerita extends StatefulWidget {
 
 class _DetailBeritaState extends State<DetailBerita> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  User _currentUser;
-  AdditionalUserInfo _addcurrentUser;
+  // User _currentUser;
+  // AdditionalUserInfo _addcurrentUser;
   String dibaca = '';
   // ignore: missing_return
   Future<String> getKategori() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/viewest",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/viewest"),
         body: {
           "IdDesa": "${widget.dIdDesa}",
           "Kategori": "${widget.dKategori}",
           "IdBerita": "${widget.dId}"
         });
     var kategori = json.decode(response.body);
-    setState(
-      () {
-        if ('${widget.dBaca}' == 'null') {
-          dibaca = '0';
-        } else {
-          dibaca = '${widget.dBaca}';
-        }
-        print(kategori);
-        //print("${widget.dIdDesa}");
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          if ('${widget.dBaca}' == 'null') {
+            dibaca = '0';
+          } else {
+            dibaca = '${widget.dBaca}';
+          }
+          print(kategori);
+          //print("${widget.dIdDesa}");
+        },
+      );
+    }
   }
 
   YoutubePlayerController youTube;
@@ -111,99 +116,99 @@ class _DetailBeritaState extends State<DetailBerita> {
     this.getKategori();
   }
 
-  Future<String> checkSignIGoogle() async {
-    await Firebase.initializeApp();
-    final GoogleSignInAccount googleSignInAccount =
-        await _googleSignIn.signInSilently();
+  // Future<String> checkSignIGoogle() async {
+  //   await Firebase.initializeApp();
+  //   final GoogleSignInAccount googleSignInAccount =
+  //       await _googleSignIn.signInSilently();
 
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+  //   final GoogleSignInAuthentication googleSignInAuthentication =
+  //       await googleSignInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
+  //   final AuthCredential credential = GoogleAuthProvider.credential(
+  //     accessToken: googleSignInAuthentication.accessToken,
+  //     idToken: googleSignInAuthentication.idToken,
+  //   );
 
-    final UserCredential authResult =
-        await _fireAuth.signInWithCredential(credential);
-    final User user = authResult.user;
-    final AdditionalUserInfo userInfo = authResult.additionalUserInfo;
+  //   final UserCredential authResult =
+  //       await _fireAuth.signInWithCredential(credential);
+  //   final User user = authResult.user;
+  //   final AdditionalUserInfo userInfo = authResult.additionalUserInfo;
 
-    if (user != null) {
-      setState(() {
-        _currentUser = user;
-        _addcurrentUser = userInfo;
-      });
-      print(_currentUser);
-      print(_addcurrentUser);
-      return '$user';
-    }
+  //   if (user != null) {
+  //     setState(() {
+  //       _currentUser = user;
+  //       _addcurrentUser = userInfo;
+  //     });
+  //     print(_currentUser);
+  //     print(_addcurrentUser);
+  //     return '$user';
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
-  Widget tombolKomentarBerita() {
-    if (_currentUser != null) {
-      return FlatButton(
-        color: Colors.grey,
-        textColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(20.0),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Icon(
-              Icons.message,
-              size: 20,
-              color: Colors.white,
-            ),
-            Text(
-              "  " + "Komentar",
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        onPressed: () {
-          print("Komentar");
-          //Navigator.pushNamed(context, '/GoogleAccount');
-        },
-      );
-    } else {
-      return FlatButton(
-        color: Colors.grey,
-        textColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(20.0),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Icon(
-              Icons.message,
-              size: 20,
-              color: Colors.white,
-            ),
-            Text(
-              "  " + "Komentar",
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        onPressed: () {
-          print("Masuk");
-        },
-      );
-    }
-  }
+  // Widget tombolKomentarBerita() {
+  //   if (_currentUser != null) {
+  //     return FlatButton(
+  //       color: Colors.grey,
+  //       textColor: Colors.white,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: new BorderRadius.circular(20.0),
+  //       ),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.start,
+  //         children: <Widget>[
+  //           Icon(
+  //             Icons.message,
+  //             size: 20,
+  //             color: Colors.white,
+  //           ),
+  //           Text(
+  //             "  " + "Komentar",
+  //             style: TextStyle(
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.w700,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       onPressed: () {
+  //         print("Komentar");
+  //         //Navigator.pushNamed(context, '/GoogleAccount');
+  //       },
+  //     );
+  //   } else {
+  //     return FlatButton(
+  //       color: Colors.grey,
+  //       textColor: Colors.white,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: new BorderRadius.circular(20.0),
+  //       ),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.start,
+  //         children: <Widget>[
+  //           Icon(
+  //             Icons.message,
+  //             size: 20,
+  //             color: Colors.white,
+  //           ),
+  //           Text(
+  //             "  " + "Komentar",
+  //             style: TextStyle(
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.w700,
+  //               color: Colors.white,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       onPressed: () {
+  //         print("Masuk");
+  //       },
+  //     );
+  //   }
+  // }
 
   Widget _playYoutube(youTube) {
     String vid = "${widget.dVideo}";
@@ -275,12 +280,15 @@ class _DetailBeritaState extends State<DetailBerita> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         centerTitle: true,
         elevation: 0,
         title: Text(
           'BERITA',
           style: TextStyle(
-            color: Colors.brown[800],
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -549,7 +557,7 @@ class _DetailBeritaState extends State<DetailBerita> {
           Text(
             '${widget.dJudul}',
             style: new TextStyle(
-              fontSize: 18.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -669,7 +677,7 @@ class _DetailBeritaState extends State<DetailBerita> {
         children: [
           Icon(
             Icons.person,
-            size: 14,
+            size: 12,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -681,7 +689,7 @@ class _DetailBeritaState extends State<DetailBerita> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
           new Padding(
@@ -690,7 +698,7 @@ class _DetailBeritaState extends State<DetailBerita> {
           ),
           Icon(
             Icons.date_range_rounded,
-            size: 14,
+            size: 12,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -702,7 +710,7 @@ class _DetailBeritaState extends State<DetailBerita> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
         ],
@@ -728,7 +736,7 @@ class _DetailBeritaState extends State<DetailBerita> {
         children: [
           Icon(
             Icons.remove_red_eye,
-            size: 14,
+            size: 12,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -740,7 +748,7 @@ class _DetailBeritaState extends State<DetailBerita> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
           // new Padding(
@@ -751,7 +759,7 @@ class _DetailBeritaState extends State<DetailBerita> {
             // padding: EdgeInsets.all(15.0),
             icon: Icon(Icons.share),
             color: Colors.blue[800],
-            iconSize: 20.0,
+            iconSize: 18.0,
             onPressed: () {
               Share.share("${widget.dUrl}");
             },
@@ -773,94 +781,94 @@ class _DetailBeritaState extends State<DetailBerita> {
     );
   }
 
-  Widget wShare() {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.contact_mail,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Saran",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                SnackBar snackBar = SnackBar(
-                  content: Text(
-                    'Fitur belum tersedia',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.black,
-                  action: SnackBarAction(
-                    label: 'ULANGI',
-                    textColor: Colors.white,
-                    onPressed: () {
-                      print('ULANGI snackbar');
-                    },
-                  ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
-              },
-            ),
-          ],
-        ),
-        Column(
-          children: <Widget>[tombolKomentarBerita()],
-        ),
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.share,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Share",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                Share.share("${widget.dUrl}");
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget wShare() {
+  //   return new Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //     children: <Widget>[
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.grey,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.contact_mail,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Saran",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               SnackBar snackBar = SnackBar(
+  //                 content: Text(
+  //                   'Fitur belum tersedia',
+  //                   style: TextStyle(color: Colors.white),
+  //                 ),
+  //                 backgroundColor: Colors.black,
+  //                 action: SnackBarAction(
+  //                   label: 'ULANGI',
+  //                   textColor: Colors.white,
+  //                   onPressed: () {
+  //                     print('ULANGI snackbar');
+  //                   },
+  //                 ),
+  //               );
+  //               scaffoldKey.currentState.showSnackBar(snackBar);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       // Column(
+  //       //   children: <Widget>[tombolKomentarBerita()],
+  //       // ),
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.blue,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.share,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Share",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               Share.share("${widget.dUrl}");
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 }
 
 class ArcClipper extends CustomClipper<Path> {

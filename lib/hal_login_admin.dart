@@ -1,7 +1,7 @@
+//ANCHOR Selesai
 import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -15,25 +15,29 @@ class DaftarAdmin extends StatefulWidget {
 }
 
 class _DaftarAdminState extends State<DaftarAdmin> {
+//NOTE Controller
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController user = TextEditingController();
+  TextEditingController pass = TextEditingController();
 
-  TextEditingController user = new TextEditingController();
-  TextEditingController pass = new TextEditingController();
-
+//NOTE Variable
   String username = '';
   String userStatus = '';
-  bool _obscureText = true;
 
+//NOTE Boolean
   // ignore: unused_field
   bool _isLoggedIn = false;
   bool _isInAsyncCall = false;
+  bool _obscureText = true;
 
+//NOTE Inistate
   @override
   void initState() {
     super.initState();
     _cekLogin();
   }
 
+//NOTE Toogle password hide
   void _toggle() {
     setState(
       () {
@@ -42,6 +46,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Fungsi Cek Login
   Future _cekLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getBool("_isLoggedIn") == true) {
@@ -51,16 +56,15 @@ class _DaftarAdminState extends State<DaftarAdmin> {
           _isInAsyncCall = true;
         },
       );
-
       Navigator.pushReplacementNamed(context, '/Haldua');
     } else {
       _isLoggedIn = false;
     }
   }
 
-  // ignore: missing_return
-  Future<List> _login() async {
-    FocusScope.of(context).requestFocus(new FocusNode());
+//NOTE Fungsi Login
+  Future _login() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     setState(
       () {
         _isInAsyncCall = true;
@@ -71,34 +75,34 @@ class _DaftarAdminState extends State<DaftarAdmin> {
       Duration(seconds: 1),
       () async {
         final response = await http.post(
-            "http://dokar.kendalkab.go.id/webservice/android/login",
+            Uri.parse("http://dokar.kendalkab.go.id/webservice/android/login"),
             body: {
               "username": user.text,
               "password": pass.text,
             });
         var datauser = json.decode(response.body);
-
         if (datauser[0]['notif'] == 'Empty') {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("_isLoggedIn", false);
           setState(() {
             _isInAsyncCall = false;
           });
-          SnackBar snackBar = SnackBar(
-            content: Text(
-              'User dan password harus diisi',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-            action: SnackBarAction(
-              label: 'ULANGI',
-              textColor: Colors.white,
-              onPressed: () {
-                print('ULANGI snackbar');
-              },
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'User dan password perlu diisi',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+              action: SnackBarAction(
+                label: 'ULANGI',
+                textColor: Colors.white,
+                onPressed: () {
+                  print('ULANGI snackbar');
+                },
+              ),
             ),
           );
-          scaffoldKey.currentState.showSnackBar(snackBar);
         } else if (datauser[0]['notif'] == 'NoUser') {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("_isLoggedIn", false);
@@ -107,9 +111,9 @@ class _DaftarAdminState extends State<DaftarAdmin> {
               _isInAsyncCall = false;
             },
           );
-          SnackBar snackBar = SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
-              'User tidak di temukan',
+              'Username anda salah',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,
@@ -120,8 +124,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 print('ULANGI snackbar');
               },
             ),
-          );
-          scaffoldKey.currentState.showSnackBar(snackBar);
+          ));
         } else if (datauser[0]['notif'] == 'NoPassword') {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("_isLoggedIn", false);
@@ -130,9 +133,9 @@ class _DaftarAdminState extends State<DaftarAdmin> {
               _isInAsyncCall = false;
             },
           );
-          SnackBar snackBar = SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
-              'Password tidak di temukan',
+              'Password anda salah',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.red,
@@ -143,8 +146,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 print('ULANGI snackbar');
               },
             ),
-          );
-          scaffoldKey.currentState.showSnackBar(snackBar);
+          ));
         } else if (datauser[0]["active"] == "1") {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("_isLoggedIn", true);
@@ -177,26 +179,28 @@ class _DaftarAdminState extends State<DaftarAdmin> {
               _isInAsyncCall = false;
             },
           );
-          SnackBar snackBar = SnackBar(
-            content: Text(
-              'Akun anda telah nonaktif',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.grey,
-            action: SnackBarAction(
-              label: 'NON AKTIF',
-              textColor: Colors.white,
-              onPressed: () {
-                print('ULANGI snackbar');
-              },
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Akun anda telah nonaktif',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.grey,
+              action: SnackBarAction(
+                label: 'NON AKTIF',
+                textColor: Colors.white,
+                onPressed: () {
+                  print('ULANGI snackbar');
+                },
+              ),
             ),
           );
-          scaffoldKey.currentState.showSnackBar(snackBar);
         }
       },
     );
   }
 
+//NOTE Form Username
   Widget _formUsername() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -216,7 +220,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 color: Colors.black,
               ),
               decoration: InputDecoration(
-                border: new OutlineInputBorder(
+                border: OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(10.0),
                   ),
@@ -237,6 +241,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Form Password
   Widget _formPassword() {
     return Container(
       child: Column(
@@ -256,7 +261,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 fontFamily: 'OpenSans',
               ),
               decoration: InputDecoration(
-                border: new OutlineInputBorder(
+                border: OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(10.0),
                   ),
@@ -283,21 +288,22 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
-  Widget _buildForgotPasswordBtn() {
+//NOTE Lupa Password
+  Widget _tombolLupaPassword() {
     return Container(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: TextButton(
         onPressed: () async {
-          const url =
-              'https://api.whatsapp.com/send?phone=6285726926557&text=Kecamatan%20%3A%0ADesa%20%3A%0A%0AHai%20Admin%2C%20Saya%20lupa%20password%20Dokar';
-
-          if (await canLaunch(url)) {
-            await launch(url, forceSafariVC: false);
-          } else {
+          //LINK Whatsapp Link
+          final Uri url = Uri.parse(
+              'https://api.whatsapp.com/send?phone=6285726926557&text=Kecamatan%20%3A%0ADesa%20%3A%0A%0AHai%20Admin%2C%20Saya%20lupa%20password%20Dokar');
+          if (!await launchUrl(
+            url,
+            mode: LaunchMode.externalApplication,
+          )) {
             throw 'Could not launch $url';
           }
         },
-        padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Lupa Password?',
           style: TextStyle(
@@ -308,20 +314,24 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Tombol Login
   Widget _tombolLogin() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
       width: MediaQuery.of(context).size.width,
       height: mediaQueryData.size.height * 0.07,
-      child: RaisedButton(
+      child: ElevatedButton(
         onPressed: () {
           _login();
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(15.0),
+          elevation: 2.0,
+          primary: Theme.of(context).primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // <-- Radius
+          ),
         ),
-        color: Theme.of(context).primaryColor,
         child: Text(
           'LOGIN',
           style: TextStyle(
@@ -336,6 +346,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Scaffold
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -380,34 +391,28 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: mediaQueryData.size.height * 0.04,
-                    right: mediaQueryData.size.height * 0.04,
+                    left: mediaQueryData.size.height * 0.02,
+                    right: mediaQueryData.size.height * 0.02,
                     bottom: mediaQueryData.size.height * 0.04,
                     // top: mediaQueryData.size.height * 0.01,
                   ),
                   child: Container(
                     child: ListView(
-                      // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // _textjudul(),
-                        new Padding(
-                          padding: new EdgeInsets.only(
-                              top: mediaQueryData.size.height * 0.02),
-                        ),
                         _formUsername(),
-                        new Padding(
-                          padding: new EdgeInsets.only(
+                        Padding(
+                          padding: EdgeInsets.only(
                               top: mediaQueryData.size.height * 0.03),
                         ),
                         _formPassword(),
-                        _buildForgotPasswordBtn(),
-                        new Padding(
-                          padding: new EdgeInsets.only(
+                        _tombolLupaPassword(),
+                        Padding(
+                          padding: EdgeInsets.only(
                               top: mediaQueryData.size.height * 0.02),
                         ),
                         _tombolLogin(),
-                        new Padding(
-                          padding: new EdgeInsets.only(
+                        Padding(
+                          padding: EdgeInsets.only(
                               top: mediaQueryData.size.height * 0.02),
                         ),
                         _privacy(),
@@ -423,6 +428,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Tombol Provacy DOKAR
   Widget _privacy() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
@@ -430,17 +436,18 @@ class _DaftarAdminState extends State<DaftarAdmin> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text("Dengan login, saya menyetujui"),
-          new Padding(
-            padding:
-                new EdgeInsets.only(top: mediaQueryData.size.height * 0.01),
+          Padding(
+            padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.01),
           ),
           GestureDetector(
             onTap: () async {
-              const url = 'https://dokar.kendalkab.go.id/privacy';
-
-              if (await canLaunch(url)) {
-                await launch(url, forceSafariVC: false);
-              } else {
+              //LINK Privacy dokar
+              final Uri url =
+                  Uri.parse('https://dokar.kendalkab.go.id/privacy');
+              if (!await launchUrl(
+                url,
+                mode: LaunchMode.externalApplication,
+              )) {
                 throw 'Could not launch $url';
               }
             },
@@ -458,6 +465,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Header Dokar
   Widget _logo() {
     return Container(
       decoration: BoxDecoration(
@@ -471,6 +479,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     );
   }
 
+//NOTE Judul
   Widget _textjudul() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(

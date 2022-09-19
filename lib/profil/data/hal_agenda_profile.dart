@@ -24,7 +24,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/agenda"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -37,7 +37,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
       });
 
       final response = await dio.get(nextPage + "/${widget.idDesa}");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {

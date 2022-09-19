@@ -48,13 +48,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
   List dataJSON;
   bool isLoading = false;
 
-  // ignore: missing_return
-  Future<String> jumlahAgenda() async {
+  Future jumlahAgenda() async {
     setState(() {
       isLoading = true;
     });
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata"),
         body: {
           "IdDesa": "${widget.id}",
         });
@@ -90,8 +90,11 @@ class _ProfilDesaState extends State<ProfilDesa> {
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(() {
+      isLoading = true;
+    });
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/galeri/" +
                 "${widget.id}"),
         headers: {"Accept": "application/json"});
@@ -99,6 +102,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
     this.setState(
       () {
         dataJSON = json.decode(hasil.body);
+        isLoading = false;
       },
     );
   }
@@ -118,7 +122,16 @@ class _ProfilDesaState extends State<ProfilDesa> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('PROFIL'),
+        iconTheme: IconThemeData(
+          color: Colors.brown[800], //change your color here
+        ),
+        title: Text(
+          'PROFIL',
+          style: TextStyle(
+            color: Colors.brown[800],
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
@@ -309,7 +322,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                   : Stack(
                       children: <Widget>[
                         Padding(
-                          padding: new EdgeInsets.all(10.0),
+                          padding: EdgeInsets.all(10.0),
                           child: Container(
                             width: double.infinity,
                             height: 80.0,
@@ -443,12 +456,21 @@ class _ProfilDesaState extends State<ProfilDesa> {
                         ),
                         SizedBox(
                           height: 25,
-                          child: FlatButton(
-                            color: Colors.grey[300],
-                            textColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(15.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              // padding: EdgeInsets.all(15.0),
+                              elevation: 0,
+                              primary: Colors.grey[300],
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(15), // <-- Radius
+                              ),
                             ),
+                            // color: Colors.grey[300],
+                            // textColor: Colors.white,
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius:  BorderRadius.circular(15.0),
+                            // ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -481,201 +503,202 @@ class _ProfilDesaState extends State<ProfilDesa> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 10.0,
-                    ),
-                    child: Container(
-                      height: 130,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 100.0,
-                            child: ListView.builder(
-                              physics: ClampingScrollPhysics(),
-                              shrinkWrap: true,
+                  isLoading
+                      ? _buildProgressIndicator()
+                      : Padding(
+                          padding: EdgeInsets.only(
+                            left: 10.0,
+                          ),
+                          child: Container(
+                            height: 130,
+                            child: ListView(
                               scrollDirection: Axis.horizontal,
-                              itemCount: dataJSON == null ? 0 : dataJSON.length,
-                              itemBuilder: (context, i) {
-                                if (dataJSON[i]["gambar"] == 'NotFound') {
-                                  return new Container(
-                                    child: Center(
-                                      child: new Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 150.0,
-                                                vertical: 15.0),
-                                            child: new Icon(Icons.event_busy,
-                                                size: 50.0,
-                                                color: Colors.grey[350]),
-                                          ),
-                                          new Text(
-                                            "Belum ada gambar",
-                                            style: new TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.grey[350],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return new Container(
-                                    child: new Container(
-                                      padding: new EdgeInsets.all(2.0),
-                                      child: new GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  DetailGaleri(
-                                                dGambar: dataJSON[i]["gambar"],
-                                                dDesa: dataJSON[i]["desa"],
-                                                dJudul: dataJSON[i]["judul"],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: new Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Stack(
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 100.0,
+                                  child: ListView.builder(
+                                    physics: ClampingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        dataJSON == null ? 0 : dataJSON.length,
+                                    itemBuilder: (context, i) {
+                                      if (dataJSON[i]["gambar"] == 'NotFound') {
+                                        return Container(
+                                          child: Center(
+                                            child: Column(
                                               children: <Widget>[
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                  child: CachedNetworkImage(
-                                                    // child: Image.network(
-                                                    //   dataJSON[i]["gambar"],
-                                                    fit: BoxFit.cover,
-                                                    width: 160.0,
-                                                    height: 120.0,
-                                                    // ),
-                                                    imageUrl: dataJSON[i]
-                                                        ["gambar"],
-                                                    // new NetworkImage(databerita[index]["kabar_gambar"]),
-                                                    placeholder:
-                                                        (context, url) =>
-                                                            Container(
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                            "assets/images/load.png",
-                                                          ),
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    // onTap: () {
-                                                    //   Navigator.push(
-                                                    //     context,
-                                                    //     MaterialPageRoute(
-                                                    //       builder: (context) =>
-                                                    //           DetailGaleri(
-                                                    //         dGambar: dataJSON[i]
-                                                    //             ["gambar"],
-                                                    //         dDesa: dataJSON[i]
-                                                    //             ["desa"],
-                                                    //         dJudul: dataJSON[i]
-                                                    //             ["judul"],
-                                                    //       ),
-                                                    //     ),
-                                                    //   );
-                                                    // },
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 150.0,
+                                                      vertical: 15.0),
+                                                  child: Icon(Icons.event_busy,
+                                                      size: 50.0,
+                                                      color: Colors.grey[350]),
+                                                ),
+                                                Text(
+                                                  "Belum ada gambar",
+                                                  style: TextStyle(
+                                                    fontSize: 20.0,
+                                                    color: Colors.grey[350],
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                    top: 80.0,
-                                                    left: 0.0,
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return Container(
+                                          child: Container(
+                                            padding: EdgeInsets.all(2.0),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailGaleri(
+                                                      dGambar: dataJSON[i]
+                                                          ["gambar"],
+                                                      dDesa: dataJSON[i]
+                                                          ["desa"],
+                                                      dJudul: dataJSON[i]
+                                                          ["judul"],
+                                                    ),
                                                   ),
-                                                  child: SizedBox(
-                                                    height: 40.0,
-                                                    width: 160,
-                                                    child: Material(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5.0),
-                                                      color: Colors.black45
-                                                          .withOpacity(0.4),
-                                                      child: Column(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            padding:
-                                                                new EdgeInsets
-                                                                    .all(5.0),
+                                                );
+                                              },
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Stack(
+                                                    children: <Widget>[
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5.0),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          // child: Image.network(
+                                                          //   dataJSON[i]["gambar"],
+                                                          fit: BoxFit.cover,
+                                                          width: 160.0,
+                                                          height: 120.0,
+                                                          // ),
+                                                          imageUrl: dataJSON[i]
+                                                              ["gambar"],
+                                                          //  NetworkImage(databerita[index]["kabar_gambar"]),
+                                                          placeholder:
+                                                              (context, url) =>
+                                                                  Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              image:
+                                                                  DecorationImage(
+                                                                image:
+                                                                    AssetImage(
+                                                                  "assets/images/load.png",
+                                                                ),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                          top: 80.0,
+                                                          left: 0.0,
+                                                        ),
+                                                        child: SizedBox(
+                                                          height: 40.0,
+                                                          width: 160,
+                                                          child: Material(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5.0),
+                                                            color: Colors
+                                                                .black45
+                                                                .withOpacity(
+                                                                    0.6),
                                                             child: Column(
                                                               children: <
                                                                   Widget>[
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child: Text(
-                                                                    dataJSON[i][
-                                                                        "desa"],
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          10,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .centerLeft,
-                                                                  child:
-                                                                      AutoSizeText(
-                                                                    dataJSON[i][
-                                                                        "judul"],
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style:
-                                                                        new TextStyle(
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                    maxLines: 1,
+                                                                Container(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              5.0),
+                                                                  child: Column(
+                                                                    children: <
+                                                                        Widget>[
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.centerLeft,
+                                                                        child:
+                                                                            Text(
+                                                                          dataJSON[i]
+                                                                              [
+                                                                              "desa"],
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                10,
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.centerLeft,
+                                                                        child:
+                                                                            AutoSizeText(
+                                                                          dataJSON[i]
+                                                                              [
+                                                                              "judul"],
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                          maxLines:
+                                                                              1,
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
                                                               ],
                                                             ),
                                                           ),
-                                                        ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  )
+                        )
                 ],
               ),
             ),
@@ -875,11 +898,14 @@ class _ProfilDesaState extends State<ProfilDesa> {
                       Column(
                         children: <Widget>[
                           IconButton(
-                            padding: EdgeInsets.all(15.0),
-                            icon: Icon(Icons.check_box_outline_blank_outlined),
-                            color: Colors.white,
-                            iconSize: 30.0,
-                            onPressed: () {
+                              padding: EdgeInsets.all(15.0),
+                              icon: Icon(
+                                Icons.check_box_outline_blank_outlined,
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                              // color: Colors.white.withOpacity(0.1),
+                              iconSize: 30.0,
+                              onPressed: null
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
@@ -888,8 +914,9 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               //         kodeDesa: "$kode"),
                               //   ),
                               // );
-                            },
-                          ),
+
+                              ),
+
                           // Text("Siskeudes",
                           //     style: TextStyle(
                           //         color: Colors.white,
@@ -912,13 +939,13 @@ class _ProfilDesaState extends State<ProfilDesa> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     // SizeConfig().init(context);
     return Padding(
-      padding: new EdgeInsets.all(1.0),
+      padding: EdgeInsets.all(1.0),
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
         baseColor: Colors.grey[300],
         child: Container(
-          padding: new EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(5.0),
           child: Column(
             children: <Widget>[
               Column(

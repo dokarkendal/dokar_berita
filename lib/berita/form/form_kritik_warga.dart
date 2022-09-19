@@ -62,7 +62,8 @@ class FormKritikWargaState extends State<FormKritikWarga> {
     // ignore: unused_local_variable
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/add",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/add"),
       body: {
         "IdDesa": "${widget.idDesa}",
         "nama": cNama.text,

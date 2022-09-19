@@ -38,7 +38,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   String namadesa = "";
   String status = "";
 
-  List beritaAdmin = List();
+  List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -58,7 +58,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   }
 
   ScrollController _scrollController = new ScrollController();
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -79,7 +79,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
       );
       print(nextPage);
       final response = await dio.get(nextPage + "/${widget.idDesa}/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {

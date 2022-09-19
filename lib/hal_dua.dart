@@ -1,17 +1,21 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
 import 'package:flutter/material.dart';
-import 'package:open_appstore/open_appstore.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dokar_aplikasi/daftar_admin.dart';
+import 'package:dokar_aplikasi/hal_login_admin.dart';
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:store_redirect/store_redirect.dart';
+import 'style/styleset.dart';
 
 class Haldua extends StatefulWidget {
   @override
@@ -19,19 +23,25 @@ class Haldua extends StatefulWidget {
 }
 
 class _HalduaState extends State<Haldua> {
+//NOTE Variable
   String username = "";
   String kecamatan = "";
   String namadesa = "";
   String status = "";
   String id = "";
-  List dataJSON;
   String versi = "";
   String update = "";
   String newversi = "";
   String descript = "";
+  bool hasThrownError = false;
 
-  final firebaseMessaging = FirebaseMessaging();
-  bool isSubscribed = false;
+//NOTE List
+  List dataJSON;
+
+//NOTE Boolean
+  // ignore: unused_field
+  bool _isLoggedIn = false;
+  bool isLoading = false;
 
   var alertStyle = AlertStyle(
     animationType: AnimationType.fromTop,
@@ -47,16 +57,16 @@ class _HalduaState extends State<Haldua> {
     ),
   );
 
-  // ignore: unused_field
-  bool _isLoggedIn = false;
+//NOTE Fungsi cek login
   Future _cekLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getBool("_isLoggedIn") == false) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => new DaftarAdmin()));
+          context, MaterialPageRoute(builder: (context) => DaftarAdmin()));
     }
   }
 
+//NOTE Fungsi Cek Logout
   Future _cekLogout() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getBool("_isLoggedIn") == null) {
@@ -67,22 +77,50 @@ class _HalduaState extends State<Haldua> {
     }
   }
 
-  // ignore: missing_return
-  Future<String> ambildata() async {
+  //NOTE Fungsi Aambil Galery
+  Future ambildata() async {
+    setState(() {
+      isLoading = true;
+    });
     SharedPreferences pref = await SharedPreferences.getInstance();
-    http.Response hasil = await http.get(
-        Uri.encodeFull(
-            "http://dokar.kendalkab.go.id/webservice/android/kabar/galeri/" +
-                pref.getString("IdDesa")),
-        headers: {"Accept": "application/json"});
+    try {
+      http.Response hasil = await http.get(
+          Uri.parse(
+              "http://dokar.kendalkab.go.id/webservice/android/kabar/galeri/" +
+                  pref.getString("IdDesa")),
+          headers: {"Accept": "application/json"});
 
-    this.setState(
-      () {
-        dataJSON = json.decode(hasil.body);
-      },
-    );
+      this.setState(
+        () {
+          dataJSON = json.decode(hasil.body);
+          isLoading = false;
+        },
+      );
+    } catch (e) {
+      if (e is SocketException) {
+        setState(() {
+          hasThrownError = true;
+        });
+
+        //treat SocketException
+        print("Socket exception galery: ${e.toString()}");
+      } else if (e is TimeoutException) {
+        setState(() {
+          hasThrownError = true;
+        });
+        //treat TimeoutException
+        print("Timeout exception galery: ${e.toString()}");
+      } else {
+        setState(() {
+          hasThrownError = true;
+        });
+        print("Unhandled exception galery: ${e.toString()}");
+      }
+    }
+    return null;
   }
 
+//NOTE Fungsi Cek User
   Future _cekUser() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userAdmin") != null) {
@@ -96,71 +134,71 @@ class _HalduaState extends State<Haldua> {
     }
   }
 
-  // ignore: missing_return
-  Future<String> _cekVersion() async {
+  //NOTE Fungsi Cek Versi
+  Future _cekVersion() async {
+    setState(() {
+      isLoading = true;
+    });
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String versionName = packageInfo.version;
     String versionCode = packageInfo.buildNumber;
     versi = versionName + versionCode;
     print(versi);
+    try {
+      http.Response cekversi = await http.get(
+          Uri.parse(
+              "http://dokar.kendalkab.go.id/webservice/android/dashbord/androidversion"),
+          headers: {"Accept": "application/json"});
+      var data = json.decode(cekversi.body);
 
-    http.Response cekversi = await http.get(
-        Uri.encodeFull(
-            "http://dokar.kendalkab.go.id/webservice/android/dashbord/androidversion"),
-        headers: {"Accept": "application/json"});
-    var data = json.decode(cekversi.body);
-
-    if (data['version'] + data['versioncode'] == versi) {
-      setState(() {
-        update = "Updated";
-        newversi = data['version'];
-        descript = data['description'];
-      });
-      print(update);
-      print(newversi + data['versioncode']);
-      print(descript);
-    } else {
-      setState(() {
-        update = "NotUpdate";
-        newversi = data['version'];
-        descript = data['description'];
-      });
-      print(update);
-      print(newversi + data['versioncode']);
-      print(descript);
+      if (data['version'] + data['versioncode'] == versi) {
+        setState(() {
+          update = "Updated";
+          versi = data['version'];
+          descript = data['description'];
+          isLoading = false;
+        });
+        print(update);
+        print(versi + data['versioncode']);
+        print(descript);
+      } else {
+        setState(() {
+          update = "NotUpdate";
+          versi = data['version'];
+          descript = data['description'];
+          isLoading = false;
+        });
+        print(update);
+        print(versi + data['versioncode']);
+        print(descript);
+      }
+    } catch (e) {
+      if (e is SocketException) {
+        //treat SocketException
+        print("Socket exception versi: ${e.toString()}");
+      } else if (e is TimeoutException) {
+        //treat TimeoutException
+        print("Timeout exception versi: ${e.toString()}");
+      } else
+        print("Unhandled exception versi: ${e.toString()}");
     }
   }
 
-  void _cekSubscribe() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (pref.getString("userStatus") == null ||
-        pref.getString("userStatus") == "Warga") {
-      firebaseMessaging.subscribeToTopic("Warga");
-      setState(() {
-        isSubscribed = true;
-      });
-    } else {
-      firebaseMessaging.subscribeToTopic("Admin");
-      setState(() {
-        isSubscribed = true;
-      });
-    }
-  }
-
+//NOTE Inistate
   @override
   void initState() {
     super.initState();
     _cekVersion();
     _cekUser();
     _cekLogin();
-    _cekSubscribe();
-    this.ambildata();
+    ambildata();
   }
 
   void dispose() {
     super.dispose();
   }
 
+//NOTE Widget Update
   Widget updateNotification() {
     if (update == 'Updated') {
       return Container(
@@ -168,61 +206,65 @@ class _HalduaState extends State<Haldua> {
         height: 1,
       );
     } else {
-      return Padding(
-        padding: EdgeInsets.only(
-            top: 15.0, right: 15.0, left: 15.0), //NOTE ganti mediaquery
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              FlatButton(
-                color: Colors.orange[300],
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(5.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+      return isLoading
+          ? Center()
+          : Padding(
+              padding: EdgeInsets.only(top: 10.0, right: 15.0, left: 15.0),
+              child: Container(
+                child: Column(
                   children: <Widget>[
-                    Text(
-                      "Update tersedia, klik untuk update.",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        primary: Colors.white,
+                        backgroundColor: Colors.red,
+                        onSurface: Colors.grey,
                       ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Update tersedia, klik untuk update.",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {
+                        Alert(
+                          context: context,
+                          type: AlertType.info,
+                          style: alertStyle,
+                          title: "Versi " + versi,
+                          desc: descript,
+                          buttons: [
+                            DialogButton(
+                              child: Text(
+                                "Update",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                              onPressed: () {
+                                //REVIEW Tombol ke playstore
+                                Navigator.pop(context);
+                                StoreRedirect.redirect(
+                                    androidAppId: "com.dokar.kendalkab");
+                              },
+                              color: Colors.blue[300],
+                            ),
+                          ],
+                        ).show();
+                      },
                     ),
                   ],
                 ),
-                onPressed: () {
-                  Alert(
-                    context: context,
-                    type: AlertType.info,
-                    style: alertStyle,
-                    title: "Versi " + newversi,
-                    desc: descript,
-                    buttons: [
-                      DialogButton(
-                        child: Text(
-                          "Update",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          OpenAppstore.launch(
-                              androidAppId: "com.dokar.kendalkab");
-                        },
-                        color: Colors.blue[300],
-                      ),
-                    ],
-                  ).show();
-                },
               ),
-            ],
-          ),
-        ),
-      );
+            );
     }
   }
 
+//NOTE Widget Penulis
   Widget penulis() {
     if (status == '02') {
       return Padding(
@@ -264,13 +306,57 @@ class _HalduaState extends State<Haldua> {
                     color: Colors.white,
                     iconSize: 30.0,
                     onPressed: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      pref.clear();
-                      // _cekUser();
-                      int launchCount = 0;
-                      pref.setInt('counter', launchCount + 1);
-                      _cekLogout();
+                      Dialogs.bottomMaterialDialog(
+                        msg: 'Anda yakin ingin keluar aplikasi?',
+                        title: "Keluar",
+                        color: Colors.white,
+                        lottieBuilder: Lottie.asset(
+                          'assets/animation/exit2.json',
+                          fit: BoxFit.contain,
+                          repeat: false,
+                        ),
+                        // animation:'assets/logo/animation/exit.json',
+                        context: context,
+                        actions: [
+                          IconsOutlineButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            text: 'Tidak',
+                            iconData: Icons.cancel_outlined,
+                            textStyle: const TextStyle(color: Colors.grey),
+                            iconColor: Colors.grey,
+                          ),
+                          IconsButton(
+                            onPressed: () async {
+                              // SharedPreferences pref = await SharedPreferences.getInstance();
+                              // pref.clear();
+                              // events.clear();
+                              // _cekLogout();
+                              // Navigator.pop(context);
+                              SharedPreferences pref =
+                                  await SharedPreferences.getInstance();
+                              pref.clear();
+
+                              int launchCount = 0;
+                              pref.setInt('counter', launchCount + 1);
+                              _cekLogout();
+                            },
+                            text: 'Exit',
+                            iconData: Icons.exit_to_app,
+                            color: Colors.red,
+                            textStyle: const TextStyle(color: Colors.white),
+                            iconColor: Colors.white,
+                          ),
+                        ],
+                      );
+                      // SharedPreferences pref =
+                      //     await SharedPreferences.getInstance();
+                      // pref.clear();
+
+                      // int launchCount = 0;
+                      // pref.setInt('counter', launchCount + 1);
+                      // _cekLogout();
                     },
                   ),
                 ),
@@ -358,53 +444,59 @@ class _HalduaState extends State<Haldua> {
                     icon: Icon(Icons.exit_to_app),
                     color: Colors.white,
                     iconSize: 30.0,
-                    onPressed: () {
-                      Alert(
+                    onPressed: () async {
+                      Dialogs.bottomMaterialDialog(
+                        msg: 'Anda yakin ingin keluar aplikasi?',
+                        title: "Keluar",
+                        color: Colors.white,
+                        lottieBuilder: Lottie.asset(
+                          'assets/animation/exit2.json',
+                          fit: BoxFit.contain,
+                          repeat: false,
+                        ),
+                        // animation:'assets/logo/animation/exit.json',
                         context: context,
-                        style: alertStyle,
-                        type: AlertType.warning,
-                        title: "Log out?",
-                        desc: "Yakin ingin keluar aplikasi?",
-                        buttons: [
-                          DialogButton(
-                            child: Text(
-                              "Kembali",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                            color: Colors.green,
-                          ),
-                          DialogButton(
-                            child: Text(
-                              "Log Out",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                            onPressed: () async {
+                        actions: [
+                          IconsOutlineButton(
+                            onPressed: () {
                               Navigator.pop(context);
+                            },
+                            text: 'Tidak',
+                            iconData: Icons.cancel_outlined,
+                            textStyle: const TextStyle(color: Colors.grey),
+                            iconColor: Colors.grey,
+                          ),
+                          IconsButton(
+                            onPressed: () async {
+                              // SharedPreferences pref = await SharedPreferences.getInstance();
+                              // pref.clear();
+                              // events.clear();
+                              // _cekLogout();
+                              // Navigator.pop(context);
                               SharedPreferences pref =
                                   await SharedPreferences.getInstance();
                               pref.clear();
-                              // _cekUser();
+
                               int launchCount = 0;
                               pref.setInt('counter', launchCount + 1);
                               _cekLogout();
                             },
+                            text: 'Exit',
+                            iconData: Icons.exit_to_app,
                             color: Colors.red,
-                          )
+                            textStyle: const TextStyle(color: Colors.white),
+                            iconColor: Colors.white,
+                          ),
                         ],
-                      ).show();
+                      );
+                      // SharedPreferences pref =
+                      //     await SharedPreferences.getInstance();
+                      // pref.clear();
+
+                      // int launchCount = 0;
+                      // pref.setInt('counter', launchCount + 1);
+                      // _cekLogout();
                     },
-                    // onPressed: () async {
-                    //   SharedPreferences pref =
-                    //       await SharedPreferences.getInstance();
-                    //   pref.clear();
-                    //   // _cekUser();
-                    //   int launchCount = 0;
-                    //   pref.setInt('counter', launchCount + 1);
-                    //   _cekLogout();
-                    // },
                   ),
                 ),
                 SizedBox(height: 8.0),
@@ -430,7 +522,7 @@ class _HalduaState extends State<Haldua> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.account_circle),
-          color: Color(0xFF2e2e2e),
+          color: appbarIcon,
           iconSize: 28.0,
           onPressed: () {
             Navigator.pushNamed(context, '/HalAkun');
@@ -440,11 +532,12 @@ class _HalduaState extends State<Haldua> {
         title: Text(
           "DOKAR ",
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontSize: 26.0,
             fontWeight: FontWeight.bold,
           ),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
         // actions: <Widget>[
         //   IconButton(
         //     icon: Icon(Icons.logout),
@@ -490,7 +583,7 @@ class _HalduaState extends State<Haldua> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 15.0),
+                          SizedBox(height: 10.0),
                           Text(
                             'Desa dan Kelurahan Online Kab. Kendal',
                             style: TextStyle(
@@ -505,14 +598,14 @@ class _HalduaState extends State<Haldua> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                    top: mediaQueryData.size.height * 0.15,
+                    top: mediaQueryData.size.height * 0.13,
                     left: mediaQueryData.size.height * 0.015,
                     right: mediaQueryData.size.height * 0.015,
                     // bottom: mediaQueryData.size.height * 0.03,
                   ),
                   child: Container(
                     width: double.infinity,
-                    height: mediaQueryData.size.height * 0.42,
+                    height: mediaQueryData.size.height * 0.39,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -528,7 +621,7 @@ class _HalduaState extends State<Haldua> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 40.0, vertical: 40.0),
+                              horizontal: 40.0, vertical: 30.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -610,7 +703,7 @@ class _HalduaState extends State<Haldua> {
                         penulis(),
                         SizedBox(height: 15.0),
                         Divider(),
-                        SizedBox(height: 5.0),
+                        // SizedBox(height: 5.0),
                         Container(
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 25.0),
@@ -623,14 +716,17 @@ class _HalduaState extends State<Haldua> {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         color: Colors.grey[800],
-                                        fontSize: 16.0),
+                                        fontSize: 14.0),
                                   ),
                                 ),
                                 Material(
                                   borderRadius: BorderRadius.circular(100.0),
                                   color: Colors.blueAccent.withOpacity(0.1),
                                   child: IconButton(
-                                    icon: Icon(Icons.arrow_forward_ios),
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 20,
+                                    ),
                                     color: Colors.blueAccent,
                                     onPressed: () {
                                       Navigator.pushNamed(
@@ -665,12 +761,20 @@ class _HalduaState extends State<Haldua> {
                   ),
                   SizedBox(
                     height: 25,
-                    child: FlatButton(
-                      color: Color(0xFFfecd2e),
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(15.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        // padding: EdgeInsets.all(15.0),
+                        elevation: 0,
+                        primary: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                        ),
                       ),
+                      // color: Colors.green,
+                      // textColor: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius:  BorderRadius.circular(15.0),
+                      // ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -679,14 +783,11 @@ class _HalduaState extends State<Haldua> {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF2e2e2e),
+                              color: Colors.grey[600],
                             ),
                           ),
-                          Icon(
-                            Icons.arrow_forward,
-                            size: 16,
-                            color: Colors.grey[600],
-                          )
+                          Icon(Icons.arrow_forward,
+                              size: 16, color: Colors.grey[600])
                         ],
                       ),
                       onPressed: () {
@@ -697,177 +798,295 @@ class _HalduaState extends State<Haldua> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 15.0, bottom: 20.0),
-              child: Container(
-                height: 200,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 160.0,
-                      child: ListView.builder(
-                        physics: ClampingScrollPhysics(),
-                        shrinkWrap: true,
+            isLoading
+                ? hasThrownError == true
+                    ? _errorGalery()
+                    : _buildProgressIndicator()
+                : Padding(
+                    padding: EdgeInsets.only(left: 15.0, bottom: 10.0),
+                    child: Container(
+                      height: 200,
+                      child: ListView(
                         scrollDirection: Axis.horizontal,
-                        itemCount: dataJSON == null ? 0 : dataJSON.length,
-                        itemBuilder: (context, i) {
-                          if (dataJSON[i]["status"] == 'Not Found') {
-                            return new Container(
-                              child: Center(
-                                child: new Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 150.0, vertical: 15.0),
-                                      child: new Icon(Icons.event_busy,
-                                          size: 50.0, color: Colors.grey[350]),
-                                    ),
-                                    new Text(
-                                      "Belum ada gambar",
-                                      style: new TextStyle(
-                                        fontSize: 20.0,
-                                        color: Colors.grey[350],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            return new Container(
-                              child: new Container(
-                                padding: new EdgeInsets.all(2.0),
-                                child: new GestureDetector(
-                                  onTap: () {},
-                                  child: new Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Stack(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 160.0,
+                            child: ListView.builder(
+                              physics: ClampingScrollPhysics(),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: dataJSON == null ? 0 : dataJSON.length,
+                              itemBuilder: (context, i) {
+                                if (dataJSON[i]["status"] == 'Not Found') {
+                                  return Container(
+                                    child: Center(
+                                      child: Column(
                                         children: <Widget>[
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            child: GestureDetector(
-                                              child: CachedNetworkImage(
-                                                imageUrl: dataJSON[i]
-                                                    ["kabar_gambar"],
-                                                fit: BoxFit.cover,
-                                                height: 180.0,
-                                                width: 120.0,
-                                                placeholder: (context, url) =>
-                                                    Container(
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: AssetImage(
-                                                        "assets/images/load.png",
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DetailGaleri(
-                                                      dGambar: dataJSON[i]
-                                                          ["kabar_gambar"],
-                                                      dDesa: dataJSON[i]
-                                                          ["data_nama"],
-                                                      dJudul: dataJSON[i]
-                                                          ["kabar_judul"],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 150.0,
+                                                vertical: 15.0),
+                                            child: Icon(Icons.event_busy,
+                                                size: 50.0,
+                                                color: Colors.grey[350]),
+                                          ),
+                                          Text(
+                                            "Belum ada gambar",
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.grey[350],
                                             ),
                                           ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 140.0,
-                                              left: 0.0,
-                                            ),
-                                            child: SizedBox(
-                                              height: 40.0,
-                                              width: 120,
-                                              child: Material(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                                color: Colors.black45
-                                                    .withOpacity(0.4),
-                                                child: Column(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      padding:
-                                                          new EdgeInsets.all(
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Container(
+                                    child: Container(
+                                      padding: EdgeInsets.all(2.0),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Stack(
+                                              children: <Widget>[
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  child: GestureDetector(
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: dataJSON[i]
+                                                          ["kabar_gambar"],
+                                                      fit: BoxFit.cover,
+                                                      height: 180.0,
+                                                      width: 120.0,
+                                                      placeholder:
+                                                          (context, url) =>
+                                                              Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
+                                                            image: AssetImage(
+                                                              "assets/images/load.png",
+                                                            ),
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DetailGaleri(
+                                                            dGambar: dataJSON[i]
+                                                                [
+                                                                "kabar_gambar"],
+                                                            dDesa: dataJSON[i]
+                                                                ["data_nama"],
+                                                            dJudul: dataJSON[i]
+                                                                ["kabar_judul"],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    top: 140.0,
+                                                    left: 0.0,
+                                                  ),
+                                                  child: SizedBox(
+                                                    height: 40.0,
+                                                    width: 120,
+                                                    child: Material(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
                                                               5.0),
+                                                      color: Colors.black45
+                                                          .withOpacity(0.4),
                                                       child: Column(
                                                         children: <Widget>[
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Text(
-                                                              dataJSON[i]
-                                                                  ["data_nama"],
-                                                              style: TextStyle(
-                                                                fontSize: 11,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: AutoSizeText(
-                                                              dataJSON[i][
-                                                                  "kabar_judul"],
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style:
-                                                                  new TextStyle(
-                                                                fontSize: 12.0,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                              maxLines: 1,
+                                                          Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            child: Column(
+                                                              children: <
+                                                                  Widget>[
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child: Text(
+                                                                    dataJSON[i][
+                                                                        "data_nama"],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          11,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerLeft,
+                                                                  child:
+                                                                      AutoSizeText(
+                                                                    dataJSON[i][
+                                                                        "kabar_judul"],
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12.0,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    maxLines: 1,
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            Container(
+                                              height: 3.0,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Container(
-                                        height: 3.0,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            )
+                  )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _errorGalery() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Container(
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.grey[200],
+        ),
+        height: mediaQueryData.size.height * 0.21,
+        width: mediaQueryData.size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 150.0, vertical: 20.0),
+            Icon(Icons.wifi_off_rounded, size: 50.0, color: Colors.grey[350]),
+            // ),
+            Text(
+              "Tidak dapat dijankau \natau waktu habis",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey[350],
+              ),
+            ),
+            TextButton.icon(
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Ulangi'),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/Haldua');
+              },
+            )
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: <Widget>[
+            // Container(
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(10.0),
+            //     color: Colors.grey[200],
+            //   ),
+            //   height: mediaQueryData.size.height * 0.21,
+            //   width: mediaQueryData.size.width,
+            //   // color: Colors.grey,
+            // ),
+
+            // Row(
+            //   ],
+            // ),
+            // SizedBox(height: mediaQueryData.size.height * 0.01),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
+    return Padding(
+      padding: EdgeInsets.all(1.0),
+      child: Shimmer.fromColors(
+        direction: ShimmerDirection.ltr,
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 15.0,
+            bottom: 10.0,
+            right: 15,
+          ),
+          child: Column(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.grey,
+                    ),
+                    height: mediaQueryData.size.height * 0.21,
+                    width: mediaQueryData.size.width,
+                    // color: Colors.grey,
+                  ),
+
+                  // Row(
+                ],
+              ),
+              // SizedBox(height: mediaQueryData.size.height * 0.01),
+            ],
+          ),
         ),
       ),
     );

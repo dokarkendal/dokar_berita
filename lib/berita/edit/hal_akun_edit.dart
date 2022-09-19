@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:status_alert/status_alert.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR class form berita edit
 class FormAkunEdit extends StatefulWidget {
   final String nama;
@@ -48,7 +50,7 @@ class FormAkunEditState extends State<FormAkunEdit> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/account/edit",
+      Uri.parse("http://dokar.kendalkab.go.id/webservice/android/account/edit"),
       body: {
         "IdAdmin": pref.getString("IdAdmin"),
         "nama": cNama.text,
@@ -96,7 +98,8 @@ class FormAkunEditState extends State<FormAkunEdit> {
   Future<String> detailAkun(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/account/detail",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/account/detail"),
         body: {
           "IdAdmin": pref.getString("IdAdmin"),
         });
@@ -129,11 +132,23 @@ class FormAkunEditState extends State<FormAkunEdit> {
 //ANCHOR Body edit berita
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Form edit akun'),
-        backgroundColor: Color(0xFFee002d),
+        centerTitle: true,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          "Form Edit Akun ",
+          style: TextStyle(
+            color: appbarTitle,
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,
@@ -283,54 +298,73 @@ class FormAkunEditState extends State<FormAkunEdit> {
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
 //NOTE tombol upload edit berita
-                    RaisedButton.icon(
-                      icon: Icon(
-                        Icons.save,
-                        color: Colors.white,
-                      ),
-                      label: Text("SIMPAN"),
-                      onPressed: () async {
-                        if (cNama.text == null || cNama.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Nama wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cUsername.text == null ||
-                            cUsername.text == '') {
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                              'Username wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          _editakun();
-                        }
-                      },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                    Container(
+                      width: mediaQueryData.size.width,
+                      child: ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.save,
+                          color: Colors.white,
+                        ),
+                        label: Text(
+                          "SIMPAN",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (cNama.text == null || cNama.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Nama wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // SnackBar snackBar =
+                            //     scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cUsername.text == null ||
+                              cUsername.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Username wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            _editakun();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(15.0),
+                          elevation: 0,
+                          primary: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(10), // <-- Radius
+                          ),
+                        ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
                     ),
                   ],

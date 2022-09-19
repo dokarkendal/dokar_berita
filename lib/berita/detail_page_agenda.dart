@@ -1,11 +1,11 @@
 //ANCHOR package detail agenda
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
-// import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-// import 'package:flutter_html/style.dart';
 import 'package:share/share.dart';
+
+import '../style/styleset.dart';
 
 //ANCHOR class
 class AgendaDetail extends StatefulWidget {
@@ -48,7 +48,17 @@ class _AgendaDetailState extends State<AgendaDetail> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('AGENDA'),
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          'AGENDA',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
       ),
       body: ListView(
@@ -59,28 +69,6 @@ class _AgendaDetailState extends State<AgendaDetail> {
                 Stack(
                   children: <Widget>[
                     wHeader(),
-                    // Padding(
-                    //   padding: EdgeInsets.only(
-                    //     top: 190.0,
-                    //     right: 10.0,
-                    //     left: 10.0,
-                    //   ),
-                    //   child: Card(
-                    //     shape: RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.circular(10),
-                    //     ),
-                    //     child: Container(
-                    //       padding: new EdgeInsets.all(15.0),
-                    //       child: IntrinsicHeight(
-                    //         child: Column(
-                    //           children: <Widget>[
-                    //             _card(),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                     Container(
                       padding: new EdgeInsets.only(
                         left: mediaQueryData.size.height * 0.01,
@@ -110,15 +98,15 @@ class _AgendaDetailState extends State<AgendaDetail> {
                               ),
                               judul(),
                               alamat(),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // admin(),
-                                  // share(),
-                                ],
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left: mediaQueryData.size.height * 0.02,
+                                  right: mediaQueryData.size.height * 0.02,
+                                ),
+                                child: Divider(),
                               ),
+                              mulai(),
+                              selesai(),
                             ],
                           ),
                         ),
@@ -159,7 +147,10 @@ class _AgendaDetailState extends State<AgendaDetail> {
                   ),
                 ),
                 // _html(),
-                _jam(),
+                // _jam(),
+                SizedBox(
+                  height: 20,
+                ),
                 // wShare(),
               ],
             ),
@@ -171,12 +162,6 @@ class _AgendaDetailState extends State<AgendaDetail> {
 
   Widget share() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-
-    // if ('${widget.dBaca}' == null) {
-    //   dibaca = '0';
-    // } else {
-    //   dibaca = '${widget.dBaca}';
-    // }
     return Container(
       padding: new EdgeInsets.only(
         left: mediaQueryData.size.height * 0.02,
@@ -185,27 +170,6 @@ class _AgendaDetailState extends State<AgendaDetail> {
       ),
       child: Row(
         children: [
-          // Icon(
-          //   Icons.remove_red_eye,
-          //   size: 14,
-          //   color: Colors.grey[500],
-          // ),
-          // new Padding(
-          //   padding:
-          //       new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
-          // ),
-          // Text(
-          //   '${widget.dBaca}',
-          //   maxLines: 3,
-          //   style: new TextStyle(
-          //     color: Colors.grey[500],
-          //     fontSize: 14.0,
-          //   ),
-          // ),
-          // new Padding(
-          //   padding:
-          //       new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
-          // ),
           IconButton(
             // padding: EdgeInsets.all(15.0),
             icon: Icon(Icons.share),
@@ -219,14 +183,6 @@ class _AgendaDetailState extends State<AgendaDetail> {
             padding:
                 new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
           ),
-          // Text(
-          //   '${widget.dTanggal}',
-          //   maxLines: 3,
-          //   style: new TextStyle(
-          //     color: Colors.grey[500],
-          //     fontSize: 14.0,
-          //   ),
-          // ),
         ],
       ),
     );
@@ -248,7 +204,7 @@ class _AgendaDetailState extends State<AgendaDetail> {
           Text(
             '${widget.judulEvent}',
             style: new TextStyle(
-              fontSize: 18.0,
+              fontSize: 14.0,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -263,14 +219,14 @@ class _AgendaDetailState extends State<AgendaDetail> {
       padding: new EdgeInsets.only(
         left: mediaQueryData.size.height * 0.01,
         top: mediaQueryData.size.height * 0.01,
-        bottom: mediaQueryData.size.height * 0.02,
+        // bottom: mediaQueryData.size.height * 0.02,
         right: mediaQueryData.size.height * 0.02,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(width: 10.0),
+          SizedBox(width: 5.0),
           Icon(
             Icons.location_on,
             size: 14,
@@ -287,7 +243,93 @@ class _AgendaDetailState extends State<AgendaDetail> {
                 maxLines: 3,
                 style: new TextStyle(
                   color: Colors.grey[500],
-                  fontSize: 14.0,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget mulai() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      padding: new EdgeInsets.only(
+        left: mediaQueryData.size.height * 0.01,
+        // top: mediaQueryData.size.height * 0.01,
+        bottom: mediaQueryData.size.height * 0.01,
+        right: mediaQueryData.size.height * 0.02,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(width: 5.0),
+          Icon(
+            Icons.date_range,
+            size: 14,
+            color: Colors.black,
+          ),
+          new Padding(
+            padding:
+                new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
+          ),
+          Container(
+            child: Expanded(
+              child: Text(
+                '${widget.tglmulaiEvent}' +
+                    " - " +
+                    "${widget.mulaiEvent}" +
+                    "  Mulai",
+                maxLines: 3,
+                style: new TextStyle(
+                  color: Colors.black,
+                  fontSize: 12.0,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget selesai() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      padding: new EdgeInsets.only(
+        left: mediaQueryData.size.height * 0.01,
+        // top: mediaQueryData.size.height * 0.01,
+        bottom: mediaQueryData.size.height * 0.01,
+        right: mediaQueryData.size.height * 0.02,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(width: 5.0),
+          Icon(
+            Icons.date_range,
+            size: 14,
+            color: Colors.black,
+          ),
+          new Padding(
+            padding:
+                new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
+          ),
+          Container(
+            child: Expanded(
+              child: Text(
+                '${widget.tglselesaiEvent}' +
+                    " - " +
+                    "${widget.selesaiEvent}" +
+                    "  Selesai",
+                maxLines: 3,
+                style: new TextStyle(
+                  color: Colors.black,
+                  fontSize: 12.0,
                 ),
               ),
             ),
@@ -466,235 +508,238 @@ class _AgendaDetailState extends State<AgendaDetail> {
   //   );
   // }
 
-  Widget _jam() {
-    return Padding(
-      padding: EdgeInsets.only(left: 20.0, right: 20),
-      child: Row(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Chip(
-                        backgroundColor: Colors.red[400],
-                        avatar: CircleAvatar(
-                          backgroundColor: Colors.red[400],
-                          child: Icon(Icons.date_range,
-                              size: 16, color: Colors.white),
-                        ),
-                        label: Text(
-                          'Tanggal',
-                          style: new TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                          width: MediaQuery.of(context).size.width - 248,
-                          child: Text(
-                            'Mulai     ' +
-                                "${widget.tglmulaiEvent}", //NOTE api tgl mulai detail event
-                            style: TextStyle(color: Colors.grey),
-                          )),
-                      Container(
-                        width: MediaQuery.of(context).size.width - 248,
-                        child: Text(
-                          'Selesai  ' +
-                              "${widget.tglselesaiEvent}", //NOTE api tgl selesai detail event
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-              Container(height: 50, child: VerticalDivider(color: Colors.grey)),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Chip(
-                        backgroundColor: Colors.blue[400],
-                        avatar: CircleAvatar(
-                          backgroundColor: Colors.blue[400],
-                          child: Icon(Icons.access_time,
-                              size: 16, color: Colors.white),
-                        ),
-                        label: Text(
-                          'Waktu',
-                          style: new TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width - 268,
-                        child: Text(
-                          'Mulai     ' +
-                              "${widget.mulaiEvent}", //NOTE api jam mulai detail event
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width - 268,
-                        child: Text(
-                          'Selesai  ' +
-                              "${widget.selesaiEvent}", //NOTE api jam selesai detail event
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _jam() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     children: <Widget>[
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: <Widget>[
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             crossAxisAlignment: CrossAxisAlignment.center,
+  //             // crossAxisAlignment: CrossAxisAlignment.end,
+  //             children: <Widget>[
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: <Widget>[
+  //                   Chip(
+  //                     backgroundColor: Colors.red[400],
+  //                     avatar: CircleAvatar(
+  //                       backgroundColor: Colors.red[400],
+  //                       child: Icon(Icons.date_range,
+  //                           size: 16, color: Colors.white),
+  //                     ),
+  //                     label: Text(
+  //                       'Tanggal',
+  //                       style: new TextStyle(
+  //                         color: Colors.white,
+  //                         fontSize: 14.0,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Container(
+  //                       width: MediaQuery.of(context).size.width - 248,
+  //                       child: Text(
+  //                         'Mulai     ' +
+  //                             "${widget.tglmulaiEvent}", //NOTE api tgl mulai detail event
+  //                         style: TextStyle(color: Colors.grey),
+  //                       )),
+  //                   Container(
+  //                     width: MediaQuery.of(context).size.width - 248,
+  //                     child: Text(
+  //                       'Selesai  ' +
+  //                           "${widget.tglselesaiEvent}", //NOTE api tgl selesai detail event
+  //                       style: TextStyle(color: Colors.grey),
+  //                     ),
+  //                   )
+  //                 ],
+  //               )
+  //             ],
+  //           ),
+  //           Container(height: 50, child: VerticalDivider(color: Colors.grey)),
+  //           Row(
+  //             children: <Widget>[
+  //               SizedBox(
+  //                 width: 10,
+  //               ),
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: <Widget>[
+  //                   Chip(
+  //                     backgroundColor: Colors.blue[400],
+  //                     avatar: CircleAvatar(
+  //                       backgroundColor: Colors.blue[400],
+  //                       child: Icon(Icons.access_time,
+  //                           size: 16, color: Colors.white),
+  //                     ),
+  //                     label: Text(
+  //                       'Waktu',
+  //                       style: new TextStyle(
+  //                         color: Colors.white,
+  //                         fontSize: 14.0,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Container(
+  //                     width: MediaQuery.of(context).size.width - 268,
+  //                     child: Text(
+  //                       'Mulai     ' +
+  //                           "${widget.mulaiEvent}", //NOTE api jam mulai detail event
+  //                       style: TextStyle(color: Colors.grey),
+  //                     ),
+  //                   ),
+  //                   Container(
+  //                     width: MediaQuery.of(context).size.width - 268,
+  //                     child: Text(
+  //                       'Selesai  ' +
+  //                           "${widget.selesaiEvent}", //NOTE api jam selesai detail event
+  //                       style: TextStyle(color: Colors.grey),
+  //                     ),
+  //                   )
+  //                 ],
+  //               )
+  //             ],
+  //           )
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget wShare() {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.contact_mail,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Saran",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                SnackBar snackBar = SnackBar(
-                  content: Text(
-                    'Fitur belum tersedia',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.black,
-                  action: SnackBarAction(
-                    label: 'ULANGI',
-                    textColor: Colors.white,
-                    onPressed: () {
-                      print('ULANGI snackbar');
-                    },
-                  ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
-              },
-            ),
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.message,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Komentar",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                SnackBar snackBar = SnackBar(
-                  content: Text(
-                    'Fitur belum tersedia',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.black,
-                  action: SnackBarAction(
-                    label: 'ULANGI',
-                    textColor: Colors.white,
-                    onPressed: () {
-                      print('ULANGI snackbar');
-                    },
-                  ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
-              },
-            ),
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.share,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Share",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                Share.share("${widget.urlEvent}");
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget wShare() {
+  //   return new Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //     children: <Widget>[
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.grey,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.contact_mail,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Saran",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               SnackBar snackBar = SnackBar(
+  //                 content: Text(
+  //                   'Fitur belum tersedia',
+  //                   style: TextStyle(color: Colors.white),
+  //                 ),
+  //                 backgroundColor: Colors.black,
+  //                 action: SnackBarAction(
+  //                   label: 'ULANGI',
+  //                   textColor: Colors.white,
+  //                   onPressed: () {
+  //                     print('ULANGI snackbar');
+  //                   },
+  //                 ),
+  //               );
+  //               scaffoldKey.currentState.showSnackBar(snackBar);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.grey,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.message,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Komentar",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               SnackBar snackBar = SnackBar(
+  //                 content: Text(
+  //                   'Fitur belum tersedia',
+  //                   style: TextStyle(color: Colors.white),
+  //                 ),
+  //                 backgroundColor: Colors.black,
+  //                 action: SnackBarAction(
+  //                   label: 'ULANGI',
+  //                   textColor: Colors.white,
+  //                   onPressed: () {
+  //                     print('ULANGI snackbar');
+  //                   },
+  //                 ),
+  //               );
+  //               scaffoldKey.currentState.showSnackBar(snackBar);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.blue,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.share,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Share",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               Share.share("${widget.urlEvent}");
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget wHeader() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);

@@ -30,7 +30,7 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
   Future<String> ambildata() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/fasilitasumum/${widget.idDesa}/" +
                 id),
         headers: {"Accept": "application/json"});

@@ -25,7 +25,7 @@ class _HalFasumKesehatanState extends State<HalFasumKesehatan> {
   // ignore: missing_return
   Future<String> ambildata() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorifasum/" +
                 id),
         headers: {"Accept": "application/json"});

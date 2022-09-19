@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalEventList extends StatefulWidget {
   @override
@@ -34,7 +36,7 @@ class HalEventListState extends State<HalEventList> {
   );
 
   String username = "";
-  List eventAdmin = List();
+  List eventAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -42,7 +44,8 @@ class HalEventListState extends State<HalEventList> {
     //print(beritaAdmin);
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/agenda/deleteevent",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/agenda/deleteevent"),
         body: {
           "IdAgenda": eventAdmin,
           "IdDesa": pref.getString("IdDesa"),
@@ -65,10 +68,10 @@ class HalEventListState extends State<HalEventList> {
   }
 
   //NOTE url api load berita
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  List tempList = new List();
+  List tempList = [];
   ScrollController _scrollController = new ScrollController();
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/agenda/listevent/";
@@ -133,10 +136,13 @@ class HalEventListState extends State<HalEventList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Edit Event',
+          'List Agenda',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),

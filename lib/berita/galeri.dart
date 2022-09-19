@@ -10,6 +10,8 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../style/styleset.dart';
+
 //ANCHOR StatefulWidget Potensi
 class Galeri extends StatefulWidget {
   @override
@@ -175,10 +177,13 @@ class _GaleriState extends State<Galeri> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Galeri',
+          'GALERI',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),
@@ -193,7 +198,7 @@ class _GaleriState extends State<Galeri> {
           await Future.delayed(
             Duration(seconds: 2),
             () {
-              Navigator.pushReplacementNamed(context, '/Agenda');
+              Navigator.pushReplacementNamed(context, '/Galeri');
             },
           );
         },

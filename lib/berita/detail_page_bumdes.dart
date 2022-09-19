@@ -7,6 +7,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../style/styleset.dart';
+
 class DetailBumdes extends StatefulWidget {
   final String idDesa,
       dGambar,
@@ -57,7 +59,16 @@ class _DetailBumdesState extends State<DetailBumdes> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('BADAN USAHA'),
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          'BADAN USAHA',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
@@ -115,10 +126,18 @@ class _DetailBumdesState extends State<DetailBumdes> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   datadesa(),
+                                  share(),
                                   // jam(),
                                 ],
                               ),
                               judul(),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left: mediaQueryData.size.height * 0.02,
+                                  right: mediaQueryData.size.height * 0.02,
+                                ),
+                                child: Divider(),
+                              ),
                               alamat(),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +145,7 @@ class _DetailBumdesState extends State<DetailBumdes> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   admin(),
-                                  share(),
+                                  // share(),
                                 ],
                               ),
                             ],
@@ -250,8 +269,8 @@ class _DetailBumdesState extends State<DetailBumdes> {
     return Container(
       padding: new EdgeInsets.only(
         left: mediaQueryData.size.height * 0.02,
-        // top: mediaQueryData.size.height * 0.01,
-        // bottom: mediaQueryData.size.height * 0.01,
+        top: mediaQueryData.size.height * 0.01,
+        bottom: mediaQueryData.size.height * 0.01,
       ),
       child: Row(
         children: [
@@ -269,7 +288,7 @@ class _DetailBumdesState extends State<DetailBumdes> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
           new Padding(
@@ -314,7 +333,7 @@ class _DetailBumdesState extends State<DetailBumdes> {
           Text(
             '${widget.dJudul}',
             style: new TextStyle(
-              fontSize: 18.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -378,137 +397,137 @@ class _DetailBumdesState extends State<DetailBumdes> {
     }
   }
 
-  Widget wShare() {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.contact_mail,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Saran",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                SnackBar snackBar = SnackBar(
-                  content: Text(
-                    'Fitur belum tersedia',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.black,
-                  action: SnackBarAction(
-                    label: 'ULANGI',
-                    textColor: Colors.white,
-                    onPressed: () {
-                      print('ULANGI snackbar');
-                    },
-                  ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
-              },
-            ),
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.message,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Komentar",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                SnackBar snackBar = SnackBar(
-                  content: Text(
-                    'Fitur belum tersedia',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.black,
-                  action: SnackBarAction(
-                    label: 'ULANGI',
-                    textColor: Colors.white,
-                    onPressed: () {
-                      print('ULANGI snackbar');
-                    },
-                  ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
-              },
-            ),
-          ],
-        ),
-        Column(
-          children: <Widget>[
-            FlatButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Icon(
-                    Icons.share,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    "  " + "Share",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              onPressed: () {
-                Share.share("${widget.dUrl}");
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  // Widget wShare() {
+  //   return new Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //     children: <Widget>[
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.grey,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.contact_mail,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Saran",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               SnackBar snackBar = SnackBar(
+  //                 content: Text(
+  //                   'Fitur belum tersedia',
+  //                   style: TextStyle(color: Colors.white),
+  //                 ),
+  //                 backgroundColor: Colors.black,
+  //                 action: SnackBarAction(
+  //                   label: 'ULANGI',
+  //                   textColor: Colors.white,
+  //                   onPressed: () {
+  //                     print('ULANGI snackbar');
+  //                   },
+  //                 ),
+  //               );
+  //               scaffoldKey.currentState.showSnackBar(snackBar);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.grey,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.message,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Komentar",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               SnackBar snackBar = SnackBar(
+  //                 content: Text(
+  //                   'Fitur belum tersedia',
+  //                   style: TextStyle(color: Colors.white),
+  //                 ),
+  //                 backgroundColor: Colors.black,
+  //                 action: SnackBarAction(
+  //                   label: 'ULANGI',
+  //                   textColor: Colors.white,
+  //                   onPressed: () {
+  //                     print('ULANGI snackbar');
+  //                   },
+  //                 ),
+  //               );
+  //               scaffoldKey.currentState.showSnackBar(snackBar);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       Column(
+  //         children: <Widget>[
+  //           FlatButton(
+  //             color: Colors.blue,
+  //             textColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: new BorderRadius.circular(20.0),
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.start,
+  //               children: <Widget>[
+  //                 Icon(
+  //                   Icons.share,
+  //                   size: 20,
+  //                   color: Colors.white,
+  //                 ),
+  //                 Text(
+  //                   "  " + "Share",
+  //                   style: TextStyle(
+  //                     fontSize: 12,
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             onPressed: () {
+  //               Share.share("${widget.dUrl}");
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
   // Widget _html() {
   //   return Padding(
@@ -639,7 +658,7 @@ class _DetailBumdesState extends State<DetailBumdes> {
                 maxLines: 3,
                 style: new TextStyle(
                   color: Colors.grey[500],
-                  fontSize: 14.0,
+                  fontSize: 12.0,
                 ),
               ),
             ),

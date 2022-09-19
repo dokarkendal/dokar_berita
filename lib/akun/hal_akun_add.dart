@@ -53,7 +53,8 @@ class FormAddAkunState extends State<FormAddAkun> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/account/tambahpenulis",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/account/tambahpenulis"),
         body: {
           "IdDesa": pref.getString("IdDesa"),
           "nama": cNama.text,

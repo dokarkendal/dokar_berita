@@ -39,7 +39,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
   String namadesa = "";
   String status = "";
 
-  List beritaAdmin = List();
+  List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -59,7 +59,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
   }
 
   ScrollController _scrollController = new ScrollController();
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -80,7 +80,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
       );
       print(nextPage);
       final response = await dio.get(nextPage + "/${widget.idDesa}/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {

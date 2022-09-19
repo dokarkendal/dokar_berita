@@ -54,19 +54,22 @@ class _DetailPotensiState extends State<DetailPotensi> {
   Future<String> addViews() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/viewest",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/viewest"),
         body: {
           "IdDesa": "${widget.dIdDesa}",
           "Kategori": "${widget.dKategori}",
           "IdBerita": "${widget.dId}"
         });
     var kategori = json.decode(response.body);
-    setState(
-      () {
-        print(kategori);
-        //print("${widget.dIdDesa}");
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          print(kategori);
+          //print("${widget.dIdDesa}");
+        },
+      );
+    }
   }
 
   @override
@@ -163,6 +166,9 @@ class _DetailPotensiState extends State<DetailPotensi> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.brown[800], //change your color here
+        ),
         centerTitle: true,
         elevation: 0,
         title: Text(
@@ -435,7 +441,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
         children: [
           Icon(
             Icons.remove_red_eye,
-            size: 14,
+            size: 12,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -447,7 +453,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
           // new Padding(
@@ -458,7 +464,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
             // padding: EdgeInsets.all(15.0),
             icon: Icon(Icons.share),
             color: Colors.blue[800],
-            iconSize: 20.0,
+            iconSize: 18.0,
             onPressed: () {
               Share.share("${widget.dUrl}");
             },
@@ -492,7 +498,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
         children: [
           Icon(
             Icons.person,
-            size: 14,
+            size: 12,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -504,7 +510,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
           new Padding(
@@ -513,7 +519,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
           ),
           Icon(
             Icons.date_range_rounded,
-            size: 14,
+            size: 12,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -525,7 +531,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
         ],
@@ -549,7 +555,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
           Text(
             '${widget.dJudul}',
             style: new TextStyle(
-              fontSize: 18.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
           ),

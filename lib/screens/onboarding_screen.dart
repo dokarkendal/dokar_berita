@@ -1,5 +1,6 @@
+//ANCHOR Selesai
 import 'dart:io';
-import 'package:dokar_aplikasi/pilih_akun.dart';
+import 'package:dokar_aplikasi/hal_pilih_user.dart';
 import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,24 +12,25 @@ class OnboardingPage extends StatefulWidget {
 }
 
 class _OnboardingPageState extends State<OnboardingPage> {
+//NOTE Variabel
   final int _totalPages = 3;
-  // ignore: unused_field
-  bool _isInAsyncCall = true;
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
 
+//NOTE Inistate
   @override
   void initState() {
     super.initState();
     setValue();
   }
 
+//NOTE Fungsi set value count
   void setValue() async {
     final prefs = await SharedPreferences.getInstance();
     int launchCount = prefs.getInt('counter') ?? 0;
     prefs.setInt('counter', launchCount + 1);
     if (launchCount == 0) {
-      print("first launch"); //setState to refresh or move to some other page
+      print("first launch");
     } else {
       print("Not first launch");
       Navigator.of(context).pushReplacement(
@@ -36,6 +38,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
+//NOTE Widget indicator next
   Widget _buildPageIndicator(bool isCurrentPage) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 350),
@@ -49,13 +52,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+//NOTE Scaffold
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
       body: Container(
-        height: SizeConfig.safeBlockVertical * 100, //10 for example
-        width: SizeConfig.safeBlockHorizontal * 100, //10 for example
+        height: SizeConfig.safeBlockVertical * 100,
+        width: SizeConfig.safeBlockHorizontal * 100,
         child: Container(
           child: PageView(
             controller: _pageController,
@@ -66,41 +70,45 @@ class _OnboardingPageState extends State<OnboardingPage> {
             children: <Widget>[
               _buildPageContent(
                   image: 'assets/images/boarding1.png',
-                  title: 'Posting berita kapanpun dan dimanapun.',
+                  title: 'Posting Informasi Dimana Saja',
                   body:
-                      'Anda bisa memposting berita dan kegiatan desa di smartphone maupun komputer anda dimanapun dan kapanpun ada berita'),
+                      'Admin DOKAR bisa memposting informasi desa dan kelurahan lewat smartphone anda dimanapun dan kapanpun'),
               _buildPageContent(
                   image: 'assets/images/boarding2.png',
-                  title: 'Memiliki dashbord di Kabupaten Kendal',
+                  title: 'Dashboard Informasi Terintegrasi',
                   body:
-                      'Semua informasi desa akan jadi satu di dashbord kabuaten untuk memudahkan masayarakat melihat informasi desa dalam satu wadah'),
+                      'Semua informasi desa dan kelurahan jadi satu di dashbord di Kabuaten Kendal, memudahkan masayarakat melihat dalam satu portal informasi'),
               _buildPageContent(
                   image: 'assets/images/boarding3.png',
-                  title: 'Terintegrasi dengan OPD Terkait.',
+                  title: 'Terintegrasi data OPD',
                   body:
-                      'Aplikasi dokar terintegrasi dengan OPD terkait untuk menyediakan data realtime tanpa desa perlu mengimputkan')
+                      'Terintegrasi dengan OPD terkait untuk menyediakan data realtime tanpa perlu mengimputkan informasi')
             ],
           ),
         ),
       ),
       bottomSheet: _currentPage != 2
           ? Container(
-              margin: EdgeInsets.symmetric(vertical: 16),
+              margin: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       _pageController.animateToPage(2,
                           duration: Duration(milliseconds: 400),
                           curve: Curves.linear);
                       setState(() {});
                     },
-                    splashColor: Colors.blue[50],
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Colors.yellow[700],
+                      onSurface: Colors.grey,
+                    ),
                     child: Text(
                       'Lewati',
                       style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
@@ -113,18 +121,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             : _buildPageIndicator(false)
                     ]),
                   ),
-                  FlatButton(
+                  TextButton(
                     onPressed: () {
                       _pageController.animateToPage(_currentPage + 1,
                           duration: Duration(milliseconds: 400),
                           curve: Curves.linear);
                       setState(() {});
                     },
-                    splashColor: Colors.blue[50],
+                    // splashColor: Colors.blue[50],
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Colors.yellow[700],
+                      onSurface: Colors.grey,
+                    ),
                     child: Text(
                       'Lanjut',
                       style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontSize: 16,
                           fontWeight: FontWeight.bold),
                     ),
@@ -139,12 +152,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
               },
               child: Container(
                 height: Platform.isIOS ? 70 : 60,
-                color: Colors.blue[800],
+                color: Colors.yellow[700],
                 alignment: Alignment.center,
                 child: Text(
                   'Ayo Lihat Berita',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'OpenSans',
@@ -155,6 +168,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+//NOTE Widet page content
   Widget _buildPageContent({
     String image,
     String title,
@@ -169,7 +183,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
           Center(
             child: Container(
               padding: EdgeInsets.only(top: 30.0),
-              child: Image.asset(image),
+              child: Image.asset(
+                image,
+                width: 250,
+                height: 250,
+              ),
             ),
           ),
           Container(
@@ -180,7 +198,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: TextStyle(
-                  fontSize: 20, height: 1.5, fontWeight: FontWeight.w600),
+                fontSize: 22,
+                height: 1.5,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Container(

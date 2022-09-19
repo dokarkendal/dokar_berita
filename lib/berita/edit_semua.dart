@@ -11,7 +11,9 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
-import 'package:shimmer/shimmer.dart'; // api to json
+import 'package:shimmer/shimmer.dart';
+
+import '../style/styleset.dart'; // api to json
 
 class EditSemua extends StatefulWidget {
   @override
@@ -37,7 +39,8 @@ class _EditSemuaState extends State<EditSemua> {
     });
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/dashbord/jumlahdata"),
       body: {
         "IdDesa": pref.getString("IdDesa"),
       },
@@ -63,14 +66,18 @@ class _EditSemuaState extends State<EditSemua> {
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: appbarIcon, //change your color here
+          ),
           title: Text(
-            'Edit Konten',
+            'DASHBOARD',
             style: TextStyle(
-              color: Color(0xFF2e2e2e),
+              color: appbarTitle,
               fontWeight: FontWeight.bold,
-              fontSize: 25.0,
+              // fontSize: 25.0,
             ),
           ),
+          centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
@@ -91,14 +98,19 @@ class _EditSemuaState extends State<EditSemua> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          elevation: 0,
+          iconTheme: IconThemeData(
+            color: appbarIcon, //change your color here
+          ),
           title: Text(
-            'Edit Konten',
+            'DASHBOARD',
             style: TextStyle(
-              color: Color(0xFF2e2e2e),
+              color: appbarTitle,
               fontWeight: FontWeight.bold,
-              fontSize: 25.0,
+              // fontSize: 25.0,
             ),
           ),
+          centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
@@ -362,7 +374,7 @@ class _EditSemuaState extends State<EditSemua> {
               style: new TextStyle(fontSize: 12.0, color: Colors.black54),
             ),
             title: new Text(
-              "Event",
+              "Agenda",
               style: new TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -462,7 +474,7 @@ class _EditSemuaState extends State<EditSemua> {
                                     'Desa ' + namadesa,
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 25.0,
+                                      fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -528,7 +540,7 @@ class _EditSemuaState extends State<EditSemua> {
                                     'Desa ' + namadesa,
                                     style: TextStyle(
                                       color: Color(0xFF2e2e2e),
-                                      fontSize: 25.0,
+                                      fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

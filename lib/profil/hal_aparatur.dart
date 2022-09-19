@@ -19,13 +19,13 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
   String jabatan = '';
   String foto = '';
   String nama = '';
-  List databerita = new List();
+  List databerita = [];
 
   // ignore: missing_return
   Future<String> ambildata() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/aparatur/" +
                 "${widget.idDesa}"),
         headers: {"Accept": "application/json"});

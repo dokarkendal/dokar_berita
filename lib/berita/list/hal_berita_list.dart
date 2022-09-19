@@ -9,6 +9,10 @@ import 'package:http/http.dart' as http; //api
 import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../style/size_config.dart';
+import '../../style/styleset.dart';
 
 //ANCHOR Class berita list
 class FormBeritaDashbord extends StatefulWidget {
@@ -46,7 +50,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
   void hapusberita(beritaAdmin) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/kabar/delete",
+      Uri.parse("http://dokar.kendalkab.go.id/webservice/android/kabar/delete"),
       body: {
         "IdBerita": beritaAdmin,
         "IdDesa": pref.getString("IdDesa"),
@@ -60,7 +64,8 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
 //ANCHOR Unpublish berita list
   void unpublish(beritaAdmin) async {
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/kabar/UnPublish",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/kabar/UnPublish"),
       body: {
         "IdBerita": beritaAdmin,
       },
@@ -73,7 +78,8 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
 //ANCHOR Publish berita list
   void publish(beritaAdmin) async {
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/Publish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/Publish"),
         body: {
           "IdBerita": beritaAdmin,
           // "IdDesa": pref.getString("IdDesa"),
@@ -98,7 +104,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
   }
 
   ScrollController _scrollController = new ScrollController();
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -130,7 +136,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
           "/" +
           pref.getString("IdAdmin") +
           "/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
       for (int i = 0; i < response.data['result'].length; i++) {
         tempList.add(response.data['result'][i]);
@@ -166,13 +172,52 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
   }
 
 //ANCHOR loading berita list
+
   Widget _buildProgressIndicator() {
-    return new Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
-          opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    SizeConfig().init(context);
+    return Padding(
+      padding: new EdgeInsets.all(10.0),
+      child: Shimmer.fromColors(
+        highlightColor: Colors.white,
+        baseColor: Colors.grey[300],
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              // Column(
+              //   children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.12,
+                width: mediaQueryData.size.width,
+                // color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.12,
+                width: mediaQueryData.size.width,
+                // color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                height: mediaQueryData.size.height * 0.12,
+                width: mediaQueryData.size.width,
+                // color: Colors.grey,
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -183,12 +228,15 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Edit Berita',
+          'LIST BERITA',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -212,7 +260,13 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
           // ignore: missing_return
           itemBuilder: (BuildContext context, int i) {
             if (i == databerita.length) {
-              return _buildProgressIndicator();
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              );
             } else {
               if (databerita[i]["kabar_id"] == "Notfound") {
                 // return new Container(
@@ -306,7 +360,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                       child: new Text(
                                         databerita[i]["kabar_judul"],
                                         style: new TextStyle(
-                                          fontSize: 15.0,
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                         maxLines: 2,
@@ -318,12 +372,12 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                         new Expanded(
                                           child: new Container(
                                             margin: const EdgeInsets.only(
-                                                top: 5.0, bottom: 10.0),
+                                                top: 5.0, bottom: 5.0),
                                             child: new Text(
                                               databerita[i]["kabar_tanggal"],
                                               style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                                fontSize: 13.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
@@ -346,7 +400,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                             child: new Text(
                                               databerita[i]["kabar_kategori"],
                                               style: new TextStyle(
-                                                fontSize: 11.0,
+                                                fontSize: 12.0,
                                                 color: Colors.grey[500],
                                               ),
                                             ),
@@ -458,7 +512,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                       child: new Text(
                                         databerita[i]["kabar_judul"],
                                         style: new TextStyle(
-                                          fontSize: 15.0,
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                         maxLines: 2,
@@ -470,12 +524,12 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                         new Expanded(
                                           child: new Container(
                                             margin: const EdgeInsets.only(
-                                                top: 5.0, bottom: 10.0),
+                                                top: 5.0, bottom: 5.0),
                                             child: new Text(
                                               databerita[i]["kabar_tanggal"],
                                               style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                                fontSize: 13.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
@@ -499,7 +553,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                             child: new Text(
                                               databerita[i]["kabar_kategori"],
                                               style: new TextStyle(
-                                                fontSize: 11.0,
+                                                fontSize: 12.0,
                                                 color: Colors.grey[500],
                                               ),
                                             ),

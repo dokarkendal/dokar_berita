@@ -233,7 +233,8 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (_mySelection == null) {
       final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/agenda/editevent",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/agenda/editevent"),
         body: {
           "judul": cJudul.text,
           "penyelenggara": cPenyelenggara.text,

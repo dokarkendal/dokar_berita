@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
@@ -45,6 +45,17 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
     print(url);
   }
 
+  // _launchUrl() async {
+  //   if (!await launchUrl(
+  //     Uri.parse(
+  //       url,
+  //     ),
+  //     mode: LaunchMode.externalApplication,
+  //   )) {
+  //     throw 'Could not launch $url';
+  //   }
+  //   print(url);
+  // }
   String url = '';
   List dataJSON;
   String id = '';
@@ -56,7 +67,6 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
     id = "${widget.dId}";
     nama = "${widget.dNama}";
     url = "${widget.dKoordinat}";
-    //ambildata();
     print("${widget.dKoordinat}");
   }
 
@@ -64,7 +74,7 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   Future<String> ambildata() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/fasilitasumum/" +
                 pref.getString("IdDesa") +
                 "/" +

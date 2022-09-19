@@ -44,7 +44,7 @@ class _SimplePieChartState extends State<SimplePieChart> {
 
   void pendapatan() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/siskeudes/GetPendapatan/" +
                 "${widget.kodeDesa}"),
         headers: {"Accept": "application/json"});
@@ -77,7 +77,7 @@ class _SimplePieChartState extends State<SimplePieChart> {
 
   void belanja() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/siskeudes/GetBelanja/" +
                 "${widget.kodeDesa}"),
         headers: {"Accept": "application/json"});
@@ -112,7 +112,7 @@ class _SimplePieChartState extends State<SimplePieChart> {
 
   void pembiayaan() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/siskeudes/GetPembiayaan/" +
                 "${widget.kodeDesa}"),
         headers: {"Accept": "application/json"});

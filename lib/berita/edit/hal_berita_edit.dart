@@ -18,6 +18,8 @@ import 'dart:math' as Math;
 
 import 'package:status_alert/status_alert.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR class form berita edit
 class FormBeritaEdit extends StatefulWidget {
   final String dJudul,
@@ -47,7 +49,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
   File _image;
   String username = "";
   String _mySelection;
-  List kategoriAdmin = List();
+  List kategoriAdmin = [];
   final format = DateFormat("yyyy-MM-dd");
   final formKey = GlobalKey<FormState>();
 
@@ -127,17 +129,20 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
   Future<String> getKategori() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/kategori",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/kategori"),
         body: {
           "IdDesa": pref.getString("IdDesa"),
         });
     var kategori = json.decode(response.body);
-    this.setState(
-      () {
-        kategoriAdmin = kategori;
-        print(kategoriAdmin);
-      },
-    );
+    if (mounted) {
+      this.setState(
+        () {
+          kategoriAdmin = kategori;
+          print(kategoriAdmin);
+        },
+      );
+    }
   }
 
 //ANCHOR Controller edit berita
@@ -263,7 +268,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
     }
 
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/edit",
+        Uri.parse("http://dokar.kendalkab.go.id/webservice/android/kabar/edit"),
         body: {
           "judul": dJudul.text,
           "kategori": _mySelection,
@@ -319,12 +324,15 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Form Berita Edit',
+          'EDIT BERITA',
           style: TextStyle(
             color: Color(0xFF2e2e2e),
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,

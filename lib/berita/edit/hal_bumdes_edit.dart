@@ -207,7 +207,8 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/bumdes/edit",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/bumdes/edit"),
         body: {
           "judul": dJudul.text,
           "tempat": dKatTempat.text,

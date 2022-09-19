@@ -22,7 +22,7 @@ class _HalFasumProfileState extends State<HalFasumProfile> {
   // ignore: missing_return
   Future<String> ambildata() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/jenisfasum"),
         headers: {"Accept": "application/json"});
 
