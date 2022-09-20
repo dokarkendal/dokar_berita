@@ -248,12 +248,19 @@ class _DetailKritikSaranWargaState extends State<DetailKritikSaranWarga> {
       children: <Widget>[
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -328,12 +335,19 @@ class _DetailKritikSaranWargaState extends State<DetailKritikSaranWarga> {
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -408,12 +422,19 @@ class _DetailKritikSaranWargaState extends State<DetailKritikSaranWarga> {
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.green,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.green,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[

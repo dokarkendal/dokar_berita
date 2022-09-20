@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalberitaProfile extends StatefulWidget {
   final String idDesa;
@@ -58,10 +60,10 @@ class HalberitaProfileState extends State<HalberitaProfile> {
     }
   }
 
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   String dibaca;
   List dataJSON;
 
@@ -87,12 +89,15 @@ class HalberitaProfileState extends State<HalberitaProfile> {
         tempList.add(response.data['result'][i]);
       }
 
-      setState(
-        () {
-          isLoading = false;
-          databerita.addAll(tempList);
-        },
-      );
+      if (mounted) {
+        setState(
+          () {
+            isLoading = false;
+            databerita.addAll(tempList);
+            print(tempList);
+          },
+        );
+      }
     }
   }
 
@@ -118,12 +123,12 @@ class HalberitaProfileState extends State<HalberitaProfile> {
   }
 
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -134,14 +139,28 @@ class HalberitaProfileState extends State<HalberitaProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('BERITA'),
+        title: Text(
+          'BERITA',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: RefreshIndicator(
         key: refreshKey,
         onRefresh: () async {
-          await Future.delayed(Duration(seconds: 1), () {});
+          await Future.delayed(Duration(seconds: 1), () {
+            // Navigator.pushReplacementNamed(context, '/HalberitaProfile').then(
+            //   (value) => _getMoreData(),
+            // );
+          });
         },
         child: ListView.builder(
           //scrollDirection: Axis.horizontal,
@@ -161,9 +180,9 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                 } else {
                   dibaca = databerita[i]["dibaca"];
                 }
-                return new Container(
-                  // padding: new EdgeInsets.all(2.0),
-                  child: new Card(
+                return Container(
+                  // padding:  EdgeInsets.all(2.0),
+                  child: Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
@@ -195,10 +214,10 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                           ),
                         );
                       },
-                      child: new Row(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          new Container(
+                          Container(
                             margin: const EdgeInsets.only(right: 15.0),
                             width: 120.0,
                             height: 100.0,
@@ -219,67 +238,70 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                               width: 110.0,
                             ),
                           ),
-                          new Expanded(
-                            child: new Column(
+                          Expanded(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                new Row(
+                                Row(
                                   children: <Widget>[
-                                    new Expanded(
-                                      child: new Container(
+                                    Expanded(
+                                      child: Container(
                                         margin: const EdgeInsets.only(
                                             top: 5.0, bottom: 10.0),
-                                        child: new Text(
+                                        child: Text(
                                           databerita[i]["desa"],
-                                          style: new TextStyle(
-                                            fontSize: 14.0,
+                                          style: TextStyle(
+                                            fontSize: 12.0,
                                             color: Colors.black,
                                             //fontWeight: FontWeight.normal,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    new Container(
-                                      margin:
-                                          const EdgeInsets.only(right: 10.0),
-                                      child: new Text(
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                        bottom: 10.0,
+                                      ),
+                                      child: Text(
                                         dibaca + ' lihat',
-                                        style: new TextStyle(
+                                        style: TextStyle(
                                             fontSize: 12.0,
                                             color: Colors.grey[600]),
                                       ),
                                     ),
                                   ],
                                 ),
-                                new Container(
+                                Container(
                                   margin: const EdgeInsets.only(right: 10.0),
-                                  child: new Text(
+                                  child: Text(
                                     databerita[i]["judul"],
-                                    style: new TextStyle(
-                                      fontSize: 15.0,
+                                    style: TextStyle(
+                                      fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    maxLines: 2,
+                                    maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                new Container(
+                                Container(
                                   margin: const EdgeInsets.only(top: 10.0),
-                                  child: new Row(
+                                  child: Row(
                                     children: <Widget>[
-                                      new Text(
+                                      Text(
                                         databerita[i]["kategori"],
-                                        style: new TextStyle(
+                                        style: TextStyle(
                                           color: Colors.grey[500],
                                           fontSize: 11.0,
                                         ),
                                       ),
-                                      new Container(
+                                      Container(
                                         margin:
                                             const EdgeInsets.only(left: 5.0),
-                                        child: new Text(
+                                        child: Text(
                                           databerita[i]["tanggal"],
-                                          style: new TextStyle(
+                                          style: TextStyle(
                                             fontSize: 11.0,
                                             color: Colors.grey[500],
                                           ),

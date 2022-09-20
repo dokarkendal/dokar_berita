@@ -101,9 +101,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       setState(() {});
                     },
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Colors.yellow[700],
-                      onSurface: Colors.grey,
+                      disabledForegroundColor: Colors.grey.withOpacity(0.38),
                     ),
                     child: Text(
                       'Lewati',
@@ -130,9 +130,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     },
                     // splashColor: Colors.blue[50],
                     style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: Colors.yellow[700],
-                      onSurface: Colors.grey,
+                      disabledForegroundColor: Colors.grey.withOpacity(0.38),
                     ),
                     child: Text(
                       'Lanjut',

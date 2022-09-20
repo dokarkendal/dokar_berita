@@ -27,7 +27,7 @@ class FormBumdesState extends State<FormBumdes> {
 //ANCHOR variable bumde
   File _image;
   String username = "";
-  List kategoriAdmin = List();
+  List kategoriAdmin = [];
   bool _isInAsyncCall = false;
   final formKey = GlobalKey<FormState>();
   final format = DateFormat("yyyy-MM-dd");
@@ -324,26 +324,42 @@ class FormBumdesState extends State<FormBumdes> {
                     Center(
                       child: Row(
                         children: <Widget>[
-                          RaisedButton(
+                          ElevatedButton(
                             child: Icon(
                               Icons.image,
                               color: Colors.white,
                             ),
                             onPressed: getImageGallery,
-                            color: Color(0xFFee002d),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(17.0),
+                            style: ElevatedButton.styleFrom(
+                              // padding: EdgeInsets.all(15.0),
+                              elevation: 0, backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(15), // <-- Radius
+                              ),
                             ),
+                            // color: Color(0xFFee002d),
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius: BorderRadius.circular(17.0),
+                            // ),
                           ),
-                          RaisedButton(
+                          ElevatedButton(
                             child: Icon(
                               Icons.camera_alt,
                               color: Colors.white,
                             ),
                             onPressed: getImageCamera,
-                            color: Color(0xFFee002d),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(17.0),
+                            // color: Color(0xFFee002d),
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius: BorderRadius.circular(17.0),
+                            // ),
+                            style: ElevatedButton.styleFrom(
+                              // padding: EdgeInsets.all(15.0),
+                              elevation: 0, backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(15), // <-- Radius
+                              ),
                             ),
                           ),
                         ],
@@ -355,7 +371,7 @@ class FormBumdesState extends State<FormBumdes> {
                     Container(
                       width: mediaQueryData.size.width,
                       height: mediaQueryData.size.height * 0.07,
-                      child: RaisedButton.icon(
+                      child: ElevatedButton.icon(
                         icon: Icon(
                           Icons.file_upload,
                           color: Colors.white,
@@ -363,7 +379,7 @@ class FormBumdesState extends State<FormBumdes> {
                         label: Text("UPLOAD BUMDES"),
                         onPressed: () async {
                           if (cJudul.text == null || cJudul.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Judul wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -375,11 +391,11 @@ class FormBumdesState extends State<FormBumdes> {
                                   onPressed: () {
                                     print('ULANGI snackbar');
                                   }),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cTempatBumdes.text == null ||
                               cTempatBumdes.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Tempat wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -391,10 +407,10 @@ class FormBumdesState extends State<FormBumdes> {
                                   onPressed: () {
                                     print('ULANGI snackbar');
                                   }),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cIsi.text == null || cIsi.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Uraian wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -406,10 +422,10 @@ class FormBumdesState extends State<FormBumdes> {
                                   onPressed: () {
                                     print('ULANGI snackbar');
                                   }),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (_image == null) {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Gambar wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -421,17 +437,25 @@ class FormBumdesState extends State<FormBumdes> {
                                   onPressed: () {
                                     print('ULANGI snackbar');
                                   }),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
                             uploadBumdes(_image);
                           }
                         },
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(17.0),
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
                         ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
                     ),
                   ],

@@ -60,17 +60,19 @@ class _ProfilDesaState extends State<ProfilDesa> {
         });
     var jumlahagenda = json.decode(response.body);
     print(jumlahagenda);
-    setState(
-      () {
-        jumlah = jumlahagenda['kabar'];
-        jumlahkeg = jumlahagenda['kegiatan'];
-        jumlahB = jumlahagenda['bid'];
-        jumlahBum = jumlahagenda['bumdes'];
-        jumlahAgen = jumlahagenda['agenda'];
-        kode = jumlahagenda['kode'];
-        isLoading = false;
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          jumlah = jumlahagenda['kabar'];
+          jumlahkeg = jumlahagenda['kegiatan'];
+          jumlahB = jumlahagenda['bid'];
+          jumlahBum = jumlahagenda['bumdes'];
+          jumlahAgen = jumlahagenda['agenda'];
+          kode = jumlahagenda['kode'];
+          isLoading = false;
+        },
+      );
+    }
   }
 
   // ignore: unused_element
@@ -349,14 +351,23 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                     children: <Widget>[
                                       Column(
                                         children: <Widget>[
-                                          Text(
-                                            "$jumlah",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                            ),
-                                          ),
+                                          jumlah == null
+                                              ? Text(
+                                                  "0",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20.0,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  "$jumlah",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20.0,
+                                                  ),
+                                                ),
                                           SizedBox(height: 8.0),
                                           Text('Berita',
                                               style: TextStyle(
@@ -367,11 +378,19 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                       ),
                                       Column(
                                         children: <Widget>[
-                                          Text("$jumlahkeg",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20.0)),
+                                          jumlahkeg == null
+                                              ? Text("0",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0))
+                                              : Text("$jumlahkeg",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0)),
                                           SizedBox(height: 8.0),
                                           Text('Kegiatan',
                                               style: TextStyle(
@@ -382,11 +401,19 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                       ),
                                       Column(
                                         children: <Widget>[
-                                          Text("$jumlahB",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20.0)),
+                                          jumlahB == null
+                                              ? Text("0",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0))
+                                              : Text("$jumlahB",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0)),
                                           SizedBox(height: 8.0),
                                           Text('Inovasi',
                                               style: TextStyle(
@@ -397,11 +424,19 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                       ),
                                       Column(
                                         children: <Widget>[
-                                          Text("$jumlahBum",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20.0)),
+                                          jumlahBum == null
+                                              ? Text("0",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0))
+                                              : Text("$jumlahBum",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0)),
                                           SizedBox(height: 8.0),
                                           Text('Bumdes',
                                               style: TextStyle(
@@ -412,11 +447,19 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                       ),
                                       Column(
                                         children: <Widget>[
-                                          Text("$jumlahAgen",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20.0)),
+                                          jumlahAgen == null
+                                              ? Text("0",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0))
+                                              : Text("$jumlahAgen",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20.0)),
                                           SizedBox(height: 8.0),
                                           Text('Agenda',
                                               style: TextStyle(
@@ -459,8 +502,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               // padding: EdgeInsets.all(15.0),
-                              elevation: 0,
-                              primary: Colors.grey[300],
+                              elevation: 0, backgroundColor: Colors.grey[300],
                               shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(15), // <-- Radius

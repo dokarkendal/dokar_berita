@@ -73,6 +73,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        elevation: 0,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -433,9 +434,9 @@ class _ListKecamatanState extends State<ListKecamatan> {
           padding: EdgeInsets.all(3.0),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.all(15.0),
+              // padding: EdgeInsets.all(15.0),
+              backgroundColor: Theme.of(context).primaryColor,
               elevation: 2.0,
-              primary: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
               ),

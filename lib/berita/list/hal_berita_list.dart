@@ -41,7 +41,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
   String status = "";
   // ignore: unused_field
   String _mySelection;
-  List beritaAdmin = List();
+  List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 

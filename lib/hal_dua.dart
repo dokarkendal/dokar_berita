@@ -215,9 +215,9 @@ class _HalduaState extends State<Haldua> {
                   children: <Widget>[
                     TextButton(
                       style: TextButton.styleFrom(
-                        primary: Colors.white,
+                        foregroundColor: Colors.white,
                         backgroundColor: Colors.red,
-                        onSurface: Colors.grey,
+                        disabledForegroundColor: Colors.grey.withOpacity(0.38),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -764,8 +764,7 @@ class _HalduaState extends State<Haldua> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         // padding: EdgeInsets.all(15.0),
-                        elevation: 0,
-                        primary: Colors.grey[300],
+                        elevation: 0, backgroundColor: Colors.grey[300],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15), // <-- Radius
                         ),

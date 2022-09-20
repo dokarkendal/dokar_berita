@@ -203,8 +203,8 @@ class _PilihAKunState extends State<PilihAKun> {
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
+          backgroundColor: Colors.orange[300],
           elevation: 2.0,
-          primary: Colors.orange[300],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
@@ -241,8 +241,8 @@ class _PilihAKunState extends State<PilihAKun> {
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
+          backgroundColor: Colors.blue[800],
           elevation: 2.0,
-          primary: Colors.blue[800],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

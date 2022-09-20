@@ -65,6 +65,7 @@ class _ListDesaState extends State<ListDesa> {
           ),
         ),
         centerTitle: true,
+        elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: isLoading
@@ -90,7 +91,7 @@ class _ListDesaState extends State<ListDesa> {
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: MediaQuery.of(context).size.width /
-            (MediaQuery.of(context).size.height / 7),
+            (MediaQuery.of(context).size.height / 8),
       ),
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
@@ -98,12 +99,19 @@ class _ListDesaState extends State<ListDesa> {
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.all(3.0),
-          child: FlatButton(
-            color: Colors.blue[800],
-            textColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(5.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              // padding: EdgeInsets.all(15.0),
+              elevation: 0, backgroundColor: Colors.blue[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // <-- Radius
+              ),
             ),
+            // color: Colors.blue[800],
+            // textColor: Colors.white,
+            // shape: RoundedRectangleBorder(
+            //   borderRadius: new BorderRadius.circular(5.0),
+            // ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[

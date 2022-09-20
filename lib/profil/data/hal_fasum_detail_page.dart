@@ -37,7 +37,9 @@ class HalFasumDetailPage extends StatefulWidget {
 
 class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   _launchUrl() async {
+    // ignore: deprecated_member_use
     if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
       await launch(url);
     } else {
       throw 'Could not lauch URL';

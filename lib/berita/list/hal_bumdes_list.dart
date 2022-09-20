@@ -36,7 +36,7 @@ class HalBumdesListState extends State<HalBumdesList> {
   );
 
   String username = "";
-  List bumdesAdmin = List();
+  List bumdesAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 

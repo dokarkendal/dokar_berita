@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../../style/styleset.dart';
+
 class HalFasumProfile extends StatefulWidget {
   final String idDesa;
 
@@ -43,10 +45,19 @@ class _HalFasumProfileState extends State<HalFasumProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FASILITAS UMUM'),
+        title: Text(
+          'FASUM',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
-        elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: SingleChildScrollView(
         child: GridView.builder(

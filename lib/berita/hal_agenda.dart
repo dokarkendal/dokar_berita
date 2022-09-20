@@ -167,9 +167,10 @@ class _AgendaState extends State<Agenda> {
                               child: InkWell(
                                 child: TextButton(
                                   style: TextButton.styleFrom(
-                                    primary: Colors.white,
+                                    // primary: Colors.white,
                                     backgroundColor: Colors.green,
-                                    onSurface: Colors.grey,
+                                    disabledForegroundColor:
+                                        Colors.grey.withOpacity(0.38),
                                   ),
                                   // color: Colors.green,
                                   // textColor: Colors.white,

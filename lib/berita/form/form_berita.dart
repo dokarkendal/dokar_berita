@@ -2,6 +2,7 @@
 import 'dart:async'; //NOTE  api syn
 import 'dart:convert'; //NOTE api to json
 import 'dart:io';
+// import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:async/async.dart'; //NOTE upload gambar
@@ -28,11 +29,12 @@ class FormBerita extends StatefulWidget {
 
 class FormBeritaState extends State<FormBerita> {
 //ANCHOR variable form berita
+  // QuillController _controller = QuillController.basic();
   File _image;
   String username = "";
   String _mySelection;
   bool _isInAsyncCall = false;
-  List kategoriAdmin = List();
+  List kategoriAdmin = [];
   final formKey = GlobalKey<FormState>();
   final format = DateFormat("yyyy-MM-dd");
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -42,7 +44,9 @@ class FormBeritaState extends State<FormBerita> {
     animationDuration: Duration(milliseconds: 400),
   );
 
+  // ignore: unused_field
   String _valKomentar;
+  // ignore: unused_field
   List _listKomentar = ["Aktif", "Tidak"];
 
 //ANCHOR controller form berita
@@ -346,7 +350,7 @@ class FormBeritaState extends State<FormBerita> {
                         maxLines: null,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
@@ -354,7 +358,7 @@ class FormBeritaState extends State<FormBerita> {
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.library_books,
-                            color: Colors.grey[600],
+                            color: Colors.grey,
                           ),
                           hintText: 'Uraian Berita',
                           hintStyle: kHintTextStyle2,
@@ -464,27 +468,43 @@ class FormBeritaState extends State<FormBerita> {
                     ),
                     Row(
                       children: <Widget>[
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.image,
                             color: Colors.white,
                           ),
                           onPressed: getImageGallery,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
+                          // color: Color(0xFFee002d),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(17.0),
+                          // ),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                           ),
                           onPressed: getImageCamera,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
+                          // color: Color(0xFFee002d),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(17.0),
+                          // ),
                         ),
                       ],
                     ),
@@ -494,7 +514,7 @@ class FormBeritaState extends State<FormBerita> {
                     Container(
                       width: mediaQueryData.size.width,
                       height: mediaQueryData.size.height * 0.07,
-                      child: RaisedButton.icon(
+                      child: ElevatedButton.icon(
                         icon: Icon(
                           Icons.file_upload,
                           color: Colors.white,
@@ -502,7 +522,7 @@ class FormBeritaState extends State<FormBerita> {
                         label: Text("UPLOAD BERITA"),
                         onPressed: () async {
                           if (cJudul.text == null || cJudul.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Judul wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -515,11 +535,11 @@ class FormBeritaState extends State<FormBerita> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (_mySelection == null ||
                               _mySelection == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Kategori wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -532,10 +552,10 @@ class FormBeritaState extends State<FormBerita> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cIsi.text == null || cIsi.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Judul wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -548,11 +568,11 @@ class FormBeritaState extends State<FormBerita> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cTanggal.text == null ||
                               cTanggal.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Tanggal wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -565,8 +585,8 @@ class FormBeritaState extends State<FormBerita> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           }
                           // else if (_valKomentar == null ||
                           //     _valKomentar == '') {
@@ -587,7 +607,7 @@ class FormBeritaState extends State<FormBerita> {
                           //   scaffoldKey.currentState.showSnackBar(snackBar);
                           // }
                           else if (_image == null) {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Gambar wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -600,17 +620,25 @@ class FormBeritaState extends State<FormBerita> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
                             upload(_image);
                           }
                         },
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(17.0),
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
                         ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
                     ),
                   ],

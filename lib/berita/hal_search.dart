@@ -39,13 +39,15 @@ class _SearchState extends State<Search> {
             "http://dokar.kendalkab.go.id/webservice/android/kabar/search?key=${value}"),
         headers: {"Accept": "application/json"});
 
-    this.setState(
-      () {
-        isLoading = false;
-        dataJSON = json.decode(hasil.body);
-        print(dataJSON);
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          isLoading = false;
+          dataJSON = json.decode(hasil.body);
+          print(dataJSON);
+        },
+      );
+    }
   }
 
   // ignore: missing_return
@@ -62,13 +64,16 @@ class _SearchState extends State<Search> {
           // ignore: unnecessary_brace_in_string_interps
           "key": "${value}",
         });
-    this.setState(
-      () {
-        isLoading = false;
-        dataDesa = json.decode(response.body);
-        print(dataDesa);
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          isLoading = false;
+          dataDesa = json.decode(response.body);
+          print(dataDesa);
+        },
+      );
+    }
+
     print(dataDesa);
   }
 
@@ -411,7 +416,7 @@ class _SearchState extends State<Search> {
                     style: ElevatedButton.styleFrom(
                       // padding: EdgeInsets.all(15.0),
                       // elevation: 0,
-                      primary: Theme.of(context).primaryColor,
+                      backgroundColor: Theme.of(context).primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10), // <-- Radius
                       ),
@@ -476,6 +481,7 @@ class _SearchState extends State<Search> {
           color: appbarIcon, //change your color here
         ),
         title: Text(
+          // ignore: unnecessary_brace_in_string_interps
           "HASIL " + "' " + "${value}" + " '",
           style: TextStyle(
             color: appbarTitle,

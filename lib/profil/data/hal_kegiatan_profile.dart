@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalKegiatanProfile extends StatefulWidget {
   final String idDesa;
@@ -129,9 +131,19 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('KEGIATAN'),
+        title: Text(
+          'KEGIATAN',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -225,15 +237,18 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
                                         child: new Text(
                                           databerita[i]["desa"],
                                           style: new TextStyle(
-                                            fontSize: 14.0,
+                                            fontSize: 12.0,
                                             color: Colors.black,
                                           ),
                                         ),
                                       ),
                                     ),
                                     new Container(
-                                      margin:
-                                          const EdgeInsets.only(right: 10.0),
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                        bottom: 10.0,
+                                      ),
                                       child: new Text(
                                         dibaca + ' lihat',
                                         style: new TextStyle(
@@ -248,10 +263,10 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
                                   child: new Text(
                                     databerita[i]["judul"],
                                     style: new TextStyle(
-                                      fontSize: 15.0,
+                                      fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    maxLines: 2,
+                                    maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../style/styleset.dart';
+
 class HalVisiDesa extends StatefulWidget {
   final String idDesa;
 
@@ -19,9 +21,15 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
   List dataJSON;
   String visi = '';
   String misi = '';
+  bool isLoading = false;
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(
+      () {
+        isLoading = true;
+      },
+    );
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/visimisi/" +
@@ -30,6 +38,7 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
     var dataJSON = json.decode(hasil.body);
     this.setState(
       () {
+        isLoading = false;
         visi = dataJSON['visi'];
         misi = dataJSON['misi'];
       },
@@ -40,6 +49,18 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
   void initState() {
     super.initState();
     ambildata();
+  }
+
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 
   Widget _visimisi() {
@@ -140,12 +161,30 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('VISI MISI'),
+        title: Text(
+          'VISI MISI',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: SingleChildScrollView(
-        child: _visimisi(),
+        child: isLoading
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              )
+            : _visimisi(),
       ),
     );
   }

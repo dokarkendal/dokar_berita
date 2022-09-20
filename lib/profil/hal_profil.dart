@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../style/styleset.dart';
+
 class HalProfilDesa extends StatefulWidget {
   final String idDesa;
 
@@ -20,9 +22,15 @@ class _HalProfilDesaState extends State<HalProfilDesa> {
   List dataJSON;
   String profile = '';
   String gambar = '';
+  bool isLoading = false;
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(
+      () {
+        isLoading = true;
+      },
+    );
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/profile/" +
@@ -31,6 +39,7 @@ class _HalProfilDesaState extends State<HalProfilDesa> {
     var dataJSON = json.decode(hasil.body);
     this.setState(
       () {
+        isLoading = false;
         profile = dataJSON['profile'];
         gambar = dataJSON['gambar'];
       },
@@ -43,22 +52,33 @@ class _HalProfilDesaState extends State<HalProfilDesa> {
     ambildata();
   }
 
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+
   Widget _profile() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     if (profile == 'NotFound') {
-      return new Container(
+      return Container(
         child: Center(
-          child: new Column(
+          child: Column(
             children: <Widget>[
               Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: 150.0, vertical: 15.0),
-                child:
-                    new Icon(Icons.flag, size: 50.0, color: Colors.grey[350]),
+                child: Icon(Icons.flag, size: 50.0, color: Colors.grey[350]),
               ),
-              new Text(
+              Text(
                 "Belum ada profile",
-                style: new TextStyle(
+                style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.grey[350],
                 ),
@@ -104,7 +124,7 @@ class _HalProfilDesaState extends State<HalProfilDesa> {
                 padding: EdgeInsets.all(10.0),
               )
             },
-            // padding: new EdgeInsets.all(10.0),
+            // padding:  EdgeInsets.all(10.0),
             data: profile,
             // onLaunchFail: (url) {
             //   // optional, type Function
@@ -113,7 +133,7 @@ class _HalProfilDesaState extends State<HalProfilDesa> {
             // scrollable: false,
           ),
           // HtmlView(
-          //   padding: new EdgeInsets.all(15.0),
+          //   padding:  EdgeInsets.all(15.0),
           //   data: profile,
           //   onLaunchFail: (url) {
           //     // optional, type Function
@@ -130,13 +150,30 @@ class _HalProfilDesaState extends State<HalProfilDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PROFIL'),
+        title: Text(
+          'PROFIL',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: SingleChildScrollView(
-        child: _profile(),
+        child: isLoading
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              )
+            : _profile(),
       ),
     );
   }

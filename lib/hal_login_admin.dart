@@ -326,8 +326,8 @@ class _DaftarAdminState extends State<DaftarAdmin> {
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
+          backgroundColor: Theme.of(context).primaryColor,
           elevation: 2.0,
-          primary: Theme.of(context).primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // <-- Radius
           ),

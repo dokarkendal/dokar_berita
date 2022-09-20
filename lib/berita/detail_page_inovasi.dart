@@ -511,8 +511,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 // padding: EdgeInsets.all(15.0),
-                elevation: 0,
-                primary: Colors.grey,
+                elevation: 0, backgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15), // <-- Radius
                 ),
@@ -565,8 +564,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 // padding: EdgeInsets.all(15.0),
-                elevation: 0,
-                primary: Colors.grey,
+                elevation: 0, backgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15), // <-- Radius
                 ),
@@ -614,8 +612,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 // padding: EdgeInsets.all(15.0),
-                elevation: 0,
-                primary: Colors.grey,
+                elevation: 0, backgroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15), // <-- Radius
                 ),

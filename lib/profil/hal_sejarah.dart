@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../style/styleset.dart';
+
 class HalSejarahDesa extends StatefulWidget {
   final String idDesa;
 
@@ -98,19 +100,24 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
                   : null,
             ),
           ),
-          Html(
-            style: {
-              "p": Style(
-                padding: EdgeInsets.all(10.0),
-              )
-            },
-            // padding: new EdgeInsets.all(10.0),
-            data: sejarah,
-            // onLaunchFail: (url) {
-            //   // optional, type Function
-            //   print("launch $url failed");
-            // },
-            // scrollable: false,
+          Column(
+            children: [
+              Html(
+                shrinkWrap: true,
+                style: {
+                  "p": Style(
+                    padding: EdgeInsets.all(10.0),
+                  )
+                },
+                // padding: new EdgeInsets.all(10.0),
+                data: sejarah,
+                // onLaunchFail: (url) {
+                //   // optional, type Function
+                //   print("launch $url failed");
+                // },
+                // scrollable: false,
+              ),
+            ],
           ),
           // HtmlView(
           //   padding: new EdgeInsets.all(15.0),
@@ -130,9 +137,19 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SEJARAH'),
+        title: Text(
+          'SEJARAH',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: SingleChildScrollView(
         child: _sejarah(),

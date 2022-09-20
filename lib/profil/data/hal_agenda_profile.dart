@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR
 class AgendaProfile extends StatefulWidget {
   final String idDesa;
@@ -163,13 +165,21 @@ class _AgendaProfileState extends State<AgendaProfile> {
                               height: 20.0,
                               width: 100,
                               child: InkWell(
-                                child: FlatButton(
-                                  color: Colors.green,
-                                  textColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(5.0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    // padding: EdgeInsets.all(15.0),
+                                    elevation: 0, backgroundColor: Colors.green,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          10), // <-- Radius
+                                    ),
                                   ),
+                                  // color: Colors.green,
+                                  // textColor: Colors.white,
+                                  // shape: RoundedRectangleBorder(
+                                  //   borderRadius:
+                                  //       new BorderRadius.circular(5.0),
+                                  // ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
@@ -237,9 +247,19 @@ class _AgendaProfileState extends State<AgendaProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AGENDA'),
+        title: Text(
+          'AGENDA',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: RefreshIndicator(
         key: refreshKey,

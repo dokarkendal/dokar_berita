@@ -353,8 +353,8 @@ class FormAkunEditState extends State<FormAkunEdit> {
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.all(15.0),
+                          backgroundColor: Colors.green,
                           elevation: 0,
-                          primary: Colors.green,
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(10), // <-- Radius

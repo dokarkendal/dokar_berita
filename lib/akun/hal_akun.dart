@@ -406,8 +406,7 @@ class _HalAkunState extends State<HalAkun> {
           },
           style: ElevatedButton.styleFrom(
             // padding: EdgeInsets.all(15.0),
-            elevation: 0,
-            primary: Colors.blue[800],
+            elevation: 0, backgroundColor: Colors.blue[800],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10), // <-- Radius
             ),

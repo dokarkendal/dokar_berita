@@ -16,11 +16,11 @@ class _KegiatanState extends State<Kegiatan> {
 //ANCHOR Atribut
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/loadmorekegiatan"; //NOTE url api load berita
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   String dibaca;
   List dataJSON;
 
@@ -34,7 +34,7 @@ class _KegiatanState extends State<Kegiatan> {
       );
 
       final response = await dio.get(nextPage);
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -74,12 +74,12 @@ class _KegiatanState extends State<Kegiatan> {
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -100,12 +100,12 @@ class _KegiatanState extends State<Kegiatan> {
         } else {
           if (databerita[index]["kabar_id"] == 'Notfound') {
             /*
-            return new Container(
+            return  Container(
               child: ListTile(
-                title: new Text(
+                title:  Text(
                   databerita[index]["inovasi_id"], // NOTE api admin judul bawah
                   overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,
-                  style: new TextStyle(
+                  style:  TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.redAccent),
@@ -113,9 +113,9 @@ class _KegiatanState extends State<Kegiatan> {
               ),
             );*/
           } else {
-            return new Container(
-              //padding: new EdgeInsets.all(5.0),
-              child: new GestureDetector(
+            return Container(
+              //padding:  EdgeInsets.all(5.0),
+              child: GestureDetector(
                 onTap: () {
                   // NOTE onpress container Inovasi listview
                   Navigator.push(
@@ -132,7 +132,7 @@ class _KegiatanState extends State<Kegiatan> {
                     ),
                   );
                 },
-                child: new Card(
+                child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -157,7 +157,7 @@ class _KegiatanState extends State<Kegiatan> {
                     ),
                     subtitle: Row(
                       children: <Widget>[
-                        new Text(
+                        Text(
                           databerita[index]
                               ["kabar_admin"], // NOTE api admin Inovasi bawah
                         ),
@@ -166,12 +166,12 @@ class _KegiatanState extends State<Kegiatan> {
                         ),
                       ],
                     ),
-                    title: new Text(
+                    title: Text(
                       databerita[index]
                           ["kabar_judul"], // NOTE api admin judul bawah
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: new TextStyle(
+                      style: TextStyle(
                           fontSize: 14.0, fontWeight: FontWeight.bold),
                     ),
                     trailing: Icon(
@@ -199,15 +199,15 @@ class _KegiatanState extends State<Kegiatan> {
               Navigator.pushReplacementNamed(context, '/HalamanBeritaadmin');
             });
           },
-          child: new Container(
+          child: Container(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  new Container(
-                    padding: new EdgeInsets.all(10.0),
+                  Container(
+                    padding: EdgeInsets.all(10.0),
                     child: Text(
                       "Kegiatan Desa",
-                      style: new TextStyle(
+                      style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),

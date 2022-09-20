@@ -258,12 +258,20 @@ class ListPenulisState extends State<ListPenulis> {
                         SizedBox(
                           height: 22.0,
                           child: InkWell(
-                            child: FlatButton(
-                              color: Colors.orange,
-                              textColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                // padding: EdgeInsets.all(15.0),
+                                elevation: 0, backgroundColor: Colors.orange,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15), // <-- Radius
+                                ),
                               ),
+                              // color: Colors.orange,
+                              // textColor: Colors.white,
+                              // shape: RoundedRectangleBorder(
+                              //   borderRadius: new BorderRadius.circular(15.0),
+                              // ),
                               child: Row(
                                 children: <Widget>[
                                   /*Icon(
@@ -398,12 +406,20 @@ class ListPenulisState extends State<ListPenulis> {
                         SizedBox(
                           height: 22.0,
                           child: InkWell(
-                            child: FlatButton(
-                              color: Colors.grey,
-                              textColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                // padding: EdgeInsets.all(15.0),
+                                elevation: 0, backgroundColor: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15), // <-- Radius
+                                ),
                               ),
+                              // color: Colors.grey,
+                              // textColor: Colors.white,
+                              // shape: RoundedRectangleBorder(
+                              //   borderRadius: new BorderRadius.circular(15.0),
+                              // ),
                               child: Row(
                                 children: <Widget>[
                                   /*Icon(

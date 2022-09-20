@@ -620,12 +620,19 @@ class _DetailPotensiState extends State<DetailPotensi> {
       children: <Widget>[
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -645,7 +652,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
                 ],
               ),
               onPressed: () {
-                SnackBar snackBar = SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                     'Fitur belum tersedia',
                     style: TextStyle(color: Colors.white),
@@ -658,20 +665,27 @@ class _DetailPotensiState extends State<DetailPotensi> {
                       print('ULANGI snackbar');
                     },
                   ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
+                ));
+                // scaffoldKey.currentState.showSnackBar(snackBar);
               },
             ),
           ],
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -691,7 +705,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
                 ],
               ),
               onPressed: () {
-                SnackBar snackBar = SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                     'Fitur belum tersedia',
                     style: TextStyle(color: Colors.white),
@@ -704,20 +718,27 @@ class _DetailPotensiState extends State<DetailPotensi> {
                       print('ULANGI snackbar');
                     },
                   ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
+                ));
+                // scaffoldKey.currentState.showSnackBar(snackBar);
               },
             ),
           ],
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.blue,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
