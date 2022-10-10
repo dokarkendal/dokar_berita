@@ -112,6 +112,7 @@ class _HalAkunState extends State<HalAkun> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         iconTheme: IconThemeData(
           color: appbarIcon, //change your color here
         ),
@@ -121,7 +122,7 @@ class _HalAkunState extends State<HalAkun> {
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -148,6 +149,7 @@ class _HalAkunState extends State<HalAkun> {
                   usernameEdit(),
                   Divider(),
                   passwordEdit(),
+                  Divider(),
                   buttonEdit()
                 ],
               ),
@@ -392,32 +394,37 @@ class _HalAkunState extends State<HalAkun> {
   }
 
   Widget buttonEdit() {
-    return Column(
-      children: <Widget>[
-        ElevatedButton.icon(
-          icon: Icon(
-            Icons.edit,
-            color: Colors.white,
-            size: 20,
-          ),
-          label: Text("EDIT AKUN"),
-          onPressed: () {
-            Navigator.pushNamed(context, '/FormAkunEdit');
-          },
-          style: ElevatedButton.styleFrom(
-            // padding: EdgeInsets.all(15.0),
-            elevation: 0, backgroundColor: Colors.blue[800],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // <-- Radius
-            ),
-          ),
-          // color: Colors.blue[800],
-          // textColor: Colors.white,
-          // shape: RoundedRectangleBorder(
-          //   borderRadius: BorderRadius.circular(10.0),
-          // ),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height / 15,
+      child: ElevatedButton.icon(
+        icon: Icon(
+          Icons.edit,
+          color: Colors.white,
+          size: 18,
         ),
-      ],
+        label: Text(
+          "EDIT AKUN",
+          style: TextStyle(
+            fontSize: 18,
+          ),
+        ),
+        onPressed: () {
+          Navigator.pushNamed(context, '/FormAkunEdit');
+        },
+        style: ElevatedButton.styleFrom(
+          // padding: EdgeInsets.all(15.0),
+          elevation: 0, backgroundColor: Colors.blue[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // <-- Radius
+          ),
+        ),
+        // color: Colors.blue[800],
+        // textColor: Colors.white,
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.circular(10.0),
+        // ),
+      ),
     );
   }
 

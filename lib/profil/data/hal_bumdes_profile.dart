@@ -133,6 +133,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
 ///////////////////////////////HALAMAN UTAMA//////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -166,6 +167,31 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
               return _buildProgressIndicator();
             } else {
               if (databerita[i]["nama"] == 'NotFound') {
+                return Container(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.2,
+                          ),
+                        ),
+                        Text(
+                          "Bumdes kosong",
+                          style: TextStyle(
+                            fontSize: 25.0,
+                            color: Colors.grey[350],
+                          ),
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.all(5.0),
+                        // ),
+                        Icon(Icons.notes_rounded,
+                            size: 150.0, color: Colors.grey[350]),
+                      ],
+                    ),
+                  ),
+                );
               } else {
                 return new Container(
                   // padding: new EdgeInsets.all(2.0),

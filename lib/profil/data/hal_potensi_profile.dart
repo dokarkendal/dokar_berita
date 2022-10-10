@@ -92,6 +92,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
       setState(() {
         isLoading = false;
         databerita.addAll(tempList);
+        print(response);
       });
     }
   }
@@ -130,6 +131,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
 ///////////////////////////////HALAMAN UTAMA//////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -163,6 +165,31 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
               return _buildProgressIndicator();
             } else {
               if (databerita[i]["judul"] == 'NotFound') {
+                return Container(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.2,
+                          ),
+                        ),
+                        Text(
+                          "Potensi kosong",
+                          style: TextStyle(
+                            fontSize: 25.0,
+                            color: Colors.grey[350],
+                          ),
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.all(5.0),
+                        // ),
+                        Icon(Icons.notes_rounded,
+                            size: 150.0, color: Colors.grey[350]),
+                      ],
+                    ),
+                  ),
+                );
               } else {
                 if (databerita[i]["dibaca"] == null) {
                   dibaca = '0';

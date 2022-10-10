@@ -105,14 +105,16 @@ class FormAkunEditState extends State<FormAkunEdit> {
         });
     var detailakun = json.decode(response.body);
 
-    setState(
-      () {
-        cNama = new TextEditingController(text: detailakun['nama']);
-        cEmail = new TextEditingController(text: detailakun['email']);
-        cHp = new TextEditingController(text: detailakun['hp']);
-        cUsername = new TextEditingController(text: detailakun['username']);
-      },
-    );
+    if (mounted) {
+      setState(
+        () {
+          cNama = new TextEditingController(text: detailakun['nama']);
+          cEmail = new TextEditingController(text: detailakun['email']);
+          cHp = new TextEditingController(text: detailakun['hp']);
+          cUsername = new TextEditingController(text: detailakun['username']);
+        },
+      );
+    }
 
     print(detailakun);
   }
@@ -136,15 +138,16 @@ class FormAkunEditState extends State<FormAkunEdit> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        elevation: 0,
         centerTitle: true,
         iconTheme: IconThemeData(
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          "Form Edit Akun ",
+          "EDIT AKUN",
           style: TextStyle(
             color: appbarTitle,
-            fontSize: 24.0,
+            // fontSize: 24.0,
             fontWeight: FontWeight.bold,
           ),
         ),

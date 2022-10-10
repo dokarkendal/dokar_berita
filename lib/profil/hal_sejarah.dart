@@ -48,23 +48,26 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
   Widget _sejarah() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     if (sejarah == 'NotFound') {
-      return new Container(
+      return Container(
         child: Center(
-          child: new Column(
+          child: Column(
             children: <Widget>[
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 150.0, vertical: 15.0),
-                child:
-                    new Icon(Icons.flag, size: 50.0, color: Colors.grey[350]),
+                padding: EdgeInsets.only(
+                  top: mediaQueryData.size.height * 0.2,
+                ),
               ),
-              new Text(
-                "Belum ada sejarah",
-                style: new TextStyle(
-                  fontSize: 20.0,
+              Text(
+                "Sejarah kosong",
+                style: TextStyle(
+                  fontSize: 25.0,
                   color: Colors.grey[350],
                 ),
               ),
+              // Padding(
+              //   padding: EdgeInsets.all(5.0),
+              // ),
+              Icon(Icons.notes_rounded, size: 150.0, color: Colors.grey[350]),
             ],
           ),
         ),

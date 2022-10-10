@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../style/styleset.dart';
+
 class HalFasumDetailPage extends StatefulWidget {
   final String dNama,
       dId,
@@ -95,9 +97,26 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.dNama}'),
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title:
+            // ignore: unnecessary_brace_in_string_interps
+            Text(
+          '${widget.dNama}',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
+      // appBar: AppBar(
+      //   title: Text('${widget.dNama}'),
+      //   backgroundColor: Theme.of(context).primaryColor,
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

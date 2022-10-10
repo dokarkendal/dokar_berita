@@ -24,11 +24,11 @@ class _AgendaProfileState extends State<AgendaProfile> {
 //ANCHOR Atribut
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/agenda"; //NOTE url api load berita
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
   List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   String dibaca;
 
   void _getMoreData() async {
@@ -77,12 +77,12 @@ class _AgendaProfileState extends State<AgendaProfile> {
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -91,7 +91,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
 //ANCHOR listview berita
   Widget _buildList() {
     return GridView.builder(
-      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: MediaQuery.of(context).size.width /
             (MediaQuery.of(context).size.height / 1.1),
@@ -106,13 +106,36 @@ class _AgendaProfileState extends State<AgendaProfile> {
           return _buildProgressIndicator();
         } else {
           if (databerita[index]["nama"] == 'NotFound') {
+            return Container(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 30.0),
+                    ),
+                    Text(
+                      "Agenda Kosong",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.grey[350],
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.all(5.0),
+                    // ),
+                    Icon(Icons.notes_rounded,
+                        size: 120.0, color: Colors.grey[350]),
+                  ],
+                ),
+              ),
+            );
           } else {
-            return new Container(
-              child: new GestureDetector(
+            return Container(
+              child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                    new MaterialPageRoute(
-                      builder: (context) => new AgendaDetail(
+                    MaterialPageRoute(
+                      builder: (context) => AgendaDetail(
                         judulEvent: databerita[index]["nama"],
                         desaEvent: databerita[index]["desa"],
                         kecamatanEvent: databerita[index]["kecamatan"],
@@ -128,11 +151,11 @@ class _AgendaProfileState extends State<AgendaProfile> {
                     ),
                   );
                 },
-                child: new Card(
+                child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  child: new Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Stack(
@@ -178,7 +201,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
                                   // textColor: Colors.white,
                                   // shape: RoundedRectangleBorder(
                                   //   borderRadius:
-                                  //       new BorderRadius.circular(5.0),
+                                  //        BorderRadius.circular(5.0),
                                   // ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -212,7 +235,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
                           databerita[index]["nama"],
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: new TextStyle(
+                          style: TextStyle(
                             fontSize: 11.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -225,7 +248,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
                           databerita[index]["nama"],
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: new TextStyle(
+                          style: TextStyle(
                               fontSize: 10.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.grey),
@@ -271,15 +294,15 @@ class _AgendaProfileState extends State<AgendaProfile> {
             },
           );
         },
-        child: new Container(
+        child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Container(
-                padding: new EdgeInsets.all(10.0),
+              Container(
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                   "Semua Agenda",
-                  style: new TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
