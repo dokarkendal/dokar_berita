@@ -357,25 +357,34 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                     ),
 //ANCHOR judul berita berita edit
                     Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      alignment: Alignment.topLeft,
+                      // height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
                       child: TextFormField(
+                        maxLines: null,
                         controller: dJudul,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
+                          color: Colors.black,
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
-                          prefixIcon: Icon(
-                            Icons.text_fields,
-                            color: Colors.grey[600],
+                          border: new OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
                           ),
                           hintText: 'Judul Berita',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey[400],
+                          ),
+                          prefixIcon: Icon(
+                            Icons.text_fields,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),

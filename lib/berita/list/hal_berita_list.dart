@@ -360,10 +360,10 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                       child: new Text(
                                         databerita[i]["kabar_judul"],
                                         style: new TextStyle(
-                                          fontSize: 14.0,
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -512,10 +512,10 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                       child: new Text(
                                         databerita[i]["kabar_judul"],
                                         style: new TextStyle(
-                                          fontSize: 14.0,
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
