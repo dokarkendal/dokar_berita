@@ -24,6 +24,7 @@ class FormAkunEdit extends StatefulWidget {
 
 class FormAkunEditState extends State<FormAkunEdit> {
 //ANCHOR variable
+  // ignore: unused_field
   final FocusNode _focusNode = FocusNode();
   bool _isInAsyncCall = false;
   bool loadingdata = false;

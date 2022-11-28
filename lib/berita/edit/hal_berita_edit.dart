@@ -539,7 +539,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                     Padding(
                       padding: EdgeInsets.only(top: 10.0),
                     ),
-//FIXME komentar berita edit
+
                     Column(
                       children: <Widget>[
                         Container(

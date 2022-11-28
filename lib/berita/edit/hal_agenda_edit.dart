@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:async/async.dart'; //upload gambar
 import 'package:flutter/material.dart';
-import 'package:dokar_aplikasi/style/constants.dart';
+// import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:image_picker/image_picker.dart'; //akses galeri dan camera
 import 'package:http/http.dart' as http; //api
 import 'package:modal_progress_hud/modal_progress_hud.dart';
