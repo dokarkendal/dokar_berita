@@ -178,11 +178,11 @@ class HalKegiatanListState extends State<HalKegiatanList> {
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'List Kegiatan',
+          'LIST KEGIATAN',
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -202,7 +202,9 @@ class HalKegiatanListState extends State<HalKegiatanList> {
           // ignore: missing_return
           itemBuilder: (BuildContext context, int i) {
             if (i == databerita.length) {
-              return _buildProgressIndicator();
+              return Container(
+                child: _buildProgressIndicator(),
+              );
             } else {
               if (databerita[i]["kabar_id"] == 'Notfound') {
               } else {
@@ -268,10 +270,10 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                                       child: new Text(
                                         databerita[i]["kabar_judul"],
                                         style: new TextStyle(
-                                          fontSize: 15.0,
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -284,7 +286,7 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                                             child: new Text(
                                               databerita[i]["kabar_tanggal"],
                                               style: new TextStyle(
-                                                fontSize: 14.0,
+                                                fontSize: 13.0,
                                                 color: Colors.black,
                                                 //fontWeight: FontWeight.normal,
                                               ),
@@ -421,10 +423,10 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                                       child: new Text(
                                         databerita[i]["kabar_judul"],
                                         style: new TextStyle(
-                                          fontSize: 15.0,
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -437,8 +439,8 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                                             child: new Text(
                                               databerita[i]["kabar_tanggal"],
                                               style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                                fontSize: 12.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),

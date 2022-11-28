@@ -38,6 +38,7 @@ class _InputSemuaState extends State<InputSemua> {
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           iconTheme: IconThemeData(
             color: appbarIcon, //change your color here
           ),
@@ -46,7 +47,7 @@ class _InputSemuaState extends State<InputSemua> {
             style: TextStyle(
               color: appbarTitle,
               fontWeight: FontWeight.bold,
-              fontSize: 25.0,
+              // fontSize: 25.0,
             ),
           ),
           centerTitle: true,
@@ -70,6 +71,7 @@ class _InputSemuaState extends State<InputSemua> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          elevation: 0,
           iconTheme: IconThemeData(
             color: appbarIcon, //change your color here
           ),
@@ -78,7 +80,7 @@ class _InputSemuaState extends State<InputSemua> {
             style: TextStyle(
               color: appbarTitle,
               fontWeight: FontWeight.bold,
-              fontSize: 25.0,
+              // fontSize: 25.0,
             ),
           ),
           centerTitle: true,

@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR StatefulWidget Potensi
 class GaleriProfile extends StatefulWidget {
   final String idDesa;
@@ -21,7 +23,7 @@ class _GaleriProfileState extends State<GaleriProfile> {
 //ANCHOR Atribut
 
   String nextPage =
-      "http://dokar.kendalkab.go.id/webservice/android/dashbord/loadmoregaleri"; //NOTE url api load berita
+      "http://dokar.kendalkab.go.id/webservice/android/kabar/newloadmoregaleri"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
   List databerita = [];
@@ -38,7 +40,7 @@ class _GaleriProfileState extends State<GaleriProfile> {
         isLoading = true;
       });
 
-      final response = await dio.get(nextPage + "/${widget.idDesa}/");
+      final response = await dio.get(nextPage + "/" + "${widget.idDesa}/");
       List tempList = [];
       nextPage = response.data['next'];
 
@@ -95,12 +97,12 @@ class _GaleriProfileState extends State<GaleriProfile> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return GridView.builder(
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 1,
+        mainAxisSpacing: 5.0,
+        crossAxisSpacing: 5.0,
         // childAspectRatio: 1,
         crossAxisCount: 3,
-        childAspectRatio: MediaQuery.of(context).size.width /
-            (MediaQuery.of(context).size.height / 1.65),
+        // childAspectRatio: MediaQuery.of(context).size.width /
+        //     (MediaQuery.of(context).size.height / 1.65),
       ),
       //+1 for progressbar
       physics: ClampingScrollPhysics(),
@@ -112,7 +114,7 @@ class _GaleriProfileState extends State<GaleriProfile> {
         if (index == databerita.length) {
           return _buildProgressIndicator();
         } else {
-          if (databerita[index]["gambar"] == 'Notfound') {
+          if (databerita[index]["kabar_id"] == 'Notfound') {
             /*
             return new Container(
               child: ListTile(
@@ -133,89 +135,39 @@ class _GaleriProfileState extends State<GaleriProfile> {
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        ClipRRect(
-                          //borderRadius: BorderRadius.circular(5.0),
-                          child: GestureDetector(
-                            child: CachedNetworkImage(
-                              imageUrl: databerita[index]["gambar"],
-                              placeholder: (context, url) => Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      "assets/images/load.png",
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
+                    AspectRatio(
+                      aspectRatio: 1,
+                      //borderRadius: BorderRadius.circular(5.0),
+                      child: GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: databerita[index]["kabar_gambar"],
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/load.png",
                                 ),
+                                fit: BoxFit.cover,
                               ),
-                              fit: BoxFit.cover,
-                              height: mediaQueryData.size.height * 0.2,
-                              width: mediaQueryData.size.width * 0.35,
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailGaleri(
-                                    dGambar: databerita[index]["gambar"],
-                                    dDesa: databerita[index]["desa"],
-                                    dJudul: databerita[index]["judul"],
-                                  ),
-                                ),
-                              );
-                            },
                           ),
+                          fit: BoxFit.cover,
+                          height: mediaQueryData.size.height * 0.2,
+                          width: mediaQueryData.size.width * 0.35,
                         ),
-                        /*Padding(
-                          padding: EdgeInsets.only(
-                            top: 140.0,
-                            left: 0.0,
-                          ),
-                          child: SizedBox(
-                            height: 40.0,
-                            width: 140,
-                            child: Material(
-                              color: Colors.black45.withOpacity(0.4),
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: new EdgeInsets.all(5.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            databerita[index]["desa"],
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: AutoSizeText(
-                                            databerita[index]["judul"],
-                                            overflow: TextOverflow.ellipsis,
-                                            style: new TextStyle(
-                                              fontSize: 11.0,
-                                              color: Colors.white,
-                                            ),
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailGaleri(
+                                dGambar: databerita[index]["kabar_gambar"],
+                                dDesa: databerita[index]["data_nama"],
+                                dJudul: databerita[index]["kabar_judul"],
                               ),
                             ),
-                          ),
-                        ),*/
-                      ],
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -233,7 +185,17 @@ class _GaleriProfileState extends State<GaleriProfile> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('GALERI'),
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          'GALERI',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+            // fontSize: 25.0,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,

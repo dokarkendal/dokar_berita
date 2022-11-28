@@ -22,9 +22,15 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
   List dataJSON;
   String sejarah = '';
   String gambar = '';
+  bool isLoading = false;
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(
+      () {
+        isLoading = true;
+      },
+    );
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/sejarah/" +
@@ -33,9 +39,22 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
     var dataJSON = json.decode(hasil.body);
     this.setState(
       () {
+        isLoading = false;
         sejarah = dataJSON['sejarah'];
         gambar = dataJSON['gambar'];
       },
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 
@@ -97,7 +116,7 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
                         ),
                       ),
                       width: mediaQueryData.size.width,
-                      height: mediaQueryData.size.height * 0.1,
+                      height: mediaQueryData.size.height * 0.3,
                       fit: BoxFit.cover,
                     )
                   : null,
@@ -155,7 +174,15 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
         ),
       ),
       body: SingleChildScrollView(
-        child: _sejarah(),
+        child: isLoading
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              )
+            : _sejarah(),
       ),
     );
   }

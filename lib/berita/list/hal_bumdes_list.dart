@@ -99,9 +99,9 @@ class HalBumdesListState extends State<HalBumdesList> {
 //ANCHOR fungsi load berita bumdes list
   List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   List tempList = [];
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/bumdes/list/";
 
@@ -153,12 +153,12 @@ class HalBumdesListState extends State<HalBumdesList> {
   }
 
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -173,11 +173,11 @@ class HalBumdesListState extends State<HalBumdesList> {
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'List Bumdes',
+          'LIST BUMDES',
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -200,28 +200,30 @@ class HalBumdesListState extends State<HalBumdesList> {
           // ignore: missing_return
           itemBuilder: (BuildContext context, int i) {
             if (i == databerita.length) {
-              return _buildProgressIndicator();
+              return Container(
+                child: _buildProgressIndicator(),
+              );
             } else {
               if (databerita[i]["bumdes_id"] == "Notfound") {
-                // return new Container(
+                // return  Container(
                 //   child: Center(
-                //     child: new Column(
+                //     child:  Column(
                 //       children: <Widget>[
-                //         new Padding(
-                //           padding: new EdgeInsets.all(100.0),
+                //          Padding(
+                //           padding:  EdgeInsets.all(100.0),
                 //         ),
-                //         new Text(
+                //          Text(
                 //           "DATA KOSONG",
-                //           style: new TextStyle(
+                //           style:  TextStyle(
                 //             fontSize: 30.0,
                 //             color: Colors.grey[350],
                 //             // fontWeight: FontWeight.bold,
                 //           ),
                 //         ),
-                //         new Padding(
-                //           padding: new EdgeInsets.all(10.0),
+                //          Padding(
+                //           padding:  EdgeInsets.all(10.0),
                 //         ),
-                //         new Icon(
+                //          Icon(
                 //           Icons.list_alt_rounded,
                 //           size: 150.0,
                 //           color: Colors.grey[350],
@@ -233,21 +235,21 @@ class HalBumdesListState extends State<HalBumdesList> {
               } else {
                 Widget _container() {
                   if (databerita[i]["device"] == '1') {
-                    // return new Container(
+                    // return  Container(
                     //   color: Colors.grey[100],
                     //   padding: EdgeInsets.only(
                     //     left: 5.0,
                     //     right: 5.0,
                     //   ),
-                    //   child: new Card(
+                    //   child:  Card(
                     //     shape: RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.circular(10.0),
                     //     ),
-                    //     child: new InkWell(
+                    //     child:  InkWell(
                     //       onTap: () {
                     //         Navigator.of(context).push(
-                    //           new MaterialPageRoute(
-                    //             builder: (context) => new FormBumdesEdit(
+                    //            MaterialPageRoute(
+                    //             builder: (context) =>  FormBumdesEdit(
                     //               dJudul: databerita[i]["bumdes_judul"],
                     //               dKatTempat: databerita[i]["bumdes_tempat"],
                     //               dIsi: databerita[i]["bumdes_isi"],
@@ -269,7 +271,7 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //           child: ClipRRect(
                     //             borderRadius: BorderRadius.circular(5.0),
                     //             child: Image(
-                    //               image: new NetworkImage(
+                    //               image:  NetworkImage(
                     //                   databerita[i]["bumdes_gambar"]),
                     //               fit: BoxFit.cover,
                     //               height: 150.0,
@@ -279,14 +281,14 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //         ),
                     //         subtitle: Row(
                     //           children: <Widget>[
-                    //             new Text(
+                    //              Text(
                     //               databerita[i]["bumdes_tempat"],
                     //             ),
                     //           ],
                     //         ),
-                    //         title: new Text(
+                    //         title:  Text(
                     //           databerita[i]["bumdes_judul"],
-                    //           style: new TextStyle(
+                    //           style:  TextStyle(
                     //               fontSize: 14.0, fontWeight: FontWeight.bold),
                     //         ),
                     //         trailing: Icon(
@@ -298,7 +300,7 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //   ),
                     // );
                     return Container(
-                      child: new Card(
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
@@ -308,8 +310,8 @@ class HalBumdesListState extends State<HalBumdesList> {
                         child: InkWell(
                           onTap: () {
                             Navigator.of(context).push(
-                              new MaterialPageRoute(
-                                builder: (context) => new FormBumdesEdit(
+                              MaterialPageRoute(
+                                builder: (context) => FormBumdesEdit(
                                   dJudul: databerita[i]["bumdes_judul"],
                                   dKatTempat: databerita[i]["bumdes_tempat"],
                                   dIsi: databerita[i]["bumdes_isi"],
@@ -320,10 +322,10 @@ class HalBumdesListState extends State<HalBumdesList> {
                               ),
                             );
                           },
-                          child: new Row(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Container(
+                              Container(
                                 margin: const EdgeInsets.only(right: 15.0),
                                 width: 120.0,
                                 height: 100.0,
@@ -344,42 +346,42 @@ class HalBumdesListState extends State<HalBumdesList> {
                                   width: 110.0,
                                 ),
                               ),
-                              new Expanded(
-                                child: new Column(
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Container(
+                                    Container(
                                       margin: const EdgeInsets.only(
                                         right: 10.0,
                                         top: 5.0,
                                       ),
-                                      child: new Text(
+                                      child: Text(
                                         databerita[i]["bumdes_judul"],
-                                        style: new TextStyle(
-                                          fontSize: 15.0,
+                                        style: TextStyle(
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
+                                    Row(
                                       children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
+                                        Expanded(
+                                          child: Container(
                                             margin: const EdgeInsets.only(
                                                 top: 5.0, bottom: 10.0),
-                                            child: new Text(
+                                            child: Text(
                                               databerita[i]["bumdes_tempat"],
-                                              style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                              style: TextStyle(
+                                                fontSize: 13.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        new Container(
+                                        Container(
                                           margin: const EdgeInsets.only(
                                               right: 10.0),
                                           child: Icon(
@@ -389,13 +391,13 @@ class HalBumdesListState extends State<HalBumdesList> {
                                         ),
                                       ],
                                     ),
-                                    // new Container(
-                                    //   child: new Column(
+                                    //  Container(
+                                    //   child:  Column(
                                     //     children: <Widget>[
-                                    //       new Container(
-                                    //         child: new Text(
+                                    //        Container(
+                                    //         child:  Text(
                                     //           databerita[i]["kabar_kategori"],
-                                    //           style: new TextStyle(
+                                    //           style:  TextStyle(
                                     //             fontSize: 11.0,
                                     //             color: Colors.grey[500],
                                     //           ),
@@ -413,17 +415,17 @@ class HalBumdesListState extends State<HalBumdesList> {
                       ),
                     );
                   } else {
-                    // return new Container(
+                    // return  Container(
                     //   color: Colors.grey[100],
                     //   padding: EdgeInsets.only(
                     //     left: 5.0,
                     //     right: 5.0,
                     //   ),
-                    //   child: new Card(
+                    //   child:  Card(
                     //     shape: RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.circular(10.0),
                     //     ),
-                    //     child: new InkWell(
+                    //     child:  InkWell(
                     //       onTap: () {
                     //         Alert(
                     //           context: context,
@@ -451,9 +453,9 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //               onPressed: () {
                     //                 Navigator.pop(context);
                     //                 Navigator.of(context).push(
-                    //                   new MaterialPageRoute(
+                    //                    MaterialPageRoute(
                     //                     builder: (context) =>
-                    //                         new FormBumdesEdit(
+                    //                          FormBumdesEdit(
                     //                       dJudul: databerita[i]["bumdes_judul"],
                     //                       dKatTempat: databerita[i]
                     //                           ["bumdes_tempat"],
@@ -482,7 +484,7 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //           child: ClipRRect(
                     //             borderRadius: BorderRadius.circular(5.0),
                     //             child: Image(
-                    //               image: new NetworkImage(
+                    //               image:  NetworkImage(
                     //                   databerita[i]["bumdes_gambar"]),
                     //               fit: BoxFit.cover,
                     //               height: 150.0,
@@ -492,14 +494,14 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //         ),
                     //         subtitle: Row(
                     //           children: <Widget>[
-                    //             new Text(
+                    //              Text(
                     //               databerita[i]["bumdes_tempat"],
                     //             ),
                     //           ],
                     //         ),
-                    //         title: new Text(
+                    //         title:  Text(
                     //           databerita[i]["bumdes_judul"],
-                    //           style: new TextStyle(
+                    //           style:  TextStyle(
                     //               fontSize: 14.0, fontWeight: FontWeight.bold),
                     //         ),
                     //         trailing: Icon(
@@ -511,7 +513,7 @@ class HalBumdesListState extends State<HalBumdesList> {
                     //   ),
                     // );
                     return Container(
-                      child: new Card(
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
@@ -523,7 +525,7 @@ class HalBumdesListState extends State<HalBumdesList> {
                             Alert(
                               context: context,
                               type: AlertType.warning,
-                              style: alertStyle,
+                              // style: alertStyle,
                               title: "Peringatan.",
                               desc:
                                   "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
@@ -535,7 +537,7 @@ class HalBumdesListState extends State<HalBumdesList> {
                                         color: Colors.white, fontSize: 16),
                                   ),
                                   onPressed: () => Navigator.pop(context),
-                                  color: Colors.green[300],
+                                  color: Colors.green,
                                 ),
                                 DialogButton(
                                   child: Text(
@@ -546,9 +548,8 @@ class HalBumdesListState extends State<HalBumdesList> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                     Navigator.of(context).push(
-                                      new MaterialPageRoute(
-                                        builder: (context) =>
-                                            new FormBumdesEdit(
+                                      MaterialPageRoute(
+                                        builder: (context) => FormBumdesEdit(
                                           dJudul: databerita[i]["bumdes_judul"],
                                           dKatTempat: databerita[i]
                                               ["bumdes_tempat"],
@@ -561,15 +562,15 @@ class HalBumdesListState extends State<HalBumdesList> {
                                       ),
                                     );
                                   },
-                                  color: Colors.red[300],
+                                  color: Colors.red,
                                 )
                               ],
                             ).show();
                           },
-                          child: new Row(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Container(
+                              Container(
                                 margin: const EdgeInsets.only(right: 15.0),
                                 width: 120.0,
                                 height: 100.0,
@@ -590,58 +591,59 @@ class HalBumdesListState extends State<HalBumdesList> {
                                   width: 110.0,
                                 ),
                               ),
-                              new Expanded(
-                                child: new Column(
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Container(
+                                    Container(
                                       margin: const EdgeInsets.only(
                                         right: 10.0,
                                         top: 5.0,
                                       ),
-                                      child: new Text(
+                                      child: Text(
                                         databerita[i]["bumdes_judul"],
-                                        style: new TextStyle(
-                                          fontSize: 15.0,
+                                        style: TextStyle(
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
+                                    Row(
                                       children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
+                                        Expanded(
+                                          child: Container(
                                             margin: const EdgeInsets.only(
                                                 top: 5.0, bottom: 10.0),
-                                            child: new Text(
+                                            child: Text(
                                               databerita[i]["bumdes_tempat"],
-                                              style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                              style: TextStyle(
+                                                fontSize: 13.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        new Container(
+                                        Container(
                                           margin: const EdgeInsets.only(
                                               right: 10.0),
                                           child: Icon(
-                                            Icons.phone_android,
+                                            Icons.laptop,
                                             size: 14.0,
+                                            color: Colors.blue,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    // new Container(
-                                    //   child: new Column(
+                                    //  Container(
+                                    //   child:  Column(
                                     //     children: <Widget>[
-                                    //       new Container(
-                                    //         child: new Text(
+                                    //        Container(
+                                    //         child:  Text(
                                     //           databerita[i]["kabar_kategori"],
-                                    //           style: new TextStyle(
+                                    //           style:  TextStyle(
                                     //             fontSize: 11.0,
                                     //             color: Colors.grey[500],
                                     //           ),

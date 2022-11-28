@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:async/async.dart'; //upload gambar
 import 'package:flutter/material.dart';
-import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:image_picker/image_picker.dart'; //akses galeri dan camera
 import 'package:http/http.dart' as http; //api
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -17,6 +16,8 @@ import 'package:image/image.dart' as Img;
 import 'dart:math' as Math;
 
 import 'package:status_alert/status_alert.dart';
+
+import '../../style/styleset.dart';
 
 //ANCHOR class form kegiatan edit
 class FormKegiatanEdit extends StatefulWidget {
@@ -48,15 +49,15 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 //ANCHOR controller
-  TextEditingController dVideo = new TextEditingController();
-  TextEditingController dJudul = new TextEditingController();
-  TextEditingController dKatTempat = new TextEditingController();
-  TextEditingController dIsi = new TextEditingController();
-  TextEditingController dTanggal = new TextEditingController();
-  TextEditingController cUsername = new TextEditingController();
-  TextEditingController cStatus = new TextEditingController();
-  TextEditingController dGambar = new TextEditingController();
-  TextEditingController dIdKegiatan = new TextEditingController();
+  TextEditingController dVideo = TextEditingController();
+  TextEditingController dJudul = TextEditingController();
+  TextEditingController dKatTempat = TextEditingController();
+  TextEditingController dIsi = TextEditingController();
+  TextEditingController dTanggal = TextEditingController();
+  TextEditingController cUsername = TextEditingController();
+  TextEditingController cStatus = TextEditingController();
+  TextEditingController dGambar = TextEditingController();
+  TextEditingController dIdKegiatan = TextEditingController();
 
 //ANCHOR input image size flutter
   Future getImageGallery() async {
@@ -66,14 +67,14 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
-    int rand = new Math.Random().nextInt(100000);
+    int rand = Math.Random().nextInt(100000);
 
     Img.Image image = Img.decodeImage(
       imageFile.readAsBytesSync(),
     );
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    var compressImg = new File("$path/image_$rand.jpg")
+    var compressImg = File("$path/image_$rand.jpg")
       ..writeAsBytesSync(
         Img.encodeJpg(smallerImg, quality: 1000),
       );
@@ -92,12 +93,12 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
-    int rand = new Math.Random().nextInt(100000);
+    int rand = Math.Random().nextInt(100000);
 
     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    var compressImg = new File("$path/image_$rand.jpg")
+    var compressImg = File("$path/image_$rand.jpg")
       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
     setState(
@@ -122,13 +123,13 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
 
   @override
   void initState() {
-    dVideo = new TextEditingController(text: "${widget.dVideo}");
-    dJudul = new TextEditingController(text: "${widget.dJudul}");
-    dKatTempat = new TextEditingController(text: "${widget.dKatTempat}");
-    dIsi = new TextEditingController(text: "${widget.dIsi}");
-    dTanggal = new TextEditingController(text: "${widget.dTanggal}");
-    dGambar = new TextEditingController(text: "${widget.dGambar}");
-    dIdKegiatan = new TextEditingController(text: "${widget.dIdKegiatan}");
+    dVideo = TextEditingController(text: "${widget.dVideo}");
+    dJudul = TextEditingController(text: "${widget.dJudul}");
+    dKatTempat = TextEditingController(text: "${widget.dKatTempat}");
+    dIsi = TextEditingController(text: "${widget.dIsi}");
+    dTanggal = TextEditingController(text: "${widget.dTanggal}");
+    dGambar = TextEditingController(text: "${widget.dGambar}");
+    dIdKegiatan = TextEditingController(text: "${widget.dIdKegiatan}");
     super.initState();
   }
 
@@ -149,14 +150,14 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var stream =
         // ignore: deprecated_member_use
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+        http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
     var uri = Uri.parse(
         "http://dokar.kendalkab.go.id/webservice/android/kabar/editkegiatan");
 
-    var request = new http.MultipartRequest("POST", uri);
+    var request = http.MultipartRequest("POST", uri);
 
-    var multipartFile = new http.MultipartFile("image", stream, length,
+    var multipartFile = http.MultipartFile("image", stream, length,
         filename: basename(imageFile.path));
     request.fields['judul'] = dJudul.text;
     request.fields['tempat'] = dKatTempat.text;
@@ -273,15 +274,19 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
 //ANCHOR body kegiatan
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Form Kegiatan Edit',
+          'EDIT KEGIATAN',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -295,104 +300,105 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
             CircularProgressIndicator(backgroundColor: Colors.red),
         child: ListView(
           children: <Widget>[
-            new Container(
-              padding: new EdgeInsets.all(10.0),
+            Container(
+              padding: EdgeInsets.all(10.0),
               child: Form(
                 key: formKey,
                 child: Column(
                   children: <Widget>[
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR judul kegiatan edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
+                        maxLines: null,
                         controller: dJudul,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
                           //errorText: _validate ? 'Harus di isi' : null,
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.text_fields,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Judul Kegiatan',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR kategori kegiatan edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
                         controller: dKatTempat,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
                           //errorText: _validate ? 'Harus di isi' : null,
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.place,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Tempat Kegiatan',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR kegiatan isi edit
                     Container(
                       alignment: Alignment.topLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 200.0,
+                      decoration: decorationTextField,
+                      // height: 200.0,
                       child: TextFormField(
                         controller: dIsi,
                         maxLines: null,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.library_books,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Uraian Kegiatan',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR kegiatan tanggal isi
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: DateTimeField(
                         controller: dTanggal,
                         format: format,
@@ -405,52 +411,53 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                           );
                         },
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.date_range,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Pilih tanggal',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR input link youtube
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
                         controller: dVideo,
+                        maxLines: null,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.ondemand_video,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Embed video youtube',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
                     ),
 //NOTE gambar kegiatan edit
                     Center(
                       child: _image == null
-                          ? new Text("Pilih gambar kegiatan!")
-                          : new Image.file(_image),
+                          ? Text("Pilih gambar kegiatan!")
+                          : Image.file(_image),
                     ),
                     Row(
                       children: <Widget>[
@@ -465,13 +472,16 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                           // color: Color(0xFFee002d),
                           // shape: RoundedRectangleBorder(
                           //   borderRadius: BorderRadius.circular(17.0),
                           // ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.0),
                         ),
                         ElevatedButton(
                           child: Icon(
@@ -484,7 +494,7 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                           // color: Color(0xFFee002d),
@@ -494,102 +504,107 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                         ),
                       ],
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
                     ),
-                    ElevatedButton.icon(
-                      icon: Icon(
-                        Icons.file_upload,
-                        color: Colors.white,
-                      ),
-                      label: Text("UPLOAD KEGIATAN"),
-                      onPressed: () async {
-                        if (dJudul.text == null || dJudul.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Judul wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dKatTempat.text == null ||
-                            dKatTempat.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Tempat wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dIsi.text == null || dIsi.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Uraian wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dTanggal.text == null ||
-                            dTanggal.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Tanggal wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          if (_image == null) {
-                            uploadNoGambarKegiatanEdit();
-                          } else {
-                            uploadGambarKegiatanEdit(_image);
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.all(15.0),
-                        elevation: 0, backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                    Container(
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.07,
+                      child: ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.file_upload,
+                          color: Colors.white,
                         ),
+                        label: Text("UPLOAD KEGIATAN"),
+                        onPressed: () async {
+                          if (dJudul.text == null || dJudul.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Judul wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dKatTempat.text == null ||
+                              dKatTempat.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Tempat wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dIsi.text == null || dIsi.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Uraian wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dTanggal.text == null ||
+                              dTanggal.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Tanggal wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            if (_image == null) {
+                              uploadNoGambarKegiatanEdit();
+                            } else {
+                              uploadGambarKegiatanEdit(_image);
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
+                        ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
-                      // color: Colors.green,
-                      // textColor: Colors.white,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(17.0),
-                      // ),
                     ),
                   ],
                 ),

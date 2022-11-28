@@ -82,8 +82,8 @@ class _EditSemuaState extends State<EditSemua> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: new EdgeInsets.all(5.0),
-            child: new GestureDetector(
+            padding: EdgeInsets.all(5.0),
+            child: GestureDetector(
               child: Column(
                 children: <Widget>[
                   cardBerita(),
@@ -113,24 +113,32 @@ class _EditSemuaState extends State<EditSemua> {
           centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: new EdgeInsets.all(5.0),
-            child: new GestureDetector(
-              child: Column(
-                children: <Widget>[
-                  cardBerita(),
-                  beritaEdit(),
-                  kegiatanEdit(),
-                  bidEdit(),
-                  bumdesEdit(),
-                  eventEdit(),
-                  // penulisEdit(),
-                ],
+        body: isLoading
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              )
+            : SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: GestureDetector(
+                    child: Column(
+                      children: <Widget>[
+                        cardBerita(),
+                        beritaEdit(),
+                        kegiatanEdit(),
+                        bidEdit(),
+                        bumdesEdit(),
+                        eventEdit(),
+                        // penulisEdit(),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
       );
     }
   }
@@ -156,7 +164,7 @@ class _EditSemuaState extends State<EditSemua> {
   }
 
   Widget beritaEdit() {
-    return new Card(
+    return Card(
       //color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -164,13 +172,13 @@ class _EditSemuaState extends State<EditSemua> {
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
-            new MaterialPageRoute(
-              builder: (context) => new FormBeritaDashbord(),
+            MaterialPageRoute(
+              builder: (context) => FormBeritaDashbord(),
             ),
           );
           /*Navigator.of(context).push(
-            new MaterialPageRoute(
-              builder: (context) => new FormBeritaDashbord(),
+             MaterialPageRoute(
+              builder: (context) =>  FormBeritaDashbord(),
             ),
           );*/
         },
@@ -188,13 +196,13 @@ class _EditSemuaState extends State<EditSemua> {
               },
             ),
           ),
-          subtitle: new Text(
+          subtitle: Text(
             "Lihat detail",
-            style: new TextStyle(fontSize: 12.0, color: Colors.black54),
+            style: TextStyle(fontSize: 12.0, color: Colors.black54),
           ),
-          title: new Text(
+          title: Text(
             "Berita",
-            style: new TextStyle(
+            style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black),
@@ -215,8 +223,8 @@ class _EditSemuaState extends State<EditSemua> {
         child: InkWell(
           onTap: () {
             Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (context) => new HalKegiatanList(),
+              MaterialPageRoute(
+                builder: (context) => HalKegiatanList(),
               ),
             );
           },
@@ -234,13 +242,13 @@ class _EditSemuaState extends State<EditSemua> {
                 },
               ),
             ),
-            subtitle: new Text(
+            subtitle: Text(
               "Lihat detail",
-              style: new TextStyle(fontSize: 12.0, color: Colors.black54),
+              style: TextStyle(fontSize: 12.0, color: Colors.black54),
             ),
-            title: new Text(
+            title: Text(
               "Kegiatan",
-              style: new TextStyle(
+              style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
@@ -260,8 +268,8 @@ class _EditSemuaState extends State<EditSemua> {
         child: InkWell(
           onTap: () {
             Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (context) => new HalInovasiList(),
+              MaterialPageRoute(
+                builder: (context) => HalInovasiList(),
               ),
             );
           },
@@ -279,13 +287,13 @@ class _EditSemuaState extends State<EditSemua> {
                 },
               ),
             ),
-            subtitle: new Text(
+            subtitle: Text(
               "Lihat detail",
-              style: new TextStyle(fontSize: 12.0, color: Colors.black54),
+              style: TextStyle(fontSize: 12.0, color: Colors.black54),
             ),
-            title: new Text(
+            title: Text(
               "Inovasi",
-              style: new TextStyle(
+              style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
@@ -305,8 +313,8 @@ class _EditSemuaState extends State<EditSemua> {
         child: InkWell(
           onTap: () {
             Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (context) => new HalBumdesList(),
+              MaterialPageRoute(
+                builder: (context) => HalBumdesList(),
               ),
             );
           },
@@ -324,13 +332,13 @@ class _EditSemuaState extends State<EditSemua> {
                 },
               ),
             ),
-            subtitle: new Text(
+            subtitle: Text(
               "Lihat detail",
-              style: new TextStyle(fontSize: 12.0, color: Colors.black54),
+              style: TextStyle(fontSize: 12.0, color: Colors.black54),
             ),
-            title: new Text(
+            title: Text(
               "Bumdes",
-              style: new TextStyle(
+              style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
@@ -350,8 +358,8 @@ class _EditSemuaState extends State<EditSemua> {
         child: InkWell(
           onTap: () {
             Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (context) => new HalEventList(),
+              MaterialPageRoute(
+                builder: (context) => HalEventList(),
               ),
             );
           },
@@ -369,13 +377,13 @@ class _EditSemuaState extends State<EditSemua> {
                 },
               ),
             ),
-            subtitle: new Text(
+            subtitle: Text(
               "Lihat detail",
-              style: new TextStyle(fontSize: 12.0, color: Colors.black54),
+              style: TextStyle(fontSize: 12.0, color: Colors.black54),
             ),
-            title: new Text(
+            title: Text(
               "Agenda",
-              style: new TextStyle(
+              style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
@@ -395,8 +403,8 @@ class _EditSemuaState extends State<EditSemua> {
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
-            new MaterialPageRoute(
-              builder: (context) => new ListPenulis(),
+            MaterialPageRoute(
+              builder: (context) => ListPenulis(),
             ),
           );
         },
@@ -414,13 +422,13 @@ class _EditSemuaState extends State<EditSemua> {
               },
             ),
           ),
-          subtitle: new Text(
+          subtitle: Text(
             "Lihat detail",
-            style: new TextStyle(fontSize: 12.0, color: Colors.black54),
+            style: TextStyle(fontSize: 12.0, color: Colors.black54),
           ),
-          title: new Text(
+          title: Text(
             "Penulis",
-            style: new TextStyle(
+            style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black),
@@ -439,7 +447,7 @@ class _EditSemuaState extends State<EditSemua> {
           : Stack(
               children: <Widget>[
                 Padding(
-                  padding: new EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(5.0),
                   child: Container(
                     width: double.infinity,
                     height: 110.0,
@@ -467,7 +475,7 @@ class _EditSemuaState extends State<EditSemua> {
                                 height: 70.0,
                               ),
                               SizedBox(width: 20.0),
-                              new Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
@@ -505,7 +513,7 @@ class _EditSemuaState extends State<EditSemua> {
           : Stack(
               children: <Widget>[
                 Padding(
-                  padding: new EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(5.0),
                   child: Container(
                     width: double.infinity,
                     height: SizeConfig.safeBlockVertical * 23,
@@ -533,7 +541,7 @@ class _EditSemuaState extends State<EditSemua> {
                                 height: 70.0,
                               ),
                               SizedBox(width: 20.0),
-                              new Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
@@ -682,36 +690,45 @@ class _EditSemuaState extends State<EditSemua> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     // SizeConfig().init(context);
     return Padding(
-      padding: new EdgeInsets.all(1.0),
-      child: Shimmer.fromColors(
-        direction: ShimmerDirection.ltr,
-        highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
-        child: Container(
-          padding: new EdgeInsets.all(5.0),
-          child: Column(
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.grey,
-                    ),
-                    height: mediaQueryData.size.height * 0.23,
-                    width: mediaQueryData.size.width,
-                    // color: Colors.grey,
-                  ),
-
-                  // Row(
-                ],
-              ),
-              SizedBox(height: mediaQueryData.size.height * 0.01),
-            ],
-          ),
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
         ),
       ),
     );
+    // return Padding(
+    //   padding: EdgeInsets.all(1.0),
+    //   child: Shimmer.fromColors(
+    //     direction: ShimmerDirection.ltr,
+    //     highlightColor: Colors.white,
+    //     baseColor: Colors.grey[300],
+    //     child: Container(
+    //       padding: EdgeInsets.all(5.0),
+    //       child: Column(
+    //         children: <Widget>[
+    //           Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: <Widget>[
+    //               Container(
+    //                 decoration: BoxDecoration(
+    //                   borderRadius: BorderRadius.circular(10.0),
+    //                   color: Colors.grey,
+    //                 ),
+    //                 height: mediaQueryData.size.height * 0.23,
+    //                 width: mediaQueryData.size.width,
+    //                 // color: Colors.grey,
+    //               ),
+
+    //               // Row(
+    //             ],
+    //           ),
+    //           SizedBox(height: mediaQueryData.size.height * 0.01),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }

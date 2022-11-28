@@ -16,6 +16,8 @@ import 'dart:math' as Math;
 
 import 'package:status_alert/status_alert.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR class form bumdes edit
 class FormBumdesEdit extends StatefulWidget {
   final String dJudul, dKatTempat, dIsi, dTanggal, dGambar, dIdBumdes, dVideo;
@@ -253,11 +255,26 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
 //ANCHOR body bumdes edit
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Form Bumdes Edit'),
-        backgroundColor: Color(0xFFee002d),
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        // title: Text('Form Bumdes Edit'),
+        title: Text(
+          'EDIT BUMDES',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+            // fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        // backgroundColor: Color(0xFFee002d),
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,
@@ -273,113 +290,113 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                 child: Column(
                   children: <Widget>[
                     new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                      padding: new EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR judul bumdes edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
                         controller: dJudul,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
                           //errorText: _validate ? 'Harus di isi' : null,
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.text_fields,
                             color: Colors.grey[600],
                           ),
-                          hintText: 'Judul Kegiatan',
-                          hintStyle: kHintTextStyle2,
+                          hintText: 'Judul Bumdes',
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
                     new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                      padding: new EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR kategori bumdes edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
                         controller: dKatTempat,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
                           //errorText: _validate ? 'Harus di isi' : null,
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.place,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Tempat Kegiatan',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
                     new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                      padding: new EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR kegiatan bumdes edit
                     Container(
                       alignment: Alignment.topLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 200.0,
+                      decoration: decorationTextField,
+                      // height: 200.0,
                       child: TextFormField(
                         controller: dIsi,
                         maxLines: null,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.library_books,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Uraian Kegiatan',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
                     new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                      padding: new EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR input link youtube bumdes edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
                         controller: dVideo,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.ondemand_video,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Embed video youtube',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
@@ -405,9 +422,12 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.0),
                         ),
                         ElevatedButton(
                           child: Icon(
@@ -420,7 +440,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                         ),
@@ -429,79 +449,84 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                     new Padding(
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
-                    ElevatedButton.icon(
-                      icon: Icon(
-                        Icons.file_upload,
-                        color: Colors.white,
-                      ),
-                      label: Text("UPLOAD BUMDES"),
-                      onPressed: () async {
-                        if (dJudul.text == null || dJudul.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Judul wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                }),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dKatTempat.text == null ||
-                            dKatTempat.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Tempat wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                }),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dIsi.text == null || dIsi.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Uraian wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                }),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          if (_image == null) {
-                            uploadNoGambarKegiatanEdit();
-                          } else {
-                            uploadGambarKegiatanEdit(_image);
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.all(15.0),
-                        elevation: 0, backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                    Container(
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.07,
+                      child: ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.file_upload,
+                          color: Colors.white,
                         ),
+                        label: Text("SIMPAN BUMDES"),
+                        onPressed: () async {
+                          if (dJudul.text == null || dJudul.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Judul wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                  label: 'ULANGI',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    print('ULANGI snackbar');
+                                  }),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dKatTempat.text == null ||
+                              dKatTempat.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Tempat wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                  label: 'ULANGI',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    print('ULANGI snackbar');
+                                  }),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dIsi.text == null || dIsi.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Uraian wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                  label: 'ULANGI',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    print('ULANGI snackbar');
+                                  }),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            if (_image == null) {
+                              uploadNoGambarKegiatanEdit();
+                            } else {
+                              uploadGambarKegiatanEdit(_image);
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
+                        ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
-                      // color: Colors.green,
-                      // textColor: Colors.white,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(17.0),
-                      // ),
                     ),
                   ],
                 ),
