@@ -18,6 +18,8 @@ import 'dart:math' as Math;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:status_alert/status_alert.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR class form agenda
 class FormAgenda extends StatefulWidget {
   @override
@@ -189,12 +191,15 @@ class FormAgendaState extends State<FormAgenda> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Form Agenda',
+          'INPUT AGENDA',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,

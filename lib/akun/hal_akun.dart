@@ -59,10 +59,13 @@ class _HalAkunState extends State<HalAkun> {
   String notifStatus = '';
   String token = '';
   String topik = '';
-
+  bool loadingdata = false;
   // ignore: missing_return
   Future<String> detailAkun(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      loadingdata = true;
+    });
     final response = await http.post(
       Uri.parse(
           "http://dokar.kendalkab.go.id/webservice/android/account/detail"),
@@ -74,6 +77,7 @@ class _HalAkunState extends State<HalAkun> {
     if (mounted) {
       setState(
         () {
+          loadingdata = false;
           nama = detailakun['nama'];
           email = detailakun['email'];
           hp = detailakun['hp'];
@@ -97,6 +101,19 @@ class _HalAkunState extends State<HalAkun> {
     super.initState();
     detailAkun(context);
     cekNotif();
+  }
+
+//ANCHOR loading
+  Widget _buildProgressIndicator() {
+    return new Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: new Center(
+        child: new Opacity(
+          opacity: loadingdata ? 1.0 : 00,
+          child: new CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 
   void cekNotif() async {
@@ -131,38 +148,40 @@ class _HalAkunState extends State<HalAkun> {
           // notification(),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(10),
+      body: loadingdata
+          ? _buildProgressIndicator()
+          : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  cardAkun(),
-                  Divider(),
-                  namaEdit(),
-                  Divider(),
-                  emailEdit(),
-                  Divider(),
-                  hpEdit(),
-                  Divider(),
-                  usernameEdit(),
-                  Divider(),
-                  passwordEdit(),
-                  Divider(),
-                  buttonEdit()
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: <Widget>[
+                        cardAkun(),
+                        // Divider(),
+                        namaEdit(),
+                        Divider(),
+                        emailEdit(),
+                        Divider(),
+                        hpEdit(),
+                        Divider(),
+                        usernameEdit(),
+                        Divider(),
+                        passwordEdit(),
+                        Divider(),
+                        buttonEdit()
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  Container(
+                    width: 300.00,
+                  ),
                 ],
               ),
             ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Container(
-              width: 300.00,
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -394,38 +413,40 @@ class _HalAkunState extends State<HalAkun> {
   }
 
   Widget buttonEdit() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 15,
-      child: ElevatedButton.icon(
-        icon: Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 18,
-        ),
-        label: Text(
-          "EDIT AKUN",
-          style: TextStyle(
-            fontSize: 18,
-          ),
-        ),
-        onPressed: () {
-          Navigator.pushNamed(context, '/FormAkunEdit');
-        },
-        style: ElevatedButton.styleFrom(
-          // padding: EdgeInsets.all(15.0),
-          elevation: 0, backgroundColor: Colors.blue[800],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // <-- Radius
-          ),
-        ),
-        // color: Colors.blue[800],
-        // textColor: Colors.white,
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(10.0),
-        // ),
-      ),
-    );
+    return loadingdata
+        ? SizedBox()
+        : SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 15,
+            child: ElevatedButton.icon(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.white,
+                size: 18,
+              ),
+              label: Text(
+                "EDIT AKUN",
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/FormAkunEdit');
+              },
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.blue[800],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
+              ),
+              // color: Colors.blue[800],
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.circular(10.0),
+              // ),
+            ),
+          );
   }
 
   Widget cardAkun() {

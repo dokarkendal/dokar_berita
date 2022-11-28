@@ -17,6 +17,8 @@ import 'package:image/image.dart' as Img;
 import 'dart:math' as Math;
 import 'package:status_alert/status_alert.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR class form agenda edit
 class FormAgendaEdit extends StatefulWidget {
   final String cJudul,
@@ -57,15 +59,15 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 //ANCHOR controller agenda edit
-  TextEditingController cJudul = new TextEditingController();
-  TextEditingController cPenyelenggara = new TextEditingController();
-  TextEditingController cIsi = new TextEditingController();
-  TextEditingController cTanggalmulai = new TextEditingController();
-  TextEditingController cTanggalselesai = new TextEditingController();
-  TextEditingController cJammulai = new TextEditingController();
-  TextEditingController cJamselesai = new TextEditingController();
-  TextEditingController cIdAgenda = new TextEditingController();
-  TextEditingController cGambar = new TextEditingController();
+  TextEditingController cJudul = TextEditingController();
+  TextEditingController cPenyelenggara = TextEditingController();
+  TextEditingController cIsi = TextEditingController();
+  TextEditingController cTanggalmulai = TextEditingController();
+  TextEditingController cTanggalselesai = TextEditingController();
+  TextEditingController cJammulai = TextEditingController();
+  TextEditingController cJamselesai = TextEditingController();
+  TextEditingController cIdAgenda = TextEditingController();
+  TextEditingController cGambar = TextEditingController();
 
 //ANCHOR input image size flutter agenda edit
   Future getImageGallery() async {
@@ -77,12 +79,12 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
-    int rand = new Math.Random().nextInt(100000);
+    int rand = Math.Random().nextInt(100000);
 
     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    var compressImg = new File("$path/image_$rand.jpg")
+    var compressImg = File("$path/image_$rand.jpg")
       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
     setState(
@@ -99,12 +101,12 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
-    int rand = new Math.Random().nextInt(100000);
+    int rand = Math.Random().nextInt(100000);
 
     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    var compressImg = new File("$path/image_$rand.jpg")
+    var compressImg = File("$path/image_$rand.jpg")
       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
     setState(() {
@@ -127,17 +129,15 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
 
   @override
   void initState() {
-    cJudul = new TextEditingController(text: "${widget.cJudul}");
-    cPenyelenggara =
-        new TextEditingController(text: "${widget.cPenyelenggara}");
-    cIsi = new TextEditingController(text: "${widget.cIsi}");
-    cTanggalmulai = new TextEditingController(text: "${widget.cTanggalmulai}");
-    cTanggalselesai =
-        new TextEditingController(text: "${widget.cTanggalselesai}");
-    cJammulai = new TextEditingController(text: "${widget.cJammulai}");
-    cJamselesai = new TextEditingController(text: "${widget.cJamselesai}");
-    cIdAgenda = new TextEditingController(text: "${widget.cIdAgenda}");
-    cGambar = new TextEditingController(text: "${widget.cGambar}");
+    cJudul = TextEditingController(text: "${widget.cJudul}");
+    cPenyelenggara = TextEditingController(text: "${widget.cPenyelenggara}");
+    cIsi = TextEditingController(text: "${widget.cIsi}");
+    cTanggalmulai = TextEditingController(text: "${widget.cTanggalmulai}");
+    cTanggalselesai = TextEditingController(text: "${widget.cTanggalselesai}");
+    cJammulai = TextEditingController(text: "${widget.cJammulai}");
+    cJamselesai = TextEditingController(text: "${widget.cJamselesai}");
+    cIdAgenda = TextEditingController(text: "${widget.cIdAgenda}");
+    cGambar = TextEditingController(text: "${widget.cGambar}");
 
     super.initState();
   }
@@ -155,7 +155,7 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
     });
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    var stream = new http.ByteStream(
+    var stream = http.ByteStream(
       // ignore: deprecated_member_use
       DelegatingStream.typed(
         imageFile.openRead(),
@@ -165,9 +165,9 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
     var uri = Uri.parse(
         "http://dokar.kendalkab.go.id/webservice/android/agenda/editevent");
 
-    var request = new http.MultipartRequest("POST", uri);
+    var request = http.MultipartRequest("POST", uri);
 
-    var multipartFile = new http.MultipartFile("image", stream, length,
+    var multipartFile = http.MultipartFile("image", stream, length,
         filename: basename(imageFile.path));
     request.fields['judul'] = cJudul.text;
     request.fields['penyelenggara'] = cPenyelenggara.text;
@@ -284,11 +284,24 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
 //ANCHOR body agenda edit
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('Form edit Event'),
-        backgroundColor: Color(0xFFee002d),
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          'EDIT AGENDA',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+            // fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,
@@ -297,104 +310,106 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
             CircularProgressIndicator(backgroundColor: Colors.red),
         child: ListView(
           children: <Widget>[
-            new Container(
-              padding: new EdgeInsets.all(10.0),
+            Container(
+              padding: EdgeInsets.all(10.0),
               child: Form(
                 key: formKey,
                 child: Column(
                   children: <Widget>[
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR judul agenda edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
+                        maxLines: null,
                         controller: cJudul,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
                           //errorText: _validate ? 'Harus di isi' : null,
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.text_fields,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Judul Agenda',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR Penyelenggara agenda edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: TextFormField(
+                        maxLines: null,
                         controller: cPenyelenggara,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
                           //errorText: _validate ? 'Harus di isi' : null,
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          border: decorationBorder,
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.people,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Penyelenggara',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR agenda isi agenda edit
                     Container(
                       alignment: Alignment.topLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 200.0,
+                      decoration: decorationTextField,
+                      // height: 200.0,
                       child: TextFormField(
                         controller: cIsi,
-                        maxLines: 10,
+                        maxLines: null,
                         keyboardType: TextInputType.emailAddress,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.library_books,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Uraian Agenda',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR  tanggal agenda edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: DateTimeField(
                         controller: cTanggalmulai,
                         format: format,
@@ -406,24 +421,24 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                               lastDate: DateTime(2100));
                         },
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           prefixIcon: Icon(
                             Icons.date_range,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Tanggal Mulai',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
                     //ANCHOR agenda tanggal edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: DateTimeField(
                         controller: cTanggalselesai,
                         format: format,
@@ -435,25 +450,25 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                               lastDate: DateTime(2100));
                         },
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.date_range,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Tanggal Selesai',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR input Jam selesai agenda edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: DateTimeField(
                         controller: cJammulai,
                         format: formatTime,
@@ -470,25 +485,25 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                           return DateTimeField.convert(time);
                         },
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           //contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.access_time,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Jam Mulai',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR input Jam selesai agenda edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      decoration: decorationTextField,
+                      // height: 60.0,
                       child: DateTimeField(
                         controller: cJamselesai,
                         format: formatTime,
@@ -505,24 +520,24 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                           return DateTimeField.convert(time);
                         },
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: decorationBorder,
                           prefixIcon: Icon(
                             Icons.access_time,
                             color: Colors.grey[600],
                           ),
                           hintText: 'Jam Selesai',
-                          hintStyle: kHintTextStyle2,
+                          hintStyle: decorationHint,
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //NOTE gambar agenda edit
                     Center(
                       child: _image == null
-                          ? new Text("Pilih gambar.")
-                          : new Image.file(_image),
+                          ? Text("Pilih gambar.")
+                          : Image.file(_image),
                     ),
                     Row(
                       children: <Widget>[
@@ -537,13 +552,16 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                           // color: Color(0xFFee002d),
                           // shape: RoundedRectangleBorder(
                           //   borderRadius: BorderRadius.circular(17.0),
                           // ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.0),
                         ),
                         ElevatedButton(
                           child: Icon(
@@ -556,7 +574,7 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                           // color: Color(0xFFee002d),
@@ -566,153 +584,158 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                         ),
                       ],
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
                     ),
-                    ElevatedButton.icon(
-                      icon: Icon(
-                        Icons.file_upload,
-                        color: Colors.white,
-                      ),
-                      label: Text("UPLOAD AGENDA"),
-                      onPressed: () async {
-                        if (cJudul.text == null || cJudul.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Nama Agenda wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cPenyelenggara.text == null ||
-                            cPenyelenggara.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Penyelenggara wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cIsi.text == null || cIsi.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Uraian wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cTanggalmulai.text == null ||
-                            cTanggalmulai.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Tanggal Mulai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cTanggalselesai.text == null ||
-                            cTanggalselesai.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Tanggal Selesai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cJammulai.text == null ||
-                            cJammulai.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Jam Mulai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cJamselesai.text == null ||
-                            cJamselesai.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Jam Selesai wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          if (_image == null) {
-                            uploadNoGambarKegiatanEdit();
-                          } else {
-                            uploadGambarKegiatanEdit(_image);
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.all(15.0),
-                        elevation: 0, backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                    Container(
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.07,
+                      child: ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.file_upload,
+                          color: Colors.white,
                         ),
+                        label: Text("SIMPAN AGENDA"),
+                        onPressed: () async {
+                          if (cJudul.text == null || cJudul.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Nama Agenda wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cPenyelenggara.text == null ||
+                              cPenyelenggara.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Penyelenggara wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cIsi.text == null || cIsi.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Uraian wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cTanggalmulai.text == null ||
+                              cTanggalmulai.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Tanggal Mulai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cTanggalselesai.text == null ||
+                              cTanggalselesai.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Tanggal Selesai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cJammulai.text == null ||
+                              cJammulai.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Jam Mulai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (cJamselesai.text == null ||
+                              cJamselesai.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Jam Selesai wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            if (_image == null) {
+                              uploadNoGambarKegiatanEdit();
+                            } else {
+                              uploadGambarKegiatanEdit(_image);
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
+                        ),
+                        //   color: Colors.green,
+                        //   textColor: Colors.white,
+                        //   shape: RoundedRectangleBorder(
+                        //     borderRadius: BorderRadius.circular(17.0),
+                        //   ),
                       ),
-                      //   color: Colors.green,
-                      //   textColor: Colors.white,
-                      //   shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(17.0),
-                      //   ),
                     ),
                   ],
                 ),

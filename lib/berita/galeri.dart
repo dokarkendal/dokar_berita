@@ -23,12 +23,12 @@ class _GaleriState extends State<Galeri> {
 
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/newloadmoregaleri"; //NOTE url api load berita
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
   // ignore: deprecated_member_use
-  List databerita = new List();
+  List databerita = List();
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   String dibaca;
   List dataJSON;
 
@@ -45,7 +45,7 @@ class _GaleriState extends State<Galeri> {
       final response =
           await dio.get(nextPage + "/" + pref.getString("IdDesa") + "/");
       // ignore: deprecated_member_use
-      List tempList = new List();
+      List tempList = List();
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -56,6 +56,7 @@ class _GaleriState extends State<Galeri> {
         () {
           isLoading = false;
           databerita.addAll(tempList);
+          print(tempList);
           print(pref.getString("IdDesa"));
         },
       );
@@ -86,12 +87,12 @@ class _GaleriState extends State<Galeri> {
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -100,10 +101,12 @@ class _GaleriState extends State<Galeri> {
 //ANCHOR listview berita
   Widget _buildList() {
     return GridView.builder(
-      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        childAspectRatio: MediaQuery.of(context).size.width /
-            (MediaQuery.of(context).size.height / 1.65),
+        mainAxisSpacing: 5.0,
+        crossAxisSpacing: 5.0,
+        // childAspectRatio: MediaQuery.of(context).size.width /
+        //     (MediaQuery.of(context).size.height / 1.65),
       ),
       //+1 for progressbar
       physics: ClampingScrollPhysics(),
@@ -117,49 +120,46 @@ class _GaleriState extends State<Galeri> {
         } else {
           if (databerita[index]["kabar_id"] == 'Notfound') {
           } else {
-            return new Container(
-              //padding: new EdgeInsets.all(5.0),
-              child: new GestureDetector(
+            return Container(
+              //padding:  EdgeInsets.all(5.0),
+              child: GestureDetector(
                 onTap: () {},
-                child: new Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        ClipRRect(
-                          //borderRadius: BorderRadius.circular(5.0),
-                          child: GestureDetector(
-                            child: CachedNetworkImage(
-                              imageUrl: databerita[index]["kabar_gambar"],
-                              fit: BoxFit.cover,
-                              height: SizeConfig.safeBlockVertical * 20,
-                              width: SizeConfig.safeBlockHorizontal * 32,
-                              placeholder: (context, url) => Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      "assets/images/load.png",
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
+                    AspectRatio(
+                      aspectRatio: 1,
+                      //borderRadius: BorderRadius.circular(5.0),
+                      child: GestureDetector(
+                        child: CachedNetworkImage(
+                          imageUrl: databerita[index]["kabar_gambar"],
+                          fit: BoxFit.cover,
+                          // height: SizeConfig.safeBlockVertical * 20,
+                          // width: SizeConfig.safeBlockHorizontal * 32,
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/load.png",
                                 ),
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailGaleri(
-                                    dGambar: databerita[index]["kabar_gambar"],
-                                    dDesa: databerita[index]["data_nama"],
-                                    dJudul: databerita[index]["kabar_judul"],
-                                  ),
-                                ),
-                              );
-                            },
                           ),
                         ),
-                      ],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailGaleri(
+                                dGambar: databerita[index]["kabar_gambar"],
+                                dDesa: databerita[index]["data_nama"],
+                                dJudul: databerita[index]["kabar_judul"],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -185,7 +185,7 @@ class _GaleriState extends State<Galeri> {
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -202,15 +202,15 @@ class _GaleriState extends State<Galeri> {
             },
           );
         },
-        child: new Container(
+        child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Container(
-                padding: new EdgeInsets.all(10.0),
+              Container(
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                   "Semua Gambar",
-                  style: new TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),

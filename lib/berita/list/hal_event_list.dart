@@ -70,9 +70,9 @@ class HalEventListState extends State<HalEventList> {
   //NOTE url api load berita
   List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   List tempList = [];
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/agenda/listevent/";
 
@@ -120,12 +120,12 @@ class HalEventListState extends State<HalEventList> {
   }
 
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -140,11 +140,11 @@ class HalEventListState extends State<HalEventList> {
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'List Agenda',
+          'LIST AGENDA',
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -170,25 +170,25 @@ class HalEventListState extends State<HalEventList> {
               return _buildProgressIndicator();
             } else {
               if (databerita[i]["id_agenda"] == "Notfound") {
-                // return new Container(
+                // return  Container(
                 //   child: Center(
-                //     child: new Column(
+                //     child:  Column(
                 //       children: <Widget>[
-                //         new Padding(
-                //           padding: new EdgeInsets.all(100.0),
+                //          Padding(
+                //           padding:  EdgeInsets.all(100.0),
                 //         ),
-                //         new Text(
+                //          Text(
                 //           "DATA KOSONG",
-                //           style: new TextStyle(
+                //           style:  TextStyle(
                 //             fontSize: 30.0,
                 //             color: Colors.grey[350],
                 //             // fontWeight: FontWeight.bold,
                 //           ),
                 //         ),
-                //         new Padding(
-                //           padding: new EdgeInsets.all(10.0),
+                //          Padding(
+                //           padding:  EdgeInsets.all(10.0),
                 //         ),
-                //         new Icon(
+                //          Icon(
                 //           Icons.list_alt_rounded,
                 //           size: 150.0,
                 //           color: Colors.grey[350],
@@ -200,21 +200,21 @@ class HalEventListState extends State<HalEventList> {
               } else {
                 Widget _container() {
                   if (databerita[i]["device"] == '1') {
-                    // return new Container(
+                    // return  Container(
                     //   color: Colors.grey[100],
                     //   padding: EdgeInsets.only(
                     //     left: 5.0,
                     //     right: 5.0,
                     //   ),
-                    //   child: new Card(
+                    //   child:  Card(
                     //     shape: RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.circular(10.0),
                     //     ),
-                    //     child: new InkWell(
+                    //     child:  InkWell(
                     //       onTap: () {
                     //         Navigator.of(context).push(
-                    //           new MaterialPageRoute(
-                    //             builder: (context) => new FormAgendaEdit(
+                    //            MaterialPageRoute(
+                    //             builder: (context) =>  FormAgendaEdit(
                     //               cJudul: databerita[i]["judul_agenda"],
                     //               cPenyelenggara: databerita[i]
                     //                   ["penyelenggara"],
@@ -242,7 +242,7 @@ class HalEventListState extends State<HalEventList> {
                     //           child: ClipRRect(
                     //             borderRadius: BorderRadius.circular(5.0),
                     //             child: Image(
-                    //               image: new NetworkImage(
+                    //               image:  NetworkImage(
                     //                   databerita[i]["gambar_agenda"]),
                     //               fit: BoxFit.cover,
                     //               height: 150.0,
@@ -261,9 +261,9 @@ class HalEventListState extends State<HalEventList> {
                     //             ),
                     //           ],
                     //         ),
-                    //         title: new Text(
+                    //         title:  Text(
                     //           databerita[i]["judul_agenda"],
-                    //           style: new TextStyle(
+                    //           style:  TextStyle(
                     //               fontSize: 14.0, fontWeight: FontWeight.bold),
                     //         ),
                     //         trailing: Icon(
@@ -275,7 +275,7 @@ class HalEventListState extends State<HalEventList> {
                     //   ),
                     // );
                     return Container(
-                      child: new Card(
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
@@ -285,8 +285,8 @@ class HalEventListState extends State<HalEventList> {
                         child: InkWell(
                           onTap: () {
                             Navigator.of(context).push(
-                              new MaterialPageRoute(
-                                builder: (context) => new FormAgendaEdit(
+                              MaterialPageRoute(
+                                builder: (context) => FormAgendaEdit(
                                   cJudul: databerita[i]["judul_agenda"],
                                   cPenyelenggara: databerita[i]
                                       ["penyelenggara"],
@@ -303,10 +303,10 @@ class HalEventListState extends State<HalEventList> {
                               ),
                             );
                           },
-                          child: new Row(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Container(
+                              Container(
                                 margin: const EdgeInsets.only(right: 15.0),
                                 width: 120.0,
                                 height: 100.0,
@@ -327,42 +327,42 @@ class HalEventListState extends State<HalEventList> {
                                   width: 110.0,
                                 ),
                               ),
-                              new Expanded(
-                                child: new Column(
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Container(
+                                    Container(
                                       margin: const EdgeInsets.only(
                                         right: 10.0,
                                         top: 5.0,
                                       ),
-                                      child: new Text(
+                                      child: Text(
                                         databerita[i]["judul_agenda"],
-                                        style: new TextStyle(
-                                          fontSize: 15.0,
+                                        style: TextStyle(
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
+                                    Row(
                                       children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
+                                        Expanded(
+                                          child: Container(
                                             margin: const EdgeInsets.only(
                                                 top: 5.0, bottom: 10.0),
-                                            child: new Text(
+                                            child: Text(
                                               databerita[i]["penyelenggara"],
-                                              style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        new Container(
+                                        Container(
                                           margin: const EdgeInsets.only(
                                               right: 10.0),
                                           child: Icon(
@@ -372,13 +372,13 @@ class HalEventListState extends State<HalEventList> {
                                         ),
                                       ],
                                     ),
-                                    // new Container(
-                                    //   child: new Column(
+                                    //  Container(
+                                    //   child:  Column(
                                     //     children: <Widget>[
-                                    //       new Container(
-                                    //         child: new Text(
+                                    //        Container(
+                                    //         child:  Text(
                                     //           databerita[i]["kabar_kategori"],
-                                    //           style: new TextStyle(
+                                    //           style:  TextStyle(
                                     //             fontSize: 11.0,
                                     //             color: Colors.grey[500],
                                     //           ),
@@ -396,17 +396,17 @@ class HalEventListState extends State<HalEventList> {
                       ),
                     );
                   } else {
-                    // return new Container(
+                    // return  Container(
                     //   color: Colors.grey[100],
                     //   padding: EdgeInsets.only(
                     //     left: 5.0,
                     //     right: 5.0,
                     //   ),
-                    //   child: new Card(
+                    //   child:  Card(
                     //     shape: RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.circular(10.0),
                     //     ),
-                    //     child: new InkWell(
+                    //     child:  InkWell(
                     //       onTap: () {
                     //         Alert(
                     //           context: context,
@@ -434,9 +434,9 @@ class HalEventListState extends State<HalEventList> {
                     //               onPressed: () {
                     //                 Navigator.pop(context);
                     //                 Navigator.of(context).push(
-                    //                   new MaterialPageRoute(
+                    //                    MaterialPageRoute(
                     //                     builder: (context) =>
-                    //                         new FormAgendaEdit(
+                    //                          FormAgendaEdit(
                     //                       cJudul: databerita[i]["judul_agenda"],
                     //                       cPenyelenggara: databerita[i]
                     //                           ["penyelenggara"],
@@ -471,7 +471,7 @@ class HalEventListState extends State<HalEventList> {
                     //           child: ClipRRect(
                     //             borderRadius: BorderRadius.circular(5.0),
                     //             child: Image(
-                    //               image: new NetworkImage(
+                    //               image:  NetworkImage(
                     //                   databerita[i]["gambar_agenda"]),
                     //               fit: BoxFit.cover,
                     //               height: 150.0,
@@ -484,14 +484,14 @@ class HalEventListState extends State<HalEventList> {
                     //             SizedBox(
                     //               width: 16.0,
                     //             ),
-                    //             new Text(
+                    //              Text(
                     //               databerita[i]["penyelenggara"],
                     //             ),
                     //           ],
                     //         ),
-                    //         title: new Text(
+                    //         title:  Text(
                     //           databerita[i]["judul_agenda"],
-                    //           style: new TextStyle(
+                    //           style:  TextStyle(
                     //               fontSize: 14.0, fontWeight: FontWeight.bold),
                     //         ),
                     //         trailing: Icon(
@@ -504,7 +504,7 @@ class HalEventListState extends State<HalEventList> {
                     // );
 
                     return Container(
-                      child: new Card(
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
@@ -516,7 +516,7 @@ class HalEventListState extends State<HalEventList> {
                             Alert(
                               context: context,
                               type: AlertType.warning,
-                              style: alertStyle,
+                              // style: alertStyle,
                               title: "Peringatan.",
                               desc:
                                   "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
@@ -539,9 +539,8 @@ class HalEventListState extends State<HalEventList> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                     Navigator.of(context).push(
-                                      new MaterialPageRoute(
-                                        builder: (context) =>
-                                            new FormAgendaEdit(
+                                      MaterialPageRoute(
+                                        builder: (context) => FormAgendaEdit(
                                           cJudul: databerita[i]["judul_agenda"],
                                           cPenyelenggara: databerita[i]
                                               ["penyelenggara"],
@@ -565,10 +564,10 @@ class HalEventListState extends State<HalEventList> {
                               ],
                             ).show();
                           },
-                          child: new Row(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Container(
+                              Container(
                                 margin: const EdgeInsets.only(right: 15.0),
                                 width: 120.0,
                                 height: 100.0,
@@ -589,44 +588,44 @@ class HalEventListState extends State<HalEventList> {
                                   width: 110.0,
                                 ),
                               ),
-                              new Expanded(
-                                child: new Column(
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Container(
+                                    Container(
                                       margin: const EdgeInsets.only(
                                         right: 10.0,
                                         top: 5.0,
                                       ),
-                                      child: new Text(
+                                      child: Text(
                                         databerita[i]["judul_agenda"],
-                                        style: new TextStyle(
-                                          fontSize: 15.0,
+                                        style: TextStyle(
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
+                                    Row(
                                       children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
+                                        Expanded(
+                                          child: Container(
                                             margin: const EdgeInsets.only(
-                                                top: 5.0, bottom: 10.0),
-                                            child: new Text(
+                                                top: 5.0, bottom: 5.0),
+                                            child: Text(
                                               databerita[i]["penyelenggara"],
-                                              style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        new Container(
+                                        Container(
                                           margin: const EdgeInsets.only(
-                                              right: 10.0),
+                                              top: 5.0, right: 10.0),
                                           child: Icon(
                                             Icons.laptop,
                                             color: Colors.blue,
@@ -635,21 +634,40 @@ class HalEventListState extends State<HalEventList> {
                                         ),
                                       ],
                                     ),
-                                    // new Container(
-                                    //   child: new Column(
-                                    //     children: <Widget>[
-                                    //       new Container(
-                                    //         child: new Text(
-                                    //           databerita[i]["kabar_kategori"],
-                                    //           style: new TextStyle(
-                                    //             fontSize: 11.0,
-                                    //             color: Colors.grey[500],
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Container(
+                                            child: Text(
+                                              databerita[i]["tglmulai_agenda"],
+                                              style: TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              " - ",
+                                              style: TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              databerita[i]
+                                                  ["tglselesai_agenda"],
+                                              style: TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

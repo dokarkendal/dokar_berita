@@ -5,13 +5,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/edit/hal_berita_edit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http; //api
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shimmer/shimmer.dart';
+// import 'package:shimmer/shimmer.dart';
 
-import '../../style/size_config.dart';
+// import '../../style/size_config.dart';
 import '../../style/styleset.dart';
 
 //ANCHOR Class berita list
@@ -44,11 +49,21 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
   List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
+  ScrollController _scrollController = ScrollController();
+  List databerita = [];
+  bool isLoading = false;
+  final dio = Dio();
+  String dibaca;
+  List dataJSON;
+  bool _isInAsyncCall = false;
 
 //ANCHOR hapus berita berita list
 
   void hapusberita(beritaAdmin) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      _isInAsyncCall = true;
+    });
     final response = await http.post(
       Uri.parse("http://dokar.kendalkab.go.id/webservice/android/kabar/delete"),
       body: {
@@ -58,6 +73,25 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
     );
     var deleted = json.decode(response.body);
     print(deleted);
+    if (deleted[0]["Notif"] == "Delete Berhasil") {
+      setState(() {
+        _isInAsyncCall = false;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Hapus berhasil',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+          action: SnackBarAction(
+            label: 'OK',
+            textColor: Colors.white,
+            onPressed: () {
+              print('ULANGI snackbar');
+            },
+          ),
+        ));
+      });
+    }
     Navigator.pushReplacementNamed(context, '/FormBeritaDashbord');
   }
 
@@ -103,13 +137,6 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
     }
   }
 
-  ScrollController _scrollController = new ScrollController();
-  List databerita = [];
-  bool isLoading = false;
-  final dio = new Dio();
-  String dibaca;
-  List dataJSON;
-
 //ANCHOR Get more berita list
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/newberita";
@@ -148,6 +175,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
         },
       );
     }
+    print(databerita);
   }
 
   @override
@@ -174,58 +202,68 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
 //ANCHOR loading berita list
 
   Widget _buildProgressIndicator() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    SizeConfig().init(context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // SizeConfig().init(context);
     return Padding(
-      padding: new EdgeInsets.all(10.0),
-      child: Shimmer.fromColors(
-        highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              // Column(
-              //   children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey,
-                ),
-                height: mediaQueryData.size.height * 0.12,
-                width: mediaQueryData.size.width,
-                // color: Colors.grey,
-              ),
-              SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey,
-                ),
-                height: mediaQueryData.size.height * 0.12,
-                width: mediaQueryData.size.width,
-                // color: Colors.grey,
-              ),
-              SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey,
-                ),
-                height: mediaQueryData.size.height * 0.12,
-                width: mediaQueryData.size.width,
-                // color: Colors.grey,
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
         ),
       ),
     );
+    // return Padding(
+    //   padding: EdgeInsets.all(10.0),
+    //   child: Shimmer.fromColors(
+    //     highlightColor: Colors.white,
+    //     baseColor: Colors.grey[300],
+    //     child: Container(
+    //       child: Column(
+    //         children: <Widget>[
+    //           // Column(
+    //           //   children: <Widget>[
+    //           Container(
+    //             decoration: BoxDecoration(
+    //               borderRadius: BorderRadius.circular(10.0),
+    //               color: Colors.grey,
+    //             ),
+    //             height: mediaQueryData.size.height * 0.12,
+    //             width: mediaQueryData.size.width,
+    //             // color: Colors.grey,
+    //           ),
+    //           SizedBox(height: 10),
+    //           Container(
+    //             decoration: BoxDecoration(
+    //               borderRadius: BorderRadius.circular(10.0),
+    //               color: Colors.grey,
+    //             ),
+    //             height: mediaQueryData.size.height * 0.12,
+    //             width: mediaQueryData.size.width,
+    //             // color: Colors.grey,
+    //           ),
+    //           SizedBox(height: 10),
+    //           Container(
+    //             decoration: BoxDecoration(
+    //               borderRadius: BorderRadius.circular(10.0),
+    //               color: Colors.grey,
+    //             ),
+    //             height: mediaQueryData.size.height * 0.12,
+    //             width: mediaQueryData.size.width,
+    //             // color: Colors.grey,
+    //           ),
+    //           SizedBox(height: 10),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
 //ANCHOR halaman berita list
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -243,197 +281,419 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: RefreshIndicator(
-        key: refreshKey,
-        onRefresh: () async {
-          await Future.delayed(
-            Duration(seconds: 1),
-            () {},
-          );
-        },
+      body: ModalProgressHUD(
+        inAsyncCall: _isInAsyncCall,
+        opacity: 1,
+        color: Theme.of(context).primaryColor,
+        progressIndicator: Padding(
+          padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.4),
+          child: Column(
+            children: [
+              SpinKitWave(color: Colors.white),
+              SizedBox(height: mediaQueryData.size.height * 0.05),
+              Text(
+                'Mohon Tunggu..',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              )
+            ],
+          ),
+        ),
+        child: RefreshIndicator(
+          key: refreshKey,
+          onRefresh: () async {
+            await Future.delayed(
+              Duration(seconds: 1),
+              () {},
+            );
+          },
 //ANCHOR listview berita list
-        child: ListView.builder(
-          physics: ClampingScrollPhysics(),
-          shrinkWrap: true,
-          controller: _scrollController,
-          itemCount: databerita.length + 1,
-          // ignore: missing_return
-          itemBuilder: (BuildContext context, int i) {
-            if (i == databerita.length) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Center(
+          child: ListView.builder(
+            physics: ClampingScrollPhysics(),
+            shrinkWrap: true,
+            controller: _scrollController,
+            itemCount: databerita.length + 1,
+            // ignore: missing_return
+            itemBuilder: (BuildContext context, int i) {
+              if (i == databerita.length) {
+                return Container(
                   child: _buildProgressIndicator(),
-                ),
-              );
-            } else {
-              if (databerita[i]["kabar_id"] == "Notfound") {
-                // return new Container(
-                //   child: Center(
-                //     child: new Column(
-                //       children: <Widget>[
-                //         new Padding(
-                //           padding: new EdgeInsets.all(100.0),
-                //         ),
-                //         new Text(
-                //           "DATA KOSONG",
-                //           style: new TextStyle(
-                //             fontSize: 30.0,
-                //             color: Colors.grey[350],
-                //             // fontWeight: FontWeight.bold,
-                //           ),
-                //         ),
-                //         new Padding(
-                //           padding: new EdgeInsets.all(10.0),
-                //         ),
-                //         new Icon(
-                //           Icons.list_alt_rounded,
-                //           size: 150.0,
-                //           color: Colors.grey[350],
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // );
+                );
               } else {
-                Widget _container() {
-                  if (databerita[i]["device"] == '1') {
-                    return Container(
-                      child: new Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        elevation: 1.0,
-                        color: Colors.white,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              new MaterialPageRoute(
-                                builder: (context) => new FormBeritaEdit(
-                                  dJudul: databerita[i]["kabar_judul"],
-                                  dKategori: databerita[i]["kabar_kategori"],
-                                  dIsi: databerita[i]["kabar_isi"],
-                                  dTanggal: databerita[i]["kabar_tanggal"],
-                                  dGambar: databerita[i]["kabar_gambar"],
-                                  dIdBerita: databerita[i]["kabar_id"],
-                                  dVideo: databerita[i]["kabar_video"],
-                                  dKomentar: databerita[i]["komentar"],
-                                ),
-                              ),
-                            );
-                          },
-                          child: new Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Container(
-                                margin: const EdgeInsets.only(right: 15.0),
-                                width: 120.0,
-                                height: 100.0,
-                                child: CachedNetworkImage(
-                                  imageUrl: databerita[i]["kabar_gambar"],
-                                  placeholder: (context, url) => Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                          "assets/images/load.png",
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
+                if (databerita[i]["kabar_id"] == "Notfound") {
+                } else {
+                  Widget _container() {
+                    if (databerita[i]["device"] == '1') {
+                      return Container(
+                        child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          elevation: 1.0,
+                          color: Colors.white,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => FormBeritaEdit(
+                                    dJudul: databerita[i]["kabar_judul"],
+                                    dKategori: databerita[i]["kabar_kategori"],
+                                    dIsi: databerita[i]["kabar_isi"],
+                                    dTanggal: databerita[i]["kabar_tanggal"],
+                                    dGambar: databerita[i]["kabar_gambar"],
+                                    dIdBerita: databerita[i]["kabar_id"],
+                                    dVideo: databerita[i]["kabar_video"],
+                                    dKomentar: databerita[i]["komentar"],
                                   ),
-                                  fit: BoxFit.cover,
-                                  height: 150.0,
-                                  width: 110.0,
                                 ),
-                              ),
-                              new Expanded(
-                                child: new Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: const EdgeInsets.only(
-                                        right: 10.0,
-                                        top: 5.0,
-                                      ),
-                                      child: new Text(
-                                        databerita[i]["kabar_judul"],
-                                        style: new TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.bold,
+                              );
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  margin: const EdgeInsets.only(right: 15.0),
+                                  width: 120.0,
+                                  height: 100.0,
+                                  child: CachedNetworkImage(
+                                    imageUrl: databerita[i]["kabar_gambar"],
+                                    placeholder: (context, url) => Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            "assets/images/load.png",
+                                          ),
+                                          fit: BoxFit.cover,
                                         ),
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
-                                      children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
-                                            margin: const EdgeInsets.only(
-                                                top: 5.0, bottom: 5.0),
-                                            child: new Text(
-                                              databerita[i]["kabar_tanggal"],
-                                              style: new TextStyle(
-                                                fontSize: 13.0,
-                                                color: Colors.grey,
-                                                //fontWeight: FontWeight.normal,
+                                    fit: BoxFit.cover,
+                                    height: 150.0,
+                                    width: 110.0,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                          right: 10.0,
+                                          top: 5.0,
+                                        ),
+                                        child: Text(
+                                          databerita[i]["kabar_judul"],
+                                          style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 5.0, bottom: 5.0),
+                                              child: Text(
+                                                databerita[i]["kabar_tanggal"],
+                                                style: TextStyle(
+                                                  fontSize: 13.0,
+                                                  color: Colors.grey,
+                                                  //fontWeight: FontWeight.normal,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        new Container(
-                                          margin: const EdgeInsets.only(
-                                              right: 10.0),
-                                          child: Icon(
-                                            Icons.phone_android,
-                                            size: 14.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    new Container(
-                                      child: new Column(
-                                        children: <Widget>[
-                                          new Container(
-                                            child: new Text(
-                                              databerita[i]["kabar_kategori"],
-                                              style: new TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.grey[500],
-                                              ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 10.0),
+                                            child: Icon(
+                                              Icons.phone_android,
+                                              size: 14.0,
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
+                                      Container(
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              child: Text(
+                                                databerita[i]["kabar_kategori"],
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      child: new Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
+                      );
+                    } else {
+                      return Container(
+                        child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          elevation: 1.0,
+                          color: Colors.white,
+                          child: InkWell(
+                            onTap: () {
+                              // Alert(
+                              //   context: context,
+                              //   type: AlertType.warning,
+                              //   // style: alertStyle,
+                              //   title: "Peringatan.",
+                              //   desc:
+                              //       "Konten di input melalui Website, Apa anda ingin melanjutkan edit?",
+                              //   buttons: [
+                              //     DialogButton(
+                              //       child: Text(
+                              //         "Tidak",
+                              //         style: TextStyle(
+                              //             color: Colors.white, fontSize: 16),
+                              //       ),
+                              //       onPressed: () => Navigator.pop(context),
+                              //       color: Colors.green,
+                              //     ),
+                              //     DialogButton(
+                              //       child: Text(
+                              //         "Edit",
+                              //         style: TextStyle(
+                              //             color: Colors.white, fontSize: 16),
+                              //       ),
+                              //       onPressed: () {
+                              //         Navigator.pop(context);
+                              //         Navigator.of(context).push(
+                              //           MaterialPageRoute(
+                              //             builder: (context) => FormBeritaEdit(
+                              //               dJudul: databerita[i]["kabar_judul"],
+                              //               dKategori: databerita[i]
+                              //                   ["kabar_kategori"],
+                              //               dIsi: databerita[i]["kabar_isi"],
+                              //               dTanggal: databerita[i]
+                              //                   ["kabar_tanggal"],
+                              //               dGambar: databerita[i]
+                              //                   ["kabar_gambar"],
+                              //               dIdBerita: databerita[i]["kabar_id"],
+                              //               dVideo: databerita[i]["kabar_video"],
+                              //               dKomentar: databerita[i]["komentar"],
+                              //             ),
+                              //           ),
+                              //         );
+                              //       },
+                              //       color: Colors.red,
+                              //     )
+                              //   ],
+                              // ).show();
+                              Dialogs.bottomMaterialDialog(
+                                msg:
+                                    'Konten ini di input lewat website, tag html akan terbaca, apakah akan lanjut mengedit? ',
+                                title: "EDIT BERITA",
+                                color: Colors.white,
+                                lottieBuilder: Lottie.asset(
+                                  'assets/animation/edit2.json',
+                                  fit: BoxFit.contain,
+                                  repeat: true,
+                                ),
+                                // animation:'assets/logo/animation/exit.json',
+                                context: context,
+                                actions: [
+                                  IconsOutlineButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    text: 'Batal',
+                                    iconData: Icons.cancel_outlined,
+                                    textStyle:
+                                        const TextStyle(color: Colors.grey),
+                                    iconColor: Colors.grey,
+                                  ),
+                                  IconsButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => FormBeritaEdit(
+                                            dJudul: databerita[i]
+                                                ["kabar_judul"],
+                                            dKategori: databerita[i]
+                                                ["kabar_kategori"],
+                                            dIsi: databerita[i]["kabar_isi"],
+                                            dTanggal: databerita[i]
+                                                ["kabar_tanggal"],
+                                            dGambar: databerita[i]
+                                                ["kabar_gambar"],
+                                            dIdBerita: databerita[i]
+                                                ["kabar_id"],
+                                            dVideo: databerita[i]
+                                                ["kabar_video"],
+                                            dKomentar: databerita[i]
+                                                ["komentar"],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    text: 'EDIT',
+                                    iconData: Icons.edit,
+                                    color: Colors.red,
+                                    textStyle:
+                                        const TextStyle(color: Colors.white),
+                                    iconColor: Colors.white,
+                                  ),
+                                ],
+                              );
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  margin: const EdgeInsets.only(right: 15.0),
+                                  width: 120.0,
+                                  height: 100.0,
+                                  child: CachedNetworkImage(
+                                    imageUrl: databerita[i]["kabar_gambar"],
+                                    placeholder: (context, url) => Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            "assets/images/load.png",
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    fit: BoxFit.cover,
+                                    height: 150.0,
+                                    width: 110.0,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                          right: 10.0,
+                                          top: 5.0,
+                                        ),
+                                        child: Text(
+                                          databerita[i]["kabar_judul"],
+                                          style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 5.0, bottom: 5.0),
+                                              child: Text(
+                                                databerita[i]["kabar_tanggal"],
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey,
+                                                  //fontWeight: FontWeight.normal,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                right: 10.0),
+                                            child: Icon(
+                                              Icons.laptop,
+                                              color: Colors.blue,
+                                              size: 14.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              child: Text(
+                                                databerita[i]["kabar_kategori"],
+                                                style: TextStyle(
+                                                  fontSize: 12.0,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        elevation: 1.0,
-                        color: Colors.white,
-                        child: InkWell(
-                          onTap: () {
+                      );
+                    }
+                  }
+
+                  return Slidable(
+                    //key: Key(itemC.title),
+                    controller: slidableController,
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: _container(),
+                    actions: <Widget>[
+//ANCHOR unpublish berita list
+                      IconSlideAction(
+                        caption: 'Unpublish',
+                        color: Colors.blue,
+                        icon: Icons.undo,
+                        onTap: () {
+                          if (databerita[i]["kabar_publis"] == '0') {
                             Alert(
                               context: context,
-                              type: AlertType.warning,
-                              // style: alertStyle,
-                              title: "Peringatan.",
-                              desc:
-                                  "Konten di input melalui Website, Apa anda ingin melanjutkan edit?",
+                              type: AlertType.error,
+                              title: "Unpublish",
+                              desc: "Berita Sudah di Unpublish.",
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "OK",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                )
+                              ],
+                            ).show();
+                          } else {
+                            Alert(
+                              context: context,
+                              type: AlertType.info,
+                              title: "Unpublish? ",
+                              desc: databerita[i]["kabar_judul"],
                               buttons: [
                                 DialogButton(
                                   child: Text(
@@ -442,172 +702,97 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                         color: Colors.white, fontSize: 16),
                                   ),
                                   onPressed: () => Navigator.pop(context),
-                                  color: Colors.green,
+                                  color: Colors.red,
                                 ),
                                 DialogButton(
                                   child: Text(
-                                    "Edit",
+                                    "Unpublish",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16),
                                   ),
                                   onPressed: () {
+                                    unpublish(databerita[i]["kabar_id"]);
                                     Navigator.pop(context);
-                                    Navigator.of(context).push(
-                                      new MaterialPageRoute(
-                                        builder: (context) =>
-                                            new FormBeritaEdit(
-                                          dJudul: databerita[i]["kabar_judul"],
-                                          dKategori: databerita[i]
-                                              ["kabar_kategori"],
-                                          dIsi: databerita[i]["kabar_isi"],
-                                          dTanggal: databerita[i]
-                                              ["kabar_tanggal"],
-                                          dGambar: databerita[i]
-                                              ["kabar_gambar"],
-                                          dIdBerita: databerita[i]["kabar_id"],
-                                          dVideo: databerita[i]["kabar_video"],
-                                          dKomentar: databerita[i]["komentar"],
-                                        ),
-                                      ),
-                                    );
                                   },
-                                  color: Colors.red,
+                                  color: Colors.orange,
                                 )
                               ],
                             ).show();
-                          },
-                          child: new Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              new Container(
-                                margin: const EdgeInsets.only(right: 15.0),
-                                width: 120.0,
-                                height: 100.0,
-                                child: CachedNetworkImage(
-                                  imageUrl: databerita[i]["kabar_gambar"],
-                                  placeholder: (context, url) => Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                          "assets/images/load.png",
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  fit: BoxFit.cover,
-                                  height: 150.0,
-                                  width: 110.0,
-                                ),
-                              ),
-                              new Expanded(
-                                child: new Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    new Container(
-                                      margin: const EdgeInsets.only(
-                                        right: 10.0,
-                                        top: 5.0,
-                                      ),
-                                      child: new Text(
-                                        databerita[i]["kabar_judul"],
-                                        style: new TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    new Row(
-                                      children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
-                                            margin: const EdgeInsets.only(
-                                                top: 5.0, bottom: 5.0),
-                                            child: new Text(
-                                              databerita[i]["kabar_tanggal"],
-                                              style: new TextStyle(
-                                                fontSize: 13.0,
-                                                color: Colors.grey,
-                                                //fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        new Container(
-                                          margin: const EdgeInsets.only(
-                                              right: 10.0),
-                                          child: Icon(
-                                            Icons.laptop,
-                                            color: Colors.blue,
-                                            size: 14.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    new Container(
-                                      child: new Column(
-                                        children: <Widget>[
-                                          new Container(
-                                            child: new Text(
-                                              databerita[i]["kabar_kategori"],
-                                              style: new TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.grey[500],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                          }
+                          debugPrint(beritaAdmin[i]["kabar_id"]);
+                        },
                       ),
-                    );
-                  }
-                }
-
-                return Slidable(
-                  //key: Key(itemC.title),
-                  controller: slidableController,
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
-                  child: _container(),
-                  actions: <Widget>[
-//ANCHOR unpublish berita list
-                    IconSlideAction(
-                      caption: 'Unpublish',
-                      color: Colors.blue,
-                      icon: Icons.undo,
-                      onTap: () {
-                        if (databerita[i]["kabar_publis"] == '0') {
+//ANCHOR publish berita list
+                      IconSlideAction(
+                        caption: 'Publish',
+                        color: Colors.green,
+                        icon: Icons.redo,
+                        onTap: () {
+                          if (databerita[i]["kabar_publis"] == '1') {
+                            Alert(
+                              context: context,
+                              type: AlertType.warning,
+                              title: "Publish",
+                              desc: "Berita Sudah di Publish.",
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "OK",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  width: 120,
+                                )
+                              ],
+                            ).show();
+                            print(databerita[i]["kabar_publis"]);
+                          } else {
+                            Alert(
+                              context: context,
+                              type: AlertType.info,
+                              title: "Publish?",
+                              desc: databerita[i]["kabar_judul"],
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Tidak",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  color: Colors.red,
+                                ),
+                                DialogButton(
+                                  child: Text(
+                                    "Publish",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                  onPressed: () {
+                                    publish(databerita[i]["kabar_id"]);
+                                    Navigator.pop(context);
+                                  },
+                                  color: Colors.green,
+                                )
+                              ],
+                            ).show();
+                            print(databerita[i]["kabar_publis"]);
+                          }
+                        },
+                      ),
+                    ],
+//ANCHOR hapus berita list
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Hapus',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
                           Alert(
                             context: context,
                             type: AlertType.error,
-                            title: "Unpublish",
-                            desc: "Berita Sudah di Unpublish.",
-                            buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "OK",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                width: 120,
-                              )
-                            ],
-                          ).show();
-                        } else {
-                          Alert(
-                            context: context,
-                            type: AlertType.info,
-                            title: "Unpublish? ",
+                            title: "Hapus? ",
                             desc: databerita[i]["kabar_judul"],
                             buttons: [
                               DialogButton(
@@ -617,129 +802,30 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                       color: Colors.white, fontSize: 16),
                                 ),
                                 onPressed: () => Navigator.pop(context),
-                                color: Colors.red,
-                              ),
-                              DialogButton(
-                                child: Text(
-                                  "Unpublish",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                                onPressed: () {
-                                  unpublish(databerita[i]["kabar_id"]);
-                                  Navigator.pop(context);
-                                },
-                                color: Colors.orange,
-                              )
-                            ],
-                          ).show();
-                        }
-                        debugPrint(beritaAdmin[i]["kabar_id"]);
-                      },
-                    ),
-//ANCHOR publish berita list
-                    IconSlideAction(
-                      caption: 'Publish',
-                      color: Colors.green,
-                      icon: Icons.redo,
-                      onTap: () {
-                        if (databerita[i]["kabar_publis"] == '1') {
-                          Alert(
-                            context: context,
-                            type: AlertType.warning,
-                            title: "Publish",
-                            desc: "Berita Sudah di Publish.",
-                            buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "OK",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                width: 120,
-                              )
-                            ],
-                          ).show();
-                          print(databerita[i]["kabar_publis"]);
-                        } else {
-                          Alert(
-                            context: context,
-                            type: AlertType.info,
-                            title: "Publish?",
-                            desc: databerita[i]["kabar_judul"],
-                            buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "Tidak",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                color: Colors.red,
-                              ),
-                              DialogButton(
-                                child: Text(
-                                  "Publish",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                                onPressed: () {
-                                  publish(databerita[i]["kabar_id"]);
-                                  Navigator.pop(context);
-                                },
                                 color: Colors.green,
+                              ),
+                              DialogButton(
+                                child: Text(
+                                  "Hapus",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
+                                onPressed: () {
+                                  hapusberita(databerita[i]["kabar_id"]);
+                                  Navigator.pop(context);
+                                },
+                                color: Colors.red,
                               )
                             ],
                           ).show();
-                          print(databerita[i]["kabar_publis"]);
-                        }
-                      },
-                    ),
-                  ],
-//ANCHOR hapus berita list
-                  secondaryActions: <Widget>[
-                    IconSlideAction(
-                      caption: 'Hapus',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () {
-                        Alert(
-                          context: context,
-                          type: AlertType.error,
-                          title: "Hapus? ",
-                          desc: databerita[i]["kabar_judul"],
-                          buttons: [
-                            DialogButton(
-                              child: Text(
-                                "Tidak",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                              onPressed: () => Navigator.pop(context),
-                              color: Colors.green,
-                            ),
-                            DialogButton(
-                              child: Text(
-                                "Hapus",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                              onPressed: () {
-                                hapusberita(databerita[i]["kabar_id"]);
-                                Navigator.pop(context);
-                              },
-                              color: Colors.red,
-                            )
-                          ],
-                        ).show();
-                      },
-                    ),
-                  ],
-                );
+                        },
+                      ),
+                    ],
+                  );
+                }
               }
-            }
-          },
+            },
+          ),
         ),
       ),
     );

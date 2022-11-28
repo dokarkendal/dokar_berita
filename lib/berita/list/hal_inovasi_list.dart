@@ -103,9 +103,9 @@ class HalInovasiListState extends State<HalInovasiList> {
   //NOTE url api load berita
   List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   List tempList = [];
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   String nextPage = "http://dokar.kendalkab.go.id/webservice/android/bid/list/";
 
   void _getMoreData() async {
@@ -153,12 +153,12 @@ class HalInovasiListState extends State<HalInovasiList> {
   }
 
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -173,11 +173,11 @@ class HalInovasiListState extends State<HalInovasiList> {
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'List Inovasi',
+          'LIST INOVASI',
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+            // fontSize: 25.0,
           ),
         ),
         centerTitle: true,
@@ -200,50 +200,50 @@ class HalInovasiListState extends State<HalInovasiList> {
           // ignore: missing_return
           itemBuilder: (BuildContext context, int i) {
             if (i == databerita.length) {
-              return _buildProgressIndicator();
+              return Container(
+                child: _buildProgressIndicator(),
+              );
             } else {
               if (databerita[i]["inovasi_id"] == 'Notfound') {
-                // return new Container(
-                //   child: Center(
-                //     child: new Column(
-                //       children: <Widget>[
-                //         new Padding(
-                //           padding: new EdgeInsets.all(100.0),
+                // return Center(
+                //   child:  Column(
+                //     children: <Widget>[
+                //        Padding(
+                //         padding:  EdgeInsets.all(100.0),
+                //       ),
+                //        Text(
+                //         "DATA KOSONG",
+                //         style:  TextStyle(
+                //           fontSize: 30.0,
+                //           color: Colors.grey[350],
                 //         ),
-                //         new Text(
-                //           "DATA KOSONG",
-                //           style: new TextStyle(
-                //             fontSize: 30.0,
-                //             color: Colors.grey[350],
-                //           ),
-                //         ),
-                //         new Padding(
-                //           padding: new EdgeInsets.all(20.0),
-                //         ),
-                //         new Icon(Icons.help_outline,
-                //             size: 150.0, color: Colors.grey[350]),
-                //       ],
-                //     ),
+                //       ),
+                //        Padding(
+                //         padding:  EdgeInsets.all(20.0),
+                //       ),
+                //        Icon(Icons.help_outline,
+                //           size: 150.0, color: Colors.grey[350]),
+                //     ],
                 //   ),
                 // );
               } else {
                 Widget _container() {
                   if (databerita[i]["device"] == '1') {
-                    // return new Container(
+                    // return  Container(
                     //   color: Colors.grey[100],
                     //   padding: EdgeInsets.only(
                     //     left: 5.0,
                     //     right: 5.0,
                     //   ),
-                    //   child: new Card(
+                    //   child:  Card(
                     //     shape: RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.circular(10.0),
                     //     ),
-                    //     child: new InkWell(
+                    //     child:  InkWell(
                     //       onTap: () {
                     //         Navigator.of(context).push(
-                    //           new MaterialPageRoute(
-                    //             builder: (context) => new FormInovasiEdit(
+                    //            MaterialPageRoute(
+                    //             builder: (context) =>  FormInovasiEdit(
                     //               dJudul: databerita[i]["inovasi_judul"],
                     //               dKategori: databerita[i]["inovasi_kategori"],
                     //               dIsi: databerita[i]["inovasi_isi"],
@@ -266,7 +266,7 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //           child: ClipRRect(
                     //             borderRadius: BorderRadius.circular(5.0),
                     //             child: Image(
-                    //               image: new NetworkImage(
+                    //               image:  NetworkImage(
                     //                   databerita[i]["inovasi_gambar"]),
                     //               fit: BoxFit.cover,
                     //               height: 150.0,
@@ -276,7 +276,7 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //         ),
                     //         subtitle: Row(
                     //           children: <Widget>[
-                    //             new Text(
+                    //              Text(
                     //               databerita[i]["inovasi_tanggal"],
                     //             ),
                     //             SizedBox(
@@ -284,11 +284,11 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //             ),
                     //           ],
                     //         ),
-                    //         title: new Text(
+                    //         title:  Text(
                     //           databerita[i]["inovasi_judul"],
                     //           maxLines: 2,
                     //           overflow: TextOverflow.ellipsis,
-                    //           style: new TextStyle(
+                    //           style:  TextStyle(
                     //               fontSize: 14.0, fontWeight: FontWeight.bold),
                     //         ),
                     //         trailing: Icon(
@@ -300,7 +300,7 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //   ),
                     // );
                     return Container(
-                      child: new Card(
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
@@ -310,8 +310,8 @@ class HalInovasiListState extends State<HalInovasiList> {
                         child: InkWell(
                           onTap: () {
                             Navigator.of(context).push(
-                              new MaterialPageRoute(
-                                builder: (context) => new FormInovasiEdit(
+                              MaterialPageRoute(
+                                builder: (context) => FormInovasiEdit(
                                   dJudul: databerita[i]["inovasi_judul"],
                                   dKategori: databerita[i]["inovasi_kategori"],
                                   dIsi: databerita[i]["inovasi_isi"],
@@ -323,10 +323,10 @@ class HalInovasiListState extends State<HalInovasiList> {
                               ),
                             );
                           },
-                          child: new Row(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Container(
+                              Container(
                                 margin: const EdgeInsets.only(right: 15.0),
                                 width: 120.0,
                                 height: 100.0,
@@ -347,40 +347,42 @@ class HalInovasiListState extends State<HalInovasiList> {
                                   width: 110.0,
                                 ),
                               ),
-                              new Expanded(
-                                child: new Column(
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Container(
-                                      margin:
-                                          const EdgeInsets.only(right: 10.0),
-                                      child: new Text(
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                      ),
+                                      child: Text(
                                         databerita[i]["inovasi_judul"],
-                                        style: new TextStyle(
-                                          fontSize: 15.0,
+                                        style: TextStyle(
+                                          fontSize: 13.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
+                                    Row(
                                       children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
+                                        Expanded(
+                                          child: Container(
                                             margin: const EdgeInsets.only(
                                                 top: 5.0, bottom: 10.0),
-                                            child: new Text(
+                                            child: Text(
                                               databerita[i]["inovasi_tanggal"],
-                                              style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        new Container(
+                                        Container(
                                           margin: const EdgeInsets.only(
                                               right: 10.0),
                                           child: Icon(
@@ -390,21 +392,21 @@ class HalInovasiListState extends State<HalInovasiList> {
                                         ),
                                       ],
                                     ),
-                                    // new Container(
-                                    //   child: new Column(
-                                    //     children: <Widget>[
-                                    //       new Container(
-                                    //         child: new Text(
-                                    //           databerita[i]["kabar_tempat"],
-                                    //           style: new TextStyle(
-                                    //             fontSize: 11.0,
-                                    //             color: Colors.grey[500],
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
+                                    Container(
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            child: Text(
+                                              databerita[i]["inovasi_kategori"],
+                                              style: TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey[500],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -414,17 +416,17 @@ class HalInovasiListState extends State<HalInovasiList> {
                       ),
                     );
                   } else {
-                    // return new Container(
+                    // return  Container(
                     //   color: Colors.grey[100],
                     //   padding: EdgeInsets.only(
                     //     left: 5.0,
                     //     right: 5.0,
                     //   ),
-                    //   child: new Card(
+                    //   child:  Card(
                     //     shape: RoundedRectangleBorder(
                     //       borderRadius: BorderRadius.circular(10.0),
                     //     ),
-                    //     child: new InkWell(
+                    //     child:  InkWell(
                     //       onTap: () {
                     //         Alert(
                     //           context: context,
@@ -452,9 +454,9 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //               onPressed: () {
                     //                 Navigator.pop(context);
                     //                 Navigator.of(context).push(
-                    //                   new MaterialPageRoute(
+                    //                    MaterialPageRoute(
                     //                     builder: (context) =>
-                    //                         new FormInovasiEdit(
+                    //                          FormInovasiEdit(
                     //                       dJudul: databerita[i]
                     //                           ["inovasi_judul"],
                     //                       dKategori: databerita[i]
@@ -488,7 +490,7 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //           child: ClipRRect(
                     //             borderRadius: BorderRadius.circular(5.0),
                     //             child: Image(
-                    //               image: new NetworkImage(
+                    //               image:  NetworkImage(
                     //                   databerita[i]["inovasi_gambar"]),
                     //               fit: BoxFit.cover,
                     //               height: 150.0,
@@ -498,7 +500,7 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //         ),
                     //         subtitle: Row(
                     //           children: <Widget>[
-                    //             new Text(
+                    //              Text(
                     //               databerita[i]["inovasi_tanggal"],
                     //             ),
                     //             SizedBox(
@@ -506,11 +508,11 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //             ),
                     //           ],
                     //         ),
-                    //         title: new Text(
+                    //         title:  Text(
                     //           databerita[i]["inovasi_judul"],
                     //           maxLines: 2,
                     //           overflow: TextOverflow.ellipsis,
-                    //           style: new TextStyle(
+                    //           style:  TextStyle(
                     //               fontSize: 14.0, fontWeight: FontWeight.bold),
                     //         ),
                     //         trailing: Icon(
@@ -522,7 +524,7 @@ class HalInovasiListState extends State<HalInovasiList> {
                     //   ),
                     // );
                     return Container(
-                      child: new Card(
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
@@ -557,9 +559,8 @@ class HalInovasiListState extends State<HalInovasiList> {
                                   onPressed: () {
                                     Navigator.pop(context);
                                     Navigator.of(context).push(
-                                      new MaterialPageRoute(
-                                        builder: (context) =>
-                                            new FormInovasiEdit(
+                                      MaterialPageRoute(
+                                        builder: (context) => FormInovasiEdit(
                                           dJudul: databerita[i]
                                               ["inovasi_judul"],
                                           dKategori: databerita[i]
@@ -582,10 +583,10 @@ class HalInovasiListState extends State<HalInovasiList> {
                               ],
                             ).show();
                           },
-                          child: new Row(
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Container(
+                              Container(
                                 margin: const EdgeInsets.only(right: 15.0),
                                 width: 120.0,
                                 height: 100.0,
@@ -606,40 +607,42 @@ class HalInovasiListState extends State<HalInovasiList> {
                                   width: 110.0,
                                 ),
                               ),
-                              new Expanded(
-                                child: new Column(
+                              Expanded(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    new Container(
-                                      margin:
-                                          const EdgeInsets.only(right: 10.0),
-                                      child: new Text(
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                      ),
+                                      child: Text(
                                         databerita[i]["inovasi_judul"],
-                                        style: new TextStyle(
-                                          fontSize: 15.0,
+                                        style: TextStyle(
+                                          fontSize: 14.0,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    new Row(
+                                    Row(
                                       children: <Widget>[
-                                        new Expanded(
-                                          child: new Container(
+                                        Expanded(
+                                          child: Container(
                                             margin: const EdgeInsets.only(
                                                 top: 5.0, bottom: 10.0),
-                                            child: new Text(
+                                            child: Text(
                                               databerita[i]["inovasi_tanggal"],
-                                              style: new TextStyle(
-                                                fontSize: 14.0,
-                                                color: Colors.black,
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.grey,
                                                 //fontWeight: FontWeight.normal,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        new Container(
+                                        Container(
                                           margin: const EdgeInsets.only(
                                               right: 10.0),
                                           child: Icon(
@@ -650,21 +653,21 @@ class HalInovasiListState extends State<HalInovasiList> {
                                         ),
                                       ],
                                     ),
-                                    // new Container(
-                                    //   child: new Column(
-                                    //     children: <Widget>[
-                                    //       new Container(
-                                    //         child: new Text(
-                                    //           databerita[i]["kabar_tempat"],
-                                    //           style: new TextStyle(
-                                    //             fontSize: 11.0,
-                                    //             color: Colors.grey[500],
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
+                                    Container(
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            child: Text(
+                                              databerita[i]["inovasi_kategori"],
+                                              style: TextStyle(
+                                                fontSize: 11.0,
+                                                color: Colors.grey[500],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

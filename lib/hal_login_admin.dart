@@ -361,7 +361,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
           padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.4),
           child: Column(
             children: [
-              SpinKitWave(color: Colors.white),
+              SpinKitThreeBounce(color: Colors.white),
               SizedBox(height: mediaQueryData.size.height * 0.05),
               Text(
                 'Mohon Tunggu..',

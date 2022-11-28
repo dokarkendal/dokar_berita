@@ -63,6 +63,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
     if (mounted) {
       setState(
         () {
+          print(widget.id);
           jumlah = jumlahagenda['kabar'];
           jumlahkeg = jumlahagenda['kegiatan'];
           jumlahB = jumlahagenda['bid'];

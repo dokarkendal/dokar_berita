@@ -2,6 +2,7 @@
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
 import 'dart:io';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:async/async.dart'; //upload gambar
@@ -9,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:image_picker/image_picker.dart'; //akses galeri dan camera
 import 'package:http/http.dart' as http; //api
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path/path.dart'; //upload gambar path
 import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:path_provider/path_provider.dart';
@@ -61,16 +62,16 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
   List _listKomentar = ["Aktif", "Tidak"];
 
 //ANCHOR controller berita edit
-  TextEditingController dVideo = new TextEditingController();
-  TextEditingController dJudul = new TextEditingController();
-  TextEditingController dKategori = new TextEditingController();
-  TextEditingController dIsi = new TextEditingController();
-  TextEditingController dTanggal = new TextEditingController();
-  TextEditingController cUsername = new TextEditingController();
-  TextEditingController cStatus = new TextEditingController();
-  TextEditingController dGambar = new TextEditingController();
-  TextEditingController dIdBerita = new TextEditingController();
-  TextEditingController dKomentar = new TextEditingController();
+  TextEditingController dVideo = TextEditingController();
+  TextEditingController dJudul = TextEditingController();
+  TextEditingController dKategori = TextEditingController();
+  TextEditingController dIsi = TextEditingController();
+  TextEditingController dTanggal = TextEditingController();
+  TextEditingController cUsername = TextEditingController();
+  TextEditingController cStatus = TextEditingController();
+  TextEditingController dGambar = TextEditingController();
+  TextEditingController dIdBerita = TextEditingController();
+  TextEditingController dKomentar = TextEditingController();
 
 //ANCHOR input image size flutter berita edit
   Future getImageGallery() async {
@@ -80,12 +81,12 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
-    int rand = new Math.Random().nextInt(100000);
+    int rand = Math.Random().nextInt(100000);
 
     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    var compressImg = new File("$path/image_$rand.jpg")
+    var compressImg = File("$path/image_$rand.jpg")
       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
     setState(() {
@@ -100,12 +101,12 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
-    int rand = new Math.Random().nextInt(100000);
+    int rand = Math.Random().nextInt(100000);
 
     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    var compressImg = new File("$path/image_$rand.jpg")
+    var compressImg = File("$path/image_$rand.jpg")
       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
     setState(() {
@@ -148,14 +149,14 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
 //ANCHOR Controller edit berita
   @override
   void initState() {
-    dVideo = new TextEditingController(text: "${widget.dVideo}");
-    dJudul = new TextEditingController(text: "${widget.dJudul}");
-    dKategori = new TextEditingController(text: "${widget.dKategori}");
-    dIsi = new TextEditingController(text: "${widget.dIsi}");
-    dTanggal = new TextEditingController(text: "${widget.dTanggal}");
-    dGambar = new TextEditingController(text: "${widget.dGambar}");
-    dIdBerita = new TextEditingController(text: "${widget.dIdBerita}");
-    dKomentar = new TextEditingController(text: "${widget.dKomentar}");
+    dVideo = TextEditingController(text: "${widget.dVideo}");
+    dJudul = TextEditingController(text: "${widget.dJudul}");
+    dKategori = TextEditingController(text: "${widget.dKategori}");
+    dIsi = TextEditingController(text: "${widget.dIsi}");
+    dTanggal = TextEditingController(text: "${widget.dTanggal}");
+    dGambar = TextEditingController(text: "${widget.dGambar}");
+    dIdBerita = TextEditingController(text: "${widget.dIdBerita}");
+    dKomentar = TextEditingController(text: "${widget.dKomentar}");
     super.initState();
     this.getKategori();
   }
@@ -185,14 +186,14 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var stream =
         // ignore: deprecated_member_use
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+        http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
     var uri =
         Uri.parse("http://dokar.kendalkab.go.id/webservice/android/kabar/edit");
 
-    var request = new http.MultipartRequest("POST", uri);
+    var request = http.MultipartRequest("POST", uri);
 
-    var multipartFile = new http.MultipartFile("image", stream, length,
+    var multipartFile = http.MultipartFile("image", stream, length,
         filename: basename(imageFile.path));
     request.fields['judul'] = dJudul.text;
     request.fields['kategori'] = _mySelection;
@@ -220,9 +221,9 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
           '/FormBeritaDashbord', ModalRoute.withName('/EditSemua'));
       StatusAlert.show(
         this.context,
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 3),
         title: 'Sukses',
-        subtitle: 'Berita Berhasil di upload',
+        subtitle: 'Berita Berhasil di edit',
         configuration: IconConfiguration(icon: Icons.done),
       );
     } else {
@@ -273,7 +274,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
           "judul": dJudul.text,
           "kategori": _mySelection,
           "komentar": _valKomentar,
-          "video": dVideo,
+          "video": dVideo.text,
           "isi": dIsi.text,
           "tanggal": dTanggal.text,
           "id_desa": pref.getString("IdDesa"),
@@ -296,7 +297,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
         this.context,
         duration: Duration(seconds: 2),
         title: 'Sukses',
-        subtitle: 'Berita Berhasil di upload',
+        subtitle: 'Berita Berhasil di edit',
         configuration: IconConfiguration(icon: Icons.done),
       );
     } else {
@@ -318,9 +319,11 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
     }
   }
 
+  // double bur = 0.5;
 //ANCHOR Body edit berita
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -330,7 +333,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
         title: Text(
           'EDIT BERITA',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             // fontSize: 25.0,
           ),
@@ -341,19 +344,35 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isInAsyncCall,
-        opacity: 0.5,
-        progressIndicator:
-            CircularProgressIndicator(backgroundColor: Colors.red),
+        opacity: 1,
+        // blur: bur,
+        color: Theme.of(context).primaryColor,
+        progressIndicator: Padding(
+          padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.4),
+          child: Column(
+            children: [
+              SpinKitWave(color: Colors.white),
+              SizedBox(height: mediaQueryData.size.height * 0.05),
+              Text(
+                'Sedang mengedit..',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              )
+            ],
+          ),
+        ),
         child: ListView(
           children: <Widget>[
-            new Container(
-              padding: new EdgeInsets.all(10.0),
+            Container(
+              padding: EdgeInsets.all(10.0),
               child: Form(
                 key: formKey,
                 child: Column(
                   children: <Widget>[
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR judul berita berita edit
                     Container(
@@ -371,7 +390,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                           color: Colors.black,
                         ),
                         decoration: InputDecoration(
-                          border: new OutlineInputBorder(
+                          border: OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
                               const Radius.circular(10.0),
                             ),
@@ -388,33 +407,53 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR kategori berita edit
-                    new Column(
+                    Column(
                       children: <Widget>[
                         Container(
-                          padding: new EdgeInsets.only(left: 20.0),
-                          alignment: Alignment.centerLeft,
-                          decoration: kBoxDecorationStyle2,
-                          height: 60.0,
-                          child: DropdownButton(
-                            underline: SizedBox(),
+                          // padding: EdgeInsets.only(left: 20.0),
+                          // alignment: Alignment.centerLeft,
+                          // decoration: kBoxDecorationStyle2,
+                          // height: 60.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          child: DropdownButtonFormField(
+                            // underline: SizedBox(),
+                            decoration: InputDecoration(
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              // hintText: 'Judul Berita',
+                              hintStyle: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey[400],
+                              ),
+                              // prefixIcon: Icon(
+                              //   Icons.text_fields,
+                              //   color: Colors.grey,
+                              // ),
+                            ),
                             hint: Text("${widget.dKategori}"),
                             isExpanded: true,
                             items: kategoriAdmin.map(
                               (item) {
-                                return new DropdownMenuItem(
-                                  child: new Text(item['kategori_nama']),
+                                return DropdownMenuItem(
+                                  child: Text(item['kategori_nama']),
                                   value: item['kategori_nama'].toString(),
                                 );
                               },
                             ).toList(),
-                            onChanged: (newVal) {
+                            onChanged: (val) {
                               setState(
                                 () {
-                                  _mySelection = newVal;
+                                  _mySelection = val;
                                 },
                               );
                             },
@@ -423,24 +462,33 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         )
                       ],
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR isi berita edit
                     Container(
                       alignment: Alignment.topLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 200.0,
+                      // decoration: kBoxDecorationStyle2,
+                      // height: 200.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
                       child: TextFormField(
                         controller: dIsi,
                         maxLines: null,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.multiline,
                         style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
+                          color: Colors.black,
+                          // fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          border: new OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                          // border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.library_books,
                             color: Colors.grey[600],
@@ -450,14 +498,18 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR tangal berita edit
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
+                      // decoration: kBoxDecorationStyle2,
+                      // height: 60.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
                       child: DateTimeField(
                         controller: dTanggal,
                         format: format,
@@ -469,7 +521,12 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                               lastDate: DateTime(2100));
                         },
                         decoration: InputDecoration(
-                          border: InputBorder.none,
+                          // border: InputBorder.none,
+                          border: new OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
                           prefixIcon: Icon(
                             Icons.date_range,
                             color: Colors.grey[600],
@@ -479,18 +536,39 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
-                    new Column(
+//FIXME komentar berita edit
+                    Column(
                       children: <Widget>[
                         Container(
-                          padding: new EdgeInsets.only(left: 20.0),
+                          // padding: EdgeInsets.only(left: 20.0),
                           alignment: Alignment.centerLeft,
-                          decoration: kBoxDecorationStyle2,
-                          height: 60.0,
-                          child: DropdownButton(
-                            underline: SizedBox(),
+                          // decoration: kBoxDecorationStyle2,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          // height: 60.0,
+                          child: DropdownButtonFormField(
+                            // underline: SizedBox(),
+                            decoration: InputDecoration(
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              // hintText: 'Judul Berita',
+                              hintStyle: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey[400],
+                              ),
+                              // prefixIcon: Icon(
+                              //   Icons.text_fields,
+                              //   color: Colors.grey,
+                              // ),
+                            ),
                             isExpanded: true,
                             hint: Text("${widget.dKomentar}"),
                             items: _listKomentar.map(
@@ -513,13 +591,17 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         )
                       ],
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR input link youtube
                     Container(
                       alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
+                      // decoration: kBoxDecorationStyle2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
                       height: 60.0,
                       child: TextFormField(
                         controller: dVideo,
@@ -529,8 +611,13 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                           fontFamily: 'OpenSans',
                         ),
                         decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
+                          // border: InputBorder.none,
+                          border: new OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          ),
+                          // contentPadding: EdgeInsets.only(top: 14.0),
                           prefixIcon: Icon(
                             Icons.ondemand_video,
                             color: Colors.grey[600],
@@ -540,14 +627,14 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         ),
                       ),
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0),
                     ),
 //ANCHOR gambar berita edit
                     Center(
                       child: _image == null
-                          ? new Text("Pilih gambar berita!")
-                          : new Image.file(_image),
+                          ? Text("Pilih gambar berita!")
+                          : Image.file(_image),
                     ),
                     Row(
                       children: <Widget>[
@@ -562,13 +649,16 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                           // color: Color(0xFFee002d),
                           // shape: RoundedRectangleBorder(
                           //   borderRadius: BorderRadius.circular(17.0),
                           // ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.0),
                         ),
                         ElevatedButton(
                           child: Icon(
@@ -581,7 +671,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                             elevation: 0, backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.circular(15), // <-- Radius
+                                  BorderRadius.circular(10), // <-- Radius
                             ),
                           ),
                           // color: Color(0xFFee002d),
@@ -591,86 +681,91 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                         ),
                       ],
                     ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.0),
                     ),
 //NOTE tombol upload edit berita
-                    ElevatedButton.icon(
-                      icon: Icon(
-                        Icons.save,
-                        color: Colors.white,
-                      ),
-                      label: Text("SIMPAN BERITA"),
-                      onPressed: () {
-                        if (dJudul.text == null || dJudul.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Judul wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dIsi.text == null || dIsi.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Judul wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (dTanggal.text == null ||
-                            dTanggal.text == '') {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(
-                              'Tanggal wajib di isi.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.orange[700],
-                            action: SnackBarAction(
-                              label: 'ULANGI',
-                              textColor: Colors.white,
-                              onPressed: () {
-                                print('ULANGI snackbar');
-                              },
-                            ),
-                          ));
-                          // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else {
-                          if (_image == null) {
-                            uploadNoGambarBeritaEdit();
-                          } else {
-                            uploadGambarBeritaEdit(_image);
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.all(15.0),
-                        elevation: 0, backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                    Container(
+                      width: mediaQueryData.size.width,
+                      height: mediaQueryData.size.height * 0.07,
+                      child: ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.save,
+                          color: Colors.white,
                         ),
+                        label: Text("SIMPAN BERITA"),
+                        onPressed: () {
+                          if (dJudul.text == null || dJudul.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Judul wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dIsi.text == null || dIsi.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Judul wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else if (dTanggal.text == null ||
+                              dTanggal.text == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'Tanggal wajib di isi.',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              backgroundColor: Colors.orange[700],
+                              action: SnackBarAction(
+                                label: 'ULANGI',
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  print('ULANGI snackbar');
+                                },
+                              ),
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
+                          } else {
+                            if (_image == null) {
+                              uploadNoGambarBeritaEdit();
+                            } else {
+                              uploadGambarBeritaEdit(_image);
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(10), // <-- Radius
+                          ),
+                        ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
-                      // color: Colors.green,
-                      // textColor: Colors.white,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(17.0),
-                      // ),
                     ),
                   ],
                 ),
