@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../style/styleset.dart';
+
 class ExpansionTileSample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.brown[800], //change your color here
+        ),
         centerTitle: true,
         elevation: 0,
         title: Text(
           "Bantuan",
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),

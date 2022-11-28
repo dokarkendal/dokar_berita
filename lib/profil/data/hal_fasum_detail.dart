@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../../style/styleset.dart';
+
 class HalFasumDetail extends StatefulWidget {
   final String dNama, dId, idDesa;
   HalFasumDetail({this.dNama, this.dId, this.idDesa});
@@ -30,7 +32,7 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
   Future<String> ambildata() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/fasilitasumum/${widget.idDesa}/" +
                 id),
         headers: {"Accept": "application/json"});
@@ -46,12 +48,28 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Text(
+      //     '${widget.dNama}'.toUpperCase(),
+      //   ),
+      //   centerTitle: true,
+      //   elevation: 0,
+      //   backgroundColor: Theme.of(context).primaryColor,
+      // ),
       appBar: AppBar(
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
+          // ignore: unnecessary_brace_in_string_interps
           '${widget.dNama}'.toUpperCase(),
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
-        elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(
@@ -61,37 +79,37 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
           itemCount: dataJSON == null ? 0 : dataJSON.length,
           itemBuilder: (context, index) {
             if (dataJSON[index]["nama"] == 'NotFound') {
-              return new Container(
+              return Container(
                 child: Center(
-                  child: new Column(
+                  child: Column(
                     children: <Widget>[
-                      new Padding(
-                        padding: new EdgeInsets.all(100.0),
+                      Padding(
+                        padding: EdgeInsets.all(100.0),
                       ),
-                      new Text(
+                      Text(
                         "DATA KOSONG",
-                        style: new TextStyle(
+                        style: TextStyle(
                           fontSize: 30.0,
                           color: Colors.grey[350],
                         ),
                       ),
-                      new Padding(
-                        padding: new EdgeInsets.all(20.0),
+                      Padding(
+                        padding: EdgeInsets.all(20.0),
                       ),
-                      new Icon(Icons.notes_sharp,
+                      Icon(Icons.notes_sharp,
                           size: 150.0, color: Colors.grey[350]),
                     ],
                   ),
                 ),
               );
             } else {
-              return new Container(
+              return Container(
                 color: Colors.grey[100],
                 padding: EdgeInsets.only(
                   left: 5.0,
                   right: 5.0,
                 ),
-                child: new Card(
+                child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -145,7 +163,7 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
                       ),
                       subtitle: Row(
                         children: <Widget>[
-                          new Text(
+                          Text(
                             dataJSON[index]["jenis"],
                           ),
                           SizedBox(
@@ -160,11 +178,11 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
                           ),
                         ],
                       ),
-                      title: new Text(
+                      title: Text(
                         dataJSON[index]["nama"],
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: new TextStyle(
+                        style: TextStyle(
                             fontSize: 14.0, fontWeight: FontWeight.bold),
                       ),
                       trailing: Icon(

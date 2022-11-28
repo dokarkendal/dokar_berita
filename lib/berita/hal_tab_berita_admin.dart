@@ -1,6 +1,7 @@
 //ANCHOR package tabbar berita
 import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/berita/hal_search.dart';
+import '../style/styleset.dart';
 import './hal_berita.dart' as berita;
 import './hal_bumdes.dart' as bumdes;
 import './hal_inovasi.dart' as inovasi;
@@ -16,11 +17,14 @@ class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
   String value;
   TabController controller;
 
-  Icon cusIcon = Icon(Icons.search);
+  Icon cusIcon = Icon(
+    Icons.search,
+    color: appbarIcon,
+  );
   Widget custSearchBar = Text(
     "DOKAR",
     style: TextStyle(
-      color: Color(0xFF2e2e2e),
+      color: appbarTitle,
       fontWeight: FontWeight.bold,
       fontSize: 25.0,
     ),
@@ -46,7 +50,7 @@ class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
       appBar: new AppBar(
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.dehaze, color: Colors.brown[800]),
+          icon: Icon(Icons.dehaze, color: appbarIcon),
           onPressed: () {
             Navigator.pushNamed(context, '/ListKecamatan');
           },
@@ -59,7 +63,10 @@ class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
               setState(
                 () {
                   if (this.cusIcon.icon == Icons.search) {
-                    this.cusIcon = Icon(Icons.cancel);
+                    this.cusIcon = Icon(
+                      Icons.cancel,
+                      color: appbarIcon,
+                    );
                     this.custSearchBar = Container(
                       height: mediaQueryData.size.height * 0.05,
                       // width: mediaQueryData.size.width,
@@ -106,7 +113,10 @@ class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
                       ),
                     );
                   } else {
-                    this.cusIcon = Icon(Icons.search);
+                    this.cusIcon = Icon(
+                      Icons.search,
+                      color: appbarIcon,
+                    );
                     this.custSearchBar = Text(
                       "DOKAR",
                       style: TextStyle(
@@ -169,22 +179,22 @@ class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
-            title: Text("Berita"),
+            label: "Berita",
             backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.calendar_today,
             ),
-            title: Text("Event"),
+            label: "Event",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assessment),
-            title: Text("Inovasi"),
+            label: "Inovasi",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
-            title: Text("Bumdes"),
+            label: "Bumdes",
           ),
         ],
         onTap: (index) {

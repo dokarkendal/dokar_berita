@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../style/styleset.dart';
+
 class HalAparaturDesa extends StatefulWidget {
   final String idDesa;
 
@@ -19,19 +21,26 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
   String jabatan = '';
   String foto = '';
   String nama = '';
-  List databerita = new List();
+  List databerita = [];
+  bool isLoading = false;
 
   // ignore: missing_return
   Future<String> ambildata() async {
+    setState(
+      () {
+        isLoading = true;
+      },
+    );
     SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/aparatur/" +
                 "${widget.idDesa}"),
         headers: {"Accept": "application/json"});
     //var databerita = json.decode(hasil.body);
     this.setState(
       () {
+        isLoading = false;
         databerita = json.decode(hasil.body);
       },
     );
@@ -42,6 +51,18 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
   void initState() {
     super.initState();
     ambildata();
+  }
+
+  Widget _buildProgressIndicator() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Center(
+        child: Opacity(
+          opacity: isLoading ? 1.0 : 00,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 
   Widget _aparatur() {
@@ -165,12 +186,30 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('APARATUR'),
+        title: Text(
+          'APARATUR',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: SingleChildScrollView(
-        child: _aparatur(),
+        child: isLoading
+            ? Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              )
+            : _aparatur(),
       ),
     );
   }

@@ -29,7 +29,7 @@ class FormAgendaState extends State<FormAgenda> {
   File _image;
   String username = "";
   bool _isInAsyncCall = false;
-  List kategoriAdmin = List();
+  List kategoriAdmin = [];
   final formKey = GlobalKey<FormState>();
   final format = DateFormat("yyyy-MM-dd");
   final formatTime = DateFormat("HH:mm");
@@ -440,26 +440,42 @@ class FormAgendaState extends State<FormAgenda> {
                     Center(
                       child: Row(
                         children: <Widget>[
-                          RaisedButton(
+                          ElevatedButton(
                             child: Icon(
                               Icons.image,
                               color: Colors.white,
                             ),
                             onPressed: getImageGallery,
-                            color: Color(0xFFee002d),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(17.0),
+                            // color: Color(0xFFee002d),
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius: BorderRadius.circular(17.0),
+                            // ),
+                            style: ElevatedButton.styleFrom(
+                              // padding: EdgeInsets.all(15.0),
+                              elevation: 0, backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(15), // <-- Radius
+                              ),
                             ),
                           ),
-                          RaisedButton(
+                          ElevatedButton(
                             child: Icon(
                               Icons.camera_alt,
                               color: Colors.white,
                             ),
                             onPressed: getImageCamera,
-                            color: Color(0xFFee002d),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(17.0),
+                            // color: Color(0xFFee002d),
+                            // shape: RoundedRectangleBorder(
+                            //   borderRadius: BorderRadius.circular(17.0),
+                            // ),
+                            style: ElevatedButton.styleFrom(
+                              // padding: EdgeInsets.all(15.0),
+                              elevation: 0, backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(15), // <-- Radius
+                              ),
                             ),
                           ),
                         ],
@@ -471,7 +487,7 @@ class FormAgendaState extends State<FormAgenda> {
                     Container(
                       width: mediaQueryData.size.width,
                       height: mediaQueryData.size.height * 0.07,
-                      child: RaisedButton.icon(
+                      child: ElevatedButton.icon(
                         icon: Icon(
                           Icons.file_upload,
                           color: Colors.white,
@@ -479,7 +495,7 @@ class FormAgendaState extends State<FormAgenda> {
                         label: Text("UPLOAD AGENDA"),
                         onPressed: () async {
                           if (cJudul.text == null || cJudul.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Nama Agenda wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -492,11 +508,11 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cPenyelenggara.text == null ||
                               cPenyelenggara.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Penyelenggara wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -509,10 +525,10 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cIsi.text == null || cIsi.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Uraian wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -525,11 +541,11 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cTanggalmulai.text == null ||
                               cTanggalmulai.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Tanggal Mulai wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -542,11 +558,11 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cTanggalselesai.text == null ||
                               cTanggalselesai.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Tanggal Selesai wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -559,11 +575,11 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cJammulai.text == null ||
                               cJammulai.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Jam Mulai wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -576,11 +592,11 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cJamselesai.text == null ||
                               cJamselesai.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Jam Selesai wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -593,10 +609,10 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (_image == null) {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Gambar wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -609,17 +625,25 @@ class FormAgendaState extends State<FormAgenda> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
                             upload(_image);
                           }
                         },
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(17.0),
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
                         ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
                     ),
                   ],

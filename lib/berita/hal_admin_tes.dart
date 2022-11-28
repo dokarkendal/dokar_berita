@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dokar_aplikasi/daftar_admin.dart';
+import 'package:dokar_aplikasi/hal_login_admin.dart';
 import 'dart:async';
 
 class AdminTes extends StatefulWidget {

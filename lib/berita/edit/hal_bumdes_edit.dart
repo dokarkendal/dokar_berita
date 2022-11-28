@@ -207,7 +207,8 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/bumdes/edit",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/bumdes/edit"),
         body: {
           "judul": dJudul.text,
           "tempat": dKatTempat.text,
@@ -393,26 +394,34 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                     ),
                     Row(
                       children: <Widget>[
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.image,
                             color: Colors.white,
                           ),
                           onPressed: getImageGallery,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                           ),
                           onPressed: getImageCamera,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
                         ),
                       ],
@@ -420,7 +429,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                     new Padding(
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
-                    RaisedButton.icon(
+                    ElevatedButton.icon(
                       icon: Icon(
                         Icons.file_upload,
                         color: Colors.white,
@@ -428,7 +437,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                       label: Text("UPLOAD BUMDES"),
                       onPressed: () async {
                         if (dJudul.text == null || dJudul.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Judul wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -440,11 +449,11 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                                 onPressed: () {
                                   print('ULANGI snackbar');
                                 }),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dKatTempat.text == null ||
                             dKatTempat.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Tempat wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -456,10 +465,10 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                                 onPressed: () {
                                   print('ULANGI snackbar');
                                 }),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dIsi.text == null || dIsi.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Uraian wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -471,8 +480,8 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                                 onPressed: () {
                                   print('ULANGI snackbar');
                                 }),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else {
                           if (_image == null) {
                             uploadNoGambarKegiatanEdit();
@@ -481,11 +490,18 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                           }
                         }
                       },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                      style: ElevatedButton.styleFrom(
+                        // padding: EdgeInsets.all(15.0),
+                        elevation: 0, backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                        ),
                       ),
+                      // color: Colors.green,
+                      // textColor: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(17.0),
+                      // ),
                     ),
                   ],
                 ),

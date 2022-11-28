@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../style/styleset.dart';
 
 class HalFasumDetailPage extends StatefulWidget {
   final String dNama,
@@ -37,7 +39,9 @@ class HalFasumDetailPage extends StatefulWidget {
 
 class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   _launchUrl() async {
+    // ignore: deprecated_member_use
     if (await canLaunch(url)) {
+      // ignore: deprecated_member_use
       await launch(url);
     } else {
       throw 'Could not lauch URL';
@@ -45,6 +49,17 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
     print(url);
   }
 
+  // _launchUrl() async {
+  //   if (!await launchUrl(
+  //     Uri.parse(
+  //       url,
+  //     ),
+  //     mode: LaunchMode.externalApplication,
+  //   )) {
+  //     throw 'Could not launch $url';
+  //   }
+  //   print(url);
+  // }
   String url = '';
   List dataJSON;
   String id = '';
@@ -56,7 +71,6 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
     id = "${widget.dId}";
     nama = "${widget.dNama}";
     url = "${widget.dKoordinat}";
-    //ambildata();
     print("${widget.dKoordinat}");
   }
 
@@ -64,7 +78,7 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   Future<String> ambildata() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/fasilitasumum/" +
                 pref.getString("IdDesa") +
                 "/" +
@@ -83,9 +97,26 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.dNama}'),
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title:
+            // ignore: unnecessary_brace_in_string_interps
+            Text(
+          '${widget.dNama}',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
+      // appBar: AppBar(
+      //   title: Text('${widget.dNama}'),
+      //   backgroundColor: Theme.of(context).primaryColor,
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

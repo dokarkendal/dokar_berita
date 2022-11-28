@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 
+import '../../style/styleset.dart';
+
 //ANCHOR
 class AgendaProfile extends StatefulWidget {
   final String idDesa;
@@ -22,11 +24,11 @@ class _AgendaProfileState extends State<AgendaProfile> {
 //ANCHOR Atribut
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/agenda"; //NOTE url api load berita
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
-  final dio = new Dio();
+  final dio = Dio();
   String dibaca;
 
   void _getMoreData() async {
@@ -37,7 +39,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
       });
 
       final response = await dio.get(nextPage + "/${widget.idDesa}");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -75,12 +77,12 @@ class _AgendaProfileState extends State<AgendaProfile> {
 
 //ANCHOR loading
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -89,7 +91,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
 //ANCHOR listview berita
   Widget _buildList() {
     return GridView.builder(
-      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: MediaQuery.of(context).size.width /
             (MediaQuery.of(context).size.height / 1.1),
@@ -104,13 +106,36 @@ class _AgendaProfileState extends State<AgendaProfile> {
           return _buildProgressIndicator();
         } else {
           if (databerita[index]["nama"] == 'NotFound') {
+            return Container(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 30.0),
+                    ),
+                    Text(
+                      "Agenda Kosong",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.grey[350],
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.all(5.0),
+                    // ),
+                    Icon(Icons.notes_rounded,
+                        size: 120.0, color: Colors.grey[350]),
+                  ],
+                ),
+              ),
+            );
           } else {
-            return new Container(
-              child: new GestureDetector(
+            return Container(
+              child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                    new MaterialPageRoute(
-                      builder: (context) => new AgendaDetail(
+                    MaterialPageRoute(
+                      builder: (context) => AgendaDetail(
                         judulEvent: databerita[index]["nama"],
                         desaEvent: databerita[index]["desa"],
                         kecamatanEvent: databerita[index]["kecamatan"],
@@ -126,11 +151,11 @@ class _AgendaProfileState extends State<AgendaProfile> {
                     ),
                   );
                 },
-                child: new Card(
+                child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-                  child: new Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Stack(
@@ -163,13 +188,21 @@ class _AgendaProfileState extends State<AgendaProfile> {
                               height: 20.0,
                               width: 100,
                               child: InkWell(
-                                child: FlatButton(
-                                  color: Colors.green,
-                                  textColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(5.0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    // padding: EdgeInsets.all(15.0),
+                                    elevation: 0, backgroundColor: Colors.green,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          10), // <-- Radius
+                                    ),
                                   ),
+                                  // color: Colors.green,
+                                  // textColor: Colors.white,
+                                  // shape: RoundedRectangleBorder(
+                                  //   borderRadius:
+                                  //        BorderRadius.circular(5.0),
+                                  // ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
@@ -202,7 +235,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
                           databerita[index]["nama"],
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: new TextStyle(
+                          style: TextStyle(
                             fontSize: 11.0,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -215,7 +248,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
                           databerita[index]["nama"],
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: new TextStyle(
+                          style: TextStyle(
                               fontSize: 10.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.grey),
@@ -237,9 +270,19 @@ class _AgendaProfileState extends State<AgendaProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('AGENDA'),
+        title: Text(
+          'AGENDA',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -251,15 +294,15 @@ class _AgendaProfileState extends State<AgendaProfile> {
             },
           );
         },
-        child: new Container(
+        child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Container(
-                padding: new EdgeInsets.all(10.0),
+              Container(
+                padding: EdgeInsets.all(10.0),
                 child: Text(
                   "Semua Agenda",
-                  style: new TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),

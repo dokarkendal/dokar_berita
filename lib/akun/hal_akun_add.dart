@@ -53,7 +53,8 @@ class FormAddAkunState extends State<FormAddAkun> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/account/tambahpenulis",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/account/tambahpenulis"),
         body: {
           "IdDesa": pref.getString("IdDesa"),
           "nama": cNama.text,
@@ -327,7 +328,7 @@ class FormAddAkunState extends State<FormAddAkun> {
                     Container(
                       width: mediaQueryData.size.width,
                       height: mediaQueryData.size.height * 0.07,
-                      child: RaisedButton.icon(
+                      child: ElevatedButton.icon(
                         icon: Icon(
                           Icons.person_add,
                           color: Colors.white,
@@ -335,7 +336,7 @@ class FormAddAkunState extends State<FormAddAkun> {
                         label: Text("TAMBAH"),
                         onPressed: () async {
                           if (cNama.text == null || cNama.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Nama wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -348,11 +349,11 @@ class FormAddAkunState extends State<FormAddAkun> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cUsername.text == null ||
                               cUsername.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Username wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -365,11 +366,11 @@ class FormAddAkunState extends State<FormAddAkun> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (cPassword.text == null ||
                               cPassword.text == '') {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Password wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -382,10 +383,10 @@ class FormAddAkunState extends State<FormAddAkun> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else if (_mySelection == null) {
-                            SnackBar snackBar = SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                 'Pilih Status wajib di isi.',
                                 style: TextStyle(color: Colors.white),
@@ -398,17 +399,25 @@ class FormAddAkunState extends State<FormAddAkun> {
                                   print('ULANGI snackbar');
                                 },
                               ),
-                            );
-                            scaffoldKey.currentState.showSnackBar(snackBar);
+                            ));
+                            // scaffoldKey.currentState.showSnackBar(snackBar);
                           } else {
                             _login();
                           }
                         },
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(17.0),
+                        style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.all(15.0),
+                          elevation: 0, backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(15), // <-- Radius
+                          ),
                         ),
+                        // color: Colors.green,
+                        // textColor: Colors.white,
+                        // shape: RoundedRectangleBorder(
+                        //   borderRadius: BorderRadius.circular(17.0),
+                        // ),
                       ),
                     ),
                   ],

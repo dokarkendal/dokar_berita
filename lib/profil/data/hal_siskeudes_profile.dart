@@ -32,7 +32,7 @@ class _HalSiskeudesProfileState extends State<HalSiskeudesProfile> {
 
   void pendapatan() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/siskeudes/GetPendapatan/" +
                 "${widget.kodeDesa}"),
         headers: {"Accept": "application/json"});
@@ -59,7 +59,7 @@ class _HalSiskeudesProfileState extends State<HalSiskeudesProfile> {
 
   void belanja() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/siskeudes/GetBelanja/" +
                 "${widget.kodeDesa}"),
         headers: {"Accept": "application/json"});
@@ -85,7 +85,7 @@ class _HalSiskeudesProfileState extends State<HalSiskeudesProfile> {
 
   void pembiayaan() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/siskeudes/GetPembiayaan/" +
                 "${widget.kodeDesa}"),
         headers: {"Accept": "application/json"});

@@ -1,9 +1,12 @@
-import 'package:dokar_aplikasi/pilih_akun.dart';
+//ANCHOR Selesai
+import 'package:dokar_aplikasi/hal_pilih_user.dart';
+// import 'package:dokar_aplikasi/hal_pilih_user.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
+import '../style/styleset.dart';
 
 class SplashScreenPage extends StatefulWidget {
   @override
@@ -11,10 +14,11 @@ class SplashScreenPage extends StatefulWidget {
 }
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
+//NOTE Variabel
   String versi = "";
 
-  // ignore: missing_return
-  Future<String> _cekVersion() async {
+//NOTE Fungsi cek versi aplikasi
+  Future _cekVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String versionName = packageInfo.version;
     setState(
@@ -24,6 +28,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     );
   }
 
+//NOTE Inistate
   @override
   void initState() {
     super.initState();
@@ -31,10 +36,10 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     startSplashScreen();
   }
 
+//NOTE Fungsi splashscreen
   startSplashScreen() async {
     var duration = const Duration(seconds: 4);
     final prefs = await SharedPreferences.getInstance();
-    //print(prefs.getInt('counter'));
     if (prefs.getInt('counter') == null) {
       return Timer(
         duration,
@@ -64,40 +69,40 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     }
   }
 
+//NOTE Scaffold
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: Color(0xFFffffff), //WARNA API
+      backgroundColor: bgPutih,
       body: Container(
-        child: new Center(
-          child: new Column(
+        child: Center(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              new Padding(
-                padding:
-                    new EdgeInsets.only(top: mediaQueryData.size.height * 0.3),
+              Padding(
+                padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.3),
               ),
               Image.asset(
                 "assets/images/dokar.png",
                 width: mediaQueryData.size.width * 0.3,
                 height: mediaQueryData.size.height * 0.3,
               ),
-              new Padding(
+              Padding(
                 padding:
-                    new EdgeInsets.only(top: mediaQueryData.size.height * 0.17),
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.17),
               ),
-              new Text(
+              Text(
                 "Versi " + versi,
-                style: new TextStyle(
+                style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey,
                 ),
               ),
-              new Padding(
+              Padding(
                 padding:
-                    new EdgeInsets.only(top: mediaQueryData.size.height * 0.07),
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.07),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -107,9 +112,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     width: 50.0,
                     height: 50.0,
                   ),
-                  new Text(
+                  Text(
                     " Pemerintah \n Kabupaten Kendal",
-                    style: new TextStyle(
+                    style: TextStyle(
                       fontSize: 14.0,
                       color: Colors.grey,
                     ),

@@ -22,7 +22,7 @@ class _BumdesState extends State<Bumdes> {
       "http://dokar.kendalkab.go.id/webservice/android/bumdes/loadmore"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -36,7 +36,7 @@ class _BumdesState extends State<Bumdes> {
       });
 
       final response = await dio.get(nextPage);
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -269,19 +269,37 @@ class _BumdesState extends State<Bumdes> {
                         child: new Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            new Row(
-                              children: <Widget>[
-                                new Expanded(
-                                  child: new Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 5.0, bottom: 10.0),
-                                    child: new Text(
-                                      databerita[index]["data_nama"],
-                                      style: new TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.black,
-                                        //fontWeight: FontWeight.normal,
-                                      ),
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    top: 5.0,
+                                    bottom: 10,
+                                  ),
+                                  child: new Text(
+                                    databerita[index]["data_nama"],
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.blue[800],
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                    height: 10,
+                                    child: VerticalDivider(color: Colors.grey)),
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    top: 5.0,
+                                    bottom: 10,
+                                  ),
+                                  child: new Text(
+                                    databerita[index]["data_kecamatan"],
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.blue[800],
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),

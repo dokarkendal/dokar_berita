@@ -1,4 +1,5 @@
 // ignore: unused_import
+import 'package:dokar_aplikasi/style/styleset.dart';
 import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/berita/hal_search.dart';
 import './hal_berita.dart' as berita;
@@ -19,8 +20,16 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
   String token = '';
   // ignore: unused_field
   static String topik = '';
-  Icon cusIcon = Icon(Icons.search);
-  Widget custSearchBar = Text("DOKAR");
+  Icon cusIcon = Icon(
+    Icons.search,
+    color: appbarIcon,
+  );
+  Widget custSearchBar = Text(
+    "DOKAR",
+    style: TextStyle(
+      color: appbarTitle,
+    ),
+  );
 
   int _currentIndex = 0;
   final tabs = [
@@ -65,12 +74,15 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
               setState(
                 () {
                   if (this.cusIcon.icon == Icons.search) {
-                    this.cusIcon = Icon(Icons.cancel);
+                    this.cusIcon = Icon(
+                      Icons.cancel,
+                      color: appbarIcon,
+                    );
                     this.custSearchBar = Container(
                         height: mediaQueryData.size.height * 0.05,
                         // width: mediaQueryData.size.width,
                         child: Container(
-                          alignment: Alignment.center,
+                          alignment: Alignment.topCenter,
                           child: TextField(
                             autofocus: false,
                             onSubmitted: (text) {
@@ -84,7 +96,9 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
                             textInputAction: TextInputAction.go,
                             textAlign: TextAlign.center,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 10),
+                              contentPadding: EdgeInsets.only(
+                                left: 10,
+                              ),
                               filled: true,
                               fillColor: Colors.white,
                               border: InputBorder.none,
@@ -109,11 +123,14 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
                           ),
                         ));
                   } else {
-                    this.cusIcon = Icon(Icons.search);
+                    this.cusIcon = Icon(
+                      Icons.search,
+                      color: appbarIcon,
+                    );
                     this.custSearchBar = Text(
                       "DOKAR",
                       style: TextStyle(
-                        color: Colors.brown[800],
+                        color: appbarTitle,
                       ),
                     );
                   }
@@ -172,22 +189,25 @@ class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.library_books),
-            title: Text("Berita"),
-            backgroundColor: Colors.blue,
+            label: "Berita",
+            // backgroundColor: Colors.yellow[700],
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.calendar_today,
             ),
-            title: Text("Event"),
+            label: "Agenda",
+            // backgroundColor: Colors.yellow[700],
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assessment),
-            title: Text("Inovasi"),
+            label: "Inovasi",
+            // backgroundColor: Colors.yellow[700],
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
-            title: Text("Bumdes"),
+            label: "Bumdes",
+            // backgroundColor: Colors.yellow[700],
           ),
         ],
         onTap: (index) {

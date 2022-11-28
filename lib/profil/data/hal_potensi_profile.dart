@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalPotensiProfile extends StatefulWidget {
   final String idDesa;
@@ -41,7 +43,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
   // ignore: unused_field
   String _mySelection;
 
-  List beritaAdmin = List();
+  List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -61,7 +63,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
   //NOTE url api load berita
   //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -80,7 +82,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
       });
       print(nextPage);
       final response = await dio.get(nextPage + "/${widget.idDesa}/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -90,6 +92,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
       setState(() {
         isLoading = false;
         databerita.addAll(tempList);
+        print(response);
       });
     }
   }
@@ -128,11 +131,22 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
 ///////////////////////////////HALAMAN UTAMA//////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('POTENSI'),
+        title: Text(
+          'POTENSI',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -151,6 +165,31 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
               return _buildProgressIndicator();
             } else {
               if (databerita[i]["judul"] == 'NotFound') {
+                return Container(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.2,
+                          ),
+                        ),
+                        Text(
+                          "Potensi kosong",
+                          style: TextStyle(
+                            fontSize: 25.0,
+                            color: Colors.grey[350],
+                          ),
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.all(5.0),
+                        // ),
+                        Icon(Icons.notes_rounded,
+                            size: 150.0, color: Colors.grey[350]),
+                      ],
+                    ),
+                  ),
+                );
               } else {
                 if (databerita[i]["dibaca"] == null) {
                   dibaca = '0';
@@ -227,7 +266,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
                                         child: new Text(
                                           databerita[i]["desa"],
                                           style: new TextStyle(
-                                            fontSize: 14.0,
+                                            fontSize: 12.0,
                                             color: Colors.black,
                                             //fontWeight: FontWeight.normal,
                                           ),
@@ -235,8 +274,11 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
                                       ),
                                     ),
                                     new Container(
-                                      margin:
-                                          const EdgeInsets.only(right: 10.0),
+                                      margin: const EdgeInsets.only(
+                                        right: 10.0,
+                                        top: 5.0,
+                                        bottom: 10.0,
+                                      ),
                                       child: new Text(
                                         dibaca + ' lihat',
                                         style: new TextStyle(
@@ -251,7 +293,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
                                   child: new Text(
                                     databerita[i]["judul"],
                                     style: new TextStyle(
-                                      fontSize: 15.0,
+                                      fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     maxLines: 2,

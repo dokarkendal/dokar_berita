@@ -34,7 +34,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
   String _mySelection;
   bool _obscureText = true;
   bool _isInAsyncCall = false;
-  List kategoriAkun = List();
+  List kategoriAkun = [];
   final format = DateFormat("yyyy-MM-dd");
   final formKey = GlobalKey<FormState>();
 
@@ -87,7 +87,8 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
     );
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/account/editpenulis",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/account/editpenulis"),
       body: {
         "IdAdmin": "${widget.dIdAdmin}",
         "nama": dNama.text,
@@ -335,7 +336,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                     new Padding(
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
-                    RaisedButton.icon(
+                    ElevatedButton.icon(
                       icon: Icon(
                         Icons.save,
                         color: Colors.white,
@@ -343,7 +344,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                       label: Text("SIMPAN"),
                       onPressed: () async {
                         if (dNama.text == null || dNama.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Nama wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -356,10 +357,10 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dHp.text == null || dHp.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Hp wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -372,10 +373,10 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dEmail.text == null || dEmail.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Email wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -388,11 +389,11 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dUsername.text == null ||
                             dUsername.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Username wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -405,17 +406,24 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else {
                           _editakun();
                         }
                       },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                      style: ElevatedButton.styleFrom(
+                        // padding: EdgeInsets.all(15.0),
+                        elevation: 0, backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                        ),
                       ),
+                      // color: Colors.green,
+                      // textColor: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(17.0),
+                      // ),
                     ),
                   ],
                 ),

@@ -7,6 +7,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+import '../style/styleset.dart';
+
 class DetailInovasi extends StatefulWidget {
   final String idDesa,
       dGambar,
@@ -59,7 +61,16 @@ class _DetailInovasiState extends State<DetailInovasi> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text('INOVASI'),
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          'INOVASI',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
@@ -117,17 +128,25 @@ class _DetailInovasiState extends State<DetailInovasi> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   datadesa(),
+                                  share(),
                                 ],
                               ),
                               // jam(),
                               judul(),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left: mediaQueryData.size.height * 0.02,
+                                  right: mediaQueryData.size.height * 0.02,
+                                ),
+                                child: Divider(),
+                              ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   admin(),
-                                  share(),
+                                  // share(),
                                 ],
                               ),
                               jam(),
@@ -274,7 +293,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
           new Padding(
@@ -295,7 +314,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
             maxLines: 3,
             style: new TextStyle(
               color: Colors.grey[500],
-              fontSize: 14.0,
+              fontSize: 12.0,
             ),
           ),
         ],
@@ -319,7 +338,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
           Text(
             '${widget.dJudul}',
             style: new TextStyle(
-              fontSize: 18.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -333,7 +352,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
     return Container(
       padding: new EdgeInsets.only(
         left: mediaQueryData.size.height * 0.01,
-        // top: mediaQueryData.size.height * 0.02,
+        top: mediaQueryData.size.height * 0.01,
         bottom: mediaQueryData.size.height * 0.02,
         right: mediaQueryData.size.height * 0.02,
       ),
@@ -351,13 +370,17 @@ class _DetailInovasiState extends State<DetailInovasi> {
             padding:
                 new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
           ),
-          Text(
-            //
-            '${widget.dKategori}',
-            maxLines: 3,
-            style: new TextStyle(
-              color: Colors.grey[500],
-              fontSize: 14.0,
+          Container(
+            child: Expanded(
+              child: Text(
+                //
+                '${widget.dKategori}',
+                maxLines: 3,
+                style: new TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 12.0,
+                ),
+              ),
             ),
           ),
         ],
@@ -427,7 +450,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
             child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
           ),
           label: Text(
-            'Tidak ada embed video',
+            'Tidak ada video youtube',
             style: new TextStyle(
               color: Colors.white,
               fontSize: 14.0,
@@ -462,7 +485,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
               child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
             ),
             label: Text(
-              'Tidak ada embed video',
+              'Tidak ada video youtube',
               style: new TextStyle(
                 color: Colors.white,
                 fontSize: 14.0,
@@ -485,12 +508,19 @@ class _DetailInovasiState extends State<DetailInovasi> {
       children: <Widget>[
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -510,7 +540,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
                 ],
               ),
               onPressed: () {
-                SnackBar snackBar = SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                     'Fitur belum tersedia',
                     style: TextStyle(color: Colors.white),
@@ -523,19 +553,21 @@ class _DetailInovasiState extends State<DetailInovasi> {
                       print('ULANGI snackbar');
                     },
                   ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
+                ));
+                // scaffoldKey.currentState.showSnackBar(snackBar);
               },
             ),
           ],
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -556,7 +588,7 @@ class _DetailInovasiState extends State<DetailInovasi> {
                 ],
               ),
               onPressed: () {
-                SnackBar snackBar = SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(
                     'Fitur belum tersedia',
                     style: TextStyle(color: Colors.white),
@@ -569,20 +601,27 @@ class _DetailInovasiState extends State<DetailInovasi> {
                       print('ULANGI snackbar');
                     },
                   ),
-                );
-                scaffoldKey.currentState.showSnackBar(snackBar);
+                ));
+                // scaffoldKey.currentState.showSnackBar(snackBar);
               },
             ),
           ],
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.blue,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[

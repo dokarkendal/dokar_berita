@@ -39,7 +39,7 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
   File _image;
   String username = "";
   String _mySelection;
-  List kategoriAdmin = List();
+  List kategoriAdmin = [];
   final format = DateFormat("yyyy-MM-dd");
   final formKey = GlobalKey<FormState>();
 
@@ -220,7 +220,8 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (_mySelection == null) {
       final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/editkegiatan",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/editkegiatan"),
         body: {
           "judul": dJudul.text,
           "tempat": dKatTempat.text,
@@ -453,34 +454,50 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                     ),
                     Row(
                       children: <Widget>[
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.image,
                             color: Colors.white,
                           ),
                           onPressed: getImageGallery,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
+                          // color: Color(0xFFee002d),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(17.0),
+                          // ),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                           ),
                           onPressed: getImageCamera,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
+                          // color: Color(0xFFee002d),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(17.0),
+                          // ),
                         ),
                       ],
                     ),
                     new Padding(
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
-                    RaisedButton.icon(
+                    ElevatedButton.icon(
                       icon: Icon(
                         Icons.file_upload,
                         color: Colors.white,
@@ -488,7 +505,7 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                       label: Text("UPLOAD KEGIATAN"),
                       onPressed: () async {
                         if (dJudul.text == null || dJudul.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Judul wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -501,11 +518,11 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dKatTempat.text == null ||
                             dKatTempat.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Tempat wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -518,10 +535,10 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dIsi.text == null || dIsi.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Uraian wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -534,11 +551,11 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dTanggal.text == null ||
                             dTanggal.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Tanggal wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -551,8 +568,8 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else {
                           if (_image == null) {
                             uploadNoGambarKegiatanEdit();
@@ -561,11 +578,18 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                           }
                         }
                       },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                      style: ElevatedButton.styleFrom(
+                        // padding: EdgeInsets.all(15.0),
+                        elevation: 0, backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                        ),
                       ),
+                      // color: Colors.green,
+                      // textColor: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(17.0),
+                      // ),
                     ),
                   ],
                 ),

@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalbumdesProfile extends StatefulWidget {
   final String idDesa;
@@ -38,7 +40,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   String namadesa = "";
   String status = "";
 
-  List beritaAdmin = List();
+  List beritaAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -58,7 +60,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   }
 
   ScrollController _scrollController = new ScrollController();
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -79,7 +81,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
       );
       print(nextPage);
       final response = await dio.get(nextPage + "/${widget.idDesa}/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -131,11 +133,22 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
 ///////////////////////////////HALAMAN UTAMA//////////////////////////////////////
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('BUMDES'),
+        title: Text(
+          'BUMDES',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
       ),
       body: RefreshIndicator(
         key: refreshKey,
@@ -154,6 +167,31 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
               return _buildProgressIndicator();
             } else {
               if (databerita[i]["nama"] == 'NotFound') {
+                return Container(
+                  child: Center(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.2,
+                          ),
+                        ),
+                        Text(
+                          "Bumdes kosong",
+                          style: TextStyle(
+                            fontSize: 25.0,
+                            color: Colors.grey[350],
+                          ),
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.all(5.0),
+                        // ),
+                        Icon(Icons.notes_rounded,
+                            size: 150.0, color: Colors.grey[350]),
+                      ],
+                    ),
+                  ),
+                );
               } else {
                 return new Container(
                   // padding: new EdgeInsets.all(2.0),
@@ -213,7 +251,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
                                         child: new Text(
                                           databerita[i]["desa"],
                                           style: new TextStyle(
-                                            fontSize: 14.0,
+                                            fontSize: 12.0,
                                             color: Colors.black,
                                             //fontWeight: FontWeight.normal,
                                           ),
@@ -227,10 +265,10 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
                                   child: new Text(
                                     databerita[i]["nama"],
                                     style: new TextStyle(
-                                      fontSize: 15.0,
+                                      fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    maxLines: 2,
+                                    maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

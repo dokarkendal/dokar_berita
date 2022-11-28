@@ -8,7 +8,9 @@ import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http; //api
-import 'package:shared_preferences/shared_preferences.dart'; //save session
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../style/styleset.dart'; //save session
 
 ////////////////////////////////PROJECT///////////////////////////////////////
 class ListPenulis extends StatefulWidget {
@@ -40,7 +42,8 @@ class ListPenulisState extends State<ListPenulis> {
   void hapusadmin(beritaAdmin, status) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/account/deletepenulis",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/account/deletepenulis"),
         body: {
           "IdAdmin": beritaAdmin,
           "IdDesa": pref.getString("IdDesa"),
@@ -56,17 +59,20 @@ class ListPenulisState extends State<ListPenulis> {
   Future<List> ambildata() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/account/listpenulis",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/account/listpenulis"),
         body: {
           "IdDesa": pref.getString("IdDesa"),
           "status": pref.getString("status"),
         });
-    this.setState(
-      () {
-        databerita = json.decode(response.body);
-        print(databerita);
-      },
-    );
+    if (mounted) {
+      this.setState(
+        () {
+          databerita = json.decode(response.body);
+          print(databerita);
+        },
+      );
+    }
   }
 
   @override
@@ -252,12 +258,20 @@ class ListPenulisState extends State<ListPenulis> {
                         SizedBox(
                           height: 22.0,
                           child: InkWell(
-                            child: FlatButton(
-                              color: Colors.orange,
-                              textColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                // padding: EdgeInsets.all(15.0),
+                                elevation: 0, backgroundColor: Colors.orange,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15), // <-- Radius
+                                ),
                               ),
+                              // color: Colors.orange,
+                              // textColor: Colors.white,
+                              // shape: RoundedRectangleBorder(
+                              //   borderRadius: new BorderRadius.circular(15.0),
+                              // ),
                               child: Row(
                                 children: <Widget>[
                                   /*Icon(
@@ -392,12 +406,20 @@ class ListPenulisState extends State<ListPenulis> {
                         SizedBox(
                           height: 22.0,
                           child: InkWell(
-                            child: FlatButton(
-                              color: Colors.grey,
-                              textColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(15.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                // padding: EdgeInsets.all(15.0),
+                                elevation: 0, backgroundColor: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(15), // <-- Radius
+                                ),
                               ),
+                              // color: Colors.grey,
+                              // textColor: Colors.white,
+                              // shape: RoundedRectangleBorder(
+                              //   borderRadius: new BorderRadius.circular(15.0),
+                              // ),
                               child: Row(
                                 children: <Widget>[
                                   /*Icon(
@@ -640,12 +662,15 @@ class ListPenulisState extends State<ListPenulis> {
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.brown[800], //change your color here
+        ),
         centerTitle: true,
         elevation: 0,
         title: Text(
           'Kelola Akun',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),

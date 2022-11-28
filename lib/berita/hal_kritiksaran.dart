@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../style/styleset.dart';
 import 'detail_page_kritiksaran.dart';
 
 class KritikSaran extends StatefulWidget {
@@ -16,14 +17,14 @@ class KritikSaranState extends State<KritikSaran> {
 
   // ignore: unused_field
   String _mySelection;
-  List kegiatanAdmin = List();
+  List kegiatanAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
-  List kritiksaran = new List();
+  List kritiksaran = [];
   bool isLoading = false;
   final dio = new Dio();
-  List tempList = new List();
+  List tempList = [];
   ScrollController _scrollController = new ScrollController();
 
   String nextPage =
@@ -41,7 +42,7 @@ class KritikSaranState extends State<KritikSaran> {
 
       final response =
           await dio.get(nextPage + "/" + pref.getString("IdDesa") + "/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -86,16 +87,18 @@ class KritikSaranState extends State<KritikSaran> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Kritik Saran',
+          'KRITIK SARAN',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
-            fontSize: 25.0,
           ),
         ),
         centerTitle: true,
-        elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
@@ -110,7 +113,13 @@ class KritikSaranState extends State<KritikSaran> {
           itemCount: kritiksaran.length + 1, //NOTE if else listview berita
           itemBuilder: (BuildContext context, int i) {
             if (i == kritiksaran.length) {
-              return _buildProgressIndicator();
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: _buildProgressIndicator(),
+                ),
+              );
             } else {
               if (kritiksaran[i]["kritik_id"] == 'Notfound') {
                 return new Container(

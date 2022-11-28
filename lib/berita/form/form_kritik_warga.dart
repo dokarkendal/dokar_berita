@@ -62,7 +62,8 @@ class FormKritikWargaState extends State<FormKritikWarga> {
     // ignore: unused_local_variable
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/add",
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/add"),
       body: {
         "IdDesa": "${widget.idDesa}",
         "nama": cNama.text,
@@ -280,7 +281,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
 //NOTE tombol upload add akun
-                    RaisedButton.icon(
+                    ElevatedButton.icon(
                       icon: Icon(
                         Icons.message,
                         color: Colors.white,
@@ -288,7 +289,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                       label: Text("KIRIM"),
                       onPressed: () async {
                         if (cNama.text == null || cNama.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Nama wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -301,10 +302,10 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (cEmail.text == null || cEmail.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Email wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -317,10 +318,10 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (cjudul.text == null || cjudul.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Judul wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -333,10 +334,10 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (ckritik.text == null || ckritik.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Kritik wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -349,17 +350,24 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else {
                           _kirimkritik();
                         }
                       },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                      style: ElevatedButton.styleFrom(
+                        // padding: EdgeInsets.all(15.0),
+                        elevation: 0, backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                        ),
                       ),
+                      // color: Colors.green,
+                      // textColor: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(17.0),
+                      // ),
                     ),
                   ],
                 ),

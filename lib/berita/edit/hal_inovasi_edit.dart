@@ -39,7 +39,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
   File _image;
   String username = "";
   String _mySelection;
-  List kategoriAdmin = List();
+  List kategoriAdmin = [];
   final format = DateFormat("yyyy-MM-dd");
   final formKey = GlobalKey<FormState>();
 
@@ -222,7 +222,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-      "http://dokar.kendalkab.go.id/webservice/android/bid/edit",
+      Uri.parse("http://dokar.kendalkab.go.id/webservice/android/bid/edit"),
       body: {
         "judul": dJudul.text,
         "kategori": _mySelection,
@@ -462,27 +462,43 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                     ),
                     Row(
                       children: <Widget>[
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.image,
                             color: Colors.white,
                           ),
                           onPressed: getImageGallery,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
+                          // color: Color(0xFFee002d),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(17.0),
+                          // ),
                         ),
-                        RaisedButton(
+                        ElevatedButton(
                           child: Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                           ),
                           onPressed: getImageCamera,
-                          color: Color(0xFFee002d),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(17.0),
+                          style: ElevatedButton.styleFrom(
+                            // padding: EdgeInsets.all(15.0),
+                            elevation: 0, backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(15), // <-- Radius
+                            ),
                           ),
+                          // color: Color(0xFFee002d),
+                          // shape: RoundedRectangleBorder(
+                          //   borderRadius: BorderRadius.circular(17.0),
+                          // ),
                         ),
                       ],
                     ),
@@ -490,7 +506,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                       padding: new EdgeInsets.only(top: 20.0),
                     ),
 //NOTE tombol upload edit inovasi
-                    RaisedButton.icon(
+                    ElevatedButton.icon(
                       icon: Icon(
                         Icons.file_upload,
                         color: Colors.white,
@@ -498,7 +514,7 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                       label: Text("UPLOAD BID"),
                       onPressed: () async {
                         if (dJudul.text == null || dJudul.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Judul wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -511,10 +527,10 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dIsi.text == null || dIsi.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Uraian wajib di isi.',
                               style: TextStyle(color: Colors.white),
@@ -527,11 +543,11 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else if (dTanggal.text == null ||
                             dTanggal.text == '') {
-                          SnackBar snackBar = SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Tanggal wajib di isi',
                               style: TextStyle(color: Colors.white),
@@ -544,8 +560,8 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                                 print('ULANGI snackbar');
                               },
                             ),
-                          );
-                          scaffoldKey.currentState.showSnackBar(snackBar);
+                          ));
+                          // scaffoldKey.currentState.showSnackBar(snackBar);
                         } else {
                           if (_image == null) {
                             uploadNoGambarInovasiEdit();
@@ -554,11 +570,18 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
                           }
                         }
                       },
-                      color: Colors.green,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(17.0),
+                      style: ElevatedButton.styleFrom(
+                        // padding: EdgeInsets.all(15.0),
+                        elevation: 0, backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15), // <-- Radius
+                        ),
                       ),
+                      // color: Colors.green,
+                      // textColor: Colors.white,
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(17.0),
+                      // ),
                     ),
                   ],
                 ),

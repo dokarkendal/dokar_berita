@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalKegiatanList extends StatefulWidget {
   @override
@@ -36,7 +38,7 @@ class HalKegiatanListState extends State<HalKegiatanList> {
 
   // ignore: unused_field
   String _mySelection;
-  List kegiatanAdmin = List();
+  List kegiatanAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -44,7 +46,8 @@ class HalKegiatanListState extends State<HalKegiatanList> {
     //print(beritaAdmin);
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/delete",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/delete"),
         body: {
           "IdBerita": kegiatanAdmin,
           "IdDesa": pref.getString("IdDesa"),
@@ -58,7 +61,8 @@ class HalKegiatanListState extends State<HalKegiatanList> {
     //print(beritaAdmin);
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/UnPublish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/UnPublish"),
         body: {
           "IdBerita": kegiatanAdmin,
           //"IdDesa": pref.getString("IdDesa"),
@@ -72,7 +76,8 @@ class HalKegiatanListState extends State<HalKegiatanList> {
     //print(beritaAdmin);
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kabar/Publish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kabar/Publish"),
         body: {
           "IdBerita": kegiatanAdmin,
           // "IdDesa": pref.getString("IdDesa"),
@@ -95,10 +100,10 @@ class HalKegiatanListState extends State<HalKegiatanList> {
   }
 
   //NOTE url api load berita
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  List tempList = new List();
+  List tempList = [];
   ScrollController _scrollController = new ScrollController();
 
   String nextPage =
@@ -120,7 +125,7 @@ class HalKegiatanListState extends State<HalKegiatanList> {
           "/" +
           pref.getString("IdAdmin") +
           "/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -169,10 +174,13 @@ class HalKegiatanListState extends State<HalKegiatanList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Edit Kegiatan',
+          'List Kegiatan',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),
@@ -536,7 +544,6 @@ class HalKegiatanListState extends State<HalKegiatanList> {
                         debugPrint(kegiatanAdmin[i]["kabar_id"]);
                       },
                     ),
-                    //FIXME publish
                     IconSlideAction(
                       caption: 'Publish',
                       color: Colors.green,

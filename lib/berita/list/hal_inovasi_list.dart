@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import '../../style/styleset.dart';
+
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalInovasiList extends StatefulWidget {
   @override
@@ -37,7 +39,7 @@ class HalInovasiListState extends State<HalInovasiList> {
   //String id = "";
   // ignore: unused_field
   String _mySelection;
-  List inovasiAdmin = List();
+  List inovasiAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
@@ -45,7 +47,7 @@ class HalInovasiListState extends State<HalInovasiList> {
     //print(beritaAdmin);
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/bid/delete",
+        Uri.parse("http://dokar.kendalkab.go.id/webservice/android/bid/delete"),
         body: {
           "IdInovasi": inovasiAdmin,
           "IdDesa": pref.getString("IdDesa"),
@@ -59,7 +61,8 @@ class HalInovasiListState extends State<HalInovasiList> {
     //print(beritaAdmin);
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/bid/unpublish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/bid/unpublish"),
         body: {
           "IdInovasi": inovasiAdmin,
           //"IdDesa": pref.getString("IdDesa"),
@@ -73,7 +76,8 @@ class HalInovasiListState extends State<HalInovasiList> {
     //print(beritaAdmin);
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/bid/publish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/bid/publish"),
         body: {
           "IdInovasi": inovasiAdmin,
           // "IdDesa": pref.getString("IdDesa"),
@@ -97,10 +101,10 @@ class HalInovasiListState extends State<HalInovasiList> {
   }
 
   //NOTE url api load berita
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  List tempList = new List();
+  List tempList = [];
   ScrollController _scrollController = new ScrollController();
   String nextPage = "http://dokar.kendalkab.go.id/webservice/android/bid/list/";
 
@@ -165,10 +169,13 @@ class HalInovasiListState extends State<HalInovasiList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Text(
-          'Edit Inovasi',
+          'List Inovasi',
           style: TextStyle(
-            color: Color(0xFF2e2e2e),
+            color: appbarTitle,
             fontWeight: FontWeight.bold,
             fontSize: 25.0,
           ),
@@ -732,7 +739,6 @@ class HalInovasiListState extends State<HalInovasiList> {
                         debugPrint(inovasiAdmin[i]["inovasi_id"]);
                       },
                     ),
-                    //FIXME publish
                     IconSlideAction(
                       caption: 'Publish',
                       color: Colors.green,

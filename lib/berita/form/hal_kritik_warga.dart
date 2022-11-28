@@ -24,15 +24,15 @@ class FormKritikSaranState extends State<FormKritikSaran> {
 
   // ignore: unused_field
   String _mySelection;
-  List kegiatanAdmin = List();
+  List kegiatanAdmin = [];
   GlobalKey<RefreshIndicatorState> refreshKey;
   final SlidableController slidableController = SlidableController();
 
-  List kritiksaran = new List();
+  List kritiksaran = [];
   bool isLoading = false;
-  final dio = new Dio();
-  List tempList = new List();
-  ScrollController _scrollController = new ScrollController();
+  final dio = Dio();
+  List tempList = [];
+  ScrollController _scrollController = ScrollController();
 
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/list";
@@ -48,7 +48,7 @@ class FormKritikSaranState extends State<FormKritikSaran> {
       );
 
       final response = await dio.get(nextPage + "/" + "${widget.idDesa}" + "/");
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -64,12 +64,12 @@ class FormKritikSaranState extends State<FormKritikSaran> {
   }
 
   Widget _buildProgressIndicator() {
-    return new Padding(
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: new Center(
-        child: new Opacity(
+      child: Center(
+        child: Opacity(
           opacity: isLoading ? 1.0 : 00,
-          child: new CircularProgressIndicator(),
+          child: CircularProgressIndicator(),
         ),
       ),
     );
@@ -111,7 +111,7 @@ class FormKritikSaranState extends State<FormKritikSaran> {
               return _buildProgressIndicator();
             } else {
               if (kritiksaran[i]["kritik_id"] == 'Notfound') {
-                return new Container();
+                return Container();
               } else {
                 return Slidable(
                   controller: slidableController,
@@ -123,15 +123,15 @@ class FormKritikSaranState extends State<FormKritikSaran> {
                       left: 3.0,
                       right: 3.0,
                     ),
-                    child: new Card(
+                    child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
-                      child: new InkWell(
+                      child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(
-                            new MaterialPageRoute(
-                              builder: (context) => new DetailKritikSaranWarga(
+                            MaterialPageRoute(
+                              builder: (context) => DetailKritikSaranWarga(
                                 dId: kritiksaran[i]["kritik_id"],
                                 dJudul: kritiksaran[i]["kritik_judul"],
                                 dTanggal: kritiksaran[i]["kritik_tanggal"],
@@ -146,20 +146,20 @@ class FormKritikSaranState extends State<FormKritikSaran> {
                         child: ListTile(
                           subtitle: Row(
                             children: <Widget>[
-                              new Text(
+                              Text(
                                 kritiksaran[i]["kritik_email"],
                               ),
                               Container(
                                   height: 15,
                                   child: VerticalDivider(color: Colors.grey)),
-                              new Text(
+                              Text(
                                 kritiksaran[i]["kritik_tanggal"],
                               ),
                             ],
                           ),
-                          title: new Text(
+                          title: Text(
                             kritiksaran[i]["kritik_nama"],
-                            style: new TextStyle(
+                            style: TextStyle(
                                 fontSize: 14.0, fontWeight: FontWeight.bold),
                           ),
                           trailing: Icon(

@@ -20,7 +20,7 @@ class _AgendaState extends State<Agenda> {
       "http://dokar.kendalkab.go.id/webservice/android/agenda/allevent"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
-  List databerita = new List();
+  List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
   String dibaca;
@@ -36,7 +36,7 @@ class _AgendaState extends State<Agenda> {
       );
 
       final response = await dio.get(nextPage);
-      List tempList = new List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -162,18 +162,24 @@ class _AgendaState extends State<Agenda> {
                               left: 5.0,
                             ),
                             child: SizedBox(
-                              height: 20.0,
-                              width: 100,
+                              height: 25.0,
+                              width: 110,
                               child: InkWell(
-                                child: FlatButton(
-                                  color: Colors.green,
-                                  textColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(5.0),
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    // primary: Colors.white,
+                                    backgroundColor: Colors.green,
+                                    disabledForegroundColor:
+                                        Colors.grey.withOpacity(0.38),
                                   ),
+                                  // color: Colors.green,
+                                  // textColor: Colors.white,
+                                  // shape: RoundedRectangleBorder(
+                                  //   borderRadius:
+                                  //       new BorderRadius.circular(5.0),
+                                  // ),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Icon(
                                         Icons.access_time,
@@ -185,7 +191,7 @@ class _AgendaState extends State<Agenda> {
                                             databerita[index]
                                                 ["tglmulai_agenda"],
                                         style: TextStyle(
-                                          fontSize: 9,
+                                          fontSize: 10,
                                           fontWeight: FontWeight.w700,
                                           color: Colors.white,
                                         ),
@@ -203,7 +209,7 @@ class _AgendaState extends State<Agenda> {
                         padding: EdgeInsets.all(4.0),
                         child: Text(
                           databerita[index]["judul_agenda"],
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: new TextStyle(
                             fontSize: 11.0,
@@ -220,7 +226,7 @@ class _AgendaState extends State<Agenda> {
                           overflow: TextOverflow.ellipsis,
                           style: new TextStyle(
                               fontSize: 10.0,
-                              fontWeight: FontWeight.bold,
+                              // fontWeight: FontWeight.bold,
                               color: Colors.grey),
                         ),
                       ),

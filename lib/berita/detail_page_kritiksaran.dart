@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+// import 'package:flutter_html/style.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../rflutter_alert.dart';
+import '../style/styleset.dart';
 
 class DetailKritikSaran extends StatefulWidget {
   final String dId, dJudul, dTanggal, dNama, dEmail, dIsi, dPublish;
@@ -46,7 +47,8 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
 
   void publish() async {
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/publish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/publish"),
         body: {"IdKritik": "${widget.dId}"});
     var publish = json.decode(response.body);
     print(publish);
@@ -57,7 +59,8 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
 
   void unpublish() async {
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/unpublish",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/unpublish"),
         body: {"IdKritik": "${widget.dId}"});
     var unpublish = json.decode(response.body);
     print(unpublish);
@@ -67,7 +70,8 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
 
   void delete() async {
     final response = await http.post(
-        "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/delete",
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/kritiksaran/delete"),
         body: {"IdKritik": "${widget.dId}"});
     var delete = json.decode(response.body);
     print(delete);
@@ -241,12 +245,19 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
       children: <Widget>[
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -321,12 +332,19 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.grey,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.grey,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -401,12 +419,19 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.green,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                elevation: 0, backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15), // <-- Radius
+                ),
               ),
+              // color: Colors.green,
+              // textColor: Colors.white,
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: new BorderRadius.circular(20.0),
+              // ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -532,6 +557,10 @@ class _DetailKritikSaranState extends State<DetailKritikSaran> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[

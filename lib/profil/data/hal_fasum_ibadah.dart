@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
+import '../../style/styleset.dart';
+
 class HalFasumIbadah extends StatefulWidget {
   final String dNama, dId, idDesa;
   HalFasumIbadah({this.dNama, this.dId, this.idDesa});
@@ -25,7 +27,7 @@ class _HalFasumIbadahState extends State<HalFasumIbadah> {
   // ignore: missing_return
   Future<String> ambildata() async {
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorifasum/" +
                 id),
         headers: {"Accept": "application/json"});
@@ -42,9 +44,19 @@ class _HalFasumIbadahState extends State<HalFasumIbadah> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RUMAH IBADAH'),
-        centerTitle: true,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
+        ),
+        title: Text(
+          // ignore: unnecessary_brace_in_string_interps
+          "RUMAH IBADAH ",
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SingleChildScrollView(

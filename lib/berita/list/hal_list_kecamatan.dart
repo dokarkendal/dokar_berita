@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
-
 import 'package:shimmer/shimmer.dart';
 
 class ListKecamatan extends StatefulWidget {
@@ -18,18 +17,17 @@ class ListKecamatan extends StatefulWidget {
 }
 
 class _ListKecamatanState extends State<ListKecamatan> {
-  ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = ScrollController();
   GlobalKey<RefreshIndicatorState> refreshKey;
   bool isLoading = false;
   List dataJSON;
 
-  // ignore: missing_return
-  Future<String> ambildata() async {
+  Future ambildata() async {
     setState(() {
       isLoading = true;
     });
     http.Response hasil = await http.get(
-        Uri.encodeFull(
+        Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kecamatan"),
         headers: {"Accept": "application/json"});
     this.setState(
@@ -65,7 +63,17 @@ class _ListKecamatanState extends State<ListKecamatan> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('DOKAR'),
+        iconTheme: IconThemeData(
+          color: Colors.brown[800], //change your color here
+        ),
+        title: Text(
+          'DOKAR',
+          style: TextStyle(
+            color: Colors.brown[800],
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -82,12 +90,16 @@ class _ListKecamatanState extends State<ListKecamatan> {
         child: isLoading
             ? _buildProgressIndicator()
             : Container(
-                padding: new EdgeInsets.all(5.0),
+                padding: EdgeInsets.all(5.0),
                 child: Column(
                   children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: mediaQueryData.size.height * 0.01),
+                    ),
                     cardKecamatan(),
-                    new Padding(
-                      padding: new EdgeInsets.only(
+                    Padding(
+                      padding: EdgeInsets.only(
                           top: mediaQueryData.size.height * 0.01),
                     ),
                     Expanded(
@@ -104,13 +116,13 @@ class _ListKecamatanState extends State<ListKecamatan> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     // SizeConfig().init(context);
     return Padding(
-      padding: new EdgeInsets.all(1.0),
+      padding: EdgeInsets.all(1.0),
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
         baseColor: Colors.grey[300],
         child: Container(
-          padding: new EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(5.0),
           child: Column(
             children: <Widget>[
               Column(
@@ -408,7 +420,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
 
   Widget _listkecamatan() {
     return GridView.builder(
-      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: MediaQuery.of(context).size.width /
             (MediaQuery.of(context).size.height / 8),
@@ -420,12 +432,20 @@ class _ListKecamatanState extends State<ListKecamatan> {
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.all(3.0),
-          child: FlatButton(
-            color: Theme.of(context).primaryColor,
-            textColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(5.0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              // padding: EdgeInsets.all(15.0),
+              backgroundColor: Theme.of(context).primaryColor,
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5), // <-- Radius
+              ),
             ),
+            // color: Theme.of(context).primaryColor,
+            // textColor: Colors.white,
+            // shape: RoundedRectangleBorder(
+            //   borderRadius:  BorderRadius.circular(5.0),
+            // ),
             child: Align(
               alignment: Alignment.center,
               child: Text(dataJSON[index]["kecamatan"],
@@ -456,12 +476,12 @@ class _ListKecamatanState extends State<ListKecamatan> {
   Widget cardKecamatan() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      padding: new EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
+      padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
       width: mediaQueryData.size.width,
       height: mediaQueryData.size.height * 0.2,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
         boxShadow: [
           BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -483,7 +503,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
               Padding(
                 padding:
                     EdgeInsets.only(top: mediaQueryData.size.height * 0.05),
-                child: new Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     AutoSizeText(
