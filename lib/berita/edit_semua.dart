@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
 
-import 'package:shimmer/shimmer.dart';
+// import 'package:shimmer/shimmer.dart';
 
 import '../style/styleset.dart'; // api to json
 
@@ -687,7 +687,7 @@ class _EditSemuaState extends State<EditSemua> {
   }
 
   Widget _buildProgressIndicator() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
     // SizeConfig().init(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
