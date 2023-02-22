@@ -53,7 +53,9 @@ class FormInovasiState extends State<FormInovasi> {
   Future getImageGallery() async {
     // ignore: deprecated_member_use
     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-
+    if (imageFile == null) {
+      return null;
+    }
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
 
