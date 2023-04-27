@@ -5,16 +5,19 @@ import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../style/styleset.dart';
 
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalPotensiProfile extends StatefulWidget {
-  final String idDesa;
+  final String idDesa, namaDesa;
 
-  HalPotensiProfile({this.idDesa});
+  HalPotensiProfile({
+    required this.idDesa,
+    required this.namaDesa,
+  });
 
   @override
   HalPotensiProfileState createState() => HalPotensiProfileState();
@@ -41,11 +44,12 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
   String namadesa = "";
   String status = "";
   // ignore: unused_field
-  String _mySelection;
+  late String _mySelection;
 
   List beritaAdmin = [];
-  GlobalKey<RefreshIndicatorState> refreshKey;
-  final SlidableController slidableController = SlidableController();
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  // final SlidableController slidableController = SlidableController();
 
 ///////////////////////////////CEK SESSION ADMIN///////////////////////////////////
   // ignore: unused_element
@@ -53,9 +57,9 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userAdmin") != null) {
       setState(() {
-        username = pref.getString("userAdmin");
-        status = pref.getString("status");
-        namadesa = pref.getString("data_nama");
+        username = pref.getString("userAdmin")!;
+        status = pref.getString("status")!;
+        namadesa = pref.getString("data_nama")!;
       });
     }
   }
@@ -66,8 +70,8 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
   List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/potensi";
@@ -135,10 +139,11 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'POTENSI',
+          'POTENSI ' + "${widget.namaDesa}",
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
+            fontSize: 17,
           ),
         ),
         centerTitle: true,
@@ -213,19 +218,21 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailBerita(
-                                dBaca: dibaca,
-                                dDesa: databerita[i]["desa"],
-                                dKecamatan: databerita[i]["kecamatan"],
-                                dGambar: databerita[i]["gambar"],
-                                dKategori: databerita[i]["kategori"],
-                                dJudul: databerita[i]["judul"],
-                                dAdmin: databerita[i]["admin"],
-                                dTanggal: databerita[i]["tanggal"],
-                                dHtml: databerita[i]["isi"],
-                                dUrl: databerita[i]["url"],
-                                dId: databerita[i]["id"],
-                                dIdDesa: databerita[i]["id_desa"],
-                                dVideo: databerita[i]["video"]),
+                              dBaca: databerita[i]["dibaca"],
+                              dDesa: databerita[i]["desa"],
+                              dKecamatan: databerita[i]["kecamatan"],
+                              dGambar: databerita[i]["gambar"],
+                              dKategori: databerita[i]["kategori"],
+                              dJudul: databerita[i]["judul"],
+                              dAdmin: databerita[i]["admin"],
+                              dTanggal: databerita[i]["tanggal"],
+                              dHtml: databerita[i]["isi"],
+                              dUrl: databerita[i]["url"],
+                              dId: databerita[i]["id"],
+                              dIdDesa: databerita[i]["id_desa"],
+                              dVideo: databerita[i]["video"],
+                              dWaktu: '',
+                            ),
                           ),
                         );
                       },
@@ -282,7 +289,7 @@ class HalPotensiProfileState extends State<HalPotensiProfile> {
                                       child: new Text(
                                         dibaca + ' lihat',
                                         style: new TextStyle(
-                                            fontSize: 12.0,
+                                            fontSize: 11.0,
                                             color: Colors.grey[600]),
                                       ),
                                     ),

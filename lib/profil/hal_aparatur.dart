@@ -10,7 +10,7 @@ import '../style/styleset.dart';
 class HalAparaturDesa extends StatefulWidget {
   final String idDesa;
 
-  HalAparaturDesa({this.idDesa});
+  HalAparaturDesa({required this.idDesa});
 
   @override
   _HalAparaturDesaState createState() => _HalAparaturDesaState();
@@ -44,7 +44,8 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
         databerita = json.decode(hasil.body);
       },
     );
-    print(pref.getString("IdDesa"));
+    return '';
+    // print(pref.getString("IdDesa"));
   }
 
   @override
@@ -75,7 +76,7 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
       ),
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: databerita == null
+      itemCount: databerita.isEmpty
           ? 0
           : databerita.length, //NOTE if else listview berita
       // ignore: missing_return
@@ -178,6 +179,7 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
             ),
           );
         }
+        return Container();
       },
     );
   }

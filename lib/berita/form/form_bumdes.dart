@@ -2,6 +2,7 @@
 import 'dart:async'; //NOTE  api syn
 import 'dart:convert'; //NOTE api to json
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:async/async.dart'; //NOTE upload gambar
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class FormBumdes extends StatefulWidget {
 
 class FormBumdesState extends State<FormBumdes> {
 //ANCHOR variable bumde
-  File _image;
+  // File _image;
   String username = "";
   List kategoriAdmin = [];
   bool _loadingbumdes = false;
@@ -37,6 +38,8 @@ class FormBumdesState extends State<FormBumdes> {
   var alertStyle = AlertStyle(
     isCloseButton: false,
   );
+  bool _inProcess = false;
+  File? _selectedFile;
 
 //ANCHOR controller bumdes
   TextEditingController cYoutube = TextEditingController();
@@ -46,52 +49,103 @@ class FormBumdesState extends State<FormBumdes> {
   TextEditingController cUsername = TextEditingController();
   TextEditingController cStatus = TextEditingController();
 
-//ANCHOR akses gallery bumdes
-  Future getImageGallery() async {
-    // ignore: deprecated_member_use
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (imageFile == null) {
-      return null;
+  getImage(ImageSource source) async {
+    setState(
+      () {
+        _inProcess = true;
+      },
+    );
+
+    XFile? image = await ImagePicker().pickImage(source: source);
+
+    if (image != null) {
+      File? cropped = await ImageCropper().cropImage(
+        sourcePath: image.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 100,
+        maxWidth: 500,
+        maxHeight: 500,
+        cropStyle: CropStyle.rectangle,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: const AndroidUiSettings(
+          toolbarColor: Colors.black,
+          toolbarTitle: "Crop",
+          statusBarColor: Colors.black,
+          backgroundColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+          hideBottomControls: true,
+        ),
+      );
+
+      setState(
+        () {
+          _selectedFile = cropped;
+          _inProcess = false;
+        },
+      );
+    } else {
+      setState(
+        () {
+          _inProcess = false;
+        },
+      );
     }
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
+  }
 
-    int rand = Math.Random().nextInt(100000);
-
-    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
-    Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
-
-    var compressImg = File("$path/image_$rand.jpg")
-      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
-
+  void clearimage() {
     setState(
       () {
-        _image = compressImg;
+        _selectedFile = null;
       },
     );
   }
 
-  Future getImageCamera() async {
-    // ignore: deprecated_member_use
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+// //ANCHOR akses gallery bumdes
+//   Future getImageGallery() async {
+//     // ignore: deprecated_member_use
+//     var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+//     if (imageFile == null) {
+//       return null;
+//     }
+//     final tempDir = await getTemporaryDirectory();
+//     final path = tempDir.path;
 
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
+//     int rand = Math.Random().nextInt(100000);
 
-    int rand = Math.Random().nextInt(100000);
+//     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+//     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
-    Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
+//     var compressImg = File("$path/image_$rand.jpg")
+//       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
-    var compressImg = File("$path/image_$rand.jpg")
-      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
+//     setState(
+//       () {
+//         _image = compressImg;
+//       },
+//     );
+//   }
 
-    setState(
-      () {
-        _image = compressImg;
-      },
-    );
-  }
+//   Future getImageCamera() async {
+//     // ignore: deprecated_member_use
+//     var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+
+//     final tempDir = await getTemporaryDirectory();
+//     final path = tempDir.path;
+
+//     int rand = Math.Random().nextInt(100000);
+
+//     Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+//     Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
+
+//     var compressImg = File("$path/image_$rand.jpg")
+//       ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
+
+//     setState(
+//       () {
+//         _image = compressImg;
+//       },
+//     );
+//   }
 
 //ANCHOR cek session admin bumdes
   // ignore: unused_element
@@ -100,7 +154,7 @@ class FormBumdesState extends State<FormBumdes> {
     if (pref.getString("userAdmin") != null) {
       setState(
         () {
-          username = pref.getString("userAdmin");
+          username = pref.getString("userAdmin")!;
         },
       );
     }
@@ -112,7 +166,7 @@ class FormBumdesState extends State<FormBumdes> {
   }
 
 //ANCHOR api gambar post bumdes
-  Future uploadBumdes(File imageFile) async {
+  Future uploadBumdes(File _selectedFile) async {
     MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     setState(() {
       _loadingbumdes = true;
@@ -121,24 +175,24 @@ class FormBumdesState extends State<FormBumdes> {
     var stream = http.ByteStream(
       // ignore: deprecated_member_use
       DelegatingStream.typed(
-        imageFile.openRead(),
+        _selectedFile.openRead(),
       ),
     );
-    var length = await imageFile.length();
+    var length = await _selectedFile.length();
     var uri = Uri.parse(
         "http://dokar.kendalkab.go.id/webservice/android/bumdes/post");
 
     var request = http.MultipartRequest("POST", uri);
 
     var multipartFile = http.MultipartFile("image", stream, length,
-        filename: basename(imageFile.path));
+        filename: basename(_selectedFile.path));
     request.fields['video'] = cYoutube.text;
     request.fields['judul'] = cJudul.text;
     request.fields['tempat'] = cTempatBumdes.text;
     request.fields['isi'] = cIsi.text;
-    request.fields['id_desa'] = pref.getString("IdDesa");
-    request.fields['username'] = pref.getString("userAdmin");
-    request.fields['status'] = pref.getString("status");
+    request.fields['id_desa'] = pref.getString("IdDesa")!;
+    request.fields['username'] = pref.getString("userAdmin")!;
+    request.fields['status'] = pref.getString("status")!;
     request.files.add(multipartFile);
 
     var response = await request.send();
@@ -338,7 +392,7 @@ class FormBumdesState extends State<FormBumdes> {
                     child: TextFormField(
                       controller: cIsi,
                       maxLines: null,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.multiline,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'OpenSans',
@@ -386,58 +440,78 @@ class FormBumdesState extends State<FormBumdes> {
                     padding: EdgeInsets.only(top: 20.0),
                   ),
 //ANCHOR input gambar
-                  Center(
-                    child: _image == null
-                        ? Text("Gambar belum di pilih !")
-                        : Image.file(_image),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      getImageWidget(),
+                      Column(
+                        children: [
+                          _cameraButton(),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: mediaQueryData.size.height * 0.01),
+                          ),
+                          _galeryButton(),
+                        ],
+                      ),
+                      (_inProcess)
+                          ? Container(
+                              color: Colors.white,
+                              height: MediaQuery.of(context).size.height * 0.95,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : const Center()
+                    ],
                   ),
-                  Center(
-                    child: Row(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: Icon(
-                            Icons.image,
-                            color: Colors.white,
-                          ),
-                          onPressed: getImageGallery,
-                          style: ElevatedButton.styleFrom(
-                            // padding: EdgeInsets.all(15.0),
-                            elevation: 0, backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(10), // <-- Radius
-                            ),
-                          ),
-                          // color: Color(0xFFee002d),
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(17.0),
-                          // ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.0),
-                        ),
-                        ElevatedButton(
-                          child: Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                          ),
-                          onPressed: getImageCamera,
-                          // color: Color(0xFFee002d),
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(17.0),
-                          // ),
-                          style: ElevatedButton.styleFrom(
-                            // padding: EdgeInsets.all(15.0),
-                            elevation: 0, backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(10), // <-- Radius
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Center(
+                  //   child: Row(
+                  //     children: <Widget>[
+                  //       ElevatedButton(
+                  //         child: Icon(
+                  //           Icons.image,
+                  //           color: Colors.white,
+                  //         ),
+                  //         onPressed: getImageGallery,
+                  //         style: ElevatedButton.styleFrom(
+                  //           // padding: EdgeInsets.all(15.0),
+                  //           elevation: 0, backgroundColor: Colors.red,
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius:
+                  //                 BorderRadius.circular(10), // <-- Radius
+                  //           ),
+                  //         ),
+                  //         // color: Color(0xFFee002d),
+                  //         // shape: RoundedRectangleBorder(
+                  //         //   borderRadius: BorderRadius.circular(17.0),
+                  //         // ),
+                  //       ),
+                  //       Padding(
+                  //         padding: EdgeInsets.only(left: 5.0),
+                  //       ),
+                  //       ElevatedButton(
+                  //         child: Icon(
+                  //           Icons.camera_alt,
+                  //           color: Colors.white,
+                  //         ),
+                  //         onPressed: getImageCamera,
+                  //         // color: Color(0xFFee002d),
+                  //         // shape: RoundedRectangleBorder(
+                  //         //   borderRadius: BorderRadius.circular(17.0),
+                  //         // ),
+                  //         style: ElevatedButton.styleFrom(
+                  //           // padding: EdgeInsets.all(15.0),
+                  //           elevation: 0, backgroundColor: Colors.red,
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius:
+                  //                 BorderRadius.circular(10), // <-- Radius
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(top: 20.0),
                   ),
@@ -478,9 +552,12 @@ class FormBumdesState extends State<FormBumdes> {
                               Icons.file_upload,
                               color: Colors.white,
                             ),
-                            label: Text("UPLOAD BUMDES"),
+                            label: Text(
+                              "UPLOAD BUMDES",
+                              style: const TextStyle(color: subtitle),
+                            ),
                             onPressed: () async {
-                              if (cJudul.text == null || cJudul.text == '') {
+                              if (cJudul.text.isEmpty || cJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
@@ -496,7 +573,7 @@ class FormBumdesState extends State<FormBumdes> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cTempatBumdes.text == null ||
+                              } else if (cTempatBumdes.text.isEmpty ||
                                   cTempatBumdes.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -513,7 +590,7 @@ class FormBumdesState extends State<FormBumdes> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cIsi.text == null || cIsi.text == '') {
+                              } else if (cIsi.text.isEmpty || cIsi.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
@@ -529,7 +606,7 @@ class FormBumdesState extends State<FormBumdes> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (_image == null) {
+                              } else if (_selectedFile == null) {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
@@ -546,7 +623,7 @@ class FormBumdesState extends State<FormBumdes> {
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
                               } else {
-                                uploadBumdes(_image);
+                                uploadBumdes(_selectedFile!);
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -569,6 +646,110 @@ class FormBumdesState extends State<FormBumdes> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _cameraButton() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    return SizedBox(
+      width: mediaQueryData.size.height * 0.15,
+      height: mediaQueryData.size.height * 0.05,
+      child: ElevatedButton(
+        onPressed: () {
+          getImage(ImageSource.camera);
+        },
+        child: Row(
+          children: [
+            const Icon(
+              Icons.camera_alt,
+              color: Colors.white,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.01),
+            ),
+            const Text(
+              'Kamera',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: subtitle,
+              ),
+            ),
+          ],
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orange,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget getImageWidget() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    if (_selectedFile != null) {
+      return Image.file(
+        _selectedFile!,
+        width: mediaQueryData.size.width * 0.5,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset(
+        "assets/images/load.png",
+        width: mediaQueryData.size.width * 0.5,
+      );
+    }
+  }
+
+  Widget _galeryButton() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    return SizedBox(
+      width: mediaQueryData.size.height * 0.15,
+      height: mediaQueryData.size.height * 0.05,
+      child: ElevatedButton(
+        onPressed: () {
+          getImage(ImageSource.gallery);
+        },
+        child: Row(
+          children: [
+            const Icon(
+              Icons.photo,
+              color: Colors.white,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.01),
+            ),
+            const Text(
+              'Galeri',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: subtitle,
+              ),
+            ),
+          ],
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

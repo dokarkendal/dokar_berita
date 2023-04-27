@@ -31,5 +31,5 @@ final kBoxDecorationStyle = BoxDecoration(
 final kBoxDecorationStyle2 = BoxDecoration(
   color: Colors.white,
   borderRadius: BorderRadius.circular(10.0),
-  border: Border.all(color: Colors.grey[600]),
+  border: Border.all(color: Colors.grey[600]!),
 );

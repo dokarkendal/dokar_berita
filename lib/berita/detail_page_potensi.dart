@@ -26,20 +26,20 @@ class DetailPotensi extends StatefulWidget {
       dKategori;
 
   DetailPotensi(
-      {this.dGambar,
-      this.dTempat,
-      this.dBaca,
-      this.dAdmin,
-      this.dTanggal,
-      this.dJudul,
-      this.dHtml,
-      this.dUrl,
-      this.dVideo,
-      this.dId,
-      this.dIdDesa,
-      this.dDesa,
-      this.dKecamatan,
-      this.dKategori});
+      {required this.dGambar,
+      required this.dTempat,
+      required this.dBaca,
+      required this.dAdmin,
+      required this.dTanggal,
+      required this.dJudul,
+      required this.dHtml,
+      required this.dUrl,
+      required this.dVideo,
+      required this.dId,
+      required this.dIdDesa,
+      required this.dDesa,
+      required this.dKecamatan,
+      required this.dKategori});
 
   @override
   _DetailPotensiState createState() => _DetailPotensiState();
@@ -47,11 +47,10 @@ class DetailPotensi extends StatefulWidget {
 
 class _DetailPotensiState extends State<DetailPotensi> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  YoutubePlayerController youTube;
+  late YoutubePlayerController youTube;
   String dibaca = '';
 
-  // ignore: missing_return
-  Future<String> addViews() async {
+  Future<void> addViews() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
         Uri.parse(
@@ -72,15 +71,27 @@ class _DetailPotensiState extends State<DetailPotensi> {
     }
   }
 
+  late String? videoId;
   @override
   void initState() {
-    youTube = YoutubePlayerController(
-      initialVideoId: "${widget.dVideo}",
-      flags: YoutubePlayerFlags(
-        mute: false,
-        autoPlay: false,
-      ),
-    );
+    videoId = YoutubePlayer.convertUrlToId(widget.dVideo);
+    if (videoId != null) {
+      youTube = YoutubePlayerController(
+        initialVideoId: videoId!,
+        flags: YoutubePlayerFlags(
+          mute: false,
+          autoPlay: false,
+        ),
+      );
+    }
+
+    // youTube = YoutubePlayerController(
+    //   initialVideoId: "${widget.dVideo}",
+    //   flags: YoutubePlayerFlags(
+    //     mute: false,
+    //     autoPlay: false,
+    //   ),
+    // );
     super.initState();
 
     setState(
@@ -371,7 +382,33 @@ class _DetailPotensiState extends State<DetailPotensi> {
                         // scrollable: false,
                       ),
                       //Divider(),
-                      _playYoutube(youTube),
+                      // _playYoutube(youTube),
+                      videoId == null
+                          ? Center(
+                              child: Chip(
+                                backgroundColor: Colors.red[400],
+                                avatar: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  child: Icon(Icons.videocam_off,
+                                      size: 16, color: Colors.black45),
+                                ),
+                                label: Text(
+                                  'Tidak ada video',
+                                  style: new TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : YoutubePlayer(
+                              controller: youTube,
+                              showVideoProgressIndicator: true,
+                              onReady: () {
+                                // Perform any actions after the video player is ready
+                              },
+                            ),
+
                       SizedBox(
                         height: 20,
                       ),
@@ -593,6 +630,7 @@ class _DetailPotensiState extends State<DetailPotensi> {
                     id: "${widget.dIdDesa}",
                     desa: "${widget.dDesa}",
                     kecamatan: "${widget.dKecamatan}",
+                    title: '',
                   ),
                 ),
               );

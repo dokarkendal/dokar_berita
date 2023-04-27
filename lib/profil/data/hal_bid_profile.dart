@@ -5,16 +5,19 @@ import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_inovasi.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../style/styleset.dart';
 
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalBIDProfile extends StatefulWidget {
-  final String idDesa;
+  final String idDesa, namaDesa;
 
-  HalBIDProfile({this.idDesa});
+  HalBIDProfile({
+    required this.idDesa,
+    required this.namaDesa,
+  });
   @override
   HalBIDProfileState createState() => HalBIDProfileState();
 }
@@ -40,11 +43,12 @@ class HalBIDProfileState extends State<HalBIDProfile> {
   String namadesa = "";
   String status = "";
   // ignore: unused_field
-  String _mySelection;
+  late String _mySelection;
 
   List beritaAdmin = [];
-  GlobalKey<RefreshIndicatorState> refreshKey;
-  final SlidableController slidableController = SlidableController();
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  // final SlidableController slidableController = SlidableController();
 
 ///////////////////////////////CEK SESSION ADMIN///////////////////////////////////
   // ignore: unused_element
@@ -52,9 +56,9 @@ class HalBIDProfileState extends State<HalBIDProfile> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userAdmin") != null) {
       setState(() {
-        username = pref.getString("userAdmin");
-        status = pref.getString("status");
-        namadesa = pref.getString("data_nama");
+        username = pref.getString("userAdmin")!;
+        status = pref.getString("status")!;
+        namadesa = pref.getString("data_nama")!;
       });
     }
   }
@@ -64,8 +68,8 @@ class HalBIDProfileState extends State<HalBIDProfile> {
   List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/bid";
@@ -132,10 +136,11 @@ class HalBIDProfileState extends State<HalBIDProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'INOVASI',
+          'INOVASI ' + "${widget.namaDesa}",
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
+            fontSize: 17,
           ),
         ),
         centerTitle: true,
@@ -215,6 +220,7 @@ class HalBIDProfileState extends State<HalBIDProfile> {
                               dHtml: databerita[i]["isi"],
                               dVideo: databerita[i]["video"],
                               dUrl: databerita[i]["url"],
+                              idDesa: '',
                             ),
                           ),
                         );

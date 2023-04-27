@@ -4,7 +4,7 @@ import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -21,15 +21,17 @@ class BeritaState extends State<Berita> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/loadmoreberita"; //NOTE url api load berita
   ScrollController _scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+
   List databerita = [];
   bool isLoading = false;
   final dio = Dio();
-  String dibaca;
-  List dataJSON;
-  int maxLines;
+  late String dibaca;
+  late List dataJSON = [];
+  late int maxLines;
 
-  BeritaState({this.maxLines});
+  // BeritaState({this.maxLines});
   void _getMoreData() async {
     //NOTE if else load more
     if (!isLoading) {
@@ -45,13 +47,14 @@ class BeritaState extends State<Berita> {
       for (int i = 0; i < response.data['result'].length; i++) {
         tempList.add(response.data['result'][i]);
       }
-
-      setState(
-        () {
-          isLoading = false;
-          databerita.addAll(tempList);
-        },
-      );
+      if (mounted) {
+        setState(
+          () {
+            isLoading = false;
+            databerita.addAll(tempList);
+          },
+        );
+      }
     }
   }
 
@@ -96,13 +99,13 @@ class BeritaState extends State<Berita> {
 //ANCHOR loading
   Widget _buildProgressIndicator() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Padding(
       padding: EdgeInsets.all(1.0),
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           padding: EdgeInsets.all(5.0),
           child: Column(
@@ -136,8 +139,8 @@ class BeritaState extends State<Berita> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey,
                         ),
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
+                        height: mediaQueryData.size.height * 0.02,
+                        width: mediaQueryData.size.width * 0.2,
                         // color: Colors.grey,
                       ),
                       SizedBox(width: mediaQueryData.size.width * 0.35),
@@ -146,8 +149,8 @@ class BeritaState extends State<Berita> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey,
                         ),
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
+                        height: mediaQueryData.size.height * 0.02,
+                        width: mediaQueryData.size.width * 0.2,
                         // color: Colors.grey,
                       ),
                       SizedBox(width: mediaQueryData.size.width * 0.01),
@@ -156,8 +159,8 @@ class BeritaState extends State<Berita> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey,
                         ),
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
+                        height: mediaQueryData.size.height * 0.02,
+                        width: mediaQueryData.size.width * 0.2,
                         // color: Colors.grey,
                       )
                     ],
@@ -194,8 +197,8 @@ class BeritaState extends State<Berita> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey,
                         ),
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
+                        height: mediaQueryData.size.height * 0.02,
+                        width: mediaQueryData.size.width * 0.2,
                         // color: Colors.grey,
                       ),
                       SizedBox(width: mediaQueryData.size.width * 0.35),
@@ -204,8 +207,8 @@ class BeritaState extends State<Berita> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey,
                         ),
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
+                        height: mediaQueryData.size.height * 0.02,
+                        width: mediaQueryData.size.width * 0.2,
                         // color: Colors.grey,
                       ),
                       SizedBox(width: mediaQueryData.size.width * 0.01),
@@ -214,8 +217,8 @@ class BeritaState extends State<Berita> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.grey,
                         ),
-                        height: SizeConfig.safeBlockVertical * 2,
-                        width: SizeConfig.safeBlockHorizontal * 20,
+                        height: mediaQueryData.size.height * 0.02,
+                        width: mediaQueryData.size.width * 0.2,
                         // color: Colors.grey,
                       )
                     ],
@@ -319,7 +322,7 @@ class BeritaState extends State<Berita> {
                       MaterialPageRoute(
                         builder: (context) => DetailPotensi(
                           dKategori: databerita[index]["kabar_kategori"],
-                          dBaca: databerita[index]["dibaca"],
+                          dBaca: databerita[index]["dibaca"] ?? "0",
                           dId: databerita[index]["kabar_id"],
                           dIdDesa: databerita[index]["id_desa"],
                           dDesa: databerita[index]["data_nama"],
@@ -331,7 +334,7 @@ class BeritaState extends State<Berita> {
                           dTanggal: databerita[index]["kabar_tanggal"],
                           dHtml: databerita[index]["kabar_isi"],
                           dUrl: databerita[index]["url"],
-                          dVideo: databerita[index]["kabar_video"],
+                          dVideo: databerita[index]["kabar_video"] ?? "",
                         ),
                       ),
                     );
@@ -342,7 +345,7 @@ class BeritaState extends State<Berita> {
                         builder: (context) => DetailBerita(
                           dId: databerita[index]["kabar_id"],
                           dIdDesa: databerita[index]["id_desa"],
-                          dBaca: databerita[index]["dibaca"],
+                          dBaca: databerita[index]["dibaca"] ?? "0",
                           dDesa: databerita[index]["data_nama"],
                           dKecamatan: databerita[index]["data_kecamatan"],
                           dGambar: databerita[index]["kabar_gambar"],
@@ -351,7 +354,7 @@ class BeritaState extends State<Berita> {
                           dAdmin: databerita[index]["kabar_admin"],
                           dTanggal: databerita[index]["kabar_tanggal"],
                           dHtml: databerita[index]["kabar_isi"],
-                          dVideo: databerita[index]["kabar_video"],
+                          dVideo: databerita[index]["kabar_video"] ?? "",
                           dUrl: databerita[index]["url"],
                           dWaktu: databerita[index]["kabar_waktu"],
                         ),

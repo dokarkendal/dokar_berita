@@ -3,21 +3,21 @@ import 'package:flutter_html/flutter_html.dart';
 // import 'package:flutter_html/style.dart';
 // import 'package:flutter_html_view/flutter_html_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:convert';
-import '../rflutter_alert.dart';
 import '../style/styleset.dart';
 
 class DetailKritikSaranWarga extends StatefulWidget {
   final String dId, dJudul, dTanggal, dNama, dEmail, dIsi, dPublish;
 
   DetailKritikSaranWarga(
-      {this.dTanggal,
-      this.dPublish,
-      this.dId,
-      this.dJudul,
-      this.dIsi,
-      this.dNama,
-      this.dEmail});
+      {required this.dTanggal,
+      required this.dPublish,
+      required this.dId,
+      required this.dJudul,
+      required this.dIsi,
+      required this.dNama,
+      required this.dEmail});
 
   @override
   _DetailKritikSaranWargaState createState() => _DetailKritikSaranWargaState();

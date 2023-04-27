@@ -1,8 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
-// import 'package:dokar_aplikasi/berita/form/hal_kritik_warga.dart';
-// import 'package:dokar_aplikasi/berita/hal_siskeudes.dart';
 import 'package:dokar_aplikasi/profil/data/hal_agenda_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_berita_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_bid_profile.dart';
@@ -15,7 +13,7 @@ import 'package:dokar_aplikasi/profil/hal_aparatur.dart';
 import 'package:dokar_aplikasi/profil/hal_profil.dart';
 import 'package:dokar_aplikasi/profil/hal_sejarah.dart';
 import 'package:dokar_aplikasi/profil/hal_visimisi.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
@@ -27,8 +25,11 @@ import 'package:shimmer/shimmer.dart'; // api to json
 class ProfilDesa extends StatefulWidget {
   final String title, id, desa, kecamatan;
 
-  ProfilDesa({Key key, this.title, this.id, this.desa, this.kecamatan})
-      : super(key: key);
+  ProfilDesa(
+      {required this.title,
+      required this.id,
+      required this.desa,
+      required this.kecamatan});
 
   @override
   _ProfilDesaState createState() => _ProfilDesaState();
@@ -40,12 +41,12 @@ class _ProfilDesaState extends State<ProfilDesa> {
   String namadesa = "";
   String status = "";
   String kode = "";
-  int jumlah;
-  int jumlahkeg;
-  int jumlahB;
-  int jumlahBum;
-  int jumlahAgen;
-  List dataJSON;
+  late int jumlah = 0;
+  late int jumlahkeg = 0;
+  late int jumlahB = 0;
+  late int jumlahBum = 0;
+  late int jumlahAgen = 0;
+  late List dataJSON = [];
   bool isLoading = false;
 
   Future jumlahAgenda() async {
@@ -82,17 +83,16 @@ class _ProfilDesaState extends State<ProfilDesa> {
     if (pref.getString("userAdmin") != null) {
       setState(
         () {
-          username = pref.getString("userAdmin");
-          kecamatan = pref.getString("kecamatan");
-          namadesa = pref.getString("desa");
-          status = pref.getString("status");
+          username = pref.getString("userAdmin")!;
+          kecamatan = pref.getString("kecamatan")!;
+          namadesa = pref.getString("desa")!;
+          status = pref.getString("status")!;
         },
       );
     }
   }
 
-  // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     setState(() {
       isLoading = true;
     });
@@ -122,7 +122,8 @@ class _ProfilDesaState extends State<ProfilDesa> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    // SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -177,7 +178,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             AutoSizeText(
-                              "Desa ${widget.desa}",
+                              "DESA ${widget.desa}",
                               minFontSize: 10,
                               maxLines: 2,
                               style: TextStyle(
@@ -189,14 +190,14 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               "KEC. ${widget.kecamatan}",
                               style: TextStyle(
                                 color: Colors.brown[800],
-                                fontSize: 14.0,
+                                fontSize: 16.0,
                               ),
                             ),
                             Text(
                               'KAB. KENDAL',
                               style: TextStyle(
                                 color: Colors.brown[800],
-                                fontSize: 14.0,
+                                fontSize: 16.0,
                               ),
                             ),
                           ],
@@ -536,8 +537,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      GaleriProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => GaleriProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
                                 ),
                               );
                             },
@@ -701,23 +704,18 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                                       Align(
                                                                         alignment:
                                                                             Alignment.centerLeft,
-                                                                        child:
-                                                                            AutoSizeText(
-                                                                          dataJSON[i]
-                                                                              [
-                                                                              "judul"],
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            color:
-                                                                                Colors.white,
-                                                                          ),
-                                                                          maxLines:
-                                                                              1,
-                                                                        ),
+                                                                        child: AutoSizeText(
+                                                                            dataJSON[i][
+                                                                                "judul"],
+                                                                            overflow: TextOverflow
+                                                                                .ellipsis,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 12.0,
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                            maxLines:
+                                                                                1),
                                                                       ),
                                                                     ],
                                                                   ),
@@ -745,9 +743,12 @@ class _ProfilDesaState extends State<ProfilDesa> {
                 ],
               ),
             ),
+            // Container(
+            //   child: Text("Tes"),
+            // ),
             Container(
               //height: SizeConfig.safeBlockVertical * 35, //10 for example
-              width: SizeConfig.safeBlockHorizontal * 100,
+              // width: mediaQueryData.size.width * 0.1,
               padding: EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -766,8 +767,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      HalberitaProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => HalberitaProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
                                 ),
                               );
                             },
@@ -794,7 +797,8 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => HalKegiatanProfile(
-                                      idDesa: "${widget.id}"),
+                                      idDesa: "${widget.id}",
+                                      namaDesa: "${widget.desa}"),
                                 ),
                               );
                             },
@@ -818,8 +822,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      HalPotensiProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => HalPotensiProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
                                 ),
                               );
                             },
@@ -844,8 +850,9 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      HalBIDProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => HalBIDProfile(
+                                      idDesa: "${widget.id}",
+                                      namaDesa: "${widget.desa}"),
                                 ),
                               );
                             },
@@ -859,7 +866,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                       ),
                     ],
                   ),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 5),
+                  SizedBox(height: mediaQueryData.size.height * 0.05),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -875,8 +882,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      AgendaProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => AgendaProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
                                 ),
                               );
                             },
@@ -899,8 +908,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      HalbumdesProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => HalbumdesProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
                                 ),
                               );
                             },
@@ -925,8 +936,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      HalFasumProfile(idDesa: "${widget.id}"),
+                                  builder: (context) => HalFasumProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
                                 ),
                               );
                             },
@@ -948,30 +961,14 @@ class _ProfilDesaState extends State<ProfilDesa> {
                               ),
                               // color: Colors.white.withOpacity(0.1),
                               iconSize: 30.0,
-                              onPressed: null
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => SimplePieChart(
-                              //         idDesa: "${widget.id}",
-                              //         kodeDesa: "$kode"),
-                              //   ),
-                              // );
-
-                              ),
-
-                          // Text("Siskeudes",
-                          //     style: TextStyle(
-                          //         color: Colors.white,
-                          //         fontWeight: FontWeight.bold,
-                          //         fontSize: 12.0))
+                              onPressed: null),
                         ],
                       ),
                     ],
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -986,7 +983,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           padding: EdgeInsets.all(5.0),
           child: Column(

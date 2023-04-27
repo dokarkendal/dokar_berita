@@ -14,8 +14,8 @@ class HalamanBeritaWarga extends StatefulWidget {
 
 class _HalamanBeritaWargaState extends State<HalamanBeritaWarga>
     with SingleTickerProviderStateMixin {
-  String value;
-  TabController controller;
+  late String value;
+  late TabController controller;
   String notifStatus = '';
   String token = '';
   // ignore: unused_field

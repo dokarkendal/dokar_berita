@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class DaftarAdmin extends StatefulWidget {
-  DaftarAdmin({Key key}) : super(key: key);
+  // DaftarAdmin({Key key}) : super(key: key);
   @override
   _DaftarAdminState createState() => _DaftarAdminState();
 }
@@ -361,12 +362,12 @@ class _DaftarAdminState extends State<DaftarAdmin> {
           padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.4),
           child: Column(
             children: [
-              SpinKitThreeBounce(color: Colors.white),
+              SpinKitThreeBounce(color: Color(0xFF2e2e2e)),
               SizedBox(height: mediaQueryData.size.height * 0.05),
               Text(
-                'Mohon Tunggu..',
+                'Sedang memuat, sabar ya.',
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xFF2e2e2e),
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
               )

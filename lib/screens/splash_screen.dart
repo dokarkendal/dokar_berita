@@ -38,35 +38,48 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
 //NOTE Fungsi splashscreen
   startSplashScreen() async {
-    var duration = const Duration(seconds: 4);
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getInt('counter') == null) {
-      return Timer(
-        duration,
-        () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) {
-                return OnboardingPage();
-              },
-            ),
-          );
-        },
-      );
-    } else {
-      return Timer(
-        duration,
-        () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) {
-                return PilihAKun();
-              },
-            ),
-          );
-        },
-      );
-    }
+    var duration = const Duration(seconds: 3);
+    return Timer(
+      duration,
+      () {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) {
+              return PilihAKun(); //masuk halaman login
+            },
+          ),
+        );
+      },
+    );
+    // var duration = const Duration(seconds: 4);
+    // final prefs = await SharedPreferences.getInstance();
+    // if (prefs.getInt('counter') == null) {
+    //   return Timer(
+    //     duration,
+    //     () {
+    //       Navigator.of(context).pushReplacement(
+    //         MaterialPageRoute(
+    //           builder: (_) {
+    //             return OnboardingPage();
+    //           },
+    //         ),
+    //       );
+    //     },
+    //   );
+    // } else {
+    //   return Timer(
+    //     duration,
+    //     () {
+    //       Navigator.of(context).pushReplacement(
+    //         MaterialPageRoute(
+    //           builder: (_) {
+    //             return PilihAKun();
+    //           },
+    //         ),
+    //       );
+    //     },
+    //   );
+    // }
   }
 
 //NOTE Scaffold

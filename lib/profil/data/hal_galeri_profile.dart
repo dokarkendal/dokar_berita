@@ -2,7 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';
@@ -11,9 +11,12 @@ import '../../style/styleset.dart';
 
 //ANCHOR StatefulWidget Potensi
 class GaleriProfile extends StatefulWidget {
-  final String idDesa;
+  final String idDesa, namaDesa;
 
-  GaleriProfile({this.idDesa});
+  GaleriProfile({
+    required this.idDesa,
+    required this.namaDesa,
+  });
 
   @override
   _GaleriProfileState createState() => _GaleriProfileState();
@@ -25,12 +28,13 @@ class _GaleriProfileState extends State<GaleriProfile> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/newloadmoregaleri"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   void _getMoreData() async {
     //NOTE if else load more
@@ -175,6 +179,7 @@ class _GaleriProfileState extends State<GaleriProfile> {
             );
           }
         }
+        return Container();
       },
     );
   }
@@ -182,18 +187,17 @@ class _GaleriProfileState extends State<GaleriProfile> {
 //ANCHOR body berita
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'GALERI',
+          "DESA ${widget.namaDesa}",
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
-            // fontSize: 25.0,
+            fontSize: 20.0,
           ),
         ),
         centerTitle: true,

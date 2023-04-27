@@ -21,12 +21,13 @@ class _BumdesState extends State<Bumdes> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/bumdes/loadmore"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   void _getMoreData() async {
     //NOTE if else load more
@@ -77,12 +78,12 @@ class _BumdesState extends State<Bumdes> {
 //ANCHOR loading
   Widget _buildProgressIndicator() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Padding(
       padding: new EdgeInsets.all(10.0),
       child: Shimmer.fromColors(
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           child: Column(
             children: <Widget>[
@@ -345,6 +346,7 @@ class _BumdesState extends State<Bumdes> {
             );
           }
         }
+        return Container();
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_agenda.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 
 //ANCHOR
@@ -12,9 +12,12 @@ import '../../style/styleset.dart';
 
 //ANCHOR
 class AgendaProfile extends StatefulWidget {
-  final String idDesa;
+  final String idDesa, namaDesa;
 
-  AgendaProfile({this.idDesa});
+  AgendaProfile({
+    required this.idDesa,
+    required this.namaDesa,
+  });
 
   @override
   _AgendaProfileState createState() => _AgendaProfileState();
@@ -25,11 +28,12 @@ class _AgendaProfileState extends State<AgendaProfile> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/agenda"; //NOTE url api load berita
   ScrollController _scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   List databerita = [];
   bool isLoading = false;
   final dio = Dio();
-  String dibaca;
+  late String dibaca;
 
   void _getMoreData() async {
     //NOTE if else load more
@@ -90,6 +94,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
 
 //ANCHOR listview berita
   Widget _buildList() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -147,6 +152,7 @@ class _AgendaProfileState extends State<AgendaProfile> {
                         tglmulaiEvent: databerita[index]["tanggal_mulai"],
                         tglselesaiEvent: databerita[index]["tanggal_selesai"],
                         urlEvent: databerita[index]["url"],
+                        idDesa: '',
                       ),
                     ),
                   );
@@ -175,8 +181,8 @@ class _AgendaProfileState extends State<AgendaProfile> {
                                 ),
                               ),
                               fit: BoxFit.cover,
-                              height: SizeConfig.safeBlockVertical * 20,
-                              width: SizeConfig.safeBlockHorizontal * 100,
+                              height: mediaQueryData.size.height * 0.2,
+                              width: mediaQueryData.size.width,
                             ),
                           ),
                           Padding(
@@ -271,10 +277,11 @@ class _AgendaProfileState extends State<AgendaProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'AGENDA',
+          'AGENDA ' + "${widget.namaDesa}",
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
+            fontSize: 17,
           ),
         ),
         centerTitle: true,

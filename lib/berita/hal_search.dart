@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'package:dokar_aplikasi/berita/detail_page_potensi.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer/shimmer.dart';
@@ -14,21 +14,21 @@ import '../style/styleset.dart';
 // ignore: must_be_immutable
 class Search extends StatefulWidget {
   String value;
-  Search({Key key, this.value = 'text'}) : super(key: key);
+  Search({this.value = 'text'});
 
   @override
   _SearchState createState() => _SearchState(value);
 }
 
 class _SearchState extends State<Search> {
-  List dataJSON;
-  List dataDesa;
+  late List dataJSON = [];
+  late List dataDesa = [];
   String value;
   bool isLoading = false;
   _SearchState(this.value);
 
   // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     setState(
       () {
         isLoading = true;
@@ -51,7 +51,7 @@ class _SearchState extends State<Search> {
   }
 
   // ignore: missing_return
-  Future<String> searchdesa() async {
+  Future<void> searchdesa() async {
     setState(
       () {
         isLoading = true;
@@ -173,6 +173,7 @@ class _SearchState extends State<Search> {
                                 dKecamatan: dataJSON[i]["data_kecamatan"],
                                 dDesa: dataJSON[i]["data_nama"],
                                 dUrl: dataJSON[i]["url"],
+                                dWaktu: '',
                               ),
                             ),
                           );
@@ -188,6 +189,16 @@ class _SearchState extends State<Search> {
                             child: CachedNetworkImage(
                               imageUrl: dataJSON[i]["kabar_gambar"],
                               placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/load.png",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: AssetImage(
@@ -230,7 +241,7 @@ class _SearchState extends State<Search> {
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    maxLines: 3,
+                                    maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -274,12 +285,12 @@ class _SearchState extends State<Search> {
 
   Widget _buildProgressIndicator() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Padding(
       padding: new EdgeInsets.all(10.0),
       child: Shimmer.fromColors(
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           child: Column(
             children: <Widget>[
@@ -324,12 +335,12 @@ class _SearchState extends State<Search> {
 
   Widget _buildProgressIndicator1() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Padding(
       padding: new EdgeInsets.all(10.0),
       child: Shimmer.fromColors(
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           child: Row(
             children: <Widget>[
@@ -460,6 +471,7 @@ class _SearchState extends State<Search> {
                             id: dataDesa[i]["id"],
                             desa: dataDesa[i]["desa"],
                             kecamatan: dataDesa[i]["kecamatan"],
+                            title: '',
                           ),
                         ),
                       );
@@ -473,7 +485,7 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

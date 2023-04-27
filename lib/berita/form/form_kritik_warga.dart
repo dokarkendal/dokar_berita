@@ -1,12 +1,14 @@
 //ANCHOR package add akun
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
-import 'package:dokar_aplikasi/rflutter_alert.dart';
+// import 'package:dokar_aplikasi/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:http/http.dart' as http; //api
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:status_alert/status_alert.dart';
 
 //ANCHOR class add akun
@@ -14,9 +16,8 @@ class FormKritikWarga extends StatefulWidget {
   final String idDesa;
 
   FormKritikWarga({
-    Key key,
-    this.idDesa,
-  }) : super(key: key);
+    required this.idDesa,
+  });
 
   //final String nama;
   //FormKritikWarga({this.nama});
@@ -29,15 +30,15 @@ class FormKritikWargaState extends State<FormKritikWarga> {
 
   bool _isInAsyncCall = false;
 
-  String nama;
-  String email;
-  String judul;
-  String kritik;
+  late String nama;
+  late String email;
+  late String judul;
+  late String kritik;
   // ignore: unused_field
-  String _mySelection;
-  String _notif;
+  late String _mySelection;
+  late String _notif;
   // ignore: unused_field
-  String _kode;
+  late String _kode;
   //bool _obscureText = true;
 
   final formKey = GlobalKey<FormState>();
@@ -52,7 +53,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
   TextEditingController cPassword = new TextEditingController();
 
   // ignore: missing_return
-  Future<List> _kirimkritik() async {
+  Future<void> _kirimkritik() async {
     setState(
       () {
         _isInAsyncCall = true;

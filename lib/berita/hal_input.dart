@@ -28,13 +28,13 @@ class _InputSemuaState extends State<InputSemua> {
   Future _cekSession() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-      status = pref.getString("status");
+      status = pref.getString("status")!;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
@@ -287,6 +287,7 @@ class _InputSemuaState extends State<InputSemua> {
   }
 
   Widget eventEdit() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     return Card(
       //color: Colors.deepPurple,
       shape: RoundedRectangleBorder(
@@ -332,10 +333,11 @@ class _InputSemuaState extends State<InputSemua> {
   }
 
   Widget cardBerita() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     return Container(
       padding: new EdgeInsets.all(5.0),
-      width: SizeConfig.safeBlockHorizontal * 100,
-      height: SizeConfig.safeBlockVertical * 20,
+      // width: mediaQueryData.size.width * 0.1,
+      height: mediaQueryData.size.height * 0.2,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -349,16 +351,18 @@ class _InputSemuaState extends State<InputSemua> {
       child: Row(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 10),
+            padding: EdgeInsets.symmetric(
+              vertical: 25.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Image.asset(
-                  'assets/images/tulis.png',
-                  width: SizeConfig.safeBlockHorizontal * 30,
-                  height: SizeConfig.safeBlockVertical * 30,
+                  'assets/images/akun2.png',
+                  width: mediaQueryData.size.width * 0.3,
+                  height: mediaQueryData.size.height * 0.3,
                 ),
-                SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
+                SizedBox(width: mediaQueryData.size.width * 0.01),
                 new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -371,7 +375,7 @@ class _InputSemuaState extends State<InputSemua> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: SizeConfig.safeBlockHorizontal * 1),
+                    SizedBox(height: mediaQueryData.size.height * 0.01),
                     AutoSizeText(
                       'Berikan informasi aktual',
                       minFontSize: 10,

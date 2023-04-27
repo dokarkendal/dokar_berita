@@ -6,13 +6,14 @@ import 'dart:convert';
 
 class HalFasumPendidikan extends StatefulWidget {
   final String dNama, dId, idDesa;
-  HalFasumPendidikan({this.dNama, this.dId, this.idDesa});
+  HalFasumPendidikan(
+      {required this.dNama, required this.dId, required this.idDesa});
   @override
   _HalFasumPendidikanState createState() => _HalFasumPendidikanState();
 }
 
 class _HalFasumPendidikanState extends State<HalFasumPendidikan> {
-  List dataJSON;
+  late List dataJSON = [];
   String id = '';
 
   @override
@@ -22,20 +23,20 @@ class _HalFasumPendidikanState extends State<HalFasumPendidikan> {
     ambildata();
   }
 
-  // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorifasum/" +
                 id),
         headers: {"Accept": "application/json"});
-
-    this.setState(
-      () {
-        dataJSON = json.decode(hasil.body);
-        print(id);
-      },
-    );
+    if (mounted) {
+      this.setState(
+        () {
+          dataJSON = json.decode(hasil.body);
+          print(id);
+        },
+      );
+    }
   }
 
   @override
@@ -49,7 +50,7 @@ class _HalFasumPendidikanState extends State<HalFasumPendidikan> {
         child: ListView.builder(
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: dataJSON == null ? 0 : dataJSON.length,
+          itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
           itemBuilder: (context, index) {
             return new Container(
               color: Colors.grey[100],
@@ -69,6 +70,7 @@ class _HalFasumPendidikanState extends State<HalFasumPendidikan> {
                         builder: (context) => HalFasumDetail(
                           dNama: dataJSON[index]["nama"],
                           dId: dataJSON[index]["id"],
+                          idDesa: '',
                         ),
                       ),
                     );

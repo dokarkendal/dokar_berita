@@ -1,7 +1,7 @@
-class Intro {
-  String image;
-  String title;
-  String description;
+// class Intro {
+//   String image;
+//   String title;
+//   String description;
 
-  Intro({this.image, this.title, this.description});
-}
+//   Intro({this.image, this.title, this.description});
+// }

@@ -16,10 +16,11 @@ class KritikSaranState extends State<KritikSaran> {
   String username = "";
 
   // ignore: unused_field
-  String _mySelection;
+  late String _mySelection;
   List kegiatanAdmin = [];
-  GlobalKey<RefreshIndicatorState> refreshKey;
-  final SlidableController slidableController = SlidableController();
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  // final SlidableController slidableController = SlidableController();
 
   List kritiksaran = [];
   bool isLoading = false;
@@ -41,7 +42,7 @@ class KritikSaranState extends State<KritikSaran> {
       );
 
       final response =
-          await dio.get(nextPage + "/" + pref.getString("IdDesa") + "/");
+          await dio.get(nextPage + "/" + pref.getString("IdDesa")! + "/");
       List tempList = [];
       nextPage = response.data['next'];
 
@@ -146,59 +147,54 @@ class KritikSaranState extends State<KritikSaran> {
                   ),*/
                     );
               } else {
-                return Slidable(
-                  controller: slidableController,
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
-                  child: Container(
-                    color: Colors.grey[100],
-                    padding: EdgeInsets.only(
-                      left: 5.0,
-                      right: 5.0,
+                return Container(
+                  color: Colors.grey[100],
+                  padding: EdgeInsets.only(
+                    left: 5.0,
+                    right: 5.0,
+                  ),
+                  child: new Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: new Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: new InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            new MaterialPageRoute(
-                              builder: (context) => new DetailKritikSaran(
-                                dId: kritiksaran[i]["kritik_id"],
-                                dJudul: kritiksaran[i]["kritik_judul"],
-                                dTanggal: kritiksaran[i]["kritik_tanggal"],
-                                dIsi: kritiksaran[i]["kritik_isi"],
-                                dNama: kritiksaran[i]["kritik_nama"],
-                                dEmail: kritiksaran[i]["kritik_email"],
-                                dPublish: kritiksaran[i]["kritik_publish"],
-                              ),
+                    child: new InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          new MaterialPageRoute(
+                            builder: (context) => new DetailKritikSaran(
+                              dId: kritiksaran[i]["kritik_id"],
+                              dJudul: kritiksaran[i]["kritik_judul"],
+                              dTanggal: kritiksaran[i]["kritik_tanggal"],
+                              dIsi: kritiksaran[i]["kritik_isi"],
+                              dNama: kritiksaran[i]["kritik_nama"],
+                              dEmail: kritiksaran[i]["kritik_email"],
+                              dPublish: kritiksaran[i]["kritik_publish"],
                             ),
-                          );
-                        },
-                        child: ListTile(
-                          subtitle: Row(
-                            children: <Widget>[
-                              new Text(
-                                kritiksaran[i]["kritik_tanggal"],
-                              ),
-                              Container(
-                                  height: 15,
-                                  child: VerticalDivider(color: Colors.grey)),
-                              new Text(
-                                kritiksaran[i]["kritik_email"],
-                              ),
-                            ],
                           ),
-                          title: new Text(
-                            kritiksaran[i]["kritik_judul"],
-                            style: new TextStyle(
-                                fontSize: 14.0, fontWeight: FontWeight.bold),
-                          ),
-                          trailing: Icon(
-                            Icons.message,
-                            size: 26.0,
-                          ),
+                        );
+                      },
+                      child: ListTile(
+                        subtitle: Row(
+                          children: <Widget>[
+                            new Text(
+                              kritiksaran[i]["kritik_tanggal"],
+                            ),
+                            Container(
+                                height: 15,
+                                child: VerticalDivider(color: Colors.grey)),
+                            new Text(
+                              kritiksaran[i]["kritik_email"],
+                            ),
+                          ],
+                        ),
+                        title: new Text(
+                          kritiksaran[i]["kritik_judul"],
+                          style: new TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.bold),
+                        ),
+                        trailing: Icon(
+                          Icons.message,
+                          size: 26.0,
                         ),
                       ),
                     ),

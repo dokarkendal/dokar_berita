@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:http/http.dart' as http; //api
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
 import 'package:status_alert/status_alert.dart';
 
@@ -14,13 +15,13 @@ class FormAkunEditSemua extends StatefulWidget {
   final String dIdAdmin, dNama, dHp, dEmail, dUsername, dPassword, dStatus;
 
   FormAkunEditSemua({
-    this.dIdAdmin,
-    this.dNama,
-    this.dHp,
-    this.dEmail,
-    this.dUsername,
-    this.dPassword,
-    this.dStatus,
+    required this.dIdAdmin,
+    required this.dNama,
+    required this.dHp,
+    required this.dEmail,
+    required this.dUsername,
+    required this.dPassword,
+    required this.dStatus,
   });
   @override
   FormAkunEditSemuaState createState() => FormAkunEditSemuaState();
@@ -31,7 +32,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
 
   String username = "";
   String dIdAdmin = "";
-  String _mySelection;
+  late String _mySelection;
   bool _obscureText = true;
   bool _isInAsyncCall = false;
   List kategoriAkun = [];
@@ -55,7 +56,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
     if (pref.getString("userAdmin") != null) {
       setState(
         () {
-          username = pref.getString("userAdmin");
+          username = pref.getString("userAdmin")!;
         },
       );
     }
@@ -79,7 +80,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
   }
 
   // ignore: missing_return
-  Future<String> _editakun() async {
+  Future<void> _editakun() async {
     setState(
       () {
         _isInAsyncCall = true;
@@ -324,7 +325,7 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
                             onChanged: (newVal) {
                               setState(
                                 () {
-                                  _mySelection = newVal;
+                                  _mySelection = newVal as String;
                                 },
                               );
                             },

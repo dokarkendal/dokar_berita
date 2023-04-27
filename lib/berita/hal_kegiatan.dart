@@ -17,12 +17,13 @@ class _KegiatanState extends State<Kegiatan> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/loadmorekegiatan"; //NOTE url api load berita
   ScrollController _scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   List databerita = [];
   bool isLoading = false;
   final dio = Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   void _getMoreData() async {
     //NOTE if else load more
@@ -122,13 +123,21 @@ class _KegiatanState extends State<Kegiatan> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DetailPotensi(
-                          dGambar: databerita[index]["kabar_gambar"],
-                          dJudul: databerita[index]["kabar_judul"],
-                          dTempat: databerita[index]["kabar_tempat"],
-                          dAdmin: databerita[index]["kabar_admin"],
-                          dTanggal: databerita[index]["kabar_tanggal"],
-                          dHtml: databerita[index]["kabar_isi"],
-                          dVideo: databerita[index]["kabar_video"]),
+                        dGambar: databerita[index]["kabar_gambar"],
+                        dJudul: databerita[index]["kabar_judul"],
+                        dTempat: databerita[index]["kabar_tempat"],
+                        dAdmin: databerita[index]["kabar_admin"],
+                        dTanggal: databerita[index]["kabar_tanggal"],
+                        dHtml: databerita[index]["kabar_isi"],
+                        dVideo: databerita[index]["kabar_video"],
+                        dBaca: '',
+                        dDesa: '',
+                        dId: '',
+                        dIdDesa: '',
+                        dKategori: '',
+                        dKecamatan: '',
+                        dUrl: '',
+                      ),
                     ),
                   );
                 },
@@ -184,6 +193,7 @@ class _KegiatanState extends State<Kegiatan> {
             );
           }
         }
+        return Container();
       },
     );
   }

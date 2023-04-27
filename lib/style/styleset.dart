@@ -19,3 +19,5 @@ final decorationHint = TextStyle(
 );
 
 const titleText = Colors.black;
+const subtitle = Colors.white;
+const paddingall10 = EdgeInsets.all(10.0);

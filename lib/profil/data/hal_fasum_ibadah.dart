@@ -8,13 +8,14 @@ import '../../style/styleset.dart';
 
 class HalFasumIbadah extends StatefulWidget {
   final String dNama, dId, idDesa;
-  HalFasumIbadah({this.dNama, this.dId, this.idDesa});
+  HalFasumIbadah(
+      {required this.dNama, required this.dId, required this.idDesa});
   @override
   _HalFasumIbadahState createState() => _HalFasumIbadahState();
 }
 
 class _HalFasumIbadahState extends State<HalFasumIbadah> {
-  List dataJSON;
+  late List dataJSON = [];
   String id = '';
 
   @override
@@ -25,7 +26,7 @@ class _HalFasumIbadahState extends State<HalFasumIbadah> {
   }
 
   // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorifasum/" +

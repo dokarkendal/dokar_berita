@@ -7,7 +7,7 @@ import 'package:dokar_aplikasi/berita/hal_siskeudes.dart';
 // import 'package:dokar_aplikasi/berita/tes.dart';
 // import 'package:dokar_aplikasi/akun/google_account.dart';
 import 'package:dokar_aplikasi/akun/hal_akun_add.dart';
-import 'package:dokar_aplikasi/akun/hal_expansion_tes.dart';
+// import 'package:dokar_aplikasi/akun/hal_expansion_tes.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
 import 'package:dokar_aplikasi/berita/bantuan.dart';
 import 'package:dokar_aplikasi/berita/galeri.dart';
@@ -52,10 +52,10 @@ import 'package:dokar_aplikasi/profil/hal_aparatur.dart';
 import 'package:dokar_aplikasi/profil/hal_profil.dart';
 import 'package:dokar_aplikasi/profil/hal_sejarah.dart';
 import 'package:dokar_aplikasi/profil/hal_visimisi.dart';
-import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
+// import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
 import 'package:dokar_aplikasi/berita/form/form_berita.dart';
 import 'package:dokar_aplikasi/screens/splash_screen.dart';
-import 'package:dokar_aplikasi/berita/hal_admin_tes.dart';
+// import 'package:dokar_aplikasi/berita/hal_admin_tes.dart';
 // import 'package:dokar_aplikasi/daftar_warga_login.dart';
 import 'package:dokar_aplikasi/hal_login_admin.dart';
 // import 'package:dokar_aplikasi/daftar_warga.dart';
@@ -80,7 +80,7 @@ void main() {
     MaterialApp(
       theme: ThemeData(
         // Define the default brightness and colors.
-
+        primarySwatch: Colors.orange,
         primaryColor: Colors.orange[300],
         // textTheme: TextTheme(
         //   bodyText1: TextStyle(color: Colors.red),
@@ -89,82 +89,222 @@ void main() {
       debugShowCheckedModeBanner: false,
       title: 'Splash Screen',
       routes: <String, WidgetBuilder>{
-        '/HalSiskeudesProfile': (BuildContext context) =>
-            new HalSiskeudesProfile(),
-        '/FormKritikWarga': (BuildContext context) => new FormKritikWarga(),
+        '/HalSiskeudesProfile': (BuildContext context) => HalSiskeudesProfile(
+              idDesa: '',
+              kodeDesa: '',
+            ),
+        '/FormKritikWarga': (BuildContext context) => FormKritikWarga(
+              idDesa: '',
+            ),
         '/DetailKritikSaranWarga': (BuildContext context) =>
-            new DetailKritikSaranWarga(),
-        '/FormKritikSaran': (BuildContext context) => new FormKritikSaran(),
-        '/ListKecamatan': (BuildContext context) => new ListKecamatan(),
-        // '/GoogleAccount': (BuildContext context) => new GoogleAccount(),
-        '/ListDesa': (BuildContext context) => new ListDesa(),
-        '/HalbumdesProfile': (BuildContext context) => new HalbumdesProfile(),
-        '/AgendaProfile': (BuildContext context) => new AgendaProfile(),
-        '/HalFasumDetailPage': (BuildContext context) =>
-            new HalFasumDetailPage(),
-        '/HalFasumPendidikan': (BuildContext context) =>
-            new HalFasumPendidikan(),
-        '/HalAparaturDesa': (BuildContext context) => new HalAparaturDesa(),
-        '/SimplePieChart': (BuildContext context) => new SimplePieChart(),
-        '/HalFasumOlahraga': (BuildContext context) => new HalFasumOlahraga(),
-        '/HalFasumKesehatan': (BuildContext context) => new HalFasumKesehatan(),
-        '/HalFasumIbadah': (BuildContext context) => new HalFasumIbadah(),
-        '/HalFasumProfile': (BuildContext context) => new HalFasumProfile(),
-        '/GaleriProfile': (BuildContext context) => new GaleriProfile(),
-        '/HalBIDProfile': (BuildContext context) => new HalBIDProfile(),
-        '/HalPotensiProfile': (BuildContext context) => new HalPotensiProfile(),
-        '/HalKegiatanProfile': (BuildContext context) =>
-            new HalKegiatanProfile(),
-        '/HalberitaProfile': (BuildContext context) => new HalberitaProfile(),
-        '/HalSejarahDesa': (BuildContext context) => new HalSejarahDesa(),
-        '/HalVisiDesa': (BuildContext context) => new HalVisiDesa(),
-        '/HalProfilDesa': (BuildContext context) => new HalProfilDesa(),
-        '/ProfilDesa': (BuildContext context) => new ProfilDesa(),
-        '/FormAkunEditSemua': (BuildContext context) => new FormAkunEditSemua(),
-        '/ListPenulis': (BuildContext context) => new ListPenulis(),
-        // '/Login': (BuildContext context) => new Login(),
-        '/HomePage': (BuildContext context) => new HomePage(),
-        '/FormAddAkun': (BuildContext context) => new FormAddAkun(),
-        '/Berita': (BuildContext context) => new Berita(),
-        '/Agenda': (BuildContext context) => new Agenda(),
-        '/HalAkun': (BuildContext context) => new HalAkun(),
-        '/PilihAKun': (BuildContext context) => new PilihAKun(),
-        '/FormAkunEdit': (BuildContext context) => new FormAkunEdit(),
-        '/Haldua': (BuildContext context) => new Haldua(),
-        '/AdminTes': (BuildContext context) => new AdminTes(),
-        '/EditSemua': (BuildContext context) => new EditSemua(),
-        '/InputSemua': (BuildContext context) => new InputSemua(),
-        // '/LoginPage': (BuildContext context) => new LoginPage(),
-        '/ExpansionTileSample': (BuildContext context) =>
-            new ExpansionTileSample(),
-        '/PilihAkun': (BuildContext context) => new PilihAKun(),
-        '/FormBerita': (BuildContext context) => new FormBerita(),
-        '/FormInovasi': (BuildContext context) => new FormInovasi(),
-        '/FormBumdes': (BuildContext context) => new FormBumdes(),
-        '/FormKegiatan': (BuildContext context) => new FormKegiatan(),
-        // '/DaftarWarga': (BuildContext context) => new DaftarWarga(),
-        '/DaftarAdmin': (BuildContext context) => new DaftarAdmin(),
-        '/AgendaDetail': (BuildContext context) => new AgendaDetail(),
-        '/FormBeritaEdit': (BuildContext context) => new FormBeritaEdit(),
-        '/OnboardingPage': (BuildContext context) => new OnboardingPage(),
-        // '/DaftarWargaLogin': (BuildContext context) => new DaftarWargaLogin(),
-        '/HalamanBeritaWarga': (BuildContext context) =>
-            new HalamanBeritaWarga(),
-        '/HalamanBeritaadmin': (BuildContext context) =>
-            new HalamanBeritaadmin(),
-        '/FormBeritaDashbord': (BuildContext context) =>
-            new FormBeritaDashbord(),
-        '/HalKegiatanList': (BuildContext context) => new HalKegiatanList(),
-        '/HalInovasiList': (BuildContext context) => new HalInovasiList(),
-        '/HalBumdesList': (BuildContext context) => new HalBumdesList(),
-        '/HalEventList': (BuildContext context) => new HalEventList(),
-        '/DetailBerita': (BuildContext context) => new DetailBerita(),
-        '/FormAgenda': (BuildContext context) => new FormAgenda(),
-        '/Galeri': (BuildContext context) => new Galeri(),
-        // '/Tes': (BuildContext context) => new Tes(),
-        '/DetailGaleri': (BuildContext context) => new DetailGaleri(),
-        '/KritikSaran': (BuildContext context) => new KritikSaran(),
-        '/DetailKritikSaran': (BuildContext context) => new DetailKritikSaran(),
+            DetailKritikSaranWarga(
+              dEmail: '',
+              dId: '',
+              dIsi: '',
+              dJudul: '',
+              dNama: '',
+              dPublish: '',
+              dTanggal: '',
+            ),
+        '/FormKritikSaran': (BuildContext context) => FormKritikSaran(
+              idDesa: '',
+            ),
+        '/ListKecamatan': (BuildContext context) => ListKecamatan(
+              idDesa: '',
+            ),
+        // '/GoogleAccount': (BuildContext context) =>  GoogleAccount(),
+        '/ListDesa': (BuildContext context) => ListDesa(
+              dId: '',
+              dNama: '',
+            ),
+        '/HalbumdesProfile': (BuildContext context) => HalbumdesProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/AgendaProfile': (BuildContext context) => AgendaProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalFasumDetailPage': (BuildContext context) => HalFasumDetailPage(
+              dAlamat: '',
+              dDesa: '',
+              dDeskripsi: '',
+              dGambar: '',
+              dId: '',
+              dJenis: '',
+              dKategori: '',
+              dKecamatan: '',
+              dKoordinat: '',
+              dNama: '',
+            ),
+        '/HalFasumPendidikan': (BuildContext context) => HalFasumPendidikan(
+              dId: '',
+              dNama: '',
+              idDesa: '',
+            ),
+        '/HalAparaturDesa': (BuildContext context) => HalAparaturDesa(
+              idDesa: '',
+            ),
+        '/SimplePieChart': (BuildContext context) => SimplePieChart(
+              idDesa: '',
+              kodeDesa: '',
+            ),
+        '/HalFasumOlahraga': (BuildContext context) => HalFasumOlahraga(
+              dId: '',
+              dNama: '',
+              idDesa: '',
+            ),
+        '/HalFasumKesehatan': (BuildContext context) => HalFasumKesehatan(
+              dId: '',
+              dNama: '',
+              idDesa: '',
+            ),
+        '/HalFasumIbadah': (BuildContext context) => HalFasumIbadah(
+              dId: '',
+              dNama: '',
+              idDesa: '',
+            ),
+        '/HalFasumProfile': (BuildContext context) => HalFasumProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/GaleriProfile': (BuildContext context) => GaleriProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalBIDProfile': (BuildContext context) => HalBIDProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalPotensiProfile': (BuildContext context) => HalPotensiProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalKegiatanProfile': (BuildContext context) => HalKegiatanProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalberitaProfile': (BuildContext context) => HalberitaProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalSejarahDesa': (BuildContext context) => HalSejarahDesa(
+              idDesa: '',
+            ),
+        '/HalVisiDesa': (BuildContext context) => HalVisiDesa(
+              idDesa: '',
+            ),
+        '/HalProfilDesa': (BuildContext context) => HalProfilDesa(
+              idDesa: '',
+            ),
+        '/ProfilDesa': (BuildContext context) => ProfilDesa(
+              desa: '',
+              id: '',
+              kecamatan: '',
+              title: '',
+            ),
+        '/FormAkunEditSemua': (BuildContext context) => FormAkunEditSemua(
+              dEmail: '',
+              dHp: '',
+              dIdAdmin: '',
+              dNama: '',
+              dPassword: '',
+              dStatus: '',
+              dUsername: '',
+            ),
+        '/ListPenulis': (BuildContext context) => ListPenulis(),
+        // '/Login': (BuildContext context) =>  Login(),
+        // '/HomePage': (BuildContext context) =>  HomePage(),
+        '/FormAddAkun': (BuildContext context) => FormAddAkun(
+              nama: '',
+            ),
+        '/Berita': (BuildContext context) => Berita(),
+        '/Agenda': (BuildContext context) => Agenda(),
+        '/HalAkun': (BuildContext context) => HalAkun(),
+        '/PilihAKun': (BuildContext context) => PilihAKun(),
+        '/FormAkunEdit': (BuildContext context) => FormAkunEdit(
+              nama: '',
+            ),
+        '/Haldua': (BuildContext context) => Haldua(),
+        // '/AdminTes': (BuildContext context) => AdminTes(),
+        '/EditSemua': (BuildContext context) => EditSemua(),
+        '/InputSemua': (BuildContext context) => InputSemua(),
+        // '/LoginPage': (BuildContext context) =>  LoginPage(),
+        '/ExpansionTileSample': (BuildContext context) => ExpansionTileSample(),
+        '/PilihAkun': (BuildContext context) => PilihAKun(),
+        '/FormBerita': (BuildContext context) => FormBerita(),
+        '/FormInovasi': (BuildContext context) => FormInovasi(),
+        '/FormBumdes': (BuildContext context) => FormBumdes(),
+        '/FormKegiatan': (BuildContext context) => FormKegiatan(),
+        // '/DaftarWarga': (BuildContext context) =>  DaftarWarga(),
+        '/DaftarAdmin': (BuildContext context) => DaftarAdmin(),
+        '/AgendaDetail': (BuildContext context) => AgendaDetail(
+              desaEvent: '',
+              gambarEvent: '',
+              idDesa: '',
+              judulEvent: '',
+              kecamatanEvent: '',
+              mulaiEvent: '',
+              penyelenggaraEvent: '',
+              selesaiEvent: '',
+              tglmulaiEvent: '',
+              tglselesaiEvent: '',
+              uraianEvent: '',
+              urlEvent: '',
+            ),
+        '/FormBeritaEdit': (BuildContext context) => FormBeritaEdit(
+              dGambar: '',
+              dIdBerita: '',
+              dIsi: '',
+              dJudul: '',
+              dKategori: '',
+              dKomentar: '',
+              dTanggal: '',
+              dVideo: '',
+            ),
+        // '/OnboardingPage': (BuildContext context) =>  OnboardingPage(),
+        // '/DaftarWargaLogin': (BuildContext context) =>  DaftarWargaLogin(),
+        '/HalamanBeritaWarga': (BuildContext context) => HalamanBeritaWarga(),
+        '/HalamanBeritaadmin': (BuildContext context) => HalamanBeritaadmin(),
+        '/FormBeritaDashbord': (BuildContext context) => FormBeritaDashbord(),
+        '/HalKegiatanList': (BuildContext context) => HalKegiatanList(),
+        '/HalInovasiList': (BuildContext context) => HalInovasiList(),
+        '/HalBumdesList': (BuildContext context) => HalBumdesList(),
+        '/HalEventList': (BuildContext context) => HalEventList(),
+        '/DetailBerita': (BuildContext context) => DetailBerita(
+              dAdmin: '',
+              dBaca: '',
+              dDesa: '',
+              dGambar: '',
+              dHtml: '',
+              dId: '',
+              dIdDesa: '',
+              dJudul: '',
+              dKategori: '',
+              dKecamatan: '',
+              dTanggal: '',
+              dUrl: '',
+              dVideo: '',
+              dWaktu: '',
+            ),
+        '/FormAgenda': (BuildContext context) => FormAgenda(),
+        '/Galeri': (BuildContext context) => Galeri(),
+        // '/Tes': (BuildContext context) =>  Tes(),
+        '/DetailGaleri': (BuildContext context) => DetailGaleri(
+              dDesa: '',
+              dGambar: '',
+              dJudul: '',
+            ),
+        '/KritikSaran': (BuildContext context) => KritikSaran(),
+        '/DetailKritikSaran': (BuildContext context) => DetailKritikSaran(
+              dEmail: '',
+              dId: '',
+              dIsi: '',
+              dJudul: '',
+              dNama: '',
+              dPublish: '',
+              dTanggal: '',
+            ),
       },
       home: SplashScreenPage(),
     ),

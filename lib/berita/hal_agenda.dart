@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_agenda.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 
 //ANCHOR PACKAGE halaman potensi
@@ -19,12 +19,13 @@ class _AgendaState extends State<Agenda> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/agenda/allevent"; //NOTE url api load berita
   ScrollController _scrollController = new ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   void _getMoreData() async {
     //NOTE if else load more
@@ -89,6 +90,7 @@ class _AgendaState extends State<Agenda> {
 
 //ANCHOR listview berita
   Widget _buildList() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     return GridView.builder(
       gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -152,8 +154,8 @@ class _AgendaState extends State<Agenda> {
                                 ),
                               ),
                               fit: BoxFit.cover,
-                              height: SizeConfig.safeBlockVertical * 20,
-                              width: SizeConfig.safeBlockHorizontal * 100,
+                              height: mediaQueryData.size.height * 0.2,
+                              // width: mediaQueryData.size.width * 0.1,
                             ),
                           ),
                           Padding(
@@ -237,6 +239,7 @@ class _AgendaState extends State<Agenda> {
             );
           }
         }
+        return Container();
       },
     );
   }
@@ -244,7 +247,7 @@ class _AgendaState extends State<Agenda> {
 //ANCHOR body berita
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Scaffold(
       body: RefreshIndicator(
         key: refreshKey,

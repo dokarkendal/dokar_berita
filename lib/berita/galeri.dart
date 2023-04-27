@@ -1,7 +1,7 @@
 //import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 
 //ANCHOR PACKAGE halaman potensi
@@ -24,13 +24,14 @@ class _GaleriState extends State<Galeri> {
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/kabar/newloadmoregaleri"; //NOTE url api load berita
   ScrollController _scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   // ignore: deprecated_member_use
-  List databerita = List();
+  List databerita = [];
   bool isLoading = false;
   final dio = Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   void _getMoreData() async {
     //NOTE if else load more
@@ -43,9 +44,9 @@ class _GaleriState extends State<Galeri> {
       );
 
       final response =
-          await dio.get(nextPage + "/" + pref.getString("IdDesa") + "/");
+          await dio.get(nextPage + "/" + pref.getString("IdDesa")! + "/");
       // ignore: deprecated_member_use
-      List tempList = List();
+      List tempList = [];
       nextPage = response.data['next'];
 
       for (int i = 0; i < response.data['result'].length; i++) {
@@ -167,6 +168,7 @@ class _GaleriState extends State<Galeri> {
             );
           }
         }
+        return Container();
       },
     );
   }
@@ -174,14 +176,14 @@ class _GaleriState extends State<Galeri> {
 //ANCHOR body berita
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'GALERI',
+          'GALERI PROFIL',
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,

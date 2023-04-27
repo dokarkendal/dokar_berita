@@ -11,9 +11,8 @@ class FormKritikSaran extends StatefulWidget {
   final String idDesa;
 
   FormKritikSaran({
-    Key key,
-    this.idDesa,
-  }) : super(key: key);
+    required this.idDesa,
+  });
 
   @override
   FormKritikSaranState createState() => FormKritikSaranState();
@@ -23,10 +22,11 @@ class FormKritikSaranState extends State<FormKritikSaran> {
   String username = "";
 
   // ignore: unused_field
-  String _mySelection;
+  late String _mySelection;
   List kegiatanAdmin = [];
-  GlobalKey<RefreshIndicatorState> refreshKey;
-  final SlidableController slidableController = SlidableController();
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  // final SlidableController slidableController = SlidableController();
 
   List kritiksaran = [];
   bool isLoading = false;
@@ -114,9 +114,12 @@ class FormKritikSaranState extends State<FormKritikSaran> {
                 return Container();
               } else {
                 return Slidable(
-                  controller: slidableController,
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
+                  // controller: slidableController,
+                  startActionPane: ActionPane(
+                      motion: const DrawerMotion(),
+                      extentRatio: 0.25,
+                      children: []),
+
                   child: Container(
                     color: Colors.grey[100],
                     padding: EdgeInsets.only(

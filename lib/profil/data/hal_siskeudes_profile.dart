@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class HalSiskeudesProfile extends StatefulWidget {
   final String idDesa, kodeDesa;
 
-  HalSiskeudesProfile({this.idDesa, this.kodeDesa});
+  HalSiskeudesProfile({required this.idDesa, required this.kodeDesa});
 
   @override
   _HalSiskeudesProfileState createState() => _HalSiskeudesProfileState();

@@ -4,45 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-
 import '../style/styleset.dart';
-// import 'package:workmanager/workmanager.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-
-// const simplePeriodicTask = "simplePeriodicTask";
-// final firebaseMessaging = FirebaseMessaging();
-//cek 2dd
-// Future<void> _setNotification([String topik, String token]) async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   await Workmanager.initialize(callbackDispatcher,
-//       isInDebugMode:
-//           false); //to true if still in testing lev turn it to false whenever you are launching the app
-//   await Workmanager.registerPeriodicTask(
-//     "5", simplePeriodicTask,
-//     inputData: <String, dynamic>{'topik': topik, 'token': token},
-//     existingWorkPolicy: ExistingWorkPolicy.replace,
-//     frequency: Duration(minutes: 15), //when should it check the link
-//     initialDelay:
-//         Duration(seconds: 5), //duration before showing the notification
-//     constraints: Constraints(
-//       networkType: NetworkType.connected,
-//     ),
-//   );
-// }
-
-// void callbackDispatcher() {
-//   Workmanager.executeTask(
-//     (task, inputData) async {
-//       var response = await http.post(
-//           "http://dokar.kendalkab.go.id/webservice/android/fcm",
-//           body: {"topik": inputData['topik'], "token": inputData['token']});
-//       var convert = json.decode(response.body);
-//       print(convert);
-//       return Future.value(true);
-//     },
-//   );
-// }
 
 class HalAkun extends StatefulWidget {
   @override
@@ -50,18 +12,18 @@ class HalAkun extends StatefulWidget {
 }
 
 class _HalAkunState extends State<HalAkun> {
-  String nama;
-  String email;
-  String hp;
-  String username;
+  late String nama = "";
+  late String email = "";
+  late String hp = "";
+  late String username = "";
   String kecamatan = "";
   String namadesa = "";
   String notifStatus = '';
   String token = '';
   String topik = '';
   bool loadingdata = false;
-  // ignore: missing_return
-  Future<String> detailAkun(context) async {
+
+  Future<void> detailAkun(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       loadingdata = true;
@@ -78,12 +40,12 @@ class _HalAkunState extends State<HalAkun> {
       setState(
         () {
           loadingdata = false;
-          nama = detailakun['nama'];
+          nama = detailakun['nama']!;
           email = detailakun['email'];
           hp = detailakun['hp'];
           username = detailakun['username'];
-          kecamatan = pref.getString("kecamatan");
-          namadesa = pref.getString("desa");
+          kecamatan = pref.getString("kecamatan")!;
+          namadesa = pref.getString("desa")!;
         },
       );
     }
@@ -91,13 +53,6 @@ class _HalAkunState extends State<HalAkun> {
 
   @override
   void initState() {
-    // firebaseMessaging.getToken().then(
-    //       (token) => setState(
-    //         () {
-    //           this.token = token;
-    //         },
-    //       ),
-    //     );
     super.initState();
     detailAkun(context);
     cekNotif();
@@ -120,7 +75,7 @@ class _HalAkunState extends State<HalAkun> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(
       () {
-        notifStatus = pref.getString("NotifStatus");
+        notifStatus = pref.getString("NotifStatus")!;
       },
     );
   }
@@ -184,39 +139,6 @@ class _HalAkunState extends State<HalAkun> {
             ),
     );
   }
-
-  // Widget notification() {
-  //   if (notifStatus == '1') {
-  //     return IconButton(
-  //       onPressed: () async {
-  //         SharedPreferences pref = await SharedPreferences.getInstance();
-  //         pref.setString('NotifStatus', '0');
-  //         await Workmanager.cancelAll();
-  //         print('Notif sudah di turn OFF');
-  //         Navigator.of(context).pushNamedAndRemoveUntil(
-  //             '/HalAkun', ModalRoute.withName('/Haldua'));
-  //       },
-  //       icon: Icon(Icons.notifications_active),
-  //     );
-  //   } else {
-  //     return IconButton(
-  //       onPressed: () async {
-  //         SharedPreferences pref = await SharedPreferences.getInstance();
-  //         setState(
-  //           () {
-  //             topik = 'Admin';
-  //           },
-  //         );
-  //         pref.setString('NotifStatus', '1');
-  //         _setNotification(topik, token);
-  //         print('Notif sudah di turn ON');
-  //         Navigator.of(context).pushNamedAndRemoveUntil(
-  //             '/HalAkun', ModalRoute.withName('/Haldua'));
-  //       },
-  //       icon: Icon(Icons.notifications_off),
-  //     );
-  //   }
-  // }
 
   Widget namaEdit() {
     return InkWell(
@@ -428,6 +350,7 @@ class _HalAkunState extends State<HalAkun> {
                 "EDIT AKUN",
                 style: TextStyle(
                   fontSize: 18,
+                  color: Colors.white,
                 ),
               ),
               onPressed: () {

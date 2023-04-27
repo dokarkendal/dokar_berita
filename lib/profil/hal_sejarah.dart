@@ -12,14 +12,14 @@ import '../style/styleset.dart';
 class HalSejarahDesa extends StatefulWidget {
   final String idDesa;
 
-  HalSejarahDesa({this.idDesa});
+  HalSejarahDesa({required this.idDesa});
 
   @override
   _HalSejarahDesaState createState() => _HalSejarahDesaState();
 }
 
 class _HalSejarahDesaState extends State<HalSejarahDesa> {
-  List dataJSON;
+  late List dataJSON;
   String sejarah = '';
   String gambar = '';
   bool isLoading = false;
@@ -44,6 +44,7 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
         gambar = dataJSON['gambar'];
       },
     );
+    return '';
   }
 
   Widget _buildProgressIndicator() {

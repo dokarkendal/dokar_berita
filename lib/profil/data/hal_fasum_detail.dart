@@ -9,14 +9,15 @@ import '../../style/styleset.dart';
 
 class HalFasumDetail extends StatefulWidget {
   final String dNama, dId, idDesa;
-  HalFasumDetail({this.dNama, this.dId, this.idDesa});
+  HalFasumDetail(
+      {required this.dNama, required this.dId, required this.idDesa});
 
   @override
   _HalFasumDetailState createState() => _HalFasumDetailState();
 }
 
 class _HalFasumDetailState extends State<HalFasumDetail> {
-  List dataJSON;
+  late List dataJSON = [];
   String id = '';
   String nama = '';
 
@@ -29,20 +30,21 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
   }
 
   // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/fasilitasumum/${widget.idDesa}/" +
                 id),
         headers: {"Accept": "application/json"});
-
-    this.setState(
-      () {
-        dataJSON = json.decode(hasil.body);
-        print(id);
-      },
-    );
+    if (mounted) {
+      this.setState(
+        () {
+          dataJSON = json.decode(hasil.body);
+          print(id);
+        },
+      );
+    }
   }
 
   @override

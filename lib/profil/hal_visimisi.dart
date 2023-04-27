@@ -11,14 +11,14 @@ import '../style/styleset.dart';
 class HalVisiDesa extends StatefulWidget {
   final String idDesa;
 
-  HalVisiDesa({this.idDesa});
+  HalVisiDesa({required this.idDesa});
 
   @override
   _HalVisiDesaState createState() => _HalVisiDesaState();
 }
 
 class _HalVisiDesaState extends State<HalVisiDesa> {
-  List dataJSON;
+  late List dataJSON;
   String visi = '';
   String misi = '';
   bool isLoading = false;
@@ -43,6 +43,7 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
         misi = dataJSON['misi'];
       },
     );
+    return '';
   }
 
   @override
