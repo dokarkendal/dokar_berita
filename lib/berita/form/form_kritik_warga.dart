@@ -289,7 +289,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                       ),
                       label: Text("KIRIM"),
                       onPressed: () async {
-                        if (cNama.text == null || cNama.text == '') {
+                        if (cNama.text.isEmpty || cNama.text == '') {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Nama wajib di isi.',
@@ -305,7 +305,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                             ),
                           ));
                           // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cEmail.text == null || cEmail.text == '') {
+                        } else if (cEmail.text.isEmpty || cEmail.text == '') {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Email wajib di isi.',
@@ -321,7 +321,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                             ),
                           ));
                           // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (cjudul.text == null || cjudul.text == '') {
+                        } else if (cjudul.text.isEmpty || cjudul.text == '') {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Judul wajib di isi.',
@@ -337,7 +337,7 @@ class FormKritikWargaState extends State<FormKritikWarga> {
                             ),
                           ));
                           // scaffoldKey.currentState.showSnackBar(snackBar);
-                        } else if (ckritik.text == null || ckritik.text == '') {
+                        } else if (ckritik.text.isEmpty || ckritik.text == '') {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                               'Kritik wajib di isi.',

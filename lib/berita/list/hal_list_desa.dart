@@ -17,7 +17,7 @@ class ListDesa extends StatefulWidget {
 }
 
 class _ListDesaState extends State<ListDesa> {
-  late List dataJSON;
+  late List? dataJSON;
   String id = '';
   String kecamatan = '';
   bool isLoading = false;
@@ -96,7 +96,7 @@ class _ListDesaState extends State<ListDesa> {
       ),
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: dataJSON == null ? 0 : dataJSON.length,
+      itemCount: dataJSON == null ? 0 : dataJSON!.length,
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.all(3.0),
@@ -120,7 +120,7 @@ class _ListDesaState extends State<ListDesa> {
                     child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    dataJSON[index]["desa"],
+                    dataJSON![index]["desa"],
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -142,8 +142,8 @@ class _ListDesaState extends State<ListDesa> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProfilDesa(
-                    id: dataJSON[index]["id"],
-                    desa: dataJSON[index]["desa"],
+                    id: dataJSON![index]["id"],
+                    desa: dataJSON![index]["desa"],
                     kecamatan: "${widget.dNama}",
                     title: '',
                   ),

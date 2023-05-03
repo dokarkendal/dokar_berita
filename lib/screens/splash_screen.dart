@@ -3,8 +3,8 @@ import 'package:dokar_aplikasi/hal_pilih_user.dart';
 // import 'package:dokar_aplikasi/hal_pilih_user.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
 import '../style/styleset.dart';
 

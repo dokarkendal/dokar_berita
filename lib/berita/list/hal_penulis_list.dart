@@ -8,7 +8,10 @@ import 'package:dokar_aplikasi/berita/edit/hal_akun_edit_semua.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http; //api
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+// import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../style/styleset.dart'; //save session
@@ -27,6 +30,7 @@ class ListPenulisState extends State<ListPenulis> {
   bool loadingdata = false;
   late GlobalKey<RefreshIndicatorState> refreshKey =
       GlobalKey<RefreshIndicatorState>();
+  // bool _isInAsyncCall = false;
   // final SlidableController slidableController = SlidableController();
 
 ///////////////////////////////CEK SESSION ADMIN///////////////////////////////////
@@ -44,6 +48,9 @@ class ListPenulisState extends State<ListPenulis> {
 
   void hapusadmin(beritaAdmin, status) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    // setState(() {
+    //   _isInAsyncCall = true;
+    // });
     final response = await http.post(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/account/deletepenulis"),
@@ -54,7 +61,31 @@ class ListPenulisState extends State<ListPenulis> {
           "IdAdminSession": pref.getString("IdAdmin"),
         });
     var deleted = json.decode(response.body);
+
     print(deleted);
+    if (deleted[0]["Notif"] == "Delete Berhasil.") {
+      setState(
+        () {
+          // _isInAsyncCall = false;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              'Akun berhasil di hapus',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                print('ULANGI snackbar');
+              },
+            ),
+          ));
+        },
+      );
+    }
+    // "Notif": "Maaf, Anda tidak bisa Menghapus Akun Anda"
+    // "Notif": "Delete Berhasil."
     Navigator.pushReplacementNamed(context, '/ListPenulis');
   }
 
@@ -117,18 +148,25 @@ class ListPenulisState extends State<ListPenulis> {
               child: Container(
                 color: Colors.grey[100],
                 child: Card(
-                  color: Theme.of(context).primaryColor,
+                  // color: Theme.of(context).primaryColor,
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(10.0),
+                  // ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(
+                      color: Colors.orange,
+                      width: 1.0,
+                    ),
                   ),
                   child: InkWell(
                     onTap: () {},
                     child: ListTile(
                       leading: IconButton(
                         padding: EdgeInsets.all(15.0),
-                        icon: Icon(Icons.perm_contact_calendar),
-                        color: Colors.white,
-                        iconSize: 30.0,
+                        icon: Icon(Icons.admin_panel_settings_rounded),
+                        color: Colors.orange,
+                        iconSize: 35.0,
                         onPressed: () {},
                       ),
                       title: Text(
@@ -138,13 +176,28 @@ class ListPenulisState extends State<ListPenulis> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: Text(
-                        databerita[i]["status"],
-                        style: TextStyle(
-                          // fontSize: 10,
-                          // fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            databerita[i]["status"],
+                            style: TextStyle(
+                              // fontSize: 10,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.orange,
+                            ),
+                          ),
+                          Container(
+                              height: 10,
+                              child: VerticalDivider(color: Colors.grey)),
+                          Text(
+                            databerita[i]["nama"],
+                            style: TextStyle(
+                              // fontSize: 10,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.orange,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -186,35 +239,73 @@ class ListPenulisState extends State<ListPenulis> {
                     backgroundColor: Colors.red,
                     icon: Icons.delete,
                     onPressed: (context) {
-                      Alert(
+                      Dialogs.bottomMaterialDialog(
+                        msg: "Hapus " + databerita[i]["status"],
+                        title: "Hapus akun?",
+                        color: Colors.white,
+                        lottieBuilder: Lottie.asset(
+                          'assets/animation/delete.json',
+                          fit: BoxFit.contain,
+                          repeat: true,
+                        ),
+                        // animation:'assets/logo/animation/exit.json',
                         context: context,
-                        type: AlertType.error,
-                        title: "Hapus " + databerita[i]["status"],
-                        buttons: [
-                          DialogButton(
-                            child: Text(
-                              "Tidak",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                            color: Colors.green,
-                          ),
-                          DialogButton(
-                            child: Text(
-                              "Hapus",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
+                        actions: [
+                          IconsOutlineButton(
                             onPressed: () {
+                              if (mounted) {
+                                // Navigator.pop(context);
+                                Navigator.of(refreshKey.currentContext!).pop();
+                              }
+                            },
+                            text: 'Batal',
+                            iconData: Icons.cancel_outlined,
+                            textStyle: const TextStyle(color: Colors.grey),
+                            iconColor: Colors.grey,
+                          ),
+                          IconsButton(
+                            onPressed: () async {
                               hapusadmin(
                                   databerita[i]["no"], databerita[i]["status"]);
-                              Navigator.pop(context);
+                              Navigator.of(refreshKey.currentContext!).pop();
                             },
+                            text: 'HAPUS',
+                            iconData: Icons.edit,
                             color: Colors.red,
-                          )
+                            textStyle: const TextStyle(color: Colors.white),
+                            iconColor: Colors.white,
+                          ),
                         ],
-                      ).show();
+                      );
+                      // Alert(
+                      //   context: context,
+                      //   type: AlertType.error,
+                      //   title: "Hapus " + databerita[i]["status"],
+                      //   buttons: [
+                      //     DialogButton(
+                      //       child: Text(
+                      //         "Tidak",
+                      //         style:
+                      //             TextStyle(color: Colors.white, fontSize: 16),
+                      //       ),
+                      //       onPressed: () => Navigator.pop(context),
+                      //       color: Colors.green,
+                      //     ),
+                      //     DialogButton(
+                      //       child: Text(
+                      //         "Hapus",
+                      //         style:
+                      //             TextStyle(color: Colors.white, fontSize: 16),
+                      //       ),
+                      //       onPressed: () {
+                      //         hapusadmin(
+                      //             databerita[i]["no"], databerita[i]["status"]);
+                      //         Navigator.pop(context);
+                      //       },
+                      //       color: Colors.red,
+                      //     )
+                      //   ],
+                      // ).show();
                     },
                   ),
                 ],
@@ -224,9 +315,16 @@ class ListPenulisState extends State<ListPenulis> {
             child: Container(
               color: Colors.grey[100],
               child: Card(
-                color: Colors.grey,
+                // color: Colors.grey,
+                // shape: RoundedRectangleBorder(
+                //   borderRadius: BorderRadius.circular(10.0),
+                // ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
+                  side: BorderSide(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
                 ),
                 child: InkWell(
                   onTap: () {},
@@ -234,7 +332,7 @@ class ListPenulisState extends State<ListPenulis> {
                     leading: IconButton(
                       padding: EdgeInsets.all(15.0),
                       icon: Icon(Icons.account_circle_rounded),
-                      color: Colors.white,
+                      color: Colors.grey,
                       iconSize: 30.0,
                       onPressed: () {},
                     ),
@@ -244,11 +342,24 @@ class ListPenulisState extends State<ListPenulis> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: Text(
-                      databerita[i]["status"],
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                    subtitle: Row(
+                      children: [
+                        Text(
+                          databerita[i]["status"],
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Container(
+                            height: 10,
+                            child: VerticalDivider(color: Colors.grey)),
+                        Text(
+                          databerita[i]["nama"],
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -291,33 +402,71 @@ class ListPenulisState extends State<ListPenulis> {
                   backgroundColor: Colors.red,
                   icon: Icons.delete,
                   onPressed: (context) {
-                    Alert(
+                    Dialogs.bottomMaterialDialog(
+                      msg: "Hapus " + databerita[i]["status"],
+                      title: "Hapus akun?",
+                      color: Colors.white,
+                      lottieBuilder: Lottie.asset(
+                        'assets/animation/delete.json',
+                        fit: BoxFit.contain,
+                        repeat: true,
+                      ),
+                      // animation:'assets/logo/animation/exit.json',
                       context: context,
-                      type: AlertType.error,
-                      title: "Hapus " + databerita[i]["status"],
-                      buttons: [
-                        DialogButton(
-                          child: Text(
-                            "Tidak",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          color: Colors.green,
-                        ),
-                        DialogButton(
-                          child: Text(
-                            "Hapus",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
+                      actions: [
+                        IconsOutlineButton(
                           onPressed: () {
+                            if (mounted) {
+                              // Navigator.pop(context);
+                              Navigator.of(refreshKey.currentContext!).pop();
+                            }
+                          },
+                          text: 'Batal',
+                          iconData: Icons.cancel_outlined,
+                          textStyle: const TextStyle(color: Colors.grey),
+                          iconColor: Colors.grey,
+                        ),
+                        IconsButton(
+                          onPressed: () async {
                             hapusadmin(
                                 databerita[i]["no"], databerita[i]["status"]);
-                            Navigator.pop(context);
+                            Navigator.of(refreshKey.currentContext!).pop();
                           },
+                          text: 'HAPUS',
+                          iconData: Icons.edit,
                           color: Colors.red,
-                        )
+                          textStyle: const TextStyle(color: Colors.white),
+                          iconColor: Colors.white,
+                        ),
                       ],
-                    ).show();
+                    );
+                    // Alert(
+                    //   context: context,
+                    //   type: AlertType.error,
+                    //   title: "Hapus " + databerita[i]["status"],
+                    //   buttons: [
+                    //     DialogButton(
+                    //       child: Text(
+                    //         "Tidak",
+                    //         style: TextStyle(color: Colors.white, fontSize: 16),
+                    //       ),
+                    //       onPressed: () => Navigator.pop(context),
+                    //       color: Colors.green,
+                    //     ),
+                    //     DialogButton(
+                    //       child: Text(
+                    //         "Hapus",
+                    //         style: TextStyle(color: Colors.white, fontSize: 16),
+                    //       ),
+                    //       onPressed: () {
+                    //         hapusadmin(
+                    //             databerita[i]["no"], databerita[i]["status"]);
+                    //         Navigator.pop(context);
+                    //       },
+                    //       color: Colors.red,
+                    //     )
+                    //   ],
+                    // ).show();
                   },
                 ),
               ],
@@ -446,16 +595,25 @@ class ListPenulisState extends State<ListPenulis> {
       ),
       body: loadingdata
           ? _buildProgressIndicator()
-          : SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  children: <Widget>[
-                    //_admin(),
-                    cardAkun(),
-                    _padding10(),
-                    _penulis(),
-                  ],
+          : RefreshIndicator(
+              key: refreshKey,
+              onRefresh: () async {
+                await Future.delayed(
+                  Duration(seconds: 1),
+                  () {},
+                );
+              },
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: Column(
+                    children: <Widget>[
+                      //_admin(),
+                      cardAkun(),
+                      _padding10(),
+                      _penulis(),
+                    ],
+                  ),
                 ),
               ),
             ),

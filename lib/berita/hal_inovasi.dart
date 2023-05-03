@@ -1,7 +1,7 @@
 //ANCHOR PACKAGE halaman potensi
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_page_inovasi.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:dio/dio.dart';

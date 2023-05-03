@@ -28,7 +28,7 @@ class BeritaState extends State<Berita> {
   bool isLoading = false;
   final dio = Dio();
   late String dibaca;
-  late List dataJSON = [];
+  late List? dataJSON = [];
   late int maxLines;
 
   // BeritaState({this.maxLines});
@@ -238,7 +238,7 @@ class BeritaState extends State<Berita> {
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
-      itemCount: dataJSON == null ? 0 : dataJSON.length,
+      itemCount: dataJSON == null ? 0 : dataJSON!.length,
       itemBuilder: (context, i) {
         return Container(
           child: Card(
@@ -254,7 +254,7 @@ class BeritaState extends State<Berita> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(5.0),
                           child: Image.network(
-                            dataJSON[i]["kabar_gambar"],
+                            dataJSON![i]["kabar_gambar"],
                             fit: BoxFit.cover,
                             width: 100.0,
                             height: 74.0,
@@ -269,7 +269,7 @@ class BeritaState extends State<Berita> {
                   SizedBox(
                     width: 100.0,
                     child: AutoSizeText(
-                      dataJSON[i]["kabar_judul"], // NOTE api judul berita
+                      dataJSON![i]["kabar_judul"], // NOTE api judul berita
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 10.0, color: Colors.black54),
                       maxLines: 2,

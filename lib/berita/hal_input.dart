@@ -4,7 +4,7 @@ import 'package:dokar_aplikasi/berita/form/form_berita.dart';
 import 'package:dokar_aplikasi/berita/form/form_bumdes.dart';
 import 'package:dokar_aplikasi/berita/form/form_inovasi.dart';
 import 'package:dokar_aplikasi/berita/form/form_kegiatan.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -287,7 +287,7 @@ class _InputSemuaState extends State<InputSemua> {
   }
 
   Widget eventEdit() {
-    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     return Card(
       //color: Colors.deepPurple,
       shape: RoundedRectangleBorder(

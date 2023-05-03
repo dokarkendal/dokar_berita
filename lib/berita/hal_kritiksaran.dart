@@ -2,7 +2,7 @@ import 'dart:async'; // api to json
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../style/styleset.dart';
 import 'detail_page_kritiksaran.dart';

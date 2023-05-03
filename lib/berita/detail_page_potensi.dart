@@ -107,69 +107,69 @@ class _DetailPotensiState extends State<DetailPotensi> {
     this.addViews();
   }
 
-  Widget _playYoutube(youTube) {
-    String vid = "${widget.dVideo}";
-    int panjang = vid.length;
-    if ("${widget.dVideo}" == null) {
-      return new Center(
-        child: Chip(
-          backgroundColor: Colors.red[400],
-          avatar: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-          ),
-          label: Text(
-            'Tidak ada embed video',
-            style: new TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-            ),
-          ),
-        ),
-      );
-    } else {
-      if (panjang >= 12) {
-        return new Center(
-          child: Chip(
-            backgroundColor: Colors.red[400],
-            avatar: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-            ),
-            label: Text(
-              'Embed video hanya dari youtube',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
-          ),
-        );
-      } else if (panjang == 0) {
-        return new Center(
-          child: Chip(
-            backgroundColor: Colors.red[400],
-            avatar: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-            ),
-            label: Text(
-              'Tidak ada embed video',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
-          ),
-        );
-      } else {
-        return new YoutubePlayer(
-          controller: youTube,
-          showVideoProgressIndicator: true,
-        );
-      }
-    }
-  }
+  // Widget _playYoutube(youTube) {
+  //   String vid = "${widget.dVideo}";
+  //   int panjang = vid.length;
+  //   if ("${widget.dVideo}" == null) {
+  //     return new Center(
+  //       child: Chip(
+  //         backgroundColor: Colors.red[400],
+  //         avatar: CircleAvatar(
+  //           backgroundColor: Colors.white,
+  //           child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //         ),
+  //         label: Text(
+  //           'Tidak ada embed video',
+  //           style: new TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 14.0,
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     if (panjang >= 12) {
+  //       return new Center(
+  //         child: Chip(
+  //           backgroundColor: Colors.red[400],
+  //           avatar: CircleAvatar(
+  //             backgroundColor: Colors.white,
+  //             child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //           ),
+  //           label: Text(
+  //             'Embed video hanya dari youtube',
+  //             style: new TextStyle(
+  //               color: Colors.white,
+  //               fontSize: 14.0,
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     } else if (panjang == 0) {
+  //       return new Center(
+  //         child: Chip(
+  //           backgroundColor: Colors.red[400],
+  //           avatar: CircleAvatar(
+  //             backgroundColor: Colors.white,
+  //             child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //           ),
+  //           label: Text(
+  //             'Tidak ada embed video',
+  //             style: new TextStyle(
+  //               color: Colors.white,
+  //               fontSize: 14.0,
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     } else {
+  //       return new YoutubePlayer(
+  //         controller: youTube,
+  //         showVideoProgressIndicator: true,
+  //       );
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

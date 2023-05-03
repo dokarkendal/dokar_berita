@@ -41,12 +41,12 @@ class _ProfilDesaState extends State<ProfilDesa> {
   String namadesa = "";
   String status = "";
   String kode = "";
-  late int jumlah = 0;
-  late int jumlahkeg = 0;
-  late int jumlahB = 0;
-  late int jumlahBum = 0;
-  late int jumlahAgen = 0;
-  late List dataJSON = [];
+  late int? jumlah = 0;
+  late int? jumlahkeg = 0;
+  late int? jumlahB = 0;
+  late int? jumlahBum = 0;
+  late int? jumlahAgen = 0;
+  late List? dataJSON = [];
   bool isLoading = false;
 
   Future jumlahAgenda() async {
@@ -567,9 +567,10 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemCount:
-                                        dataJSON == null ? 0 : dataJSON.length,
+                                        dataJSON == null ? 0 : dataJSON!.length,
                                     itemBuilder: (context, i) {
-                                      if (dataJSON[i]["gambar"] == 'NotFound') {
+                                      if (dataJSON![i]["gambar"] ==
+                                          'NotFound') {
                                         return Container(
                                           child: Center(
                                             child: Column(
@@ -604,11 +605,11 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         DetailGaleri(
-                                                      dGambar: dataJSON[i]
+                                                      dGambar: dataJSON![i]
                                                           ["gambar"],
-                                                      dDesa: dataJSON[i]
+                                                      dDesa: dataJSON![i]
                                                           ["desa"],
-                                                      dJudul: dataJSON[i]
+                                                      dJudul: dataJSON![i]
                                                           ["judul"],
                                                     ),
                                                   ),
@@ -632,7 +633,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                           width: 160.0,
                                                           height: 120.0,
                                                           // ),
-                                                          imageUrl: dataJSON[i]
+                                                          imageUrl: dataJSON![i]
                                                               ["gambar"],
                                                           //  NetworkImage(databerita[index]["kabar_gambar"]),
                                                           placeholder:
@@ -687,7 +688,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                                             Alignment.centerLeft,
                                                                         child:
                                                                             Text(
-                                                                          dataJSON[i]
+                                                                          dataJSON![i]
                                                                               [
                                                                               "desa"],
                                                                           style:
@@ -705,7 +706,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                                         alignment:
                                                                             Alignment.centerLeft,
                                                                         child: AutoSizeText(
-                                                                            dataJSON[i][
+                                                                            dataJSON![i][
                                                                                 "judul"],
                                                                             overflow: TextOverflow
                                                                                 .ellipsis,

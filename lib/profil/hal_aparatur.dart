@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
@@ -31,7 +31,7 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
         isLoading = true;
       },
     );
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    // SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/aparatur/" +

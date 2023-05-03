@@ -511,7 +511,7 @@ class FormAkunEditState extends State<FormAkunEdit> {
                                           ),
                                           IconsButton(
                                             onPressed: () async {
-                                              if (cNama.text == null ||
+                                              if (cNama.text.isEmpty ||
                                                   cNama.text == '') {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
@@ -532,8 +532,8 @@ class FormAkunEditState extends State<FormAkunEdit> {
                                                 ));
                                                 // SnackBar snackBar =
                                                 //     scaffoldKey.currentState.showSnackBar(snackBar);
-                                              } else if (cUsername.text ==
-                                                      null ||
+                                              } else if (cUsername
+                                                      .text.isEmpty ||
                                                   cUsername.text == '') {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(

@@ -379,60 +379,60 @@ class _DetailBumdesState extends State<DetailBumdes> {
     );
   }
 
-  Widget _playYoutube(youTube) {
-    String vid = "${widget.dVideo}";
-    int panjang = vid.length;
-    if ("${widget.dVideo}" == null) {
-      return new Center(
-        child: Chip(
-          backgroundColor: Colors.red[400],
-          avatar: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-          ),
-          label: Text(
-            'Tidak ada embed video',
-            style: new TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-            ),
-          ),
-        ),
-      );
-    } else {
-      if (panjang >= 12) {
-        return new Text(
-          "Emed video hanya dari youtube.",
-          style: new TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black45,
-          ),
-        );
-      } else if (panjang == 0) {
-        return new Center(
-          child: Chip(
-            backgroundColor: Colors.red[400],
-            avatar: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-            ),
-            label: Text(
-              'Tidak ada embed video',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
-          ),
-        );
-      } else {
-        return new YoutubePlayer(
-          controller: youTube,
-          showVideoProgressIndicator: true,
-        );
-      }
-    }
-  }
+  // Widget _playYoutube(youTube) {
+  //   String vid = "${widget.dVideo}";
+  //   int panjang = vid.length;
+  //   if ("${widget.dVideo}" == null) {
+  //     return new Center(
+  //       child: Chip(
+  //         backgroundColor: Colors.red[400],
+  //         avatar: CircleAvatar(
+  //           backgroundColor: Colors.white,
+  //           child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //         ),
+  //         label: Text(
+  //           'Tidak ada embed video',
+  //           style: new TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 14.0,
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     if (panjang >= 12) {
+  //       return new Text(
+  //         "Emed video hanya dari youtube.",
+  //         style: new TextStyle(
+  //           fontWeight: FontWeight.bold,
+  //           color: Colors.black45,
+  //         ),
+  //       );
+  //     } else if (panjang == 0) {
+  //       return new Center(
+  //         child: Chip(
+  //           backgroundColor: Colors.red[400],
+  //           avatar: CircleAvatar(
+  //             backgroundColor: Colors.white,
+  //             child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //           ),
+  //           label: Text(
+  //             'Tidak ada embed video',
+  //             style: new TextStyle(
+  //               color: Colors.white,
+  //               fontSize: 14.0,
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     } else {
+  //       return new YoutubePlayer(
+  //         controller: youTube,
+  //         showVideoProgressIndicator: true,
+  //       );
+  //     }
+  //   }
+  // }
 
   // Widget wShare() {
   //   return new Row(

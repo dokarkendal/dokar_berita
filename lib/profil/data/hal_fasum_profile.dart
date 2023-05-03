@@ -65,7 +65,7 @@ class _HalFasumProfileState extends State<HalFasumProfile> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(this.context);
 
     return Scaffold(
       appBar: AppBar(

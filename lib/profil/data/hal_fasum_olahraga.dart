@@ -14,7 +14,7 @@ class HalFasumOlahraga extends StatefulWidget {
 }
 
 class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
-  late List dataJSON = [];
+  late List? dataJSON = [];
   String id = '';
 
   @override
@@ -50,7 +50,7 @@ class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
         child: ListView.builder(
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: dataJSON == null ? 0 : dataJSON.length,
+          itemCount: dataJSON == null ? 0 : dataJSON!.length,
           itemBuilder: (context, index) {
             return new Container(
               color: Colors.grey[100],
@@ -68,15 +68,15 @@ class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => HalFasumDetail(
-                            dNama: dataJSON[index]["nama"],
-                            dId: dataJSON[index]["id"],
+                            dNama: dataJSON![index]["nama"],
+                            dId: dataJSON![index]["id"],
                             idDesa: "${widget.idDesa}"),
                       ),
                     );
                   },
                   child: ListTile(
                     title: new Text(
-                      dataJSON[index]["nama"],
+                      dataJSON![index]["nama"],
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: new TextStyle(

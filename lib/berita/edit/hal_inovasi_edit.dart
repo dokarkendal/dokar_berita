@@ -10,15 +10,15 @@ import 'package:flutter/material.dart';
 // import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:image_picker/image_picker.dart'; //akses galeri dan camera
 import 'package:http/http.dart' as http; //api
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+// import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 // import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:path/path.dart'; //upload gambar path
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as Img;
-import 'dart:math' as Math;
+// import 'package:path_provider/path_provider.dart';
+// import 'package:image/image.dart' as Img;
+// import 'dart:math' as Math;
 
-import 'package:status_alert/status_alert.dart';
+// import 'package:status_alert/status_alert.dart';
 
 import '../../style/styleset.dart';
 
@@ -78,9 +78,9 @@ class FormInovasiEditState extends State<FormInovasiEdit> {
       File? cropped = await ImageCropper().cropImage(
         sourcePath: image.path,
         // aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-        // compressQuality: 100,
-        // maxWidth: 500,
-        // maxHeight: 500,
+        compressQuality: 100,
+        maxWidth: 572,
+        maxHeight: 396,
         cropStyle: CropStyle.rectangle,
         compressFormat: ImageCompressFormat.jpg,
         androidUiSettings: const AndroidUiSettings(

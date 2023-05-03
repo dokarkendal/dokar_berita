@@ -14,15 +14,15 @@ import 'package:http/http.dart' as http; //api
 // import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path/path.dart'; //upload gambar path
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as Img;
-import 'dart:math' as Math;
+// import 'package:path_provider/path_provider.dart';
+// import 'package:image/image.dart' as Img;
+// import 'dart:math' as Math;
 
 // import 'package:status_alert/status_alert.dart';
 
 import '../../style/styleset.dart';
-import '../edit_semua.dart';
-import '../list/hal_berita_list.dart';
+// import '../edit_semua.dart';
+// import '../list/hal_berita_list.dart';
 
 //ANCHOR class form berita edit
 class FormBeritaEdit extends StatefulWidget {

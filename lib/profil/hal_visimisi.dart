@@ -36,13 +36,16 @@ class _HalVisiDesaState extends State<HalVisiDesa> {
                 "${widget.idDesa}"),
         headers: {"Accept": "application/json"});
     var dataJSON = json.decode(hasil.body);
-    this.setState(
-      () {
-        isLoading = false;
-        visi = dataJSON['visi'];
-        misi = dataJSON['misi'];
-      },
-    );
+    if (mounted) {
+      this.setState(
+        () {
+          isLoading = false;
+          visi = dataJSON['visi'];
+          misi = dataJSON['misi'];
+        },
+      );
+    }
+
     return '';
   }
 

@@ -552,10 +552,10 @@ class FormAddAkunState extends State<FormAddAkun> {
                 );
               },
             ).toList(),
-            onChanged: (Val) {
+            onChanged: (val) {
               setState(
                 () {
-                  _mySelection = Val as String;
+                  _mySelection = val as String;
                 },
               );
             },

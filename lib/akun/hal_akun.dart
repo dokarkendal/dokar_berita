@@ -12,10 +12,10 @@ class HalAkun extends StatefulWidget {
 }
 
 class _HalAkunState extends State<HalAkun> {
-  late String nama = "";
-  late String email = "";
-  late String hp = "";
-  late String username = "";
+  late String? nama = "";
+  late String? email = "";
+  late String? hp = "";
+  late String? username = "";
   String kecamatan = "";
   String namadesa = "";
   String notifStatus = '';
