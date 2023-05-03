@@ -5,16 +5,16 @@ import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_berita.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../style/styleset.dart';
 
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalberitaProfile extends StatefulWidget {
-  final String idDesa;
+  final String idDesa, namaDesa;
 
-  HalberitaProfile({this.idDesa});
+  HalberitaProfile({required this.idDesa, required this.namaDesa});
 
   @override
   HalberitaProfileState createState() => HalberitaProfileState();
@@ -42,8 +42,9 @@ class HalberitaProfileState extends State<HalberitaProfile> {
   String status = "";
 
   List beritaAdmin = [];
-  GlobalKey<RefreshIndicatorState> refreshKey;
-  final SlidableController slidableController = SlidableController();
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  // final SlidableController slidableController = SlidableController();
 
 ///////////////////////////////CEK SESSION ADMIN///////////////////////////////////
   // ignore: unused_element
@@ -52,9 +53,9 @@ class HalberitaProfileState extends State<HalberitaProfile> {
     if (pref.getString("userAdmin") != null) {
       setState(
         () {
-          username = pref.getString("userAdmin");
-          status = pref.getString("status");
-          namadesa = pref.getString("data_nama");
+          username = pref.getString("userAdmin")!;
+          status = pref.getString("status")!;
+          namadesa = pref.getString("data_nama")!;
         },
       );
     }
@@ -64,8 +65,8 @@ class HalberitaProfileState extends State<HalberitaProfile> {
   List databerita = [];
   bool isLoading = false;
   final dio = Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/berita";
@@ -140,10 +141,11 @@ class HalberitaProfileState extends State<HalberitaProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'BERITA',
+          'BERITA ' + "${widget.namaDesa}",
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         centerTitle: true,
@@ -210,6 +212,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                               dId: databerita[i]["id"],
                               dIdDesa: databerita[i]["id_desa"],
                               dVideo: databerita[i]["video"],
+                              dWaktu: '',
                             ),
                           ),
                         );
@@ -267,7 +270,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                                       child: Text(
                                         dibaca + ' lihat',
                                         style: TextStyle(
-                                            fontSize: 12.0,
+                                            fontSize: 11.0,
                                             color: Colors.grey[600]),
                                       ),
                                     ),
@@ -281,7 +284,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    maxLines: 3,
+                                    maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -320,6 +323,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                 );
               }
             }
+            return Container();
           },
         ),
       ),

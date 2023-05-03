@@ -4,16 +4,14 @@
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
 import 'package:flutter/material.dart';
-import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:http/http.dart' as http; //api
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:status_alert/status_alert.dart';
+import '../style/styleset.dart';
 
 //ANCHOR class add akun
 class FormAddAkun extends StatefulWidget {
   final String nama;
-  FormAddAkun({this.nama});
+  FormAddAkun({required this.nama});
   @override
   FormAddAkunState createState() => FormAddAkunState();
 }
@@ -21,36 +19,42 @@ class FormAddAkun extends StatefulWidget {
 class FormAddAkunState extends State<FormAddAkun> {
 //ANCHOR add akun
 
-  bool _isInAsyncCall = false;
-
-  String nama;
-  String email;
-  String hp;
-  String username;
-  String _mySelection;
-  String _notif;
-  String _kode;
+  late String nama;
+  late String email;
+  late String hp;
+  late String username;
+  var _mySelection;
+  late String _notif;
+  late String _kode;
   bool _obscureText = true;
+  bool _loadingberita = false;
 
   final formKey = GlobalKey<FormState>();
-
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 //ANCHOR controller
-  TextEditingController cNama = new TextEditingController();
-  TextEditingController cEmail = new TextEditingController();
-  TextEditingController cHp = new TextEditingController();
-  TextEditingController cUsername = new TextEditingController();
-  TextEditingController cPassword = new TextEditingController();
+  TextEditingController cNama = TextEditingController();
+  TextEditingController cEmail = TextEditingController();
+  TextEditingController cHp = TextEditingController();
+  TextEditingController cUsername = TextEditingController();
+  TextEditingController cPassword = TextEditingController();
 
-  // ignore: missing_return
-  Future<List> _login() async {
+//NOTE Toogle password hide
+  void _toggle() {
     setState(
       () {
-        _isInAsyncCall = true;
+        _obscureText = !_obscureText;
       },
     );
+  }
 
+  Future<void> _login() async {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    setState(
+      () {
+        _loadingberita = true;
+      },
+    );
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
         Uri.parse(
@@ -77,33 +81,91 @@ class FormAddAkunState extends State<FormAddAkun> {
       print("Succes");
       setState(
         () {
-          _isInAsyncCall = false;
+          _loadingberita = false;
+          // _isInAsyncCall = false;
         },
       );
-      Navigator.of(this.context).pushNamedAndRemoveUntil(
-          '/ListPenulis', ModalRoute.withName('/Haldua'));
-      StatusAlert.show(
-        this.context,
-        duration: Duration(seconds: 2),
-        title: 'Sukses',
-        subtitle: _notif,
-        configuration: IconConfiguration(icon: Icons.done),
+      ScaffoldMessenger.of(this.context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 1),
+          elevation: 6.0,
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.done,
+                size: 30,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: mediaQueryData.size.width * 0.02,
+              ),
+              Flexible(
+                child: Text(
+                  _notif,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          action: SnackBarAction(
+            label: 'OK',
+            textColor: Colors.white,
+            onPressed: () {
+              // Navigator.pushReplacementNamed(context, '/HalDashboard');
+            },
+          ),
+        ),
+      );
+      await Future.delayed(
+        Duration(seconds: 2),
+        () {
+          Navigator.pop(this.context);
+        },
       );
     } else {
       print("Failed");
       setState(
         () {
-          _isInAsyncCall = false;
+          _loadingberita = false;
+          // _isInAsyncCall = false;
         },
       );
-      Navigator.of(this.context).pushNamedAndRemoveUntil(
-          '/ListPenulis', ModalRoute.withName('/Haldua'));
-      StatusAlert.show(
-        this.context,
-        duration: Duration(seconds: 2),
-        title: 'Failed',
-        subtitle: _notif,
-        configuration: IconConfiguration(icon: Icons.cancel),
+      ScaffoldMessenger.of(this.context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 2),
+          elevation: 6.0,
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.done,
+                size: 30,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: mediaQueryData.size.width * 0.02,
+              ),
+              Flexible(
+                child: Text(
+                  _notif,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          action: SnackBarAction(
+            label: 'ULANGI',
+            textColor: Colors.white,
+            onPressed: () {
+              // Navigator.pushReplacementNamed(context, '/HalDashboard');
+            },
+          ),
+        ),
       );
     }
   }
@@ -122,311 +184,385 @@ class FormAddAkunState extends State<FormAddAkun> {
 //ANCHOR Body add akun
   @override
   Widget build(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          'Tambah penulis',
-          style: TextStyle(
-            color: Color(0xFF2e2e2e),
-            fontWeight: FontWeight.bold,
-            fontSize: 25.0,
+      appBar: _appbartambahpenulis(),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            padding: paddingall10,
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  _namapengelola(),
+                  _padding10(),
+                  _nohp(),
+                  _padding10(),
+                  _email(),
+                  _padding10(),
+                  _username(),
+                  _padding10(),
+                  _password(),
+                  _padding10(),
+                  _pilihuser(),
+                  _padding20(),
+                  _loadingberita ? _buttonloading() : _buttontambahuser()
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _padding10() {
+    return Padding(
+      padding: EdgeInsets.only(top: 10.0),
+    );
+  }
+
+  Widget _padding20() {
+    return Padding(
+      padding: EdgeInsets.only(top: 20.0),
+    );
+  }
+
+  PreferredSizeWidget _appbartambahpenulis() {
+    return AppBar(
+      iconTheme: IconThemeData(
+        color: appbarIcon,
+      ),
+      title: Text(
+        'TAMBAH PENULIS',
+        style: TextStyle(
+          color: appbarTitle,
+          fontWeight: FontWeight.bold,
+          // fontSize: 25.0,
+        ),
+      ),
+      centerTitle: true,
+      elevation: 0,
+      backgroundColor: Theme.of(context).primaryColor,
+    );
+  }
+
+  Widget _buttonloading() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Column(
+      children: [
+        SizedBox(
+          width: mediaQueryData.size.width,
+          height: mediaQueryData.size.height * 0.07,
+          child: ElevatedButton(
+            onPressed: () async {},
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              textStyle: const TextStyle(
+                color: titleText,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-      body: ModalProgressHUD(
-        inAsyncCall: _isInAsyncCall,
-        opacity: 0.5,
-        progressIndicator:
-            CircularProgressIndicator(backgroundColor: Colors.red),
-        child: ListView(
-          children: <Widget>[
-            new Container(
-              padding: new EdgeInsets.all(10.0),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  children: <Widget>[
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-//ANCHOR nama add akun
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
-                      child: TextFormField(
-                        controller: cNama,
-                        keyboardType: TextInputType.emailAddress,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
-                          prefixIcon: Icon(
-                            Icons.text_fields,
-                            color: Colors.grey[600],
-                          ),
-                          hintText: "Nama",
-                          hintStyle: kHintTextStyle2,
-                        ),
-                      ),
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
-                      child: TextFormField(
-                        controller: cHp,
-                        keyboardType: TextInputType.number,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
-                          prefixIcon: Icon(
-                            Icons.phone_android,
-                            color: Colors.grey[600],
-                          ),
-                          hintText: 'Hp',
-                          hintStyle: kHintTextStyle2,
-                        ),
-                      ),
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
-                      child: TextFormField(
-                        controller: cEmail,
-                        keyboardType: TextInputType.emailAddress,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
-                          prefixIcon: Icon(
-                            Icons.mail,
-                            color: Colors.grey[600],
-                          ),
-                          hintText: 'Email',
-                          hintStyle: kHintTextStyle2,
-                        ),
-                      ),
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
-                      child: TextFormField(
-                        controller: cUsername,
-                        keyboardType: TextInputType.emailAddress,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
-                          prefixIcon: Icon(
-                            Icons.person_outline,
-                            color: Colors.grey[600],
-                          ),
-                          hintText: 'Username',
-                          hintStyle: kHintTextStyle2,
-                        ),
-                      ),
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      decoration: kBoxDecorationStyle2,
-                      height: 60.0,
-                      child: TextFormField(
-                        controller: cPassword,
-                        obscureText: _obscureText,
-                        keyboardType: TextInputType.visiblePassword,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontFamily: 'OpenSans',
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 14.0),
-                          prefixIcon: Icon(
-                            Icons.lock,
-                            color: Colors.grey[600],
-                          ),
-                          hintText: 'Password',
-                          hintStyle: kHintTextStyle2,
-                        ),
-                      ),
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-                    new Column(
-                      children: <Widget>[
-                        Container(
-                          padding: new EdgeInsets.only(left: 20.0),
-                          alignment: Alignment.centerLeft,
-                          decoration: kBoxDecorationStyle2,
-                          height: 60.0,
-                          child: DropdownButton<String>(
-                            //icon: Icon(Icons.accessibility_new),
-                            underline: SizedBox(),
-                            hint: Text('Pilih status'),
-                            isExpanded: true,
-                            items: <String>[
-                              'Admin',
-                              'Penulis',
-                            ].map(
-                              (String value) {
-                                return new DropdownMenuItem<String>(
-                                  value: value,
-                                  child: new Text(value),
-                                );
-                              },
-                            ).toList(),
-                            onChanged: (newVal) {
-                              setState(
-                                () {
-                                  _mySelection = newVal;
-                                },
-                              );
-                            },
-                            value: _mySelection,
-                          ),
-                        )
-                      ],
-                    ),
-                    new Padding(
-                      padding: new EdgeInsets.only(top: 20.0),
-                    ),
-//NOTE tombol upload add akun
-                    Container(
-                      width: mediaQueryData.size.width,
-                      height: mediaQueryData.size.height * 0.07,
-                      child: ElevatedButton.icon(
-                        icon: Icon(
-                          Icons.person_add,
-                          color: Colors.white,
-                        ),
-                        label: Text("TAMBAH"),
-                        onPressed: () async {
-                          if (cNama.text == null || cNama.text == '') {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                'Nama wajib di isi.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.orange[700],
-                              action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                },
-                              ),
-                            ));
-                            // scaffoldKey.currentState.showSnackBar(snackBar);
-                          } else if (cUsername.text == null ||
-                              cUsername.text == '') {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                'Username wajib di isi.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.orange[700],
-                              action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                },
-                              ),
-                            ));
-                            // scaffoldKey.currentState.showSnackBar(snackBar);
-                          } else if (cPassword.text == null ||
-                              cPassword.text == '') {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                'Password wajib di isi.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.orange[700],
-                              action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                },
-                              ),
-                            ));
-                            // scaffoldKey.currentState.showSnackBar(snackBar);
-                          } else if (_mySelection == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                'Pilih Status wajib di isi.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              backgroundColor: Colors.orange[700],
-                              action: SnackBarAction(
-                                label: 'ULANGI',
-                                textColor: Colors.white,
-                                onPressed: () {
-                                  print('ULANGI snackbar');
-                                },
-                              ),
-                            ));
-                            // scaffoldKey.currentState.showSnackBar(snackBar);
-                          } else {
-                            _login();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          // padding: EdgeInsets.all(15.0),
-                          elevation: 0, backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(15), // <-- Radius
-                          ),
-                        ),
-                        // color: Colors.green,
-                        // textColor: Colors.white,
-                        // shape: RoundedRectangleBorder(
-                        //   borderRadius: BorderRadius.circular(17.0),
-                        // ),
-                      ),
-                    ),
-                  ],
-                ),
+      ],
+    );
+  }
+
+  Widget _buttontambahuser() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      width: mediaQueryData.size.width,
+      height: mediaQueryData.size.height * 0.07,
+      child: ElevatedButton.icon(
+        icon: Icon(
+          Icons.save,
+          color: Colors.white,
+        ),
+        label: Text(
+          "TAMBAH USER",
+          style: TextStyle(color: subtitle),
+        ),
+        onPressed: () async {
+          if (cNama.text.isEmpty || cNama.text == '') {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                'Nama wajib di isi.',
+                style: TextStyle(color: Colors.white),
               ),
-            )
-          ],
+              backgroundColor: Colors.orange[700],
+              action: SnackBarAction(
+                label: 'ULANGI',
+                textColor: Colors.white,
+                onPressed: () {
+                  print('ULANGI snackbar');
+                },
+              ),
+            ));
+            // scaffoldKey.currentState.showSnackBar(snackBar);
+          } else if (cUsername.text.isEmpty || cUsername.text == '') {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                'Username wajib di isi.',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.orange[700],
+              action: SnackBarAction(
+                label: 'ULANGI',
+                textColor: Colors.white,
+                onPressed: () {
+                  print('ULANGI snackbar');
+                },
+              ),
+            ));
+            // scaffoldKey.currentState.showSnackBar(snackBar);
+          } else if (cPassword.text.isEmpty || cPassword.text == '') {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                'Password wajib di isi.',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.orange[700],
+              action: SnackBarAction(
+                label: 'ULANGI',
+                textColor: Colors.white,
+                onPressed: () {
+                  print('ULANGI snackbar');
+                },
+              ),
+            ));
+            // scaffoldKey.currentState.showSnackBar(snackBar);
+          } else if (_mySelection == null) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                'Pilih Status wajib di isi.',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.orange[700],
+              action: SnackBarAction(
+                label: 'ULANGI',
+                textColor: Colors.white,
+                onPressed: () {
+                  print('ULANGI snackbar');
+                },
+              ),
+            ));
+            // scaffoldKey.currentState.showSnackBar(snackBar);
+          } else {
+            _login();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          // padding: EdgeInsets.all(15.0),
+          elevation: 0, backgroundColor: Colors.green,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // <-- Radius
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _namapengelola() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: decorationTextField,
+      // height: 60.0,
+      child: TextFormField(
+        controller: cNama,
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(
+          color: Colors.black,
+          fontFamily: 'OpenSans',
+        ),
+        decoration: InputDecoration(
+          border: decorationBorder,
+          // contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.text_fields,
+            color: Colors.grey,
+          ),
+          hintText: "Nama Pengelola",
+          hintStyle: decorationHint,
+        ),
+      ),
+    );
+  }
+
+  Widget _nohp() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: decorationTextField,
+      // height: 60.0,
+      child: TextFormField(
+        controller: cHp,
+        keyboardType: TextInputType.number,
+        style: TextStyle(
+          color: Colors.black,
+          fontFamily: 'OpenSans',
+        ),
+        decoration: InputDecoration(
+          border: decorationBorder,
+          // contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.phone_android,
+            color: Colors.grey,
+          ),
+          hintText: 'No.Hp',
+          hintStyle: decorationHint,
+        ),
+      ),
+    );
+  }
+
+  Widget _email() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: decorationTextField,
+      // height: 60.0,
+      child: TextFormField(
+        controller: cEmail,
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(
+          color: Colors.black,
+          fontFamily: 'OpenSans',
+        ),
+        decoration: InputDecoration(
+          border: decorationBorder,
+          // contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.mail,
+            color: Colors.grey,
+          ),
+          hintText: 'Email',
+          hintStyle: decorationHint,
+        ),
+      ),
+    );
+  }
+
+  Widget _username() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: decorationTextField,
+      // height: 60.0,
+      child: TextFormField(
+        controller: cUsername,
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(
+          color: Colors.black,
+          fontFamily: 'OpenSans',
+        ),
+        decoration: InputDecoration(
+          border: decorationBorder,
+          // contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.person_outline,
+            color: Colors.grey,
+          ),
+          hintText: 'Username',
+          hintStyle: decorationHint,
+        ),
+      ),
+    );
+  }
+
+  Widget _password() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: decorationTextField,
+      // height: 60.0,
+      child: TextFormField(
+        controller: cPassword,
+        obscureText: _obscureText,
+        keyboardType: TextInputType.visiblePassword,
+        style: TextStyle(
+          color: Colors.black,
+          fontFamily: 'OpenSans',
+        ),
+        decoration: InputDecoration(
+          border: decorationBorder,
+          // contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.lock,
+            color: Colors.grey,
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.remove_red_eye),
+            color: Colors.grey,
+            iconSize: 20.0,
+            onPressed: _toggle,
+          ),
+          hintText: 'Password',
+          hintStyle: decorationHint,
+        ),
+      ),
+    );
+  }
+
+  Widget _pilihuser() {
+    return Column(
+      children: <Widget>[
+        Container(
+          // padding: EdgeInsets.only(left: 20.0),
+          // alignment: Alignment.centerLeft,
+          decoration: decorationTextField,
+          // height: 60.0,
+          child: DropdownButtonFormField(
+            //icon: Icon(Icons.accessibility_),
+            // underline: SizedBox(),
+            isDense: true,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.account_circle),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
+                ),
+              ),
+              // hintText: 'Judul Berita',
+              hintStyle: TextStyle(
+                fontSize: 15,
+                color: Colors.grey[400],
+              ),
+              // prefixIcon: Icon(
+              //   Icons.text_fields,
+              //   color: Colors.grey,
+              // ),
+            ),
+            hint: Text('Pilih User'),
+            items: <String>[
+              'Admin',
+              'Penulis',
+            ].map(
+              (String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              },
+            ).toList(),
+            onChanged: (val) {
+              setState(
+                () {
+                  _mySelection = val as String;
+                },
+              );
+            },
+            value: _mySelection,
+          ),
+        )
+      ],
     );
   }
 }

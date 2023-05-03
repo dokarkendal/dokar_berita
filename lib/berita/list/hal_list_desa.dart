@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dokar_aplikasi/akun/hal_profil_desa.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
@@ -10,14 +10,14 @@ import 'package:shimmer/shimmer.dart';
 
 class ListDesa extends StatefulWidget {
   final String dNama, dId;
-  ListDesa({this.dNama, this.dId});
+  ListDesa({required this.dNama, required this.dId});
 
   @override
   _ListDesaState createState() => _ListDesaState();
 }
 
 class _ListDesaState extends State<ListDesa> {
-  List dataJSON;
+  late List? dataJSON;
   String id = '';
   String kecamatan = '';
   bool isLoading = false;
@@ -31,7 +31,7 @@ class _ListDesaState extends State<ListDesa> {
   }
 
   // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     setState(() {
       isLoading = true;
     });
@@ -58,10 +58,11 @@ class _ListDesaState extends State<ListDesa> {
           color: Colors.brown[800], //change your color here
         ),
         title: Text(
-          '${widget.dNama}',
+          "KECAMATAN " + '${widget.dNama}',
           style: TextStyle(
             color: Colors.brown[800],
             fontWeight: FontWeight.bold,
+            fontSize: 17,
           ),
         ),
         centerTitle: true,
@@ -95,7 +96,7 @@ class _ListDesaState extends State<ListDesa> {
       ),
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: dataJSON == null ? 0 : dataJSON.length,
+      itemCount: dataJSON == null ? 0 : dataJSON!.length,
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.all(3.0),
@@ -119,13 +120,13 @@ class _ListDesaState extends State<ListDesa> {
                     child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    dataJSON[index]["desa"],
+                    dataJSON![index]["desa"],
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 13.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                 )),
@@ -141,9 +142,10 @@ class _ListDesaState extends State<ListDesa> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProfilDesa(
-                    id: dataJSON[index]["id"],
-                    desa: dataJSON[index]["desa"],
+                    id: dataJSON![index]["id"],
+                    desa: dataJSON![index]["desa"],
                     kecamatan: "${widget.dNama}",
+                    title: '',
                   ),
                 ),
               );
@@ -157,9 +159,9 @@ class _ListDesaState extends State<ListDesa> {
   Widget cardDesa() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      padding: new EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
+      // padding: new EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
       width: mediaQueryData.size.width,
-      height: mediaQueryData.size.height * 0.2,
+      height: mediaQueryData.size.height * 0.15,
       decoration: BoxDecoration(
         // gradient: LinearGradient(
         //   begin: Alignment.topCenter,
@@ -182,43 +184,53 @@ class _ListDesaState extends State<ListDesa> {
         ],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           // Padding(
           //   padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset(
-                'assets/images/desa1.png',
-                width: mediaQueryData.size.width * 0.25,
-                height: mediaQueryData.size.height * 0.25,
-              ),
-              SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
+              // Image.asset(
+              //   'assets/logos/logokendal.png',
+              //   width: mediaQueryData.size.width * 0.20,
+              //   height: mediaQueryData.size.height * 0.20,
+              // ),
+              SizedBox(width: mediaQueryData.size.width * 0.04),
               Padding(
                 padding:
-                    EdgeInsets.only(top: mediaQueryData.size.height * 0.05),
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.01),
                 child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     AutoSizeText(
-                      'Daftar Desa',
+                      'DAFTAR DESA',
                       minFontSize: 2,
                       maxLines: 2,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                        // fontWeight: FontWeight.bold,
                       ),
                     ),
                     AutoSizeText(
                       'KEC. ' + '${widget.dNama}',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17.0,
+                      ),
                     ),
                     AutoSizeText(
                       'KABUPATEN KENDAL',
                       minFontSize: 10,
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17.0,
+                      ),
                     ),
                   ],
                 ),
@@ -239,7 +251,7 @@ class _ListDesaState extends State<ListDesa> {
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           padding: new EdgeInsets.all(5.0),
           child: Column(
@@ -252,7 +264,7 @@ class _ListDesaState extends State<ListDesa> {
                       borderRadius: BorderRadius.circular(10.0),
                       color: Colors.grey,
                     ),
-                    height: mediaQueryData.size.height * 0.25,
+                    height: mediaQueryData.size.height * 0.16,
                     width: mediaQueryData.size.width,
                     // color: Colors.grey,
                   ),

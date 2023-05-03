@@ -4,16 +4,19 @@ import 'package:dio/dio.dart';
 import 'package:dokar_aplikasi/berita/detail_page_bumdes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../../style/styleset.dart';
 
 ////////////////////////////////PROJECT///////////////////////////////////////
 class HalbumdesProfile extends StatefulWidget {
-  final String idDesa;
+  final String idDesa, namaDesa;
 
-  HalbumdesProfile({this.idDesa});
+  HalbumdesProfile({
+    required this.idDesa,
+    required this.namaDesa,
+  });
 
   @override
   HalbumdesProfileState createState() => HalbumdesProfileState();
@@ -41,8 +44,9 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   String status = "";
 
   List beritaAdmin = [];
-  GlobalKey<RefreshIndicatorState> refreshKey;
-  final SlidableController slidableController = SlidableController();
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  // final SlidableController slidableController = SlidableController();
 
 ///////////////////////////////CEK SESSION ADMIN///////////////////////////////////
   // ignore: unused_element
@@ -51,9 +55,9 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
     if (pref.getString("userAdmin") != null) {
       setState(
         () {
-          username = pref.getString("userAdmin");
-          status = pref.getString("status");
-          namadesa = pref.getString("data_nama");
+          username = pref.getString("userAdmin")!;
+          status = pref.getString("status")!;
+          namadesa = pref.getString("data_nama")!;
         },
       );
     }
@@ -63,8 +67,8 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
   List databerita = [];
   bool isLoading = false;
   final dio = new Dio();
-  String dibaca;
-  List dataJSON;
+  late String dibaca;
+  late List dataJSON;
 
   String nextPage =
       "http://dokar.kendalkab.go.id/webservice/android/dashbord/bumdes";
@@ -137,10 +141,11 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'BUMDES',
+          'BUMDES ' + "${widget.namaDesa}",
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,
+            fontSize: 17,
           ),
         ),
         centerTitle: true,
@@ -220,6 +225,7 @@ class HalbumdesProfileState extends State<HalbumdesProfile> {
                               dHtml: databerita[i]["deskripsi"],
                               dVideo: databerita[i]["video"],
                               dUrl: databerita[i]["url"],
+                              idDesa: '',
                             ),
                           ),
                         );

@@ -6,13 +6,14 @@ import 'dart:convert';
 
 class HalFasumKesehatan extends StatefulWidget {
   final String dNama, dId, idDesa;
-  HalFasumKesehatan({this.dNama, this.dId, this.idDesa});
+  HalFasumKesehatan(
+      {required this.dNama, required this.dId, required this.idDesa});
   @override
   _HalFasumKesehatanState createState() => _HalFasumKesehatanState();
 }
 
 class _HalFasumKesehatanState extends State<HalFasumKesehatan> {
-  List dataJSON;
+  late List dataJSON = [];
   String id = '';
 
   @override
@@ -23,7 +24,7 @@ class _HalFasumKesehatanState extends State<HalFasumKesehatan> {
   }
 
   // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorifasum/" +

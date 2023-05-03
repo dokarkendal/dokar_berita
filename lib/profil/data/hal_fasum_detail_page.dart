@@ -22,16 +22,16 @@ class HalFasumDetailPage extends StatefulWidget {
       dKecamatan,
       dKoordinat;
   HalFasumDetailPage(
-      {this.dNama,
-      this.dId,
-      this.dJenis,
-      this.dKategori,
-      this.dGambar,
-      this.dDeskripsi,
-      this.dAlamat,
-      this.dDesa,
-      this.dKecamatan,
-      this.dKoordinat});
+      {required this.dNama,
+      required this.dId,
+      required this.dJenis,
+      required this.dKategori,
+      required this.dGambar,
+      required this.dDeskripsi,
+      required this.dAlamat,
+      required this.dDesa,
+      required this.dKecamatan,
+      required this.dKoordinat});
 
   @override
   _HalFasumDetailPageState createState() => _HalFasumDetailPageState();
@@ -61,7 +61,7 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   //   print(url);
   // }
   String url = '';
-  List dataJSON;
+  late List dataJSON;
   String id = '';
   String nama = '';
 
@@ -75,12 +75,12 @@ class _HalFasumDetailPageState extends State<HalFasumDetailPage> {
   }
 
   // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/fasilitasumum/" +
-                pref.getString("IdDesa") +
+                pref.getString("IdDesa")! +
                 "/" +
                 id),
         headers: {"Accept": "application/json"});

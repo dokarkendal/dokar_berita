@@ -36,7 +36,8 @@ class _HalduaState extends State<Haldua> {
   bool hasThrownError = false;
 
 //NOTE List
-  List dataJSON;
+  // late List dataJSON;
+  List<dynamic> dataJSON = [];
 
 //NOTE Boolean
   // ignore: unused_field
@@ -78,7 +79,7 @@ class _HalduaState extends State<Haldua> {
   }
 
   //NOTE Fungsi Aambil Galery
-  Future ambildata() async {
+  Future<void> ambildata() async {
     setState(() {
       isLoading = true;
     });
@@ -87,7 +88,7 @@ class _HalduaState extends State<Haldua> {
       http.Response hasil = await http.get(
           Uri.parse(
               "http://dokar.kendalkab.go.id/webservice/android/kabar/galeri/" +
-                  pref.getString("IdDesa")),
+                  pref.getString("IdDesa")!),
           headers: {"Accept": "application/json"});
 
       this.setState(
@@ -117,19 +118,20 @@ class _HalduaState extends State<Haldua> {
         print("Unhandled exception galery: ${e.toString()}");
       }
     }
-    return null;
   }
 
 //NOTE Fungsi Cek User
   Future _cekUser() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    final String? namadesa = pref.getString("data_nama");
     if (pref.getString("userAdmin") != null) {
       setState(() {
-        username = pref.getString("userAdmin");
-        kecamatan = pref.getString("kecamatan");
-        namadesa = pref.getString("data_nama");
-        id = pref.getString("IdDesa");
-        status = pref.getString("status");
+        username = pref.getString("userAdmin")!;
+        kecamatan = pref.getString("kecamatan")!;
+        this.namadesa = namadesa ?? "";
+        // namadesa = pref.getString("data_nama")!;
+        id = pref.getString("IdDesa")!;
+        status = pref.getString("status")!;
       });
     }
   }
@@ -141,8 +143,8 @@ class _HalduaState extends State<Haldua> {
     });
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String versionName = packageInfo.version;
-    String versionCode = packageInfo.buildNumber;
-    versi = versionName + versionCode;
+    // String versionCode = packageInfo.buildNumber;
+    versi = versionName;
     print(versi);
     try {
       http.Response cekversi = await http.get(
@@ -151,7 +153,7 @@ class _HalduaState extends State<Haldua> {
           headers: {"Accept": "application/json"});
       var data = json.decode(cekversi.body);
 
-      if (data['version'] + data['versioncode'] == versi) {
+      if (data['version'] == versi) {
         setState(() {
           update = "Updated";
           versi = data['version'];
@@ -159,7 +161,7 @@ class _HalduaState extends State<Haldua> {
           isLoading = false;
         });
         print(update);
-        print(versi + data['versioncode']);
+        print(versi);
         print(descript);
       } else {
         setState(() {
@@ -1058,7 +1060,7 @@ class _HalduaState extends State<Haldua> {
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           padding: EdgeInsets.only(
             left: 15.0,
@@ -1113,7 +1115,7 @@ class UpcomingCard extends StatelessWidget {
   final double value;
   final Color color;
 
-  UpcomingCard({this.title, this.value, this.color});
+  UpcomingCard({required this.title, required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {

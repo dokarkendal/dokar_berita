@@ -14,8 +14,8 @@ class HalamanBeritaadmin extends StatefulWidget {
 
 class _HalamanBeritaadminState extends State<HalamanBeritaadmin>
     with SingleTickerProviderStateMixin {
-  String value;
-  TabController controller;
+  late String value;
+  late TabController controller;
 
   Icon cusIcon = Icon(
     Icons.search,

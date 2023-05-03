@@ -8,16 +8,17 @@ import 'package:http/http.dart' as http; //api
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:path/path.dart'; //upload gambar path
 import 'package:shared_preferences/shared_preferences.dart'; //save session
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:status_alert/status_alert.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
+// import 'package:status_alert/status_alert.dart';
 import '../../style/styleset.dart';
 
 //ANCHOR class form berita edit
 class FormAkunEdit extends StatefulWidget {
   final String nama;
-  FormAkunEdit({this.nama});
+  FormAkunEdit({required this.nama});
   @override
   FormAkunEditState createState() => FormAkunEditState();
 }
@@ -28,10 +29,10 @@ class FormAkunEditState extends State<FormAkunEdit> {
   final FocusNode _focusNode = FocusNode();
   bool _isInAsyncCall = false;
   bool loadingdata = false;
-  String nama;
-  String email;
-  String hp;
-  String username;
+  late String nama;
+  late String email;
+  late String hp;
+  late String username;
   bool _obscureText = true;
   final formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -44,7 +45,8 @@ class FormAkunEditState extends State<FormAkunEdit> {
   TextEditingController cPassword = TextEditingController();
 
   // ignore: missing_return
-  Future<List> _editakun() async {
+  Future<void> _editakun() async {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     setState(
       () {
         _isInAsyncCall = true;
@@ -70,12 +72,46 @@ class FormAkunEditState extends State<FormAkunEdit> {
       pref.setInt('counter', launchCount + 1);
       Navigator.of(this.context).pushNamedAndRemoveUntil(
           '/PilihAkun', ModalRoute.withName('/DaftarAdmin'));
-      StatusAlert.show(
-        this.context,
-        duration: Duration(seconds: 2),
-        title: 'Sukses',
-        subtitle: "Akun berhasil di edit.",
-        configuration: IconConfiguration(icon: Icons.check),
+      // StatusAlert.show(
+      //   this.context,
+      //   duration: Duration(seconds: 2),
+      //   title: 'Sukses',
+      //   subtitle: "Akun berhasil di edit.",
+      //   configuration: IconConfiguration(icon: Icons.check),
+      // );
+      ScaffoldMessenger.of(this.context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 3),
+          elevation: 6.0,
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.done,
+                size: 30,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: mediaQueryData.size.width * 0.02,
+              ),
+              Flexible(
+                child: Text(
+                  "Update data sukses",
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          action: SnackBarAction(
+            label: 'OK',
+            textColor: Colors.white,
+            onPressed: () {
+              // Navigator.pushReplacementNamed(context, '/HalDashboard');
+            },
+          ),
+        ),
       );
     } else {
       print("Failed");
@@ -86,18 +122,50 @@ class FormAkunEditState extends State<FormAkunEdit> {
       );
       Navigator.of(this.context)
           .pushNamedAndRemoveUntil('/HalAkun', ModalRoute.withName('/Haldua'));
-      StatusAlert.show(
-        this.context,
-        duration: Duration(seconds: 2),
-        title: 'Failed',
-        subtitle: "Edit Gagal.",
-        configuration: IconConfiguration(icon: Icons.cancel),
+      // StatusAlert.show(
+      //   this.context,
+      //   duration: Duration(seconds: 2),
+      //   title: 'Failed',
+      //   subtitle: "Edit Gagal.",
+      //   configuration: IconConfiguration(icon: Icons.cancel),
+      // );
+      ScaffoldMessenger.of(this.context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 3),
+          elevation: 6.0,
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.warning,
+                size: 30,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: mediaQueryData.size.width * 0.02,
+              ),
+              Flexible(
+                child: Text(
+                  "Update data gagal",
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          action: SnackBarAction(
+            label: 'ULANGI',
+            textColor: Colors.white,
+            onPressed: () {},
+          ),
+        ),
       );
     }
   }
 
   // ignore: missing_return
-  Future<String> detailAkun(context) async {
+  Future<void> detailAkun(context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       loadingdata = true;
@@ -368,13 +436,14 @@ class FormAkunEditState extends State<FormAkunEdit> {
                                   width: mediaQueryData.size.width,
                                   child: ElevatedButton.icon(
                                     icon: Icon(
-                                      Icons.sync,
+                                      Icons.save,
                                       color: Colors.white,
                                     ),
                                     label: Text(
                                       "SIMPAN",
                                       style: TextStyle(
                                         fontSize: 18,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     onPressed: () async {
@@ -442,7 +511,7 @@ class FormAkunEditState extends State<FormAkunEdit> {
                                           ),
                                           IconsButton(
                                             onPressed: () async {
-                                              if (cNama.text == null ||
+                                              if (cNama.text.isEmpty ||
                                                   cNama.text == '') {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
@@ -463,8 +532,8 @@ class FormAkunEditState extends State<FormAkunEdit> {
                                                 ));
                                                 // SnackBar snackBar =
                                                 //     scaffoldKey.currentState.showSnackBar(snackBar);
-                                              } else if (cUsername.text ==
-                                                      null ||
+                                              } else if (cUsername
+                                                      .text.isEmpty ||
                                                   cUsername.text == '') {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(SnackBar(
@@ -491,7 +560,7 @@ class FormAkunEditState extends State<FormAkunEdit> {
                                               }
                                             },
                                             text: 'Simpan',
-                                            iconData: Icons.sync,
+                                            iconData: Icons.save,
                                             color: Colors.green,
                                             textStyle: const TextStyle(
                                                 color: Colors.white),

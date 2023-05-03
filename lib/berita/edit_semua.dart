@@ -4,7 +4,7 @@ import 'package:dokar_aplikasi/berita/list/hal_event_list.dart';
 import 'package:dokar_aplikasi/berita/list/hal_inovasi_list.dart';
 import 'package:dokar_aplikasi/berita/list/hal_kegiatan_list.dart';
 import 'package:dokar_aplikasi/berita/list/hal_penulis_list.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
@@ -26,14 +26,13 @@ class _EditSemuaState extends State<EditSemua> {
   String kecamatan = "";
   String namadesa = "";
   String status = "";
-  int jumlah;
-  int jumlahkeg;
-  int jumlahB;
-  int jumlahBum;
-  int jumlahAgen;
+  late int jumlah;
+  late int jumlahkeg;
+  late int jumlahB;
+  late int jumlahBum;
+  late int jumlahAgen;
 
-  // ignore: missing_return
-  Future<String> jumlahAgenda() async {
+  Future<void> jumlahAgenda() async {
     setState(() {
       isLoading = true;
     });
@@ -62,7 +61,7 @@ class _EditSemuaState extends State<EditSemua> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
+    // SizeConfig().init(context);
     if (status == '02') {
       return Scaffold(
         appBar: AppBar(
@@ -147,10 +146,10 @@ class _EditSemuaState extends State<EditSemua> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getString("userAdmin") != null) {
       setState(() {
-        username = pref.getString("userAdmin");
-        kecamatan = pref.getString("kecamatan");
-        namadesa = pref.getString("desa");
-        status = pref.getString("status");
+        username = pref.getString("userAdmin")!;
+        kecamatan = pref.getString("kecamatan")!;
+        namadesa = pref.getString("desa")!;
+        status = pref.getString("status")!;
         print(pref.getString("desa"));
       });
     }
@@ -441,6 +440,7 @@ class _EditSemuaState extends State<EditSemua> {
   }
 
   Widget cardBerita() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     if (status == '02') {
       return isLoading
           ? _buildProgressIndicator()
@@ -450,7 +450,7 @@ class _EditSemuaState extends State<EditSemua> {
                   padding: EdgeInsets.all(5.0),
                   child: Container(
                     width: double.infinity,
-                    height: 110.0,
+                    height: mediaQueryData.size.height * 0.23,
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -516,7 +516,7 @@ class _EditSemuaState extends State<EditSemua> {
                   padding: EdgeInsets.all(5.0),
                   child: Container(
                     width: double.infinity,
-                    height: SizeConfig.safeBlockVertical * 23,
+                    height: mediaQueryData.size.height * 0.23,
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.all(Radius.circular(10.0)),

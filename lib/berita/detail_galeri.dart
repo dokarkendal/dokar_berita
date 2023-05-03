@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 
 class DetailGaleri extends StatefulWidget {
   final String dGambar, dDesa, dJudul;
-  DetailGaleri({this.dGambar, this.dDesa, this.dJudul});
+  DetailGaleri({
+    required this.dGambar,
+    required this.dDesa,
+    required this.dJudul,
+  });
 
   @override
   DetailGaleriState createState() => DetailGaleriState();
@@ -15,6 +19,9 @@ class DetailGaleriState extends State<DetailGaleri> {
       appBar: new AppBar(
         elevation: 0.0,
         backgroundColor: Colors.black,
+        iconTheme: IconThemeData(
+          color: Colors.white, // Set the color of the back button to white
+        ),
       ),
       body: Container(
         color: Colors.black,
@@ -64,7 +71,7 @@ class DetailGaleriState extends State<DetailGaleri> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        "${widget.dDesa}",
+        "Desa " + "${widget.dDesa}",
         overflow: TextOverflow.ellipsis,
         style: new TextStyle(
           //fontSize: 16.0,

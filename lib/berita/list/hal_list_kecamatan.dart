@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dokar_aplikasi/berita/list/hal_list_desa.dart';
-import 'package:dokar_aplikasi/style/size_config.dart';
+// import 'package:dokar_aplikasi/style/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
@@ -10,7 +10,7 @@ import 'package:shimmer/shimmer.dart';
 class ListKecamatan extends StatefulWidget {
   final String idDesa;
 
-  ListKecamatan({this.idDesa});
+  ListKecamatan({required this.idDesa});
 
   @override
   _ListKecamatanState createState() => _ListKecamatanState();
@@ -18,9 +18,10 @@ class ListKecamatan extends StatefulWidget {
 
 class _ListKecamatanState extends State<ListKecamatan> {
   ScrollController _scrollController = ScrollController();
-  GlobalKey<RefreshIndicatorState> refreshKey;
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   bool isLoading = false;
-  List dataJSON;
+  late List dataJSON;
 
   Future ambildata() async {
     setState(() {
@@ -120,7 +121,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
       child: Shimmer.fromColors(
         direction: ShimmerDirection.ltr,
         highlightColor: Colors.white,
-        baseColor: Colors.grey[300],
+        baseColor: Colors.grey[300]!,
         child: Container(
           padding: EdgeInsets.all(5.0),
           child: Column(
@@ -133,7 +134,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
                       borderRadius: BorderRadius.circular(10.0),
                       color: Colors.grey,
                     ),
-                    height: mediaQueryData.size.height * 0.25,
+                    height: mediaQueryData.size.height * 0.17,
                     width: mediaQueryData.size.width,
                     // color: Colors.grey,
                   ),
@@ -476,9 +477,9 @@ class _ListKecamatanState extends State<ListKecamatan> {
   Widget cardKecamatan() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
+      // padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.05),
       width: mediaQueryData.size.width,
-      height: mediaQueryData.size.height * 0.2,
+      height: mediaQueryData.size.height * 0.17,
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
@@ -490,21 +491,25 @@ class _ListKecamatanState extends State<ListKecamatan> {
         ],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Row(
-            // mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                'assets/images/kecamatan1.png',
-                width: mediaQueryData.size.width * 0.25,
-                height: mediaQueryData.size.height * 0.25,
+                'assets/logos/logokendal.png',
+                width: mediaQueryData.size.width * 0.20,
+                height: mediaQueryData.size.height * 0.20,
               ),
-              SizedBox(width: SizeConfig.safeBlockHorizontal * 3),
+              SizedBox(width: mediaQueryData.size.width * 0.04),
               Padding(
                 padding:
-                    EdgeInsets.only(top: mediaQueryData.size.height * 0.05),
+                    EdgeInsets.only(top: mediaQueryData.size.height * 0.01),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     AutoSizeText(
                       'Daftar Kecamatan',
@@ -512,16 +517,17 @@ class _ListKecamatanState extends State<ListKecamatan> {
                       maxLines: 2,
                       style: TextStyle(
                         color: Colors.brown[800],
-                        fontSize: 20.0,
+                        fontSize: 17.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     AutoSizeText(
-                      'Di KABUPATEN KENDAL',
+                      'Di Kabupaten Kendal',
                       minFontSize: 10,
                       style: TextStyle(
                         color: Colors.brown[800],
-                        fontSize: 14.0,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],

@@ -6,14 +6,15 @@ import 'dart:convert';
 
 class HalFasumOlahraga extends StatefulWidget {
   final String dNama, dId, idDesa;
-  HalFasumOlahraga({this.dNama, this.dId, this.idDesa});
+  HalFasumOlahraga(
+      {required this.dNama, required this.dId, required this.idDesa});
 
   @override
   _HalFasumOlahragaState createState() => _HalFasumOlahragaState();
 }
 
 class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
-  List dataJSON;
+  late List? dataJSON = [];
   String id = '';
 
   @override
@@ -23,8 +24,7 @@ class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
     ambildata();
   }
 
-  // ignore: missing_return
-  Future<String> ambildata() async {
+  Future<void> ambildata() async {
     http.Response hasil = await http.get(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorifasum/" +
@@ -50,7 +50,7 @@ class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
         child: ListView.builder(
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: dataJSON == null ? 0 : dataJSON.length,
+          itemCount: dataJSON == null ? 0 : dataJSON!.length,
           itemBuilder: (context, index) {
             return new Container(
               color: Colors.grey[100],
@@ -68,15 +68,15 @@ class _HalFasumOlahragaState extends State<HalFasumOlahraga> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => HalFasumDetail(
-                            dNama: dataJSON[index]["nama"],
-                            dId: dataJSON[index]["id"],
+                            dNama: dataJSON![index]["nama"],
+                            dId: dataJSON![index]["id"],
                             idDesa: "${widget.idDesa}"),
                       ),
                     );
                   },
                   child: ListTile(
                     title: new Text(
-                      dataJSON[index]["nama"],
+                      dataJSON![index]["nama"],
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: new TextStyle(

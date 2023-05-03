@@ -2,6 +2,7 @@
 import 'dart:async'; //NOTE  api syn
 import 'dart:convert'; //NOTE api to json
 import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:async/async.dart'; //NOTE upload gambar
@@ -12,9 +13,9 @@ import 'package:http/http.dart' as http; //NOTE api to http
 // import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:path/path.dart'; //NOTE upload gambar path
 import 'package:shared_preferences/shared_preferences.dart'; //NOTE save session
-import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as Img; //NOTE image
-import 'dart:math' as Math;
+// import 'package:path_provider/path_provider.dart';
+// import 'package:image/image.dart' as Img; //NOTE image
+// import 'dart:math' as Math;
 import 'package:rflutter_alert/rflutter_alert.dart';
 // import 'package:status_alert/status_alert.dart';
 
@@ -28,11 +29,11 @@ class FormKegiatan extends StatefulWidget {
 
 class FormKegiatanState extends State<FormKegiatan> {
 //ANCHOR variable
-  File _image;
+  // File _image;
   String username = "";
   bool _loadingkegiatan = false;
   // ignore: unused_field
-  String _mySelection;
+  late String _mySelection;
   List kategoriAdmin = [];
   final formKey = GlobalKey<FormState>();
   final format = DateFormat("yyyy-MM-dd");
@@ -51,46 +52,102 @@ class FormKegiatanState extends State<FormKegiatan> {
   TextEditingController cStatus = TextEditingController();
 
 //ANCHOR akses gallery
-  Future getImageGallery() async {
-    // ignore: deprecated_member_use
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+  // Future getImageGallery() async {
+  //   // ignore: deprecated_member_use
+  //   var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+  //   if (imageFile == null) {
+  //     return null;
+  //   }
+  //   final tempDir = await getTemporaryDirectory();
+  //   final path = tempDir.path;
 
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
+  //   int rand = Math.Random().nextInt(100000);
 
-    int rand = Math.Random().nextInt(100000);
+  //   Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+  //   Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
 
-    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
-    Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
+  //   var compressImg = File("$path/image_$rand.jpg")
+  //     ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
 
-    var compressImg = File("$path/image_$rand.jpg")
-      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
+  //   setState(
+  //     () {
+  //       _image = compressImg;
+  //     },
+  //   );
+  // }
 
+  // Future getImageCamera() async {
+  //   // ignore: deprecated_member_use
+  //   var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
+
+  //   final tempDir = await getTemporaryDirectory();
+  //   final path = tempDir.path;
+
+  //   int rand = Math.Random().nextInt(100000);
+
+  //   Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
+  //   Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
+
+  //   var compressImg = File("$path/image_$rand.jpg")
+  //     ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
+
+  //   setState(() {
+  //     _image = compressImg;
+  //   });
+  // }
+
+  bool _inProcess = false;
+  File? _selectedFile;
+
+  getImage(ImageSource source) async {
     setState(
       () {
-        _image = compressImg;
+        _inProcess = true;
       },
     );
+
+    XFile? image = await ImagePicker().pickImage(source: source);
+
+    if (image != null) {
+      File? cropped = await ImageCropper().cropImage(
+        sourcePath: image.path,
+        // aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 100,
+        maxWidth: 572,
+        maxHeight: 396,
+        cropStyle: CropStyle.rectangle,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: const AndroidUiSettings(
+          toolbarColor: Colors.black,
+          toolbarTitle: "Crop",
+          statusBarColor: Colors.black,
+          backgroundColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+          hideBottomControls: true,
+        ),
+      );
+
+      setState(
+        () {
+          _selectedFile = cropped;
+          _inProcess = false;
+        },
+      );
+    } else {
+      setState(
+        () {
+          _inProcess = false;
+        },
+      );
+    }
   }
 
-  Future getImageCamera() async {
-    // ignore: deprecated_member_use
-    var imageFile = await ImagePicker.pickImage(source: ImageSource.camera);
-
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-
-    int rand = Math.Random().nextInt(100000);
-
-    Img.Image image = Img.decodeImage(imageFile.readAsBytesSync());
-    Img.Image smallerImg = Img.copyResize(image, width: 1144, height: 792);
-
-    var compressImg = File("$path/image_$rand.jpg")
-      ..writeAsBytesSync(Img.encodeJpg(smallerImg, quality: 1000));
-
-    setState(() {
-      _image = compressImg;
-    });
+  void clearimage() {
+    setState(
+      () {
+        _selectedFile = null;
+      },
+    );
   }
 
 //ANCHOR cek session admin
@@ -100,7 +157,7 @@ class FormKegiatanState extends State<FormKegiatan> {
     if (pref.getString("userAdmin") != null) {
       setState(
         () {
-          username = pref.getString("userAdmin");
+          username = pref.getString("userAdmin")!;
         },
       );
     }
@@ -112,7 +169,7 @@ class FormKegiatanState extends State<FormKegiatan> {
   }
 
 //ANCHOR api gambar post
-  void upload(File imageFile) async {
+  void upload(File _selectedFile) async {
     MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     setState(() {
       _loadingkegiatan = true;
@@ -120,25 +177,25 @@ class FormKegiatanState extends State<FormKegiatan> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     var stream =
         // ignore: deprecated_member_use
-        http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-    var length = await imageFile.length();
+        http.ByteStream(DelegatingStream.typed(_selectedFile.openRead()));
+    var length = await _selectedFile.length();
     var uri = Uri.parse(
         "http://dokar.kendalkab.go.id/webservice/android/kabar/postkegiatan");
 
     var request = http.MultipartRequest("POST", uri);
 
     var multipartFile = http.MultipartFile("image", stream, length,
-        filename: basename(imageFile.path));
+        filename: basename(_selectedFile.path));
     request.fields['video'] = cYoutube.text;
     request.fields['judul'] = cJudul.text;
     request.fields['tempat'] = cTempatKegiatan.text;
     request.fields['isi'] = cIsi.text;
     request.fields['komentar'] = 'tidak';
     request.fields['tanggal'] = cTanggal.text;
-    request.fields['id_desa'] = pref.getString("IdDesa");
-    request.fields['username'] = pref.getString("userAdmin");
-    request.fields['status'] = pref.getString("status");
-    request.fields['id_admin'] = pref.getString("IdAdmin");
+    request.fields['id_desa'] = pref.getString("IdDesa")!;
+    request.fields['username'] = pref.getString("userAdmin")!;
+    request.fields['status'] = pref.getString("status")!;
+    request.fields['id_admin'] = pref.getString("IdAdmin")!;
     request.files.add(multipartFile);
 
     var response = await request.send();
@@ -478,58 +535,84 @@ class FormKegiatanState extends State<FormKegiatan> {
                     padding: EdgeInsets.only(top: 20.0),
                   ),
 //ANCHOR input gambar kegiatan
-                  Center(
-                    child: _image == null
-                        ? Text("Gambar belum di pilih !")
-                        : Image.file(_image),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      getImageWidget(),
+                      Column(
+                        children: [
+                          _cameraButton(),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: mediaQueryData.size.height * 0.01),
+                          ),
+                          _galeryButton(),
+                        ],
+                      ),
+                      (_inProcess)
+                          ? Container(
+                              color: Colors.white,
+                              height: MediaQuery.of(context).size.height * 0.95,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : const Center()
+                    ],
                   ),
-                  Center(
-                    child: Row(
-                      children: <Widget>[
-                        ElevatedButton(
-                          child: Icon(
-                            Icons.image,
-                            color: Colors.white,
-                          ),
-                          onPressed: getImageGallery,
-                          style: ElevatedButton.styleFrom(
-                            // padding: EdgeInsets.all(15.0),
-                            elevation: 0, backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(10), // <-- Radius
-                            ),
-                          ),
-                          // color: Color(0xFFee002d),
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(17.0),
-                          // ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.0),
-                        ),
-                        ElevatedButton(
-                          child: Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                          ),
-                          onPressed: getImageCamera,
-                          style: ElevatedButton.styleFrom(
-                            // padding: EdgeInsets.all(15.0),
-                            elevation: 0, backgroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(10), // <-- Radius
-                            ),
-                          ),
-                          // color: Color(0xFFee002d),
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(17.0),
-                          // ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Center(
+                  //   child: _image == null
+                  //       ? Text("Gambar belum di pilih !")
+                  //       : Image.file(_image),
+                  // ),
+                  // Center(
+                  //   child: Row(
+                  //     children: <Widget>[
+                  //       ElevatedButton(
+                  //         child: Icon(
+                  //           Icons.image,
+                  //           color: Colors.white,
+                  //         ),
+                  //         onPressed: getImageGallery,
+                  //         style: ElevatedButton.styleFrom(
+                  //           // padding: EdgeInsets.all(15.0),
+                  //           elevation: 0, backgroundColor: Colors.red,
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius:
+                  //                 BorderRadius.circular(10), // <-- Radius
+                  //           ),
+                  //         ),
+                  //         // color: Color(0xFFee002d),
+                  //         // shape: RoundedRectangleBorder(
+                  //         //   borderRadius: BorderRadius.circular(17.0),
+                  //         // ),
+                  //       ),
+                  //       Padding(
+                  //         padding: EdgeInsets.only(left: 5.0),
+                  //       ),
+                  //       ElevatedButton(
+                  //         child: Icon(
+                  //           Icons.camera_alt,
+                  //           color: Colors.white,
+                  //         ),
+                  //         onPressed: getImageCamera,
+                  //         style: ElevatedButton.styleFrom(
+                  //           // padding: EdgeInsets.all(15.0),
+                  //           elevation: 0, backgroundColor: Colors.red,
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius:
+                  //                 BorderRadius.circular(10), // <-- Radius
+                  //           ),
+                  //         ),
+                  //         // color: Color(0xFFee002d),
+                  //         // shape: RoundedRectangleBorder(
+                  //         //   borderRadius: BorderRadius.circular(17.0),
+                  //         // ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Padding(
                     padding: EdgeInsets.only(top: 20.0),
                   ),
@@ -570,13 +653,16 @@ class FormKegiatanState extends State<FormKegiatan> {
                               Icons.file_upload,
                               color: Colors.white,
                             ),
-                            label: Text("UPLOAD KEGIATAN"),
+                            label: Text(
+                              "UPLOAD KEGIATAN",
+                              style: const TextStyle(color: Colors.white),
+                            ),
                             onPressed: () async {
-                              if (cJudul.text == null || cJudul.text == '') {
+                              if (cJudul.text.isEmpty || cJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
-                                    'Judul wajib di isi.',
+                                    'Judul wajib di isi',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   backgroundColor: Colors.orange[700],
@@ -588,7 +674,7 @@ class FormKegiatanState extends State<FormKegiatan> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cTempatKegiatan.text == null ||
+                              } else if (cTempatKegiatan.text.isEmpty ||
                                   cTempatKegiatan.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -605,7 +691,7 @@ class FormKegiatanState extends State<FormKegiatan> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cIsi.text == null || cIsi.text == '') {
+                              } else if (cIsi.text.isEmpty || cIsi.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
@@ -621,7 +707,7 @@ class FormKegiatanState extends State<FormKegiatan> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cTanggal.text == null ||
+                              } else if (cTanggal.text.isEmpty ||
                                   cTanggal.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -638,7 +724,7 @@ class FormKegiatanState extends State<FormKegiatan> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (_image == null) {
+                              } else if (_selectedFile == null) {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
@@ -655,7 +741,7 @@ class FormKegiatanState extends State<FormKegiatan> {
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
                               } else {
-                                upload(_image);
+                                upload(_selectedFile!);
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -678,6 +764,111 @@ class FormKegiatanState extends State<FormKegiatan> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _cameraButton() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    return SizedBox(
+      width: mediaQueryData.size.height * 0.15,
+      height: mediaQueryData.size.height * 0.05,
+      child: ElevatedButton(
+        onPressed: () {
+          getImage(ImageSource.camera);
+        },
+        child: Row(
+          children: [
+            const Icon(
+              Icons.camera_alt,
+              color: Colors.white,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.01),
+            ),
+            const Text(
+              'Kamera',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: subtitle,
+              ),
+            ),
+          ],
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orange,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+///////tes gambar crop
+  Widget getImageWidget() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    if (_selectedFile != null) {
+      return Image.file(
+        _selectedFile!,
+        width: mediaQueryData.size.width * 0.5,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset(
+        "assets/images/load.png",
+        width: mediaQueryData.size.width * 0.5,
+      );
+    }
+  }
+
+  Widget _galeryButton() {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    return SizedBox(
+      width: mediaQueryData.size.height * 0.15,
+      height: mediaQueryData.size.height * 0.05,
+      child: ElevatedButton(
+        onPressed: () {
+          getImage(ImageSource.gallery);
+        },
+        child: Row(
+          children: [
+            const Icon(
+              Icons.photo,
+              color: Colors.white,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: mediaQueryData.size.height * 0.01),
+            ),
+            const Text(
+              'Galeri',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: subtitle,
+              ),
+            ),
+          ],
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

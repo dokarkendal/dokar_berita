@@ -22,18 +22,18 @@ class AgendaDetail extends StatefulWidget {
       penyelenggaraEvent,
       urlEvent;
   AgendaDetail(
-      {this.idDesa,
-      this.judulEvent,
-      this.desaEvent,
-      this.kecamatanEvent,
-      this.uraianEvent,
-      this.mulaiEvent,
-      this.selesaiEvent,
-      this.gambarEvent,
-      this.tglmulaiEvent,
-      this.tglselesaiEvent,
-      this.urlEvent,
-      this.penyelenggaraEvent});
+      {required this.idDesa,
+      required this.judulEvent,
+      required this.desaEvent,
+      required this.kecamatanEvent,
+      required this.uraianEvent,
+      required this.mulaiEvent,
+      required this.selesaiEvent,
+      required this.gambarEvent,
+      required this.tglmulaiEvent,
+      required this.tglselesaiEvent,
+      required this.urlEvent,
+      required this.penyelenggaraEvent});
 
   @override
   _AgendaDetailState createState() => _AgendaDetailState();
@@ -368,6 +368,7 @@ class _AgendaDetailState extends State<AgendaDetail> {
                     id: "${widget.idDesa}",
                     desa: "${widget.desaEvent}",
                     kecamatan: "${widget.kecamatanEvent}",
+                    title: '',
                   ),
                 ),
               );
@@ -796,7 +797,7 @@ class IconTile extends StatelessWidget {
   String imgAssetPath;
   Color backColor;
 
-  IconTile({this.imgAssetPath, this.backColor});
+  IconTile({required this.imgAssetPath, required this.backColor});
 
   @override
   Widget build(BuildContext context) {

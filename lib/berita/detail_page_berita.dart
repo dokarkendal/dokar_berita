@@ -34,20 +34,20 @@ class DetailBerita extends StatefulWidget {
       dDesa;
 
   DetailBerita(
-      {this.dDesa,
-      this.dBaca,
-      this.dKecamatan,
-      this.dGambar,
-      this.dKategori,
-      this.dAdmin,
-      this.dTanggal,
-      this.dJudul,
-      this.dHtml,
-      this.dUrl,
-      this.dId,
-      this.dIdDesa,
-      this.dWaktu,
-      this.dVideo});
+      {required this.dDesa,
+      required this.dBaca,
+      required this.dKecamatan,
+      required this.dGambar,
+      required this.dKategori,
+      required this.dAdmin,
+      required this.dTanggal,
+      required this.dJudul,
+      required this.dHtml,
+      required this.dUrl,
+      required this.dId,
+      required this.dIdDesa,
+      required this.dWaktu,
+      required this.dVideo});
 
   @override
   _DetailBeritaState createState() => _DetailBeritaState();
@@ -57,9 +57,9 @@ class _DetailBeritaState extends State<DetailBerita> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   // User _currentUser;
   // AdditionalUserInfo _addcurrentUser;
-  String dibaca = '';
+  String? dibaca = '0';
   // ignore: missing_return
-  Future<String> getKategori() async {
+  void getViews() async {
     //SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
         Uri.parse(
@@ -69,33 +69,51 @@ class _DetailBeritaState extends State<DetailBerita> {
           "Kategori": "${widget.dKategori}",
           "IdBerita": "${widget.dId}"
         });
-    var kategori = json.decode(response.body);
-    if (mounted) {
+    var views = json.decode(response.body);
+    if (views[0]["Notif"] == "No View") {
       setState(
         () {
-          if ('${widget.dBaca}' == 'null') {
-            dibaca = '0';
-          } else {
-            dibaca = '${widget.dBaca}';
-          }
-          print(kategori);
+          dibaca = "0";
+          // if ('${widget.dBaca}' == null) {
+          //   dibaca = '0';
+          // } else {
+          //   dibaca = '${widget.dBaca}'.toString();
+          // }
+          // print(views);
           //print("${widget.dIdDesa}");
         },
       );
+    } else if (views[0]["Notif"] == "Insert View Berhasil") {
+      setState(() {
+        dibaca = '${widget.dBaca}'.toString();
+      });
     }
   }
 
-  YoutubePlayerController youTube;
+  late YoutubePlayerController youTube;
+  late String? videoId;
 
   @override
   void initState() {
-    youTube = YoutubePlayerController(
-      initialVideoId: "${widget.dVideo}",
-      flags: YoutubePlayerFlags(
-        mute: false,
-        autoPlay: false,
-      ),
-    );
+    this.getViews();
+    // final videoId = YoutubePlayer.convertUrlToId(widget.dVideo);
+    // youTube = YoutubePlayerController(
+    //   initialVideoId: videoId!,
+    //   flags: YoutubePlayerFlags(
+    //     mute: false,
+    //     autoPlay: false,
+    //   ),
+    // );
+    videoId = YoutubePlayer.convertUrlToId(widget.dVideo);
+    if (videoId != null) {
+      youTube = YoutubePlayerController(
+        initialVideoId: videoId!,
+        flags: YoutubePlayerFlags(
+          mute: false,
+          autoPlay: false,
+        ),
+      );
+    }
     super.initState();
     // checkSignIGoogle();
     print('${widget.dKategori}');
@@ -112,8 +130,6 @@ class _DetailBeritaState extends State<DetailBerita> {
         // }
       },
     );
-
-    this.getKategori();
   }
 
   // Future<String> checkSignIGoogle() async {
@@ -210,69 +226,81 @@ class _DetailBeritaState extends State<DetailBerita> {
   //   }
   // }
 
-  Widget _playYoutube(youTube) {
-    String vid = "${widget.dVideo}";
-    int panjang = vid.length;
-    if ("${widget.dVideo}" == null) {
-      return new Center(
-        child: Chip(
-          backgroundColor: Colors.red[400],
-          avatar: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-          ),
-          label: Text(
-            'Tidak ada video',
-            style: new TextStyle(
-              color: Colors.white,
-              fontSize: 14.0,
-            ),
-          ),
-        ),
-      );
-    } else {
-      if (panjang >= 12) {
-        return new Center(
-          child: Chip(
-            backgroundColor: Colors.red[400],
-            avatar: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-            ),
-            label: Text(
-              'Tidak ada video',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
-          ),
-        );
-      } else if (panjang == 0) {
-        return new Center(
-          child: Chip(
-            backgroundColor: Colors.red[400],
-            avatar: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
-            ),
-            label: Text(
-              'Tidak ada video',
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
-          ),
-        );
-      } else {
-        return new YoutubePlayer(
-          controller: youTube,
-          showVideoProgressIndicator: true,
-        );
-      }
-    }
-  }
+  // Widget _playYoutube(youTube) {
+  //   // String vid = "${widget.dVideo}";
+  //   // int panjang = vid.length;
+  //   if (widget.dVideo == null) {
+  //     return new Center(
+  //       child: Chip(
+  //         backgroundColor: Colors.red[400],
+  //         avatar: CircleAvatar(
+  //           backgroundColor: Colors.white,
+  //           child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //         ),
+  //         label: Text(
+  //           'Tidak ada video',
+  //           style: new TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 14.0,
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //     // return new YoutubePlayer(
+  //     //   controller: youTube,
+  //     //   showVideoProgressIndicator: true,
+  //     // );
+  //   } else {
+  //     // if (panjang >= 12) {
+  //     //   return new Center(
+  //     //     child: Chip(
+  //     //       backgroundColor: Colors.red[400],
+  //     //       avatar: CircleAvatar(
+  //     //         backgroundColor: Colors.white,
+  //     //         child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //     //       ),
+  //     //       label: Text(
+  //     //         'Tidak ada video',
+  //     //         style: new TextStyle(
+  //     //           color: Colors.white,
+  //     //           fontSize: 14.0,
+  //     //         ),
+  //     //       ),
+  //     //     ),
+  //     //   );
+  //     //   return new YoutubePlayer(
+  //     //     controller: youTube,
+  //     //     showVideoProgressIndicator: true,
+  //     //   );
+  //     // } else if (panjang == 0) {
+  //     // return new Center(
+  //     //   child: Chip(
+  //     //     backgroundColor: Colors.red[400],
+  //     //     avatar: CircleAvatar(
+  //     //       backgroundColor: Colors.white,
+  //     //       child: Icon(Icons.videocam_off, size: 16, color: Colors.black45),
+  //     //     ),
+  //     //     label: Text(
+  //     //       'Tidak ada video',
+  //     //       style: new TextStyle(
+  //     //         color: Colors.white,
+  //     //         fontSize: 14.0,
+  //     //       ),
+  //     //     ),
+  //     //   ),
+  //     // );
+  //     // return new YoutubePlayer(
+  //     //   controller: youTube,
+  //     //   showVideoProgressIndicator: true,
+  //     // );
+  //     // } else {
+  //     return new YoutubePlayer(
+  //       controller: youTube,
+  //       showVideoProgressIndicator: true,
+  //     );
+  //   }
+  //   // }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -495,7 +523,32 @@ class _DetailBeritaState extends State<DetailBerita> {
                         // scrollable: false,
                       ),
                       //Divider(),
-                      _playYoutube(youTube),
+                      // _playYoutube(youTube),
+                      videoId == null
+                          ? Center(
+                              child: Chip(
+                                backgroundColor: Colors.red[400],
+                                avatar: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  child: Icon(Icons.videocam_off,
+                                      size: 16, color: Colors.black45),
+                                ),
+                                label: Text(
+                                  'Tidak ada video',
+                                  style: new TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : YoutubePlayer(
+                              controller: youTube,
+                              showVideoProgressIndicator: true,
+                              onReady: () {
+                                // Perform any actions after the video player is ready
+                              },
+                            ),
                       SizedBox(
                         height: 20,
                       ),
@@ -644,6 +697,7 @@ class _DetailBeritaState extends State<DetailBerita> {
                     id: "${widget.dIdDesa}",
                     desa: "${widget.dDesa}",
                     kecamatan: "${widget.dKecamatan}",
+                    title: '',
                   ),
                 ),
               );
@@ -721,6 +775,7 @@ class _DetailBeritaState extends State<DetailBerita> {
   Widget share() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
 
+    // ignore: unnecessary_null_comparison
     if ('${widget.dBaca}' == null) {
       dibaca = '0';
     } else {

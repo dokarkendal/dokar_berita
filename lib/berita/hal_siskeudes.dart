@@ -9,7 +9,7 @@ import 'dart:convert';
 class SimplePieChart extends StatefulWidget {
   final String idDesa, kodeDesa;
 
-  SimplePieChart({this.idDesa, this.kodeDesa});
+  SimplePieChart({required this.idDesa, required this.kodeDesa});
 
   @override
   _SimplePieChartState createState() => _SimplePieChartState();
