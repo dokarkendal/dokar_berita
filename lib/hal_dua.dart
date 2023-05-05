@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/berita/detail_galeri.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
@@ -268,6 +269,7 @@ class _HalduaState extends State<Haldua> {
 
 //NOTE Widget Penulis
   Widget penulis() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     if (status == '02') {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
@@ -277,8 +279,8 @@ class _HalduaState extends State<Haldua> {
             Column(
               children: <Widget>[
                 Material(
-                  borderRadius: BorderRadius.circular(100.0),
-                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.orange.withOpacity(0.2),
                   child: IconButton(
                     padding: EdgeInsets.all(15.0),
                     icon: Icon(Icons.help),
@@ -300,7 +302,7 @@ class _HalduaState extends State<Haldua> {
             Column(
               children: <Widget>[
                 Material(
-                  borderRadius: BorderRadius.circular(100.0),
+                  borderRadius: BorderRadius.circular(20.0),
                   color: Colors.red,
                   child: IconButton(
                     padding: EdgeInsets.all(15.0),
@@ -393,12 +395,12 @@ class _HalduaState extends State<Haldua> {
             Column(
               children: <Widget>[
                 Material(
-                  borderRadius: BorderRadius.circular(100.0),
-                  color: Colors.lightBlueAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.red.withOpacity(0.2),
                   child: IconButton(
                     padding: EdgeInsets.all(15.0),
                     icon: Icon(Icons.account_box),
-                    color: Colors.lightBlueAccent,
+                    color: Colors.red,
                     iconSize: 30.0,
                     onPressed: () {
                       Navigator.pushNamed(context, '/ListPenulis');
@@ -416,8 +418,8 @@ class _HalduaState extends State<Haldua> {
             Column(
               children: <Widget>[
                 Material(
-                  borderRadius: BorderRadius.circular(100.0),
-                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.orange.withOpacity(0.2),
                   child: IconButton(
                     padding: EdgeInsets.all(15.0),
                     icon: Icon(Icons.help),
@@ -439,58 +441,90 @@ class _HalduaState extends State<Haldua> {
             Column(
               children: <Widget>[
                 Material(
-                  borderRadius: BorderRadius.circular(100.0),
-                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.grey.withOpacity(0.2),
                   child: IconButton(
                     padding: EdgeInsets.all(15.0),
-                    icon: Icon(Icons.exit_to_app),
-                    color: Colors.white,
+                    icon: Icon(Icons.mail),
+                    color: Colors.grey,
                     iconSize: 30.0,
                     onPressed: () async {
-                      Dialogs.bottomMaterialDialog(
-                        msg: 'Anda yakin ingin keluar aplikasi?',
-                        title: "Keluar",
-                        color: Colors.white,
-                        lottieBuilder: Lottie.asset(
-                          'assets/animation/exit2.json',
-                          fit: BoxFit.contain,
-                          repeat: false,
+                      ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
+                        duration: const Duration(seconds: 3),
+                        elevation: 6.0,
+                        backgroundColor: Colors.purple,
+                        behavior: SnackBarBehavior.floating,
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: mediaQueryData.size.width * 0.02,
+                            ),
+                            Flexible(
+                              child: Text(
+                                "Cooming soon",
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
-                        // animation:'assets/logo/animation/exit.json',
-                        context: context,
-                        actions: [
-                          IconsOutlineButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            text: 'Tidak',
-                            iconData: Icons.cancel_outlined,
-                            textStyle: const TextStyle(color: Colors.grey),
-                            iconColor: Colors.grey,
-                          ),
-                          IconsButton(
-                            onPressed: () async {
-                              // SharedPreferences pref = await SharedPreferences.getInstance();
-                              // pref.clear();
-                              // events.clear();
-                              // _cekLogout();
-                              // Navigator.pop(context);
-                              SharedPreferences pref =
-                                  await SharedPreferences.getInstance();
-                              pref.clear();
+                        action: SnackBarAction(
+                          label: 'OK',
+                          textColor: Colors.white,
+                          onPressed: () {
+                            // Navigator.pushReplacementNamed(context, '/HalDashboard');
+                          },
+                        ),
+                      ));
+                      // Dialogs.bottomMaterialDialog(
+                      //   msg: 'Anda yakin ingin keluar aplikasi?',
+                      //   title: "Keluar",
+                      //   color: Colors.white,
+                      //   lottieBuilder: Lottie.asset(
+                      //     'assets/animation/exit2.json',
+                      //     fit: BoxFit.contain,
+                      //     repeat: false,
+                      //   ),
+                      //   // animation:'assets/logo/animation/exit.json',
+                      //   context: context,
+                      //   actions: [
+                      //     IconsOutlineButton(
+                      //       onPressed: () {
+                      //         Navigator.pop(context);
+                      //       },
+                      //       text: 'Tidak',
+                      //       iconData: Icons.cancel_outlined,
+                      //       textStyle: const TextStyle(color: Colors.grey),
+                      //       iconColor: Colors.grey,
+                      //     ),
+                      //     IconsButton(
+                      //       onPressed: () async {
+                      //         // SharedPreferences pref = await SharedPreferences.getInstance();
+                      //         // pref.clear();
+                      //         // events.clear();
+                      //         // _cekLogout();
+                      //         // Navigator.pop(context);
+                      //         SharedPreferences pref =
+                      //             await SharedPreferences.getInstance();
+                      //         pref.clear();
 
-                              int launchCount = 0;
-                              pref.setInt('counter', launchCount + 1);
-                              _cekLogout();
-                            },
-                            text: 'Exit',
-                            iconData: Icons.exit_to_app,
-                            color: Colors.red,
-                            textStyle: const TextStyle(color: Colors.white),
-                            iconColor: Colors.white,
-                          ),
-                        ],
-                      );
+                      //         int launchCount = 0;
+                      //         pref.setInt('counter', launchCount + 1);
+                      //         _cekLogout();
+                      //       },
+                      //       text: 'Exit',
+                      //       iconData: Icons.exit_to_app,
+                      //       color: Colors.red,
+                      //       textStyle: const TextStyle(color: Colors.white),
+                      //       iconColor: Colors.white,
+                      //     ),
+                      //   ],
+                      // );
                       // SharedPreferences pref =
                       //     await SharedPreferences.getInstance();
                       // pref.clear();
@@ -502,7 +536,7 @@ class _HalduaState extends State<Haldua> {
                   ),
                 ),
                 SizedBox(height: 8.0),
-                Text('Log Out',
+                Text('Surat',
                     style: TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,
@@ -540,16 +574,59 @@ class _HalduaState extends State<Haldua> {
           ),
         ),
         backgroundColor: Theme.of(context).primaryColor,
-        // actions: <Widget>[
-        //   IconButton(
-        //     icon: Icon(Icons.logout),
-        //     color: Colors.white,
-        //     iconSize: 28.0,
-        //     onPressed: () {
-        //       // Navigator.pushNamed(context, '/HalAkun');
-        //     },
-        //   )
-        // ],
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.logout),
+            iconSize: 28.0,
+            onPressed: () async {
+              // Navigator.pushNamed(context, '/MyEditor');
+              Dialogs.bottomMaterialDialog(
+                msg: 'Anda yakin ingin keluar aplikasi?',
+                title: "Keluar",
+                color: Colors.white,
+                lottieBuilder: Lottie.asset(
+                  'assets/animation/exit2.json',
+                  fit: BoxFit.contain,
+                  repeat: false,
+                ),
+                // animation:'assets/logo/animation/exit.json',
+                context: context,
+                actions: [
+                  IconsOutlineButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: 'Tidak',
+                    iconData: Icons.cancel_outlined,
+                    textStyle: const TextStyle(color: Colors.grey),
+                    iconColor: Colors.grey,
+                  ),
+                  IconsButton(
+                    onPressed: () async {
+                      // SharedPreferences pref = await SharedPreferences.getInstance();
+                      // pref.clear();
+                      // events.clear();
+                      // _cekLogout();
+                      // Navigator.pop(context);
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      pref.clear();
+
+                      int launchCount = 0;
+                      pref.setInt('counter', launchCount + 1);
+                      _cekLogout();
+                    },
+                    text: 'Exit',
+                    iconData: Icons.exit_to_app,
+                    color: Colors.red,
+                    textStyle: const TextStyle(color: Colors.white),
+                    iconColor: Colors.white,
+                  ),
+                ],
+              );
+            },
+          )
+        ],
       ),
       // backgroundColor: Color.fromRGBO(244, 244, 244, 1),
       body: SingleChildScrollView(
@@ -610,10 +687,10 @@ class _HalduaState extends State<Haldua> {
                     height: mediaQueryData.size.height * 0.39,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withOpacity(0.2),
                           offset: Offset(0.0, 3.0),
                           blurRadius: 15.0,
                         )
@@ -630,8 +707,8 @@ class _HalduaState extends State<Haldua> {
                               Column(
                                 children: <Widget>[
                                   Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.purple.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    color: Colors.purple.withOpacity(0.2),
                                     child: IconButton(
                                       padding: EdgeInsets.all(15.0),
                                       icon: Icon(Icons.library_books),
@@ -654,8 +731,8 @@ class _HalduaState extends State<Haldua> {
                               Column(
                                 children: <Widget>[
                                   Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    color: Colors.blue.withOpacity(0.2),
                                     child: IconButton(
                                       padding: EdgeInsets.all(15.0),
                                       icon: Icon(Icons.view_agenda),
@@ -678,8 +755,8 @@ class _HalduaState extends State<Haldua> {
                               Column(
                                 children: <Widget>[
                                   Material(
-                                    borderRadius: BorderRadius.circular(100.0),
-                                    color: Colors.green.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    color: Colors.green.withOpacity(0.2),
                                     child: IconButton(
                                       padding: EdgeInsets.all(15.0),
                                       icon: Icon(Icons.create),
@@ -723,7 +800,7 @@ class _HalduaState extends State<Haldua> {
                                 ),
                                 Material(
                                   borderRadius: BorderRadius.circular(100.0),
-                                  color: Colors.blueAccent.withOpacity(0.1),
+                                  color: Colors.blueAccent.withOpacity(0.2),
                                   child: IconButton(
                                     icon: Icon(
                                       Icons.arrow_forward_ios,

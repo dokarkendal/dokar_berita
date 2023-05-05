@@ -4,6 +4,7 @@ import 'dart:convert'; //NOTE api to json
 import 'dart:io';
 // import 'package:flutter_quill/flutter_quill.dart' hide Text;
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -112,10 +113,12 @@ class FormBeritaState extends State<FormBerita> {
   TextEditingController cYoutube = TextEditingController();
   TextEditingController cJudul = TextEditingController();
   TextEditingController cKategori = TextEditingController();
-  TextEditingController cIsi = TextEditingController();
+  // TextEditingController cIsi = TextEditingController();
   TextEditingController cTanggal = TextEditingController();
   TextEditingController cUsername = TextEditingController();
   TextEditingController cStatus = TextEditingController();
+  late HtmlEditorController controller2;
+  String? textToDisplay;
 
 //ANCHOR akses gallery form berita
   // Future getImageGallery() async {
@@ -225,6 +228,7 @@ class FormBeritaState extends State<FormBerita> {
 
   @override
   void initState() {
+    controller2 = HtmlEditorController();
     super.initState();
     this.getKategori();
   }
@@ -253,7 +257,7 @@ class FormBeritaState extends State<FormBerita> {
     request.fields['judul'] = cJudul.text;
     request.fields['kategori'] = _mySelection;
     // request.fields['komentar'] = _valKomentar;
-    request.fields['isi'] = cIsi.text;
+    request.fields['isi'] = textToDisplay ?? '';
     request.fields['tanggal'] = cTanggal.text;
     request.fields['id_desa'] = pref.getString("IdDesa")!;
     request.fields['username'] = pref.getString("userAdmin")!;
@@ -497,29 +501,99 @@ class FormBeritaState extends State<FormBerita> {
                   ),
 //ANCHOR input uraian form berita
                   Container(
-                    alignment: Alignment.topLeft,
-                    decoration: decorationTextField,
-                    // height: 200.0,
-                    child: TextFormField(
-                      controller: cIsi,
-                      maxLines: null,
-                      keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'OpenSans',
-                      ),
-                      decoration: InputDecoration(
-                        border: decorationBorder,
-                        contentPadding: EdgeInsets.symmetric(vertical: 50.0),
-                        prefixIcon: Icon(
-                          Icons.library_books,
+                      alignment: Alignment.topLeft,
+                      // decoration: decorationTextField,
+                      decoration: BoxDecoration(
+                        border: Border.all(
                           color: Colors.grey,
+                          width: 1.0,
                         ),
-                        hintText: 'Uraian Berita',
-                        hintStyle: decorationHint,
+                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
                       ),
-                    ),
-                  ),
+                      // height: 200.0,
+                      child: HtmlEditor(
+                        controller: controller2,
+                        htmlEditorOptions: HtmlEditorOptions(
+                          hint: 'Uraian berita',
+                          // shouldEnsureVisible: true,
+                          // autoAdjustHeight: true,
+                          //initialText: "<p>text content initial, if any</p>",
+                        ),
+                        htmlToolbarOptions: HtmlToolbarOptions(
+                          // toolbarPosition: ToolbarPosition.aboveEditor,
+                          // toolbarType: ToolbarType.nativeScrollable,
+                          defaultToolbarButtons: [
+                            StyleButtons(
+                              style: false,
+                            ),
+                            FontSettingButtons(
+                              fontName: false,
+                              fontSizeUnit: false,
+                            ),
+                            FontButtons(
+                              clearAll: false,
+                              strikethrough: false,
+                              subscript: false,
+                              superscript: false,
+                            ),
+                            ColorButtons(
+                              foregroundColor: false,
+                              highlightColor: false,
+                            ),
+                            ListButtons(
+                              ul: false,
+                              ol: false,
+                              listStyles: false,
+                            ),
+                            ParagraphButtons(
+                              increaseIndent: false,
+                              decreaseIndent: false,
+                              textDirection: false,
+                              lineHeight: false,
+                              caseConverter: false,
+                            ),
+                            InsertButtons(
+                              link: false,
+                              picture: false,
+                              audio: false,
+                              video: false,
+                              table: false,
+                              hr: false,
+                            ),
+                            OtherButtons(
+                              fullscreen: false,
+                              codeview: false,
+                              help: false,
+                            ),
+                          ],
+                          customToolbarButtons: [
+                            //your widgets here
+                            // Button1(),
+                            // Button2(),
+                          ],
+                          customToolbarInsertionIndices: [2, 5],
+                        ),
+                      )
+                      // child: TextFormField(
+                      //   controller: cIsi,
+                      //   maxLines: null,
+                      //   keyboardType: TextInputType.multiline,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontFamily: 'OpenSans',
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     border: decorationBorder,
+                      //     contentPadding: EdgeInsets.symmetric(vertical: 50.0),
+                      //     prefixIcon: Icon(
+                      //       Icons.library_books,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     hintText: 'Uraian Berita',
+                      //     hintStyle: decorationHint,
+                      //   ),
+                      // ),
+                      ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                   ),
@@ -607,7 +681,7 @@ class FormBeritaState extends State<FormBerita> {
                           Icons.ondemand_video,
                           color: Colors.grey,
                         ),
-                        hintText: 'Embed video youtube',
+                        hintText: 'Link youtube',
                         hintStyle: decorationHint,
                       ),
                     ),
@@ -737,6 +811,15 @@ class FormBeritaState extends State<FormBerita> {
                               style: const TextStyle(color: Colors.white),
                             ),
                             onPressed: () async {
+                              print(cJudul);
+                              print(cKategori);
+                              print(textToDisplay);
+                              print(cTanggal);
+                              print(cYoutube);
+                              String? txt = await controller2.getText();
+                              setState(() {
+                                textToDisplay = txt;
+                              });
                               if (cJudul.text.isEmpty || cJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -756,23 +839,25 @@ class FormBeritaState extends State<FormBerita> {
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
                               } else if (_mySelection == null ||
                                   _mySelection == '') {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                  content: Text(
-                                    'Kategori wajib di isi.',
-                                    style: TextStyle(color: Colors.white),
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Kategori wajib di isi.',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.orange[700],
+                                    action: SnackBarAction(
+                                      label: 'ULANGI',
+                                      textColor: Colors.white,
+                                      onPressed: () {
+                                        print('ULANGI snackbar');
+                                      },
+                                    ),
                                   ),
-                                  backgroundColor: Colors.orange[700],
-                                  action: SnackBarAction(
-                                    label: 'ULANGI',
-                                    textColor: Colors.white,
-                                    onPressed: () {
-                                      print('ULANGI snackbar');
-                                    },
-                                  ),
-                                ));
+                                );
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cIsi.text.isEmpty || cIsi.text == '') {
+                              } else if (textToDisplay == null ||
+                                  textToDisplay == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
