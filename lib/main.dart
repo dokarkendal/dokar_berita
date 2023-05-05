@@ -68,6 +68,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'berita/detail_page_kritiksaran.dart';
 import 'berita/hal_kritiksaran.dart';
+import 'berita/tes.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -305,6 +306,7 @@ void main() {
               dPublish: '',
               dTanggal: '',
             ),
+        '/MyEditor': (BuildContext context) => MyEditor(),
       },
       home: SplashScreenPage(),
     ),
