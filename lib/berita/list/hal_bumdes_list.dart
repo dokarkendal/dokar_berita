@@ -652,29 +652,79 @@ class HalBumdesListState extends State<HalBumdesList> {
                             color: Colors.white,
                             child: InkWell(
                               onTap: () {
-                                Alert(
+                                // Alert(
+                                //   context: context,
+                                //   type: AlertType.warning,
+                                //   // style: alertStyle,
+                                //   title: "Peringatan.",
+                                //   desc:
+                                //       "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
+                                //   buttons: [
+                                //     DialogButton(
+                                //       child: Text(
+                                //         "Tidak",
+                                //         style: TextStyle(
+                                //             color: Colors.white, fontSize: 16),
+                                //       ),
+                                //       onPressed: () => Navigator.pop(context),
+                                //       color: Colors.green,
+                                //     ),
+                                //     DialogButton(
+                                //       child: Text(
+                                //         "Edit",
+                                //         style: TextStyle(
+                                //             color: Colors.white, fontSize: 16),
+                                //       ),
+                                //       onPressed: () {
+                                //         Navigator.pop(context);
+                                //         Navigator.of(context).push(
+                                //           MaterialPageRoute(
+                                //             builder: (context) =>
+                                //                 FormBumdesEdit(
+                                //               dJudul: databerita[i]
+                                //                   ["bumdes_judul"],
+                                //               dKatTempat: databerita[i]
+                                //                   ["bumdes_tempat"],
+                                //               dIsi: databerita[i]["bumdes_isi"],
+                                //               dGambar: databerita[i]
+                                //                   ["bumdes_gambar"],
+                                //               dIdBumdes: databerita[i]
+                                //                   ["bumdes_id"],
+                                //               dVideo: databerita[i]
+                                //                   ["bumdes_video"],
+                                //               dTanggal: '',
+                                //             ),
+                                //           ),
+                                //         );
+                                //       },
+                                //       color: Colors.red,
+                                //     )
+                                //   ],
+                                // ).show();
+                                Dialogs.bottomMaterialDialog(
+                                  msg:
+                                      'Konten ini di input lewat website, apakah akan lanjut mengedit? ',
+                                  title: "EDIT BERITA",
+                                  color: Colors.white,
+                                  lottieBuilder: Lottie.asset(
+                                    'assets/animation/edit2.json',
+                                    fit: BoxFit.contain,
+                                    repeat: true,
+                                  ),
+                                  // animation:'assets/logo/animation/exit.json',
                                   context: context,
-                                  type: AlertType.warning,
-                                  // style: alertStyle,
-                                  title: "Peringatan.",
-                                  desc:
-                                      "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
-                                  buttons: [
-                                    DialogButton(
-                                      child: Text(
-                                        "Tidak",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      ),
-                                      onPressed: () => Navigator.pop(context),
-                                      color: Colors.green,
+                                  actions: [
+                                    IconsOutlineButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      text: 'Batal',
+                                      iconData: Icons.cancel_outlined,
+                                      textStyle:
+                                          const TextStyle(color: Colors.grey),
+                                      iconColor: Colors.grey,
                                     ),
-                                    DialogButton(
-                                      child: Text(
-                                        "Edit",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      ),
+                                    IconsButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                         Navigator.of(context).push(
@@ -697,10 +747,15 @@ class HalBumdesListState extends State<HalBumdesList> {
                                           ),
                                         );
                                       },
+                                      text: 'EDIT',
+                                      iconData: Icons.edit,
                                       color: Colors.red,
-                                    )
+                                      textStyle:
+                                          const TextStyle(color: Colors.white),
+                                      iconColor: Colors.white,
+                                    ),
                                   ],
-                                ).show();
+                                );
                               },
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
