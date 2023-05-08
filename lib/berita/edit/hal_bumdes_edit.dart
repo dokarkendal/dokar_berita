@@ -4,6 +4,7 @@ import 'dart:convert'; // api to json
 import 'dart:io';
 import 'package:async/async.dart'; //upload gambar
 import 'package:flutter/material.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_cropper/image_cropper.dart';
 // import 'package:dokar_aplikasi/style/constants.dart';
 import 'package:image_picker/image_picker.dart'; //akses galeri dan camera
@@ -51,12 +52,14 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
   TextEditingController dVideo = new TextEditingController();
   TextEditingController dJudul = new TextEditingController();
   TextEditingController dKatTempat = new TextEditingController();
-  TextEditingController dIsi = new TextEditingController();
+  // TextEditingController dIsi = new TextEditingController();
   TextEditingController dTanggal = new TextEditingController();
   TextEditingController cUsername = new TextEditingController();
   TextEditingController cStatus = new TextEditingController();
   TextEditingController dGambar = new TextEditingController();
   TextEditingController dIdBumdes = new TextEditingController();
+  late HtmlEditorController controller2;
+  String? textToDisplay;
 
   bool _inProcess = false;
   File? _selectedFile;
@@ -172,10 +175,11 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
 
   @override
   void initState() {
+    controller2 = HtmlEditorController();
     dVideo = new TextEditingController(text: "${widget.dVideo}");
     dJudul = new TextEditingController(text: "${widget.dJudul}");
     dKatTempat = new TextEditingController(text: "${widget.dKatTempat}");
-    dIsi = new TextEditingController(text: "${widget.dIsi}");
+    // dIsi = new TextEditingController(text: "${widget.dIsi}");
     dTanggal = new TextEditingController(text: "${widget.dTanggal}");
     dGambar = new TextEditingController(text: "${widget.dGambar}");
     dIdBumdes = new TextEditingController(text: "${widget.dIdBumdes}");
@@ -212,8 +216,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
         filename: basename(_selectedFile.path));
     request.fields['judul'] = dJudul.text;
     request.fields['tempat'] = dKatTempat.text;
-    request.fields['isi'] = dIsi.text;
-
+    request.fields['isi'] = textToDisplay ?? '';
     request.fields['id_desa'] = pref.getString("IdDesa")!;
     request.fields['username'] = pref.getString("userAdmin")!;
     request.fields['status'] = pref.getString("status")!;
@@ -338,7 +341,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
         body: {
           "judul": dJudul.text,
           "tempat": dKatTempat.text,
-          "isi": dIsi.text,
+          "isi": textToDisplay ?? '',
           "id_desa": pref.getString("IdDesa"),
           "username": pref.getString("userAdmin"),
           "status": pref.getString("status"),
@@ -537,29 +540,94 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                   ),
 //ANCHOR kegiatan bumdes edit
                   Container(
-                    alignment: Alignment.topLeft,
-                    decoration: decorationTextField,
-                    // height: 200.0,
-                    child: TextFormField(
-                      controller: dIsi,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'OpenSans',
-                      ),
-                      decoration: InputDecoration(
-                        border: decorationBorder,
-                        contentPadding: EdgeInsets.symmetric(vertical: 50.0),
-                        prefixIcon: Icon(
-                          Icons.library_books,
-                          color: Colors.grey,
+                      alignment: Alignment.topLeft,
+                      decoration: decorationTextField,
+                      // height: 200.0,
+                      child: HtmlEditor(
+                        controller: controller2,
+                        htmlEditorOptions: HtmlEditorOptions(
+                          mobileLongPressDuration: Duration.zero,
+                          hint: 'Uraian Bumdes',
+                          initialText: widget.dIsi,
+                          // shouldEnsureVisible: true,
+                          // autoAdjustHeight: true,
+                          //initialText: "<p>text content initial, if any</p>",
                         ),
-                        hintText: 'Uraian Kegiatan',
-                        hintStyle: decorationHint,
+                        htmlToolbarOptions: HtmlToolbarOptions(
+                          // toolbarPosition: ToolbarPosition.aboveEditor,
+                          // toolbarType: ToolbarType.nativeScrollable,
+                          defaultToolbarButtons: [
+                            StyleButtons(
+                              style: false,
+                            ),
+                            FontSettingButtons(
+                              fontName: false,
+                              fontSizeUnit: false,
+                            ),
+                            FontButtons(
+                              clearAll: false,
+                              strikethrough: false,
+                              subscript: false,
+                              superscript: false,
+                            ),
+                            ColorButtons(
+                              foregroundColor: false,
+                              highlightColor: false,
+                            ),
+                            ListButtons(
+                              ul: false,
+                              ol: false,
+                              listStyles: false,
+                            ),
+                            ParagraphButtons(
+                              increaseIndent: false,
+                              decreaseIndent: false,
+                              textDirection: false,
+                              lineHeight: false,
+                              caseConverter: false,
+                            ),
+                            InsertButtons(
+                              link: false,
+                              picture: false,
+                              audio: false,
+                              video: false,
+                              table: false,
+                              hr: false,
+                            ),
+                            OtherButtons(
+                              fullscreen: false,
+                              codeview: false,
+                              help: false,
+                            ),
+                          ],
+                          customToolbarButtons: [
+                            //your widgets here
+                            // Button1(),
+                            // Button2(),
+                          ],
+                          customToolbarInsertionIndices: [2, 5],
+                        ),
+                      )
+                      // child: TextFormField(
+                      //   controller: dIsi,
+                      //   maxLines: null,
+                      //   keyboardType: TextInputType.multiline,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontFamily: 'OpenSans',
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     border: decorationBorder,
+                      //     contentPadding: EdgeInsets.symmetric(vertical: 50.0),
+                      //     prefixIcon: Icon(
+                      //       Icons.library_books,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     hintText: 'Uraian Kegiatan',
+                      //     hintStyle: decorationHint,
+                      //   ),
+                      // ),
                       ),
-                    ),
-                  ),
                   new Padding(
                     padding: new EdgeInsets.only(top: 10.0),
                   ),
@@ -582,7 +650,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                           Icons.ondemand_video,
                           color: Colors.grey,
                         ),
-                        hintText: 'Embed video youtube',
+                        hintText: 'Link Youtube',
                         hintStyle: decorationHint,
                       ),
                     ),
@@ -705,6 +773,10 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                               ),
                             ),
                             onPressed: () async {
+                              String? txt = await controller2.getText();
+                              setState(() {
+                                textToDisplay = txt;
+                              });
                               if (dJudul.text.isEmpty || dJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -738,7 +810,8 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
                                       }),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (dIsi.text.isEmpty || dIsi.text == '') {
+                              } else if (textToDisplay == null ||
+                                  textToDisplay == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(

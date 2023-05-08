@@ -2,6 +2,7 @@
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
 import 'dart:io';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -61,14 +62,15 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
 //ANCHOR controller agenda edit
   TextEditingController cJudul = TextEditingController();
   TextEditingController cPenyelenggara = TextEditingController();
-  TextEditingController cIsi = TextEditingController();
+  // TextEditingController cIsi = TextEditingController();
   TextEditingController cTanggalmulai = TextEditingController();
   TextEditingController cTanggalselesai = TextEditingController();
   TextEditingController cJammulai = TextEditingController();
   TextEditingController cJamselesai = TextEditingController();
   TextEditingController cIdAgenda = TextEditingController();
   TextEditingController cGambar = TextEditingController();
-
+  late HtmlEditorController controller2;
+  String? textToDisplay;
 //ANCHOR input image size flutter agenda edit
   bool _inProcess = false;
   File? _selectedFile;
@@ -183,9 +185,10 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
 
   @override
   void initState() {
+    controller2 = HtmlEditorController();
     cJudul = TextEditingController(text: "${widget.cJudul}");
     cPenyelenggara = TextEditingController(text: "${widget.cPenyelenggara}");
-    cIsi = TextEditingController(text: "${widget.cIsi}");
+    // cIsi = TextEditingController(text: "${widget.cIsi}");
     cTanggalmulai = TextEditingController(text: "${widget.cTanggalmulai}");
     cTanggalselesai = TextEditingController(text: "${widget.cTanggalselesai}");
     cJammulai = TextEditingController(text: "${widget.cJammulai}");
@@ -226,7 +229,7 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
         filename: basename(_selectedFile.path));
     request.fields['judul'] = cJudul.text;
     request.fields['penyelenggara'] = cPenyelenggara.text;
-    request.fields['isi'] = cIsi.text;
+    request.fields['isi'] = textToDisplay ?? '';
     request.fields['tgl_mulai'] = cTanggalmulai.text;
     request.fields['tgl_selesai'] = cTanggalselesai.text;
     request.fields['jam_mulai'] = cJammulai.text;
@@ -335,7 +338,7 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
         body: {
           "judul": cJudul.text,
           "penyelenggara": cPenyelenggara.text,
-          "isi": cIsi.text,
+          "isi": textToDisplay ?? '',
           "tgl_mulai": cTanggalmulai.text,
           "tgl_selesai": cTanggalselesai.text,
           "jam_mulai": cJammulai.text,
@@ -510,29 +513,94 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                   ),
 //ANCHOR agenda isi agenda edit
                   Container(
-                    // alignment: Alignment.topLeft,
-                    decoration: decorationTextField,
-                    // height: 200.0,
-                    child: TextFormField(
-                      controller: cIsi,
-                      maxLines: null,
-                      keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'OpenSans',
-                      ),
-                      decoration: InputDecoration(
-                        border: decorationBorder,
-                        //contentPadding: EdgeInsets.only(top: 14.0),
-                        prefixIcon: Icon(
-                          Icons.library_books,
-                          color: Colors.grey,
+                      alignment: Alignment.topLeft,
+                      decoration: decorationTextField,
+                      // height: 200.0,
+                      child: HtmlEditor(
+                        controller: controller2,
+                        htmlEditorOptions: HtmlEditorOptions(
+                          mobileLongPressDuration: Duration.zero,
+                          hint: 'Uraian Kegiatan',
+                          initialText: widget.cIsi,
+                          // shouldEnsureVisible: true,
+                          // autoAdjustHeight: true,
+                          //initialText: "<p>text content initial, if any</p>",
                         ),
-                        hintText: 'Uraian Agenda',
-                        hintStyle: decorationHint,
+                        htmlToolbarOptions: HtmlToolbarOptions(
+                          // toolbarPosition: ToolbarPosition.aboveEditor,
+                          // toolbarType: ToolbarType.nativeScrollable,
+                          defaultToolbarButtons: [
+                            StyleButtons(
+                              style: false,
+                            ),
+                            FontSettingButtons(
+                              fontName: false,
+                              fontSizeUnit: false,
+                            ),
+                            FontButtons(
+                              clearAll: false,
+                              strikethrough: false,
+                              subscript: false,
+                              superscript: false,
+                            ),
+                            ColorButtons(
+                              foregroundColor: false,
+                              highlightColor: false,
+                            ),
+                            ListButtons(
+                              ul: false,
+                              ol: false,
+                              listStyles: false,
+                            ),
+                            ParagraphButtons(
+                              increaseIndent: false,
+                              decreaseIndent: false,
+                              textDirection: false,
+                              lineHeight: false,
+                              caseConverter: false,
+                            ),
+                            InsertButtons(
+                              link: false,
+                              picture: false,
+                              audio: false,
+                              video: false,
+                              table: false,
+                              hr: false,
+                            ),
+                            OtherButtons(
+                              fullscreen: false,
+                              codeview: false,
+                              help: false,
+                            ),
+                          ],
+                          customToolbarButtons: [
+                            //your widgets here
+                            // Button1(),
+                            // Button2(),
+                          ],
+                          customToolbarInsertionIndices: [2, 5],
+                        ),
+                      )
+                      // child: TextFormField(
+                      //   controller: cIsi,
+                      //   maxLines: null,
+                      //   keyboardType: TextInputType.emailAddress,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontFamily: 'OpenSans',
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     border: decorationBorder,
+                      //     //contentPadding: EdgeInsets.only(top: 14.0),
+                      //     prefixIcon: Icon(
+                      //       Icons.library_books,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     hintText: 'Uraian Agenda',
+                      //     hintStyle: decorationHint,
+                      //   ),
+                      // ),
                       ),
-                    ),
-                  ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                   ),
@@ -820,6 +888,10 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                               ),
                             ),
                             onPressed: () async {
+                              String? txt = await controller2.getText();
+                              setState(() {
+                                textToDisplay = txt;
+                              });
                               if (cJudul.text.isEmpty || cJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -855,7 +927,8 @@ class FormAgendaEditState extends State<FormAgendaEdit> {
                                   ),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cIsi.text.isEmpty || cIsi.text == '') {
+                              } else if (textToDisplay == null ||
+                                  textToDisplay == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(

@@ -2,6 +2,7 @@
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
 import 'dart:io';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -54,12 +55,14 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
   TextEditingController dVideo = TextEditingController();
   TextEditingController dJudul = TextEditingController();
   TextEditingController dKatTempat = TextEditingController();
-  TextEditingController dIsi = TextEditingController();
+  // TextEditingController dIsi = TextEditingController();
   TextEditingController dTanggal = TextEditingController();
   TextEditingController cUsername = TextEditingController();
   TextEditingController cStatus = TextEditingController();
   TextEditingController dGambar = TextEditingController();
   TextEditingController dIdKegiatan = TextEditingController();
+  late HtmlEditorController controller2;
+  String? textToDisplay;
 
   bool _inProcess = false;
   File? _selectedFile;
@@ -179,10 +182,11 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
 
   @override
   void initState() {
+    controller2 = HtmlEditorController();
     dVideo = TextEditingController(text: "${widget.dVideo}");
     dJudul = TextEditingController(text: "${widget.dJudul}");
     dKatTempat = TextEditingController(text: "${widget.dKatTempat}");
-    dIsi = TextEditingController(text: "${widget.dIsi}");
+    // dIsi = TextEditingController(text: "${widget.dIsi}");
     dTanggal = TextEditingController(text: "${widget.dTanggal}");
     dGambar = TextEditingController(text: "${widget.dGambar}");
     dIdKegiatan = TextEditingController(text: "${widget.dIdKegiatan}");
@@ -218,7 +222,7 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
         filename: basename(_selectedFile.path));
     request.fields['judul'] = dJudul.text;
     request.fields['tempat'] = dKatTempat.text;
-    request.fields['isi'] = dIsi.text;
+    request.fields['isi'] = textToDisplay ?? '';
     request.fields['tanggal'] = dTanggal.text;
     request.fields['id_desa'] = pref.getString("IdDesa")!;
     request.fields['username'] = pref.getString("userAdmin")!;
@@ -350,7 +354,7 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
         body: {
           "judul": dJudul.text,
           "tempat": dKatTempat.text,
-          "isi": dIsi.text,
+          "isi": textToDisplay ?? '',
           "tanggal": dTanggal.text,
           "id_desa": pref.getString("IdDesa"),
           "username": pref.getString("userAdmin"),
@@ -457,7 +461,6 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
         //   subtitle: 'Kegiatan Gagal di upload.',
         //   configuration: IconConfiguration(icon: Icons.done),
         // );
-
       }
     }
   }
@@ -554,29 +557,94 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                   ),
 //ANCHOR kegiatan isi edit
                   Container(
-                    alignment: Alignment.topLeft,
-                    decoration: decorationTextField,
-                    // height: 200.0,
-                    child: TextFormField(
-                      controller: dIsi,
-                      maxLines: null,
-                      keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'OpenSans',
-                      ),
-                      decoration: InputDecoration(
-                        border: decorationBorder,
-                        //contentPadding: EdgeInsets.only(top: 14.0),
-                        prefixIcon: Icon(
-                          Icons.library_books,
-                          color: Colors.grey[600],
+                      alignment: Alignment.topLeft,
+                      decoration: decorationTextField,
+                      // height: 200.0,
+                      child: HtmlEditor(
+                        controller: controller2,
+                        htmlEditorOptions: HtmlEditorOptions(
+                          mobileLongPressDuration: Duration.zero,
+                          hint: 'Uraian Kegiatan',
+                          initialText: widget.dIsi,
+                          // shouldEnsureVisible: true,
+                          // autoAdjustHeight: true,
+                          //initialText: "<p>text content initial, if any</p>",
                         ),
-                        hintText: 'Uraian Kegiatan',
-                        hintStyle: decorationHint,
+                        htmlToolbarOptions: HtmlToolbarOptions(
+                          // toolbarPosition: ToolbarPosition.aboveEditor,
+                          // toolbarType: ToolbarType.nativeScrollable,
+                          defaultToolbarButtons: [
+                            StyleButtons(
+                              style: false,
+                            ),
+                            FontSettingButtons(
+                              fontName: false,
+                              fontSizeUnit: false,
+                            ),
+                            FontButtons(
+                              clearAll: false,
+                              strikethrough: false,
+                              subscript: false,
+                              superscript: false,
+                            ),
+                            ColorButtons(
+                              foregroundColor: false,
+                              highlightColor: false,
+                            ),
+                            ListButtons(
+                              ul: false,
+                              ol: false,
+                              listStyles: false,
+                            ),
+                            ParagraphButtons(
+                              increaseIndent: false,
+                              decreaseIndent: false,
+                              textDirection: false,
+                              lineHeight: false,
+                              caseConverter: false,
+                            ),
+                            InsertButtons(
+                              link: false,
+                              picture: false,
+                              audio: false,
+                              video: false,
+                              table: false,
+                              hr: false,
+                            ),
+                            OtherButtons(
+                              fullscreen: false,
+                              codeview: false,
+                              help: false,
+                            ),
+                          ],
+                          customToolbarButtons: [
+                            //your widgets here
+                            // Button1(),
+                            // Button2(),
+                          ],
+                          customToolbarInsertionIndices: [2, 5],
+                        ),
+                      )
+                      // child: TextFormField(
+                      //   controller: dIsi,
+                      //   maxLines: null,
+                      //   keyboardType: TextInputType.emailAddress,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontFamily: 'OpenSans',
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     border: decorationBorder,
+                      //     //contentPadding: EdgeInsets.only(top: 14.0),
+                      //     prefixIcon: Icon(
+                      //       Icons.library_books,
+                      //       color: Colors.grey[600],
+                      //     ),
+                      //     hintText: 'Uraian Kegiatan',
+                      //     hintStyle: decorationHint,
+                      //   ),
+                      // ),
                       ),
-                    ),
-                  ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                   ),
@@ -631,7 +699,7 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                           Icons.ondemand_video,
                           color: Colors.grey[600],
                         ),
-                        hintText: 'Embed video youtube',
+                        hintText: 'Link Youtube',
                         hintStyle: decorationHint,
                       ),
                     ),
@@ -762,6 +830,10 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                               ),
                             ),
                             onPressed: () async {
+                              String? txt = await controller2.getText();
+                              setState(() {
+                                textToDisplay = txt;
+                              });
                               if (dJudul.text.isEmpty || dJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -797,7 +869,8 @@ class FormKegiatanEditState extends State<FormKegiatanEdit> {
                                   ),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (dIsi.text.isEmpty || dIsi.text == '') {
+                              } else if (textToDisplay == null ||
+                                  textToDisplay == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
