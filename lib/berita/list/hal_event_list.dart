@@ -577,30 +577,93 @@ class HalEventListState extends State<HalEventList> {
                             color: Colors.white,
                             child: InkWell(
                               onTap: () {
-                                Alert(
+                                // Alert(
+                                //   context: context,
+                                //   type: AlertType.warning,
+                                //   // style: alertStyle,
+                                //   title: "Peringatan.",
+                                //   desc:
+                                //       "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
+                                //   buttons: [
+                                //     DialogButton(
+                                //       child: Text(
+                                //         "Tidak",
+                                //         style: TextStyle(
+                                //             color: Colors.white, fontSize: 16),
+                                //       ),
+                                //       onPressed: () => Navigator.pop(context),
+                                //       color: Colors.green,
+                                //     ),
+                                //     DialogButton(
+                                //       child: Text(
+                                //         "Edit",
+                                //         style: TextStyle(
+                                //             color: Colors.white, fontSize: 16),
+                                //       ),
+                                //       onPressed: () {
+                                //         Navigator.pop(context);
+                                //         Navigator.of(context).push(
+                                //           MaterialPageRoute(
+                                //             builder: (context) =>
+                                //                 FormAgendaEdit(
+                                //               cJudul: databerita[i]
+                                //                   ["judul_agenda"],
+                                //               cPenyelenggara: databerita[i]
+                                //                   ["penyelenggara"],
+                                //               cIsi: databerita[i]
+                                //                   ["uraian_agenda"],
+                                //               cTanggalmulai: databerita[i]
+                                //                   ["tglmulai_agenda"],
+                                //               cTanggalselesai: databerita[i]
+                                //                   ["tglselesai_agenda"],
+                                //               cJammulai: databerita[i]
+                                //                   ["jam_mulai"],
+                                //               cJamselesai: databerita[i]
+                                //                   ["jam_selesai"],
+                                //               cGambar: databerita[i]
+                                //                   ["gambar_agenda"],
+                                //               cIdAgenda: databerita[i]
+                                //                   ["id_agenda"],
+                                //             ),
+                                //           ),
+                                //         );
+                                //         // .then(
+                                //         //   (value) => setState(
+                                //         //     () {
+                                //         //       _getMoreData();
+                                //         //     },
+                                //         //   ),
+                                //         // );
+                                //       },
+                                //       color: Colors.red,
+                                //     )
+                                //   ],
+                                // ).show();
+                                Dialogs.bottomMaterialDialog(
+                                  msg:
+                                      'Konten ini di input lewat website, apakah akan lanjut mengedit? ',
+                                  title: "EDIT BERITA",
+                                  color: Colors.white,
+                                  lottieBuilder: Lottie.asset(
+                                    'assets/animation/edit2.json',
+                                    fit: BoxFit.contain,
+                                    repeat: true,
+                                  ),
+                                  // animation:'assets/logo/animation/exit.json',
                                   context: context,
-                                  type: AlertType.warning,
-                                  // style: alertStyle,
-                                  title: "Peringatan.",
-                                  desc:
-                                      "Konten di input melalui Website, Apa anda ingin melanjutkan edit.",
-                                  buttons: [
-                                    DialogButton(
-                                      child: Text(
-                                        "Tidak",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      ),
-                                      onPressed: () => Navigator.pop(context),
-                                      color: Colors.green,
-                                    ),
-                                    DialogButton(
-                                      child: Text(
-                                        "Edit",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 16),
-                                      ),
+                                  actions: [
+                                    IconsOutlineButton(
                                       onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      text: 'Batal',
+                                      iconData: Icons.cancel_outlined,
+                                      textStyle:
+                                          const TextStyle(color: Colors.grey),
+                                      iconColor: Colors.grey,
+                                    ),
+                                    IconsButton(
+                                      onPressed: () async {
                                         Navigator.pop(context);
                                         Navigator.of(context).push(
                                           MaterialPageRoute(
@@ -635,10 +698,15 @@ class HalEventListState extends State<HalEventList> {
                                         //   ),
                                         // );
                                       },
+                                      text: 'EDIT',
+                                      iconData: Icons.edit,
                                       color: Colors.red,
-                                    )
+                                      textStyle:
+                                          const TextStyle(color: Colors.white),
+                                      iconColor: Colors.white,
+                                    ),
                                   ],
-                                ).show();
+                                );
                               },
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
