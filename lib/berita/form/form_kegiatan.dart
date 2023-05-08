@@ -262,7 +262,12 @@ class FormKegiatanState extends State<FormKegiatan> {
           ),
         ),
       );
-      Navigator.pop(this.context);
+      await Future.delayed(
+        Duration(seconds: 2),
+        () {
+          Navigator.pop(this.context);
+        },
+      );
     } else {
       print("Upload Failed");
 
@@ -594,7 +599,7 @@ class FormKegiatanState extends State<FormKegiatan> {
                           Icons.ondemand_video,
                           color: Colors.grey,
                         ),
-                        hintText: 'Embed video youtube',
+                        hintText: 'Link Youtube',
                         hintStyle: decorationHint,
                       ),
                     ),

@@ -2,6 +2,7 @@
 import 'dart:async'; //NOTE  api syn
 import 'dart:convert'; //NOTE api to json
 import 'dart:io';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -43,7 +44,7 @@ class FormAgendaState extends State<FormAgenda> {
 //ANCHOR controller form agenda
   TextEditingController cJudul = TextEditingController();
   TextEditingController cPenyelenggara = TextEditingController();
-  TextEditingController cIsi = TextEditingController();
+  // TextEditingController cIsi = TextEditingController();
   TextEditingController cTanggalmulai = TextEditingController();
   TextEditingController cTanggalselesai = TextEditingController();
   TextEditingController cJammulai = TextEditingController();
@@ -52,6 +53,8 @@ class FormAgendaState extends State<FormAgenda> {
   TextEditingController cStatus = TextEditingController();
   bool _inProcess = false;
   File? _selectedFile;
+  late HtmlEditorController controller2;
+  String? textToDisplay;
 
   getImage(ImageSource source) async {
     setState(
@@ -173,6 +176,7 @@ class FormAgendaState extends State<FormAgenda> {
 
   @override
   void initState() {
+    controller2 = HtmlEditorController();
     super.initState();
   }
 
@@ -196,7 +200,7 @@ class FormAgendaState extends State<FormAgenda> {
         filename: basename(_selectedFile.path));
     request.fields['judul'] = cJudul.text;
     request.fields['penyelenggara'] = cPenyelenggara.text;
-    request.fields['isi'] = cIsi.text;
+    request.fields['isi'] = textToDisplay ?? '';
     request.fields['tgl_mulai'] = cTanggalmulai.text;
     request.fields['tgl_selesai'] = cTanggalselesai.text;
     request.fields['jam_mulai'] = cJammulai.text;
@@ -397,30 +401,93 @@ class FormAgendaState extends State<FormAgenda> {
                   ),
 //ANCHOR input isi agenda
                   Container(
-                    // alignment: Alignment.topLeft,
-                    decoration: decorationTextField,
-                    // height: 200.0,
-                    child: TextFormField(
-                      controller: cIsi,
-                      // maxLines: 10,
-                      maxLines: null,
-                      keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'OpenSans',
-                      ),
-                      decoration: InputDecoration(
-                        border: decorationBorder,
-                        contentPadding: EdgeInsets.symmetric(vertical: 50.0),
-                        prefixIcon: Icon(
-                          Icons.library_books,
-                          color: Colors.grey,
+                      // alignment: Alignment.topLeft,
+                      decoration: decorationTextField,
+                      // height: 200.0,
+                      child: HtmlEditor(
+                        controller: controller2,
+                        htmlEditorOptions: HtmlEditorOptions(
+                          hint: 'Uraian berita',
+                          // shouldEnsureVisible: true,
+                          // autoAdjustHeight: true,
+                          //initialText: "<p>text content initial, if any</p>",
                         ),
-                        hintText: 'Uraian Agenda',
-                        hintStyle: decorationHint,
+                        htmlToolbarOptions: HtmlToolbarOptions(
+                          // toolbarPosition: ToolbarPosition.aboveEditor,
+                          // toolbarType: ToolbarType.nativeScrollable,
+                          defaultToolbarButtons: [
+                            StyleButtons(
+                              style: false,
+                            ),
+                            FontSettingButtons(
+                              fontName: false,
+                              fontSizeUnit: false,
+                            ),
+                            FontButtons(
+                              clearAll: false,
+                              strikethrough: false,
+                              subscript: false,
+                              superscript: false,
+                            ),
+                            ColorButtons(
+                              foregroundColor: false,
+                              highlightColor: false,
+                            ),
+                            ListButtons(
+                              ul: false,
+                              ol: false,
+                              listStyles: false,
+                            ),
+                            ParagraphButtons(
+                              increaseIndent: false,
+                              decreaseIndent: false,
+                              textDirection: false,
+                              lineHeight: false,
+                              caseConverter: false,
+                            ),
+                            InsertButtons(
+                              link: false,
+                              picture: false,
+                              audio: false,
+                              video: false,
+                              table: false,
+                              hr: false,
+                            ),
+                            OtherButtons(
+                              fullscreen: false,
+                              codeview: false,
+                              help: false,
+                            ),
+                          ],
+                          customToolbarButtons: [
+                            //your widgets here
+                            // Button1(),
+                            // Button2(),
+                          ],
+                          customToolbarInsertionIndices: [2, 5],
+                        ),
+                      )
+                      // child: TextFormField(
+                      //   controller: cIsi,
+                      //   // maxLines: 10,
+                      //   maxLines: null,
+                      //   keyboardType: TextInputType.emailAddress,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontFamily: 'OpenSans',
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     border: decorationBorder,
+                      //     contentPadding: EdgeInsets.symmetric(vertical: 50.0),
+                      //     prefixIcon: Icon(
+                      //       Icons.library_books,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     hintText: 'Uraian Agenda',
+                      //     hintStyle: decorationHint,
+                      //   ),
+                      // ),
                       ),
-                    ),
-                  ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                   ),
@@ -701,6 +768,10 @@ class FormAgendaState extends State<FormAgenda> {
                               style: const TextStyle(color: subtitle),
                             ),
                             onPressed: () async {
+                              String? txt = await controller2.getText();
+                              setState(() {
+                                textToDisplay = txt;
+                              });
                               if (cJudul.text.isEmpty || cJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -736,7 +807,8 @@ class FormAgendaState extends State<FormAgenda> {
                                   ),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (cIsi.text.isEmpty || cIsi.text == '') {
+                              } else if (textToDisplay == null ||
+                                  textToDisplay == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(
