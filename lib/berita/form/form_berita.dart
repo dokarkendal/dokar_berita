@@ -307,7 +307,12 @@ class FormBeritaState extends State<FormBerita> {
           ),
         ),
       );
-      Navigator.pop(this.context);
+      await Future.delayed(
+        Duration(seconds: 2),
+        () {
+          Navigator.pop(this.context);
+        },
+      );
       // await Future.delayed(
       //   Duration(seconds: 2),
       //   () {
@@ -502,14 +507,14 @@ class FormBeritaState extends State<FormBerita> {
 //ANCHOR input uraian form berita
                   Container(
                       alignment: Alignment.topLeft,
-                      // decoration: decorationTextField,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
+                      decoration: decorationTextField,
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //     color: Colors.grey,
+                      //     width: 1.0,
+                      //   ),
+                      //   borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                      // ),
                       // height: 200.0,
                       child: HtmlEditor(
                         controller: controller2,

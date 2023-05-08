@@ -3,6 +3,7 @@ import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
 import 'dart:io';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -68,13 +69,15 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
   TextEditingController dVideo = TextEditingController();
   TextEditingController dJudul = TextEditingController();
   TextEditingController dKategori = TextEditingController();
-  TextEditingController dIsi = TextEditingController();
+  // TextEditingController dIsi = TextEditingController();
   TextEditingController dTanggal = TextEditingController();
   TextEditingController cUsername = TextEditingController();
   TextEditingController cStatus = TextEditingController();
   TextEditingController dGambar = TextEditingController();
   TextEditingController dIdBerita = TextEditingController();
   TextEditingController dKomentar = TextEditingController();
+  late HtmlEditorController controller2;
+  String? textToDisplay;
 
   bool _inProcess = false;
   File? _selectedFile;
@@ -205,10 +208,12 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
 //ANCHOR Controller edit berita
   @override
   void initState() {
+    controller2 = HtmlEditorController();
+    // controller2.setContent(widget.dIsi);
     dVideo = TextEditingController(text: "${widget.dVideo}");
     dJudul = TextEditingController(text: "${widget.dJudul}");
     dKategori = TextEditingController(text: "${widget.dKategori}");
-    dIsi = TextEditingController(text: "${widget.dIsi}");
+    // controller2 = "${widget.dIsi}" as HtmlEditorController;
     dTanggal = TextEditingController(text: "${widget.dTanggal}");
     dGambar = TextEditingController(text: "${widget.dGambar}");
     dIdBerita = TextEditingController(text: "${widget.dIdBerita}");
@@ -253,7 +258,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
         filename: basename(_selectedFile.path));
     request.fields['judul'] = dJudul.text;
     request.fields['kategori'] = _mySelection;
-    request.fields['isi'] = dIsi.text;
+    request.fields['isi'] = textToDisplay ?? '';
     request.fields['tanggal'] = dTanggal.text;
     request.fields['komentar'] = _valKomentar;
     request.fields['video'] = dVideo.text;
@@ -404,7 +409,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
           "kategori": _mySelection,
           "komentar": _valKomentar,
           "video": dVideo.text,
-          "isi": dIsi.text,
+          "isi": textToDisplay ?? '',
           "tanggal": dTanggal.text,
           "id_desa": pref.getString("IdDesa"),
           "username": pref.getString("userAdmin"),
@@ -454,8 +459,14 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
           ),
         ),
       );
-      Navigator.of(this.context).pushNamedAndRemoveUntil(
-          '/FormBeritaDashbord', ModalRoute.withName('/EditSemua'));
+      await Future.delayed(
+        Duration(seconds: 2),
+        () {
+          Navigator.of(this.context).pushNamedAndRemoveUntil(
+              '/FormBeritaDashbord', ModalRoute.withName('/EditSemua'));
+        },
+      );
+
       // Navigator.pop(this.context);
       // Navigator.pushAndRemoveUntil(
       //   this.context,
@@ -655,37 +666,103 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                   ),
 //ANCHOR isi berita edit
                   Container(
-                    alignment: Alignment.topLeft,
-                    // decoration: kBoxDecorationStyle2,
-                    // height: 200.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: TextFormField(
-                      controller: dIsi,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(
-                        color: Colors.black,
-                        // fontFamily: 'OpenSans',
-                      ),
-                      decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(10.0),
-                          ),
+                      alignment: Alignment.topLeft,
+                      decoration: decorationTextField,
+                      // decoration: kBoxDecorationStyle2,
+                      // height: 200.0,
+                      // decoration: BoxDecoration(
+                      //   borderRadius: BorderRadius.circular(10),
+                      //   color: Colors.white,
+                      // ),
+                      child: HtmlEditor(
+                        controller: controller2,
+                        htmlEditorOptions: HtmlEditorOptions(
+                          mobileLongPressDuration: Duration.zero,
+                          hint: 'Uraian berita',
+                          initialText: widget.dIsi,
+                          // shouldEnsureVisible: true,
+                          // autoAdjustHeight: true,
+                          //initialText: "<p>text content initial, if any</p>",
                         ),
-                        // border: InputBorder.none,
-                        prefixIcon: Icon(
-                          Icons.library_books,
-                          color: Colors.grey[600],
+                        htmlToolbarOptions: HtmlToolbarOptions(
+                          // toolbarPosition: ToolbarPosition.aboveEditor,
+                          // toolbarType: ToolbarType.nativeScrollable,
+                          defaultToolbarButtons: [
+                            StyleButtons(
+                              style: false,
+                            ),
+                            FontSettingButtons(
+                              fontName: false,
+                              fontSizeUnit: false,
+                            ),
+                            FontButtons(
+                              clearAll: false,
+                              strikethrough: false,
+                              subscript: false,
+                              superscript: false,
+                            ),
+                            ColorButtons(
+                              foregroundColor: false,
+                              highlightColor: false,
+                            ),
+                            ListButtons(
+                              ul: false,
+                              ol: false,
+                              listStyles: false,
+                            ),
+                            ParagraphButtons(
+                              increaseIndent: false,
+                              decreaseIndent: false,
+                              textDirection: false,
+                              lineHeight: false,
+                              caseConverter: false,
+                            ),
+                            InsertButtons(
+                              link: false,
+                              picture: false,
+                              audio: false,
+                              video: false,
+                              table: false,
+                              hr: false,
+                            ),
+                            OtherButtons(
+                              fullscreen: false,
+                              codeview: false,
+                              help: false,
+                            ),
+                          ],
+                          customToolbarButtons: [
+                            //your widgets here
+                            // Button1(),
+                            // Button2(),
+                          ],
+                          customToolbarInsertionIndices: [2, 5],
                         ),
-                        hintText: 'Uraian Berita',
-                        hintStyle: kHintTextStyle2,
+                      )
+                      // child: TextFormField(
+                      //   controller: dIsi,
+                      //   maxLines: null,
+                      //   keyboardType: TextInputType.multiline,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     // fontFamily: 'OpenSans',
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     border: new OutlineInputBorder(
+                      //       borderRadius: const BorderRadius.all(
+                      //         const Radius.circular(10.0),
+                      //       ),
+                      //     ),
+                      //     // border: InputBorder.none,
+                      //     prefixIcon: Icon(
+                      //       Icons.library_books,
+                      //       color: Colors.grey[600],
+                      //     ),
+                      //     hintText: 'Uraian Berita',
+                      //     hintStyle: kHintTextStyle2,
+                      //   ),
+                      // ),
                       ),
-                    ),
-                  ),
                   Padding(
                     padding: EdgeInsets.only(top: 10.0),
                   ),
@@ -810,7 +887,7 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                           Icons.ondemand_video,
                           color: Colors.grey[600],
                         ),
-                        hintText: 'Embed video youtube',
+                        hintText: 'Link Youtube',
                         hintStyle: kHintTextStyle2,
                       ),
                     ),
@@ -939,7 +1016,11 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                               "EDIT BERITA",
                               style: const TextStyle(color: subtitle),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
+                              String? txt = await controller2.getText();
+                              setState(() {
+                                textToDisplay = txt;
+                              });
                               if (dJudul.text.isEmpty || dJudul.text == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -957,7 +1038,8 @@ class FormBeritaEditState extends State<FormBeritaEdit> {
                                   ),
                                 ));
                                 // scaffoldKey.currentState.showSnackBar(snackBar);
-                              } else if (dIsi.text.isEmpty || dIsi.text == '') {
+                              } else if (textToDisplay == null ||
+                                  textToDisplay == '') {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(

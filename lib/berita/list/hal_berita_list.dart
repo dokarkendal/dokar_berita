@@ -586,7 +586,7 @@ class FormBeritaDashbordState extends State<FormBeritaDashbord> {
                                 // ).show();
                                 Dialogs.bottomMaterialDialog(
                                   msg:
-                                      'Konten ini di input lewat website, tag html akan terbaca, apakah akan lanjut mengedit? ',
+                                      'Konten ini di input lewat website, apakah akan lanjut mengedit? ',
                                   title: "EDIT BERITA",
                                   color: Colors.white,
                                   lottieBuilder: Lottie.asset(
