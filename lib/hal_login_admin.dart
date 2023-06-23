@@ -166,6 +166,13 @@ class _DaftarAdminState extends State<DaftarAdmin> {
               pref.setString('IdDesa', datauser[0]['id_desa']);
               pref.setString('kecamatan', datauser[0]['data_kecamatan']);
               pref.setString('desa', datauser[0]['data_nama']);
+              pref.setString('nama', datauser[0]['nama']);
+              pref.setString('hp', datauser[0]['hp']);
+              pref.setString('email', datauser[0]['email']);
+              pref.setString('active', datauser[0]['active']);
+              pref.setString('website', datauser[0]['alamat_website']);
+              pref.setString('expired', datauser[0]['expired']);
+              pref.setString('desaid', datauser[0]['desa_id']);
               username = datauser[0]['user_name'];
               Navigator.of(context).pushNamedAndRemoveUntil(
                   '/Haldua', ModalRoute.withName('/Haldua'));
@@ -421,7 +428,7 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

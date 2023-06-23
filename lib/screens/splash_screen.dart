@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 // import 'package:dokar_aplikasi/screens/onboarding_screen.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
-import 'package:package_info/package_info.dart';
+// import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../style/styleset.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -15,24 +16,39 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
 //NOTE Variabel
-  String versi = "";
+  // String versi = "";
+
+  late PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+  );
 
 //NOTE Fungsi cek versi aplikasi
-  Future _cekVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String versionName = packageInfo.version;
-    setState(
-      () {
-        versi = versionName;
-      },
-    );
+  // Future _cekVersion() async {
+  //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  //   String versionName = packageInfo.version;
+  //   setState(
+  //     () {
+  //       versi = versionName;
+  //     },
+  //   );
+  // }
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
   }
 
 //NOTE Inistate
   @override
   void initState() {
     super.initState();
-    _cekVersion();
+    // _cekVersion();
+    _initPackageInfo();
     startSplashScreen();
   }
 
@@ -107,7 +123,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     EdgeInsets.only(top: mediaQueryData.size.height * 0.17),
               ),
               Text(
-                "Versi " + versi,
+                "Versi " + _packageInfo.version,
                 style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey,

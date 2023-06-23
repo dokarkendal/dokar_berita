@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 final appbar = Colors.yellow[700];
+final wargaColor = Colors.blue;
 final appbarTitle = Colors.brown[800];
 final appbarIcon = Colors.brown[800];
 final bgPutih = Colors.white;
@@ -21,3 +22,4 @@ final decorationHint = TextStyle(
 const titleText = Colors.black;
 const subtitle = Colors.white;
 const paddingall10 = EdgeInsets.all(10.0);
+final primaryColorstyle = Colors.yellow[700];

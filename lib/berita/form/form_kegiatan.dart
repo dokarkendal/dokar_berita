@@ -115,7 +115,7 @@ class FormKegiatanState extends State<FormKegiatan> {
     if (image != null) {
       File? cropped = await ImageCropper().cropImage(
         sourcePath: image.path,
-        // aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
         compressQuality: 100,
         maxWidth: 572,
         maxHeight: 396,

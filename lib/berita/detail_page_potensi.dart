@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:share/share.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:badges/badges.dart' as badges;
 
 class DetailPotensi extends StatefulWidget {
   final String dGambar,
@@ -228,6 +229,11 @@ class _DetailPotensiState extends State<DetailPotensi> {
                                 ],
                               ),
                               judul(),
+                              // Divider(
+                              //   thickness: 0.1,
+                              //   indent: 0,
+                              //   endIndent: 0,
+                              // ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
@@ -550,6 +556,49 @@ class _DetailPotensiState extends State<DetailPotensi> {
               fontSize: 12.0,
             ),
           ),
+          // Container(
+          //   padding: EdgeInsets.only(
+          //     top: mediaQueryData.size.height * 0.001,
+          //     left: mediaQueryData.size.height * 0.002,
+          //     right: mediaQueryData.size.height * 0.002,
+          //     bottom: mediaQueryData.size.height * 0.001,
+          //   ),
+          //   decoration: BoxDecoration(
+          //     color: Color.fromARGB(255, 241, 240, 240),
+          //     borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          //     border: Border.all(
+          //       color: Colors.blue,
+          //       width: 1.0,
+          //     ),
+          //   ),
+          //   // margin: const EdgeInsets.only(top: 10.0),
+          //   child: Row(
+          //     children: [
+          //       badges.Badge(
+          //         position: badges.BadgePosition.center(),
+          //         badgeContent: Icon(
+          //           Icons.check,
+          //           size: 8,
+          //           color: Colors.white,
+          //         ),
+          //         badgeStyle: badges.BadgeStyle(
+          //           badgeColor: Colors.blue,
+          //           shape: badges.BadgeShape.twitter,
+          //         ),
+          //       ),
+          //       SizedBox(
+          //         width: mediaQueryData.size.height * 0.005,
+          //       ),
+          //       new Text(
+          //         "desa.id ",
+          //         style: new TextStyle(
+          //           color: Colors.blue,
+          //           fontSize: 10.0,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           new Padding(
             padding:
                 new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
