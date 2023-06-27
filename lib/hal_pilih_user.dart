@@ -32,7 +32,7 @@ class _PilihAKunState extends State<PilihAKun> {
       }
       Navigator.pushReplacementNamed(context, '/Haldua');
     } else if (pref.getString("userStatus") == 'Warga') {
-      Navigator.pushReplacementNamed(context, '/HalamanBeritaWarga');
+      Navigator.pushReplacementNamed(context, '/HalDashboardWarga');
     } else {}
   }
 
@@ -199,7 +199,9 @@ class _PilihAKunState extends State<PilihAKun> {
           if (pref.getString("NotifStatus") == null) {
             pref.setString('NotifStatus', '1');
           }
-          Navigator.pushNamed(context, '/HalamanBeritaWarga');
+          // Navigator.pushNamed(context, '/HalamanBeritaWarga');
+          // Navigator.pushNamed(context, '/HalLoginWarga');
+          Navigator.pushNamed(context, '/HalDaftarWarga');
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
@@ -210,7 +212,7 @@ class _PilihAKunState extends State<PilihAKun> {
           ),
         ),
         child: Text(
-          'Warga',
+          'Layanan',
           style: TextStyle(
             color: Colors.white,
             letterSpacing: 1.5,

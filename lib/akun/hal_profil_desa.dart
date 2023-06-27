@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http; //api
 import 'dart:async'; // api syn
 import 'dart:convert';
+import 'package:badges/badges.dart' as badges;
 
 import 'package:shimmer/shimmer.dart'; // api to json
 
@@ -41,6 +42,8 @@ class _ProfilDesaState extends State<ProfilDesa> {
   String namadesa = "";
   String status = "";
   String kode = "";
+  String website = "";
+  String desaid = "";
   late int? jumlah = 0;
   late int? jumlahkeg = 0;
   late int? jumlahB = 0;
@@ -49,7 +52,27 @@ class _ProfilDesaState extends State<ProfilDesa> {
   late List? dataJSON = [];
   bool isLoading = false;
 
+  Future getWebsite() async {
+    setState(() {
+      isLoading = true;
+    });
+    final response = await http.post(
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/dashbord/getwebsite"),
+        body: {
+          "IdDesa": "${widget.id}",
+        });
+    var websiteJSON = json.decode(response.body);
+    setState(() {
+      isLoading = false;
+      website = websiteJSON['alamat_website'];
+      desaid = websiteJSON['desa_id'];
+      print(websiteJSON);
+    });
+  }
+
   Future jumlahAgenda() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       isLoading = true;
     });
@@ -71,6 +94,8 @@ class _ProfilDesaState extends State<ProfilDesa> {
           jumlahBum = jumlahagenda['bumdes'];
           jumlahAgen = jumlahagenda['agenda'];
           kode = jumlahagenda['kode'];
+          // website = pref.getString("website")!;
+          // desaid = pref.getString("desa_id")!;
           isLoading = false;
         },
       );
@@ -114,6 +139,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
   void initState() {
     super.initState();
     //_cekUser();
+    getWebsite();
     jumlahAgenda();
     ambildata();
   }
@@ -169,8 +195,8 @@ class _ProfilDesaState extends State<ProfilDesa> {
                     children: <Widget>[
                       Image.asset(
                         'assets/logos/logokendal.png',
-                        width: 100.0,
-                        height: 100.0,
+                        width: 80.0,
+                        height: 80.0,
                       ),
                       SizedBox(width: 5.0),
                       Expanded(
@@ -178,7 +204,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             AutoSizeText(
-                              "DESA ${widget.desa}",
+                              "DESA ${widget.desa}".toUpperCase(),
                               minFontSize: 10,
                               maxLines: 2,
                               style: TextStyle(
@@ -318,6 +344,87 @@ class _ProfilDesaState extends State<ProfilDesa> {
                     ),
                   )
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
+              child: Container(
+                width: double.infinity,
+                height: 45.0,
+                color: Colors.grey[100],
+                child: Card(
+                  // color: Theme.of(context).primaryColor,
+                  // shape: RoundedRectangleBorder(
+                  //   borderRadius: BorderRadius.circular(10.0),
+                  // ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(
+                      color: Colors.orange,
+                      width: 1.0,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: desaid == "0"
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("  " + website),
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("  " + website),
+                              Container(
+                                padding: EdgeInsets.only(
+                                  top: mediaQueryData.size.height * 0.001,
+                                  left: mediaQueryData.size.height * 0.002,
+                                  right: mediaQueryData.size.height * 0.002,
+                                  bottom: mediaQueryData.size.height * 0.001,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 241, 240, 240),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0)),
+                                  border: Border.all(
+                                    color: Colors.blue,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                // margin: const EdgeInsets.only(top: 10.0),
+                                child: Row(
+                                  children: [
+                                    badges.Badge(
+                                      position: badges.BadgePosition.center(),
+                                      badgeContent: Icon(
+                                        Icons.check,
+                                        size: 10,
+                                        color: Colors.white,
+                                      ),
+                                      badgeStyle: badges.BadgeStyle(
+                                        badgeColor: Colors.blue,
+                                        shape: badges.BadgeShape.twitter,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: mediaQueryData.size.height * 0.005,
+                                    ),
+                                    new Text(
+                                      "desa.id ",
+                                      style: new TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 12.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                  ),
+                ),
               ),
             ),
             Container(
@@ -867,7 +974,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
                       ),
                     ],
                   ),
-                  SizedBox(height: mediaQueryData.size.height * 0.05),
+                  SizedBox(height: mediaQueryData.size.height * 0.01),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,

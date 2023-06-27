@@ -71,18 +71,20 @@ class _DetailBeritaState extends State<DetailBerita> {
         });
     var views = json.decode(response.body);
     if (views[0]["Notif"] == "No View") {
-      setState(
-        () {
-          dibaca = "0";
-          // if ('${widget.dBaca}' == null) {
-          //   dibaca = '0';
-          // } else {
-          //   dibaca = '${widget.dBaca}'.toString();
-          // }
-          // print(views);
-          //print("${widget.dIdDesa}");
-        },
-      );
+      if (mounted) {
+        setState(
+          () {
+            dibaca = "0";
+            // if ('${widget.dBaca}' == null) {
+            //   dibaca = '0';
+            // } else {
+            //   dibaca = '${widget.dBaca}'.toString();
+            // }
+            // print(views);
+            //print("${widget.dIdDesa}");
+          },
+        );
+      }
     } else if (views[0]["Notif"] == "Insert View Berhasil") {
       setState(() {
         dibaca = '${widget.dBaca}'.toString();
@@ -682,7 +684,7 @@ class _DetailBeritaState extends State<DetailBerita> {
             child: Chip(
               backgroundColor: Colors.blue[800],
               label: Text(
-                '${widget.dDesa}',
+                '${widget.dDesa}'.toUpperCase(),
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 12.0,

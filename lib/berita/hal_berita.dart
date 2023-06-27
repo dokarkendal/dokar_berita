@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:badges/badges.dart' as badges;
 
 //ANCHOR StatefulWidget Berita
 class Berita extends StatefulWidget {
@@ -52,6 +53,8 @@ class BeritaState extends State<Berita> {
           () {
             isLoading = false;
             databerita.addAll(tempList);
+            print(dataJSON);
+            print(databerita);
           },
         );
       }
@@ -271,7 +274,10 @@ class BeritaState extends State<Berita> {
                     child: AutoSizeText(
                       dataJSON![i]["kabar_judul"], // NOTE api judul berita
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 10.0, color: Colors.black54),
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: Colors.black54,
+                      ),
                       maxLines: 2,
                     ),
                   ),
@@ -296,6 +302,69 @@ class BeritaState extends State<Berita> {
         if (index == databerita.length) {
           return _buildProgressIndicator();
         } else {
+          var check;
+          if (databerita[index]["desa_id"] == "0") {
+            check = Center();
+          } else if (databerita[index]["desa_id"] == "1") {
+            check =
+                // badges.Badge(
+                //   position: badges.BadgePosition.center(),
+                //   badgeContent: Icon(
+                //     Icons.check,
+                //     size: 9,
+                //     color: Colors.white,
+                //   ),
+                //   badgeStyle: badges.BadgeStyle(
+                //     badgeColor: Colors.blue,
+                //     shape: badges.BadgeShape.twitter,
+                //   ),
+                // );
+                Container(
+              padding: EdgeInsets.only(
+                top: mediaQueryData.size.height * 0.001,
+                left: mediaQueryData.size.height * 0.002,
+                right: mediaQueryData.size.height * 0.002,
+                bottom: mediaQueryData.size.height * 0.001,
+              ),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 241, 240, 240),
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                border: Border.all(
+                  color: Colors.blue,
+                  width: 1.0,
+                ),
+              ),
+              // margin: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                children: [
+                  badges.Badge(
+                    position: badges.BadgePosition.center(),
+                    badgeContent: Icon(
+                      Icons.check,
+                      size: 8,
+                      color: Colors.white,
+                    ),
+                    badgeStyle: badges.BadgeStyle(
+                      badgeColor: Colors.blue,
+                      shape: badges.BadgeShape.twitter,
+                    ),
+                  ),
+                  SizedBox(
+                    width: mediaQueryData.size.height * 0.005,
+                  ),
+                  new Text(
+                    "desa.id ",
+                    style: new TextStyle(
+                      color: Colors.blue,
+                      fontSize: 10.0,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            check = Center();
+          }
           if (databerita[index]["dibaca"] == null) {
             dibaca = '0';
           } else {
@@ -313,7 +382,7 @@ class BeritaState extends State<Berita> {
               child: InkWell(
                 onTap: () {
                   print("tekan");
-                  print(dataJSON);
+                  print(databerita);
                   if (databerita[index]["kabar_kategori"] == 'KEGIATAN' ||
                       databerita[index]["kabar_kategori"] == 'Kegiatan' ||
                       databerita[index]["kabar_kategori"] == 'kegiatan') {
@@ -335,6 +404,7 @@ class BeritaState extends State<Berita> {
                           dHtml: databerita[index]["kabar_isi"],
                           dUrl: databerita[index]["url"],
                           dVideo: databerita[index]["kabar_video"] ?? "",
+                          // dDesaid: databerita[index]["desa_id"],
                         ),
                       ),
                     );
@@ -367,6 +437,42 @@ class BeritaState extends State<Berita> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      Padding(
+                        padding:
+                            EdgeInsets.only(left: 5.0, right: 5.0, bottom: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.account_circle_rounded,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    databerita[index]["kabar_admin"],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.brown[800],
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  check,
+                                  // Icon(Icons.arrow_forward_ios),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         elevation: 0,
@@ -446,7 +552,7 @@ class BeritaState extends State<Berita> {
                           databerita[index]
                               ["kabar_judul"], //NOTE api judul berita
                           style: TextStyle(
-                            fontSize: 18.0,
+                            fontSize: 16.0,
                             color: Colors.blue[800],
                             fontWeight: FontWeight.bold,
                           ),
@@ -483,7 +589,7 @@ class BeritaState extends State<Berita> {
                                   databerita[index]["kabar_kategori"]
                                       .toUpperCase(), //NOTE api kategori berita
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.brown[800],
                                   ),
@@ -492,10 +598,11 @@ class BeritaState extends State<Berita> {
                                     height: 10,
                                     child: VerticalDivider(color: Colors.grey)),
                                 Text(
-                                  databerita[index]["data_nama"]
-                                      .toUpperCase(), //NOTE api kategori berita
+                                  "DESA " +
+                                      databerita[index]["data_nama"]
+                                          .toUpperCase(), //NOTE api kategori berita
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.brown[800],
                                   ),
@@ -522,7 +629,7 @@ class BeritaState extends State<Berita> {
                                   databerita[index][
                                       "kabar_tanggal"], //NOTE api tanggal berita
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 12,
                                     color: Colors.brown[800],
                                   ),
                                 ),
@@ -546,6 +653,7 @@ class BeritaState extends State<Berita> {
                                 Text(
                                   dibaca, //NOTE api banyak dilihat
                                   style: TextStyle(
+                                    fontSize: 12,
                                     color: Colors.brown[800],
                                     //fontWeight: FontWeight.bold,
                                   ),

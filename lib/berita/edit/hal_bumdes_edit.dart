@@ -76,7 +76,7 @@ class FormBumdesEditState extends State<FormBumdesEdit> {
     if (image != null) {
       File? cropped = await ImageCropper().cropImage(
         sourcePath: image.path,
-        // aspectRatio: const CropAspectRatio(ratioX: 16, ratioY: 9),
+        aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
         compressQuality: 100,
         maxWidth: 572,
         maxHeight: 396,

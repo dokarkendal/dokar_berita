@@ -7,16 +7,18 @@ import 'package:lottie/lottie.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dokar_aplikasi/hal_login_admin.dart';
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:http/http.dart' as http;
-import 'package:package_info/package_info.dart';
+// import 'package:package_info/package_info.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'style/styleset.dart';
+import 'package:badges/badges.dart' as badges;
 
 class Haldua extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class Haldua extends StatefulWidget {
 class _HalduaState extends State<Haldua> {
 //NOTE Variable
   String username = "";
+  String desaid = "";
   String kecamatan = "";
   String namadesa = "";
   String status = "";
@@ -129,6 +132,7 @@ class _HalduaState extends State<Haldua> {
       setState(() {
         username = pref.getString("userAdmin")!;
         kecamatan = pref.getString("kecamatan")!;
+        desaid = pref.getString("desaid")!;
         this.namadesa = namadesa ?? "";
         // namadesa = pref.getString("data_nama")!;
         id = pref.getString("IdDesa")!;
@@ -218,6 +222,9 @@ class _HalduaState extends State<Haldua> {
                   children: <Widget>[
                     TextButton(
                       style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.red,
                         disabledForegroundColor: Colors.grey.withOpacity(0.38),
@@ -225,39 +232,85 @@ class _HalduaState extends State<Haldua> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            "Update tersedia, klik untuk update.",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                            ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.notifications_active,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Update tersedia, klik untuk update.",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                       onPressed: () {
-                        Alert(
+                        // Alert(
+                        //   context: context,
+                        //   type: AlertType.info,
+                        //   style: alertStyle,
+                        //   title: "Versi " + versi,
+                        //   desc: descript,
+                        //   buttons: [
+                        //     DialogButton(
+                        //       child: Text(
+                        //         "Update",
+                        //         style: TextStyle(
+                        //             color: Colors.white, fontSize: 16),
+                        //       ),
+                        //       onPressed: () {
+                        //         //REVIEW Tombol ke playstore
+                        //         Navigator.pop(context);
+                        //         StoreRedirect.redirect(
+                        //             androidAppId: "com.dokar.kendalkab");
+                        //       },
+                        //       color: Colors.blue[300],
+                        //     ),
+                        //   ],
+                        // ).show();
+                        Dialogs.bottomMaterialDialog(
+                          msg: descript,
+                          title: "UPDATE DOKAR " + versi,
+                          color: Colors.white,
+                          lottieBuilder: Lottie.asset(
+                            'assets/animation/update.json',
+                            fit: BoxFit.contain,
+                          ),
                           context: context,
-                          type: AlertType.info,
-                          style: alertStyle,
-                          title: "Versi " + versi,
-                          desc: descript,
-                          buttons: [
-                            DialogButton(
-                              child: Text(
-                                "Update",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
+                          actions: [
+                            IconsOutlineButton(
                               onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              text: 'Tidak',
+                              iconData: Icons.cancel_outlined,
+                              textStyle: const TextStyle(color: Colors.grey),
+                              iconColor: Colors.grey,
+                            ),
+                            IconsButton(
+                              onPressed: () async {
                                 //REVIEW Tombol ke playstore
                                 Navigator.pop(context);
                                 StoreRedirect.redirect(
                                     androidAppId: "com.dokar.kendalkab");
                               },
-                              color: Colors.blue[300],
+                              text: 'Update',
+                              iconData: Icons.system_update_alt_rounded,
+                              color: Colors.green,
+                              textStyle: const TextStyle(color: Colors.white),
+                              iconColor: Colors.white,
                             ),
                           ],
-                        ).show();
+                        );
                       },
                     ),
                   ],
@@ -553,6 +606,82 @@ class _HalduaState extends State<Haldua> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
+    var badgescheck;
+    if (desaid == "0") {
+      badgescheck = Center();
+    } else if (desaid == "1") {
+      badgescheck =
+          // Row(
+          //   children: [
+          //     Chip(
+          //       avatar: badges.Badge(
+          //         position: badges.BadgePosition.center(),
+          //         badgeContent: Icon(
+          //           Icons.check,
+          //           size: 14,
+          //           color: Colors.white,
+          //         ),
+          //         badgeStyle: badges.BadgeStyle(
+          //           badgeColor: Colors.blue,
+          //           shape: badges.BadgeShape.twitter,
+          //         ),
+          //       ),
+          //       label: Text(
+          //         'desa.id',
+          //         style: TextStyle(
+          //           color: Colors.black,
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // );
+          Container(
+        padding: EdgeInsets.only(
+          top: mediaQueryData.size.height * 0.002,
+          left: mediaQueryData.size.height * 0.005,
+          right: mediaQueryData.size.height * 0.005,
+          bottom: mediaQueryData.size.height * 0.002,
+        ),
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 241, 240, 240),
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          border: Border.all(
+            color: Colors.blue,
+            width: 1.0,
+          ),
+        ),
+        // margin: const EdgeInsets.only(top: 10.0),
+        child: Row(
+          children: [
+            badges.Badge(
+              position: badges.BadgePosition.center(),
+              badgeContent: Icon(
+                Icons.check,
+                size: 10,
+                color: Colors.white,
+              ),
+              badgeStyle: badges.BadgeStyle(
+                badgeColor: Colors.blue,
+                shape: badges.BadgeShape.twitter,
+              ),
+            ),
+            SizedBox(
+              width: mediaQueryData.size.height * 0.005,
+            ),
+            new Text(
+              "desa.id ",
+              style: new TextStyle(
+                color: Colors.blue,
+                fontSize: 12.0,
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      badgescheck = Center();
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -653,16 +782,21 @@ class _HalduaState extends State<Haldua> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          AutoSizeText(
-                            "Hai " + username,
-                            minFontSize: 16,
-                            style: TextStyle(
-                              color: Color(0xFF2e2e2e),
-                              fontSize: 28.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              AutoSizeText(
+                                "Hai " + username + " ",
+                                minFontSize: 14,
+                                style: TextStyle(
+                                  color: Color(0xFF2e2e2e),
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              badgescheck
+                            ],
                           ),
-                          SizedBox(height: 10.0),
+                          // SizedBox(height: 10.0),
                           Text(
                             'Desa dan Kelurahan Online Kab. Kendal',
                             style: TextStyle(
