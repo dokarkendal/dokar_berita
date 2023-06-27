@@ -69,12 +69,14 @@ import 'package:dokar_aplikasi/hal_dashboard_admin.dart';
 import 'package:dokar_aplikasi/version/version.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_data_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_dokumen_warga.dart';
+import 'package:dokar_aplikasi/warga/hal_profil_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'berita/detail_page_kritiksaran.dart';
 import 'berita/hal_kritiksaran.dart';
 import 'berita/tes.dart';
 import 'hal_daftar_warga.dart';
+import 'warga/edit/hal_edit_warga.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -321,6 +323,8 @@ void main() {
             HalLengkapiDataWarga(),
         '/HalLengkapiDokumenWarga': (BuildContext context) =>
             HalLengkapiDokumenWarga(),
+        '/HalProfilWarga': (BuildContext context) => HalProfilWarga(),
+        '/HalEditWarga': (BuildContext context) => HalEditWarga(),
       },
       home: SplashScreenPage(),
     ),
