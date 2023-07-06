@@ -117,6 +117,16 @@ class _HalProfilWargaState extends State<HalProfilWarga> {
             // fontSize: 25.0,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.edit),
+            iconSize: 23.0,
+            onPressed: () async {
+              Navigator.pushNamed(context, '/HalLengkapiDataWarga');
+              // .then((value) => detailAkunWarga());
+            },
+          )
+        ],
         centerTitle: true,
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,

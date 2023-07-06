@@ -83,6 +83,22 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pushNamed(context, '/PengajuanSurat');
+        },
+        label: const Text(
+          'Surat',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.green,
+      ),
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
@@ -136,8 +152,8 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                           await SharedPreferences.getInstance();
                       pref.clear();
 
-                      int launchCount = 0;
-                      pref.setInt('counter', launchCount + 1);
+                      // int launchCount = 0;
+                      // pref.setInt('counter', launchCount + 1);
                       _cekLogout();
                     },
                     text: 'Exit',
@@ -160,10 +176,16 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
               children: [
                 _header(),
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: lengkap == "Lengkap"
-                        ? _cardlengkap()
-                        : _cardbelumlengkap()),
+                    padding: const EdgeInsets.all(6.0),
+                    child: Column(
+                      children: [
+                        lengkap == "Lengkap"
+                            ? _cardlengkap()
+                            : _cardbelumlengkap(),
+                        _paddingTop1(),
+                        _riwayatSurat()
+                      ],
+                    )),
               ],
               // child: Column(
               //   children: [
@@ -315,8 +337,59 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   ),
                 ),
                 Icon(
-                  Icons.arrow_forward_ios_rounded,
+                  Icons.more_vert_sharp,
                   color: Colors.white,
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _riwayatSurat() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return GestureDetector(
+      onTap: () {
+        // Navigator.pushNamed(context, '/HalProfilWarga');
+      },
+      child: Container(
+        padding: EdgeInsets.all(15.0),
+        height: mediaQueryData.size.height * 0.07,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                offset: const Offset(0.0, 5.0),
+                blurRadius: 7.0),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Riwayat Surat",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/HalSemuaSurat');
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Colors.grey,
+                  ),
                 )
               ],
             ),
@@ -427,7 +500,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   minFontSize: 14,
                   style: TextStyle(
                     color: Color(0xFF2e2e2e),
-                    fontSize: 22.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -436,7 +509,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   minFontSize: 14,
                   style: TextStyle(
                     color: Color(0xFF2e2e2e),
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     // fontWeight: FontWeight.bold,
                   ),
                 ),

@@ -67,9 +67,14 @@ import 'package:dokar_aplikasi/berita/hal_berita.dart';
 import 'package:dokar_aplikasi/hal_pilih_user.dart';
 import 'package:dokar_aplikasi/hal_dashboard_admin.dart';
 import 'package:dokar_aplikasi/version/version.dart';
+import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
+import 'package:dokar_aplikasi/warga/edit/form_edit_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_data_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_dokumen_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_profil_warga.dart';
+import 'package:dokar_aplikasi/warga/surat/detail_surat_warga.dart';
+import 'package:dokar_aplikasi/warga/surat/hal_surat_semua.dart';
+import 'package:dokar_aplikasi/warga/surat/surat_pengajuan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'berita/detail_page_kritiksaran.dart';
@@ -304,6 +309,10 @@ void main() {
               dGambar: '',
               dJudul: '',
             ),
+        '/DetailGaleriWarga': (BuildContext context) => DetailGaleriWarga(
+              dGambar: '',
+              dJudul: '',
+            ),
         '/KritikSaran': (BuildContext context) => KritikSaran(),
         '/DetailKritikSaran': (BuildContext context) => DetailKritikSaran(
               dEmail: '',
@@ -325,6 +334,20 @@ void main() {
             HalLengkapiDokumenWarga(),
         '/HalProfilWarga': (BuildContext context) => HalProfilWarga(),
         '/HalEditWarga': (BuildContext context) => HalEditWarga(),
+        '/FormEditWarga': (BuildContext context) => FormEditWarga(),
+        '/PengajuanSurat': (BuildContext context) => PengajuanSurat(),
+        '/HalSemuaSurat': (BuildContext context) => HalSemuaSurat(),
+        '/HalDetailSurat': (BuildContext context) => HalDetailSurat(
+              dNama: '',
+              dNik: '',
+              dStatus: '',
+              dNoSurat: '',
+              dKategori: '',
+              dTanggal: '',
+              dKode: '',
+              dKeterangan: '',
+              dIdSurat: '',
+            ),
       },
       home: SplashScreenPage(),
     ),

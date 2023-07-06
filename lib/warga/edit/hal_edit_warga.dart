@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-
 import '../../style/styleset.dart';
 
 class HalEditWarga extends StatefulWidget {
@@ -48,10 +49,35 @@ class _HalEditWargaState extends State<HalEditWarga> {
     }
   }
 
+  late List dataDukungJSON = [];
+  void detailDataDukung() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      loadingdata = true;
+    });
+    final response = await http.post(
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/account/DataDukungByUid"),
+      body: {
+        "uid": pref.getString("uid")!,
+      },
+    );
+    if (mounted) {
+      this.setState(
+        () {
+          loadingdata = false;
+          dataDukungJSON = json.decode(response.body)["Data"];
+          print(dataDukungJSON);
+        },
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     detailAkunWarga();
+    detailDataDukung();
   }
 
   @override
@@ -77,7 +103,8 @@ class _HalEditWargaState extends State<HalEditWarga> {
             icon: Icon(Icons.edit),
             iconSize: 23.0,
             onPressed: () async {
-              Navigator.pushNamed(context, '/Version');
+              Navigator.pushNamed(context, '/FormEditWarga')
+                  .then((value) => detailAkunWarga());
             },
           )
         ],
@@ -89,6 +116,8 @@ class _HalEditWargaState extends State<HalEditWarga> {
               child: ListView(
                 children: [
                   _akun(),
+
+                  _dataDukung(),
                   // _buttoneditAkun(),
                 ],
               ),
@@ -96,33 +125,153 @@ class _HalEditWargaState extends State<HalEditWarga> {
     );
   }
 
-  Widget _buttoneditAkun() {
-    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+  Widget _listDataDukung() {
     return SizedBox(
-      width: mediaQueryData.size.width,
-      height: mediaQueryData.size.height * 0.07,
-      child: ElevatedButton(
-        onPressed: () async {},
-        child: const Text(
-          'EDIT',
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          textStyle: const TextStyle(
-            color: titleText,
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      child: ListView.builder(
+        physics: ClampingScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: dataDukungJSON.isEmpty ? 0 : dataDukungJSON.length,
+        itemBuilder: (context, i) {
+          if (dataDukungJSON[i]["Data"] == "notfound") {
+            return Container(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 150.0, vertical: 15.0),
+                      child: Icon(Icons.event_busy,
+                          size: 50.0, color: Colors.grey[350]),
+                    ),
+                    Text(
+                      "Belum ada data",
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.grey[350],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Container(
+              child: Card(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                elevation: 1.0,
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailGaleriWarga(
+                          dGambar: dataDukungJSON[i]["file"],
+                          dJudul: dataDukungJSON[i]["nama"],
+                        ),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 15.0),
+                        width: 90.0,
+                        height: 70.0,
+                        child: CachedNetworkImage(
+                          imageUrl: dataDukungJSON[i]["file"],
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/load.png",
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          fit: BoxFit.cover,
+                          height: 150.0,
+                          width: 110.0,
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            margin: const EdgeInsets.only(
+                              right: 10.0,
+                              // top: 5.0,
+                            ),
+                            child: Text(
+                              dataDukungJSON[i]["nama"],
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Container(
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  child: Text(
+                                    "Klik untuk melihat",
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
+
+  // Widget _buttoneditAkun() {
+  //   MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+  //   return SizedBox(
+  //     width: mediaQueryData.size.width,
+  //     height: mediaQueryData.size.height * 0.07,
+  //     child: ElevatedButton(
+  //       onPressed: () async {},
+  //       child: const Text(
+  //         'EDIT',
+  //         style: TextStyle(
+  //             fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+  //       ),
+  //       style: ElevatedButton.styleFrom(
+  //         backgroundColor: Colors.green,
+  //         elevation: 0,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //         ),
+  //         textStyle: const TextStyle(
+  //           color: titleText,
+  //           fontSize: 30,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildProgressIndicator() {
     return new Padding(
@@ -173,11 +322,60 @@ class _HalEditWargaState extends State<HalEditWarga> {
     );
   }
 
+  Widget _dataDukung() {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      child: Column(
+        children: [
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _dataDukungText(),
+                      _dividerHeight1(),
+                      _listDataDukung(),
+                      // _namaAkun(),
+                      // _dividerHeight1(),
+                      // _emailAkun(),
+                      // _dividerHeight1(),
+                      // _hpAkun(),
+                      // _dividerHeight1(),
+                      // _usernameAkun(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _akunText() {
     return Container(
       padding: EdgeInsets.all(10.0),
       child: Text(
         "Akun",
+        style: TextStyle(
+            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+      ),
+    );
+  }
+
+  Widget _dataDukungText() {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      child: Text(
+        "Data Dukung",
         style: TextStyle(
             fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
       ),

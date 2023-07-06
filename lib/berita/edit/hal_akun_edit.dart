@@ -260,7 +260,7 @@ class FormAkunEditState extends State<FormAkunEdit> {
                           Padding(
                             padding: EdgeInsets.only(top: 20.0),
                           ),
-//ANCHOR judul berita edit
+
                           Container(
                             alignment: Alignment.centerLeft,
                             decoration: kBoxDecorationStyle2,
