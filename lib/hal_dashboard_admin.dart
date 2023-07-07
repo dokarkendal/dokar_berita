@@ -76,7 +76,12 @@ class _HalduaState extends State<Haldua> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getBool("_isLoggedIn") == null) {
       _isLoggedIn = false;
-      Navigator.pushReplacementNamed(context, '/PilihAkun');
+      // Navigator.pushReplacementNamed(context, '/PilihAkun');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/PilihAkun',
+        (Route<dynamic> route) => false,
+      );
     } else {
       _isLoggedIn = true;
     }
