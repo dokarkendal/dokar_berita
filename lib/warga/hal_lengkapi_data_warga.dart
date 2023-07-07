@@ -17,6 +17,7 @@ class HalLengkapiDataWarga extends StatefulWidget {
 
 class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
   bool loadingdata = false;
+  bool loadingsimpan = false;
   final format = DateFormat("yyyy-MM-dd");
   TextEditingController cId = TextEditingController();
   TextEditingController cUid = TextEditingController();
@@ -109,12 +110,13 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
 
   bool _isInAsyncCall = false;
   Future cekPrint(pilihKelamin, pilihAgama, pilihKawin, pilihPekerjaaan) async {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     // FocusScope.of(context).requestFocus(FocusNode());
-    // setState(
-    //   () {
-    //     _isInAsyncCall = true;
-    //   },
-    // );
+    setState(
+      () {
+        loadingsimpan = true;
+      },
+    );
 
     Future.delayed(Duration(seconds: 1), () async {
       final response = await http.post(
@@ -146,6 +148,83 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
           });
       var lengkapidata = json.decode(response.body);
       print(lengkapidata);
+      if (lengkapidata["Status"] == "Sukses") {
+        setState(() {
+          loadingsimpan = false;
+        });
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 3),
+            elevation: 6.0,
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.done,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: mediaQueryData.size.width * 0.02,
+                ),
+                Flexible(
+                  child: Text(
+                    lengkapidata['Notif'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                // Navigator.pushReplacementNamed(context, '/HalDashboard');
+                // Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          loadingsimpan = false;
+        });
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 3),
+            elevation: 6.0,
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.warning,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: mediaQueryData.size.width * 0.02,
+                ),
+                Flexible(
+                  child: Text(
+                    lengkapidata['Notif'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            action: SnackBarAction(
+              label: 'ULANGI',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
     });
     print("PRIINT DARI POST");
     print(pilihKelamin);
@@ -365,365 +444,396 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
 
   Widget _tombolDaftar() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: mediaQueryData.size.height * 0.07,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (_pilihKelamin == null || _pilihKelamin == "") {
-            _pilihKelamin = cKelaminID;
-          } else {
-            _pilihKelamin = _pilihKelamin;
-          }
+    return loadingsimpan
+        ? Column(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: mediaQueryData.size.height * 0.07,
+                child: ElevatedButton(
+                  onPressed: () async {},
+                  style: ElevatedButton.styleFrom(
+                    // padding: EdgeInsets.all(15.0),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // <-- Radius
+                    ),
+                    textStyle: const TextStyle(
+                      color: titleText,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : Container(
+            width: MediaQuery.of(context).size.width,
+            height: mediaQueryData.size.height * 0.07,
+            child: ElevatedButton(
+              onPressed: () async {
+                if (_pilihKelamin == null || _pilihKelamin == "") {
+                  _pilihKelamin = cKelaminID;
+                } else {
+                  _pilihKelamin = _pilihKelamin;
+                }
 
-          if (_pilihAgama == null || _pilihAgama == "") {
-            _pilihAgama = cAgamaID;
-          } else {
-            _pilihAgama = _pilihAgama;
-          }
+                if (_pilihAgama == null || _pilihAgama == "") {
+                  _pilihAgama = cAgamaID;
+                } else {
+                  _pilihAgama = _pilihAgama;
+                }
 
-          if (_pilihKawin == null || _pilihKawin == "") {
-            _pilihKawin = cStstusKawinID;
-          } else {
-            _pilihKawin = _pilihKawin;
-          }
+                if (_pilihKawin == null || _pilihKawin == "") {
+                  _pilihKawin = cStstusKawinID;
+                } else {
+                  _pilihKawin = _pilihKawin;
+                }
 
-          if (_pilihPekerjaaan == null || _pilihPekerjaaan == "") {
-            _pilihPekerjaaan = cPekerjaanID;
-          } else {
-            _pilihPekerjaaan = _pilihPekerjaaan;
-          }
+                if (_pilihPekerjaaan == null || _pilihPekerjaaan == "") {
+                  _pilihPekerjaaan = cPekerjaanID;
+                } else {
+                  _pilihPekerjaaan = _pilihPekerjaaan;
+                }
 
-          if (cNIK.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'NIK masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cNama.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Nama masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cTempatlahir.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Tempat masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cTanggallahir.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Tanggal masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          }
-          // else if (_pilihKelamin.text.isEmpty) {
-          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: Text(
-          //       'Kelamin masih kosong',
-          //       style: TextStyle(color: Colors.white),
-          //     ),
-          //     backgroundColor: Colors.red,
-          //     action: SnackBarAction(
-          //       label: 'ULANGI',
-          //       textColor: Colors.white,
-          //       onPressed: () {
-          //         print('ULANGI snackbar');
-          //       },
-          //     ),
-          //   ));
-          // } else if (_pilihAgama.text.isEmpty) {
-          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: Text(
-          //       'Agama masih kosong',
-          //       style: TextStyle(color: Colors.white),
-          //     ),
-          //     backgroundColor: Colors.red,
-          //     action: SnackBarAction(
-          //       label: 'ULANGI',
-          //       textColor: Colors.white,
-          //       onPressed: () {
-          //         print('ULANGI snackbar');
-          //       },
-          //     ),
-          //   ));
-          // } else if (_pilihKawin.text.isEmpty) {
-          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: Text(
-          //       'Status masih kosong',
-          //       style: TextStyle(color: Colors.white),
-          //     ),
-          //     backgroundColor: Colors.red,
-          //     action: SnackBarAction(
-          //       label: 'ULANGI',
-          //       textColor: Colors.white,
-          //       onPressed: () {
-          //         print('ULANGI snackbar');
-          //       },
-          //     ),
-          //   ));
-          // } else if (_pilihPekerjaaan.text.isEmpty) {
-          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //     content: Text(
-          //       'Pekerjaan masih kosong',
-          //       style: TextStyle(color: Colors.white),
-          //     ),
-          //     backgroundColor: Colors.red,
-          //     action: SnackBarAction(
-          //       label: 'ULANGI',
-          //       textColor: Colors.white,
-          //       onPressed: () {
-          //         print('ULANGI snackbar');
-          //       },
-          //     ),
-          //   ));
-          // }
-          else if (cKewarganegaraan.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Warga Negara masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cAlamatKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Alamat KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cKotaKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Kota KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cKecamatanKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Kecamatan KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cDesaKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Desa KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cRTKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'RT KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cRWKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Alamat KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cKodeposKTP.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Alamat KTP masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cAlamat.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Alamat domisili kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cRT.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'RT Domisili masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cRW.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'RW Domisili masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (cKodepos.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'POS Domisili kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else {
-            cekPrint(_pilihKelamin, _pilihAgama, _pilihKawin, _pilihPekerjaaan);
-          }
+                if (cNIK.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'NIK masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cNama.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Nama masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cTempatlahir.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Tempat masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cTanggallahir.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Tanggal masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                }
+                // else if (_pilihKelamin.text.isEmpty) {
+                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //     content: Text(
+                //       'Kelamin masih kosong',
+                //       style: TextStyle(color: Colors.white),
+                //     ),
+                //     backgroundColor: Colors.red,
+                //     action: SnackBarAction(
+                //       label: 'ULANGI',
+                //       textColor: Colors.white,
+                //       onPressed: () {
+                //         print('ULANGI snackbar');
+                //       },
+                //     ),
+                //   ));
+                // } else if (_pilihAgama.text.isEmpty) {
+                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //     content: Text(
+                //       'Agama masih kosong',
+                //       style: TextStyle(color: Colors.white),
+                //     ),
+                //     backgroundColor: Colors.red,
+                //     action: SnackBarAction(
+                //       label: 'ULANGI',
+                //       textColor: Colors.white,
+                //       onPressed: () {
+                //         print('ULANGI snackbar');
+                //       },
+                //     ),
+                //   ));
+                // } else if (_pilihKawin.text.isEmpty) {
+                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //     content: Text(
+                //       'Status masih kosong',
+                //       style: TextStyle(color: Colors.white),
+                //     ),
+                //     backgroundColor: Colors.red,
+                //     action: SnackBarAction(
+                //       label: 'ULANGI',
+                //       textColor: Colors.white,
+                //       onPressed: () {
+                //         print('ULANGI snackbar');
+                //       },
+                //     ),
+                //   ));
+                // } else if (_pilihPekerjaaan.text.isEmpty) {
+                //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //     content: Text(
+                //       'Pekerjaan masih kosong',
+                //       style: TextStyle(color: Colors.white),
+                //     ),
+                //     backgroundColor: Colors.red,
+                //     action: SnackBarAction(
+                //       label: 'ULANGI',
+                //       textColor: Colors.white,
+                //       onPressed: () {
+                //         print('ULANGI snackbar');
+                //       },
+                //     ),
+                //   ));
+                // }
+                else if (cKewarganegaraan.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Warga Negara masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cAlamatKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Alamat KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cKotaKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Kota KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cKecamatanKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Kecamatan KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cDesaKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Desa KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cRTKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'RT KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cRWKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Alamat KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cKodeposKTP.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Alamat KTP masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cAlamat.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Alamat domisili kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cRT.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'RT Domisili masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cRW.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'RW Domisili masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (cKodepos.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'POS Domisili kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else {
+                  cekPrint(_pilihKelamin, _pilihAgama, _pilihKawin,
+                      _pilihPekerjaaan);
+                }
 
-          // print(cNama);
-          // print("DAFTAR");
-          // print(_pilihKelamin);
-        },
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(15.0),
-          backgroundColor: Theme.of(context).primaryColor,
-          elevation: 2.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // <-- Radius
-          ),
-        ),
-        child: Text(
-          'DAFTAR',
-          style: TextStyle(
-            color: Colors.brown[800],
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ),
-    );
+                // print(cNama);
+                // print("DAFTAR");
+                // print(_pilihKelamin);
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(15.0),
+                backgroundColor: Theme.of(context).primaryColor,
+                elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
+              ),
+              child: Text(
+                'SIMPAN',
+                style: TextStyle(
+                  color: Colors.brown[800],
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+          );
   }
 
   Widget _formNIK() {

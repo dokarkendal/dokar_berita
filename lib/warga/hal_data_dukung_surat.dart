@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,26 +12,30 @@ import 'dart:async';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:async/async.dart';
+import 'package:share/share.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../style/styleset.dart';
 // api to json
 
-class HalLengkapiDokumenWarga extends StatefulWidget {
-  const HalLengkapiDokumenWarga({super.key});
+class HalDataDukungSurat extends StatefulWidget {
+  final String dIdTambah;
+  HalDataDukungSurat({
+    required this.dIdTambah,
+  });
 
   @override
-  State<HalLengkapiDokumenWarga> createState() =>
-      _HalLengkapiDokumenWargaState();
+  State<HalDataDukungSurat> createState() => _HalDataDukungSuratState();
 }
 
-class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
+class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
   bool loadingdata = false;
   File? _selectedFile;
   bool _loading = false;
   bool _inProcess = false;
   List dokumenAPI = [];
   var _pilihDokumen;
+  TextEditingController cKeterangan = TextEditingController();
   Future<void> getKelamin() async {
     final response = await http.get(
       Uri.parse(
@@ -126,7 +131,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
         );
         var length = await _selectedFile.length();
         var uri = Uri.parse(
-            "https://dokar.kendalkab.go.id/webservice/android/account/UploadDatadukung");
+            "https://dokar.kendalkab.go.id/webservice/android/surat/UploadDtDukungPengajuan");
         var request = http.MultipartRequest("POST", uri);
         var multipartFile = http.MultipartFile(
           "file",
@@ -134,8 +139,9 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
           length,
           filename: basename(_selectedFile.path),
         );
+        request.fields['id_surat'] = "${widget.dIdTambah}";
         request.fields['uid'] = pref.getString("uid")!;
-        request.fields['keterangan'] = _pilihDokumen;
+        request.fields['nama'] = cKeterangan.text;
         request.files.add(multipartFile);
         var response = await request.send();
         if (response.statusCode == 200) {
@@ -185,9 +191,10 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
           // ignore: deprecated_member_use
           // scaffoldKey.currentState?.showSnackBar(snackBar);
           clearimage();
-          setState(() {
-            _pilihDokumen = null;
-          });
+          cKeterangan.clear();
+          // setState(() {
+          //   _pilihDokumen = null;
+          // });
         } else {
           setState(
             () {
@@ -279,7 +286,9 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
               _peringatanpengajuan(),
               _paddingTop2(),
               _paddingTop2(),
-              _formJenisDokumen(),
+              // _formJenisDokumen(),
+              // _paddingTop2(),
+              _formKeterangan(),
               _paddingTop2(),
               _paddingTop2(),
               Row(
@@ -359,7 +368,14 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
                 height: mediaQueryData.size.height * 0.07,
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (_pilihDokumen == null) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    print(cKeterangan.text);
+                    print("${widget.dIdTambah}");
+                    print(prefs.getString("uid"));
+                    print(_selectedFile);
+
+                    if (cKeterangan.text.isEmpty) {
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
                         duration: const Duration(seconds: 5),
                         elevation: 6.0,
@@ -376,7 +392,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
                               width: mediaQueryData.size.width * 0.01,
                             ),
                             const Text(
-                              'Pilih Jenis Dokumen',
+                              'Keteragan Harus Diisi',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -477,7 +493,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Dokumen Wajib Pengajuan",
+                "Dokumen Dukung Surat",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -492,7 +508,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
           ),
           _paddingTop2(),
           Text(
-            "1. KTP \n2. Foto identitas",
+            "Dokumen pendukung enyesuaikan dari surat dan persyarataan dari desa masing masing",
             style: TextStyle(
               color: Colors.white,
               // fontWeight: FontWeight.bold,
@@ -657,6 +673,51 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
               value: _pilihDokumen,
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _formKeterangan() {
+    return Container(
+      // padding: EdgeInsets.all(3),
+      width: MediaQuery.of(this.context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: TextFormField(
+              maxLines: null,
+              controller: cKeterangan,
+              keyboardType: TextInputType.emailAddress,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(200),
+              ],
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(10.0),
+                  ),
+                ),
+                prefixIcon: Icon(
+                  Icons.my_library_books_rounded,
+                  color: Colors.brown[800],
+                ),
+                hintText: loadingdata ? "Memuat.." : "Keterangan",
+                hintStyle: TextStyle(
+                  color: Colors.grey[400],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

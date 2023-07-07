@@ -69,6 +69,7 @@ import 'package:dokar_aplikasi/hal_dashboard_admin.dart';
 import 'package:dokar_aplikasi/version/version.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:dokar_aplikasi/warga/edit/form_edit_warga.dart';
+import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_data_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_dokumen_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_profil_warga.dart';
@@ -337,6 +338,9 @@ void main() {
         '/FormEditWarga': (BuildContext context) => FormEditWarga(),
         '/PengajuanSurat': (BuildContext context) => PengajuanSurat(),
         '/HalSemuaSurat': (BuildContext context) => HalSemuaSurat(),
+        '/HalDataDukungSurat': (BuildContext context) => HalDataDukungSurat(
+              dIdTambah: '',
+            ),
         '/HalDetailSurat': (BuildContext context) => HalDetailSurat(
               dNama: '',
               dNik: '',

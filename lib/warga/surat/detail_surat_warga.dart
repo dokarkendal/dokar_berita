@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
+import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -67,7 +68,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
   void detailDataTambah() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
-      loadingdata = true;
+      loadingdataTambahan = true;
     });
     final response = await http.post(
       Uri.parse(
@@ -502,8 +503,11 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 150.0, vertical: 15.0),
-                                child: Icon(Icons.event_busy,
-                                    size: 50.0, color: Colors.grey[350]),
+                                child: Icon(
+                                  Icons.event_busy,
+                                  size: 50.0,
+                                  color: Colors.grey[350],
+                                ),
                               ),
                               Text(
                                 "Belum ada data",
@@ -623,15 +627,36 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              "Data Tambahan",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  "Data Tambahan",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.add_box_rounded),
+                color: Colors.brown[800],
+                iconSize: 25.0,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HalDataDukungSurat(
+                        dIdTambah: "${widget.dIdSurat}",
+                      ),
+                    ),
+                  ).then((value) => detailDataTambah());
+                  // Navigator.pushNamed(context, '/HalDataDukungSurat');
+                },
+              ),
+            ],
           ),
           loadingdataTambahan
               ? Center(
@@ -651,8 +676,11 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 150.0, vertical: 15.0),
-                                child: Icon(Icons.document_scanner,
-                                    size: 50.0, color: Colors.grey[350]),
+                                child: Icon(
+                                  Icons.document_scanner,
+                                  size: 50.0,
+                                  color: Colors.grey[350],
+                                ),
                               ),
                               Text(
                                 "Belum ada data tambahan",

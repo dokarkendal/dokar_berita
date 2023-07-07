@@ -24,6 +24,7 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
   bool _isLoggedIn = false;
   bool _isInAsyncCall = false;
   bool _obscureText = true;
+  bool loadingdaftar = false;
   var _pilihKota;
   var _pilihKecamatan;
   var _pilihDesa;
@@ -51,7 +52,7 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
     FocusScope.of(context).requestFocus(FocusNode());
     setState(
       () {
-        _isInAsyncCall = true;
+        loadingdaftar = true;
       },
     );
     Future.delayed(Duration(seconds: 1), () async {
@@ -74,7 +75,8 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
         // SharedPreferences pref = await SharedPreferences.getInstance();
         // pref.setBool("_isLoggedIn", true);
         setState(() {
-          _isInAsyncCall = false;
+          loadingdaftar = false;
+          Navigator.pop(context);
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -93,12 +95,12 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
           ),
         );
         print(daftarWargaJSON);
-        Navigator.pop(context);
+        // Navigator.pop(context);
       } else if (daftarWargaJSON['Status'] == 'Gagal') {
         // SharedPreferences pref = await SharedPreferences.getInstance();
         // pref.setBool("_isLoggedIn", false);
         setState(() {
-          _isInAsyncCall = false;
+          loadingdaftar = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -280,179 +282,204 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
 
   Widget _tombolDaftar() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: mediaQueryData.size.height * 0.07,
-      child: ElevatedButton(
-        onPressed: () async {
-          print(nik);
-          print(nama);
-          print(hp);
-          print(email);
-          print(username);
-          print(password);
-          print(namaKota);
-          print(namaKecamatan);
-          print(namaDesa);
-          if (nik.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Nik masih kosong',
-                style: TextStyle(color: Colors.white),
+    return loadingdaftar
+        ? Column(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: mediaQueryData.size.height * 0.07,
+                child: ElevatedButton(
+                  onPressed: () async {},
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(15.0),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // <-- Radius
+                    ),
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
+            ],
+          )
+        : Container(
+            width: MediaQuery.of(context).size.width,
+            height: mediaQueryData.size.height * 0.07,
+            child: ElevatedButton(
+              onPressed: () async {
+                print(nik);
+                print(nama);
+                print(hp);
+                print(email);
+                print(username);
+                print(password);
+                print(namaKota);
+                print(namaKecamatan);
+                print(namaDesa);
+                if (nik.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Nik masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (nama.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Nama masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (hp.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'No Hp masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (email.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Email masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (username.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Username masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (password.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Password masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (_pilihKota == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Kota masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (_pilihKecamatan == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Kecamatan masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else if (_pilihDesa == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Desa masih kosong',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                } else {
+                  daftarWarga();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(15.0),
+                backgroundColor: Theme.of(context).primaryColor,
+                elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
               ),
-            ));
-          } else if (nama.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Nama masih kosong',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                'DAFTAR',
+                style: TextStyle(
+                  color: Colors.brown[800],
+                  letterSpacing: 1.5,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
               ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (hp.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'No Hp masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (email.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Email masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (username.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Username masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (password.text.isEmpty) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Password masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (_pilihKota == null) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Kota masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (_pilihKecamatan == null) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Kecamatan masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else if (_pilihDesa == null) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(
-                'Desa masih kosong',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ));
-          } else {
-            daftarWarga();
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(15.0),
-          backgroundColor: Theme.of(context).primaryColor,
-          elevation: 2.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), // <-- Radius
-          ),
-        ),
-        child: Text(
-          'DAFTAR',
-          style: TextStyle(
-            color: Colors.brown[800],
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget _privacy() {

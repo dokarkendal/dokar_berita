@@ -306,20 +306,7 @@ class BeritaState extends State<Berita> {
           if (databerita[index]["desa_id"] == "0") {
             check = Center();
           } else if (databerita[index]["desa_id"] == "1") {
-            check =
-                // badges.Badge(
-                //   position: badges.BadgePosition.center(),
-                //   badgeContent: Icon(
-                //     Icons.check,
-                //     size: 9,
-                //     color: Colors.white,
-                //   ),
-                //   badgeStyle: badges.BadgeStyle(
-                //     badgeColor: Colors.blue,
-                //     shape: badges.BadgeShape.twitter,
-                //   ),
-                // );
-                Container(
+            check = Container(
               padding: EdgeInsets.only(
                 top: mediaQueryData.size.height * 0.001,
                 left: mediaQueryData.size.height * 0.002,

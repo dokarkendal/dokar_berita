@@ -195,7 +195,6 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
     );
   }
 
-  //ANCHOR loading
   Widget _buildProgressIndicator() {
     return new Padding(
       padding: const EdgeInsets.all(8.0),

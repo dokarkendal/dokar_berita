@@ -62,14 +62,30 @@ class _HalEditWargaState extends State<HalEditWarga> {
         "uid": pref.getString("uid")!,
       },
     );
+    // if (mounted) {
+    //   this.setState(
+    //     () {
+    //       loadingdata = false;
+    //       dataDukungJSON = json.decode(response.body)["Data"];
+    //       print(dataDukungJSON);
+    //     },
+    //   );
+    // }
     if (mounted) {
-      this.setState(
-        () {
+      final decodedResponse = json.decode(response.body);
+      final responseData = decodedResponse["Data"];
+
+      if (responseData is List) {
+        this.setState(() {
           loadingdata = false;
-          dataDukungJSON = json.decode(response.body)["Data"];
+          dataDukungJSON = responseData;
           print(dataDukungJSON);
-        },
-      );
+        });
+      } else {
+        // Handle case when "Data" field is "notfound"
+        // For example, you can display an error message
+        print("Data not found");
+      }
     }
   }
 
@@ -125,14 +141,22 @@ class _HalEditWargaState extends State<HalEditWarga> {
     );
   }
 
+  Widget _paddingtop01() {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height * 0.01,
+      ),
+    );
+  }
+
   Widget _listDataDukung() {
     return SizedBox(
       child: ListView.builder(
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
-        itemCount: dataDukungJSON.isEmpty ? 0 : dataDukungJSON.length,
+        itemCount: dataDukungJSON.length > 0 ? dataDukungJSON.length : 1,
         itemBuilder: (context, i) {
-          if (dataDukungJSON[i]["Data"] == "notfound") {
+          if (dataDukungJSON.length <= 0) {
             return Container(
               child: Center(
                 child: Column(
@@ -140,16 +164,18 @@ class _HalEditWargaState extends State<HalEditWarga> {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: 150.0, vertical: 15.0),
-                      child: Icon(Icons.event_busy,
+                      child: Icon(Icons.post_add,
                           size: 50.0, color: Colors.grey[350]),
                     ),
                     Text(
-                      "Belum ada data",
+                      "Belum ada data dukung",
                       style: TextStyle(
                         fontSize: 20.0,
                         color: Colors.grey[350],
                       ),
                     ),
+                    _paddingtop01(),
+                    _paddingtop01(),
                   ],
                 ),
               ),

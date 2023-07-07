@@ -61,19 +61,6 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
         }
       } else {
         print('Error: ${response.statusCode}');
-
-        //   Map<String, dynamic> responseData = jsonDecode(response.body);
-        //   if (responseData.containsKey('Data')) {
-        //     setState(() {
-        //       dataSurat = responseData['Data'];
-        //       isloading = false;
-        //     });
-
-        //     print('Data: $dataSurat');
-        //   }
-        // } else {
-        //   // Handle other status codes if needed
-        //   print('Error: ${response.statusCode}');
       }
     } catch (e) {
       if (e is SocketException) {
@@ -295,39 +282,7 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                         children: [
                           Container(
                               height: mediaQueryData.size.height * 0.11,
-                              child: status
-                              // Material(
-                              //   borderRadius: BorderRadius.circular(5.0),
-                              //   color: Colors.blue[800],
-                              //   child: Column(
-                              //     children: [
-                              //       IconButton(
-                              //         padding: EdgeInsets.only(
-                              //           left: mediaQueryData.size.height * 0.012,
-                              //           right: mediaQueryData.size.height * 0.012,
-                              //           // bottom: mediaQueryData.size.height * 0.01,
-                              //           top: mediaQueryData.size.height * 0.011,
-                              //         ),
-                              //         icon: Icon(Icons.mail),
-                              //         color: Colors.white,
-                              //         iconSize: 50.0,
-                              //         onPressed: () {
-                              //           // Navigator.pushNamed(context, '/DetailSurat');
-                              //         },
-                              //       ),
-                              //       Text(
-                              //         "Surat",
-                              //         style: new TextStyle(
-                              //           fontSize: 12.0,
-                              //           color: Colors.white,
-                              //           // fontWeight: FontWeight.bold,
-                              //           //fontWeight: FontWeight.normal,
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              ),
+                              child: status),
                           SizedBox(
                             width: mediaQueryData.size.width * 0.02,
                           ),
@@ -355,18 +310,6 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                                       ),
                                     ),
                                   ),
-                                  // Container(
-                                  //   margin: const EdgeInsets.only(right: 10.0),
-                                  //   child: new Text(
-                                  //     dataSurat[i]["tanggal_buat"],
-                                  //     style: new TextStyle(
-                                  //       fontSize: 12.0,
-                                  //       color: Colors.black,
-                                  //       // color: Colors.blueAccent[100],
-                                  //       // fontWeight: FontWeight.bold,
-                                  //     ),
-                                  //   ),
-                                  // ),
                                 ],
                               ),
                               Container(
@@ -438,51 +381,10 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                       ),
                     ),
                   ),
-
-                  // title: Text(
-                  //   dataSurat[i]['nama'],
-                  //   style: TextStyle(color: Colors.black),
-                  // ),
                 ),
               );
             },
           );
-    // ListView.builder(
-    //   physics: ClampingScrollPhysics(),
-    //   shrinkWrap: true,
-    //   itemCount: dataSurat.isEmpty ? 0 : dataSurat.length,
-    //   itemBuilder: (BuildContext context, int i) {
-    //     if (dataSurat.isEmpty) {
-    //       return Container(
-    //         child: Center(
-    //           child: Column(
-    //             children: <Widget>[
-    //               new Icon(
-    //                 Icons.calendar_today,
-    //                 size: 150,
-    //                 color: Colors.grey[300],
-    //               ),
-    //               Text(
-    //                 "Tidak ada Surat",
-    //                 style: new TextStyle(
-    //                   fontSize: 20.0,
-    //                   color: Colors.grey[300],
-    //                 ),
-    //               )
-    //             ],
-    //           ),
-    //         ),
-    //       );
-    //     } else {
-    //       return ListTile(
-    //         title: Text(
-    //           dataSurat[i]['nama'],
-    //           style: TextStyle(color: Colors.black),
-    //         ),
-    //       );
-    //     }
-    //   },
-    // );
   }
 
   Widget _errorGalery() {
@@ -517,26 +419,9 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Ulangi'),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/Haldua');
+                suratPengajuan();
               },
             )
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: <Widget>[
-            // Container(
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(10.0),
-            //     color: Colors.grey[200],
-            //   ),
-            //   height: mediaQueryData.size.height * 0.21,
-            //   width: mediaQueryData.size.width,
-            //   // color: Colors.grey,
-            // ),
-
-            // Row(
-            //   ],
-            // ),
-            // SizedBox(height: mediaQueryData.size.height * 0.01),
           ],
         ),
       ),

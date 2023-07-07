@@ -127,6 +127,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                 style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.grey,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               Padding(
