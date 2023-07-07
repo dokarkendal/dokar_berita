@@ -398,13 +398,27 @@ class _HalEditWargaState extends State<HalEditWarga> {
   }
 
   Widget _dataDukungText() {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      child: Text(
-        "Data Dukung",
-        style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            "Data Dukung",
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.add_box_rounded),
+          color: Colors.brown[800],
+          iconSize: 25.0,
+          onPressed: () {
+            Navigator.pushNamed(context, '/HalLengkapiDokumenWarga')
+                .then((value) => detailDataDukung());
+          },
+        ),
+      ],
     );
   }
 

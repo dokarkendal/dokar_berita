@@ -55,7 +55,7 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
         loadingdaftar = true;
       },
     );
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(Duration(seconds: 2), () async {
       final response = await http.post(
           Uri.parse(
               "http://dokar.kendalkab.go.id/webservice/android/account/Daftarwarga/"),
@@ -200,81 +200,63 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
-      body: ModalProgressHUD(
-        inAsyncCall: _isInAsyncCall,
-        opacity: 1,
-        color: Theme.of(context).primaryColor,
-        progressIndicator: Padding(
-          padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.4),
-          child: Column(
-            children: [
-              SpinKitThreeBounce(color: Color(0xFF2e2e2e)),
-              SizedBox(height: mediaQueryData.size.height * 0.05),
-              Text(
-                'Sedang memproses pendaftaran..',
-                style: TextStyle(
-                    color: Color(0xFF2e2e2e),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
-              )
-            ],
-          ),
-        ),
-        child: Center(
-          child: Stack(
-            children: [
-              _logo(),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: mediaQueryData.size.height * 0.07),
-                child: _textjudul(),
+      body: WillPopScope(
+        onWillPop: () async {
+          // Prevents the user from using the back button during progress
+          return !loadingdaftar;
+        },
+        child: Stack(
+          children: [
+            _logo(),
+            Padding(
+              padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.07),
+              child: _textjudul(),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.only(top: mediaQueryData.size.height * 0.15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.grey[50],
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.only(top: mediaQueryData.size.height * 0.15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.grey[50],
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: mediaQueryData.size.height * 0.02,
+                  right: mediaQueryData.size.height * 0.02,
+                  bottom: mediaQueryData.size.height * 0.02,
+                  // top: mediaQueryData.size.height * 0.01,
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: mediaQueryData.size.height * 0.02,
-                    right: mediaQueryData.size.height * 0.02,
-                    bottom: mediaQueryData.size.height * 0.02,
-                    // top: mediaQueryData.size.height * 0.01,
-                  ),
-                  child: Container(
-                    child: ListView(
-                      children: [
-                        _formNIK(),
-                        _paddingTop2(),
-                        _formNama(),
-                        _paddingTop2(),
-                        _formHp(),
-                        _paddingTop2(),
-                        _formEmail(),
-                        _paddingTop2(),
-                        _formUsername(),
-                        _paddingTop2(),
-                        _formPassword(),
-                        _paddingTop2(),
-                        _formKota(),
-                        _paddingTop2(),
-                        _formKecamatan(),
-                        _paddingTop2(),
-                        _formDesa(),
-                        _paddingTop2(),
-                        _paddingTop2(),
-                        _tombolDaftar(),
-                        _paddingTop2(),
-                        _privacy(),
-                      ],
-                    ),
+                child: Container(
+                  child: ListView(
+                    children: [
+                      _formNIK(),
+                      _paddingTop2(),
+                      _formNama(),
+                      _paddingTop2(),
+                      _formHp(),
+                      _paddingTop2(),
+                      _formEmail(),
+                      _paddingTop2(),
+                      _formUsername(),
+                      _paddingTop2(),
+                      _formPassword(),
+                      _paddingTop2(),
+                      _formKota(),
+                      _paddingTop2(),
+                      _formKecamatan(),
+                      _paddingTop2(),
+                      _formDesa(),
+                      _paddingTop2(),
+                      _paddingTop2(),
+                      _tombolDaftar(),
+                      _paddingTop2(),
+                      _privacy(),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -291,9 +273,9 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                 child: ElevatedButton(
                   onPressed: () async {},
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(15.0),
+                    // padding: EdgeInsets.all(15.0),
                     backgroundColor: Theme.of(context).primaryColor,
-                    elevation: 2.0,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10), // <-- Radius
                     ),

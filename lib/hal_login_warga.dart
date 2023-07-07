@@ -129,7 +129,7 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
               SpinKitThreeBounce(color: Color(0xFF2e2e2e)),
               SizedBox(height: mediaQueryData.size.height * 0.05),
               Text(
-                'Sedang memuat, sabar ya.',
+                "Sedang diproses. Harap bersabar ya",
                 style: TextStyle(
                     color: Color(0xFF2e2e2e),
                     fontWeight: FontWeight.bold,

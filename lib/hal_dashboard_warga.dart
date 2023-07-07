@@ -195,7 +195,8 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
           color: appbarIcon,
           iconSize: 25.0,
           onPressed: () {
-            Navigator.pushNamed(context, '/HalEditWarga');
+            Navigator.pushNamed(context, '/HalEditWarga')
+                .then((value) => _cekKelengkapan());
           },
         ),
         centerTitle: true,
@@ -265,38 +266,33 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
               children: [
                 _header(),
                 Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Column(
-                      children: [
-                        status == "Lengkap"
-                            ? _cardlengkap()
-                            : Column(
-                                children: [
-                                  datadiri == "1"
-                                      ? Center()
-                                      : _cardbelumlengkapData(),
-                                  _paddingTop1(),
-                                  dokumen == "1"
-                                      ? Center()
-                                      : _cardbelumlengkapDokumen(),
-                                ],
-                              ),
-                        // datadiri == "1" ? Center() : _cardbelumlengkapData(),
-                        // _paddingTop1(),
-                        // dokumen == "1" ? Center() : _cardbelumlengkapDokumen(),
-                        // lengkap == "Lengkap"
-                        //     ? _cardlengkap()
-                        //     : Column(
-                        //         children: [
-                        //           _cardbelumlengkapData(),
-                        //           _paddingTop1(),
-                        //           _cardbelumlengkapDokumen(),
-                        //         ],
-                        //       ),
-                        _paddingTop1(),
-                        _riwayatSurat(),
-                      ],
-                    )),
+                  padding: const EdgeInsets.all(6.0),
+                  child: Column(
+                    children: [
+                      status == "Lengkap"
+                          ? Column(
+                              children: [
+                                _cardlengkap(),
+                                _paddingTop1(),
+                                _riwayatSurat(),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                datadiri == "1"
+                                    ? Center()
+                                    : _cardbelumlengkapData(),
+                                _paddingTop1(),
+                                dokumen == "1"
+                                    ? Center()
+                                    : _cardbelumlengkapDokumen(),
+                              ],
+                            ),
+                      // _paddingTop1(),
+                      // _riwayatSurat(),
+                    ],
+                  ),
+                ),
               ],
             ),
     );
@@ -439,7 +435,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Data anda lengkap",
+                  "Data diri lengkap",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -615,7 +611,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   minFontSize: 14,
                   style: TextStyle(
                     color: Color(0xFF2e2e2e),
-                    fontSize: 20.0,
+                    fontSize: 22.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -624,28 +620,38 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   minFontSize: 14,
                   style: TextStyle(
                     color: Color(0xFF2e2e2e),
-                    fontSize: 16.0,
+                    fontSize: 18.0,
                     // fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
           ),
-          Positioned(
-            // top: mediaQueryData.size.height * 0.05,
-            left: mediaQueryData.size.height * 0.2,
-            child: kelamin == "1"
-                ? Image.asset(
-                    'assets/images/orang3.png',
-                    width: mediaQueryData.size.height * 0.35,
-                    height: mediaQueryData.size.width * 0.35,
-                  )
-                : Image.asset(
-                    'assets/images/orang2.png',
-                    width: mediaQueryData.size.height * 0.35,
-                    height: mediaQueryData.size.width * 0.35,
-                  ),
-          ),
+          // Positioned(
+          //   // top: mediaQueryData.size.height * 0.05,
+          //   left: mediaQueryData.size.height * 0.32,
+          //   child: IconButton(
+          //     icon: Icon(
+          //       Icons.mail,
+          //       color: Colors.white,
+          //       size: 90,
+          //     ),
+          //     onPressed: () {
+          //       // Navigator.pushNamed(context, '/HalNotifikasi');
+          //     },
+          //   ),
+          // child: kelamin == "1"
+          //     ? Image.asset(
+          //         'assets/images/orang3.png',
+          //         width: mediaQueryData.size.height * 0.35,
+          //         height: mediaQueryData.size.width * 0.35,
+          //       )
+          //     : Image.asset(
+          //         'assets/images/orang2.png',
+          //         width: mediaQueryData.size.height * 0.35,
+          //         height: mediaQueryData.size.width * 0.35,
+          //       ),
+          // ),
         ],
       ),
     );
@@ -664,7 +670,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                     color: Colors.grey[300],
                   ),
                   Text(
-                    "Tidak ada Surat",
+                    "Belum ada pengajuan surat",
                     style: new TextStyle(
                       fontSize: 20.0,
                       color: Colors.grey[300],

@@ -116,7 +116,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
       },
     );
     Future.delayed(
-      const Duration(seconds: 3),
+      const Duration(seconds: 2),
       () async {
         var stream = http.ByteStream(
           // ignore: deprecated_member_use
@@ -271,50 +271,56 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: ListView(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Column(children: [
-              _peringatanpengajuan(),
-              _paddingTop2(),
-              _paddingTop2(),
-              _formJenisDokumen(),
-              _paddingTop2(),
-              _paddingTop2(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  getImageWidget(),
-                  Column(
-                    children: [
-                      _cameraButton(),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: mediaQueryData.size.height * 0.01),
-                      ),
-                      _galeryButton(),
-                    ],
-                  ),
-                  (_inProcess)
-                      ? const Center()
-                      // Container(
-                      //     color: Colors.white,
-                      //     // height: MediaQuery.of(context).size.height * 0.95,
-                      //     child: const Center(
-                      //       child: CircularProgressIndicator(),
-                      //     ),
-                      //   )
-                      : const Center()
-                ],
-              ),
-              _paddingTop2(),
-              _paddingTop2(),
-              _paddingTop2(),
-              _loginButton(),
-            ]),
-          )
-        ],
+      body: WillPopScope(
+        onWillPop: () async {
+          // Prevents the user from using the back button during progress
+          return !_loading;
+        },
+        child: ListView(
+          children: [
+            Container(
+              padding: EdgeInsets.all(10),
+              child: Column(children: [
+                _peringatanpengajuan(),
+                _paddingTop2(),
+                _paddingTop2(),
+                _formJenisDokumen(),
+                _paddingTop2(),
+                _paddingTop2(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    getImageWidget(),
+                    Column(
+                      children: [
+                        _cameraButton(),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: mediaQueryData.size.height * 0.01),
+                        ),
+                        _galeryButton(),
+                      ],
+                    ),
+                    (_inProcess)
+                        ? const Center()
+                        // Container(
+                        //     color: Colors.white,
+                        //     // height: MediaQuery.of(context).size.height * 0.95,
+                        //     child: const Center(
+                        //       child: CircularProgressIndicator(),
+                        //     ),
+                        //   )
+                        : const Center()
+                  ],
+                ),
+                _paddingTop2(),
+                _paddingTop2(),
+                _paddingTop2(),
+                _loginButton(),
+              ]),
+            )
+          ],
+        ),
       ),
     );
   }
