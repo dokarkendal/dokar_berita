@@ -477,7 +477,7 @@ class _HalAkunState extends State<HalAkun> {
         overflow: TextOverflow.ellipsis,
         // textAlign: TextAlign.center,
       ),
-      subtitle: website == null
+      subtitle: website.isEmpty
           ? Text(
               "memuat..",
               style: new TextStyle(
@@ -570,7 +570,7 @@ class _HalAkunState extends State<HalAkun> {
         overflow: TextOverflow.ellipsis,
         // textAlign: TextAlign.center,
       ),
-      subtitle: expired == null
+      subtitle: expired.isEmpty
           ? Text(
               "memuat..",
               style: new TextStyle(
@@ -673,7 +673,7 @@ class _HalAkunState extends State<HalAkun> {
         overflow: TextOverflow.ellipsis,
         // textAlign: TextAlign.center,
       ),
-      subtitle: desaid == null
+      subtitle: desaid.isEmpty
           ? Text(
               "memuat..",
               style: new TextStyle(

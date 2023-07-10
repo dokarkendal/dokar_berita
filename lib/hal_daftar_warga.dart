@@ -1,14 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'dart:async'; //NOTE  api syn
 import 'dart:convert'; //NOTE api to json
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'style/styleset.dart';
 
 class HalLoginWarga extends StatefulWidget {
@@ -22,7 +18,7 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
   //NOTE Boolean
   // ignore: unused_field
   bool _isLoggedIn = false;
-  bool _isInAsyncCall = false;
+  // bool _isInAsyncCall = false;
   bool _obscureText = true;
   bool loadingdaftar = false;
   var _pilihKota;
@@ -32,15 +28,15 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
   List namaKecamatan = [];
   List namaDesa = [];
 
-  final _formKey = GlobalKey<FormState>();
+  // final _formKey = GlobalKey<FormState>();
 
-  void _toggle() {
-    setState(
-      () {
-        _obscureText = !_obscureText;
-      },
-    );
-  }
+  // void _toggle() {
+  //   setState(
+  //     () {
+  //       _obscureText = !_obscureText;
+  //     },
+  //   );
+  // }
 
   @override
   void initState() {
@@ -180,14 +176,14 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
     }
   }
 
-  Future _login() async {
-    setState(
-      () {
-        _isInAsyncCall = true;
-      },
-    );
-    Future.delayed(Duration(seconds: 1), () async {});
-  }
+  // Future _login() async {
+  //   setState(
+  //     () {
+  //       _isInAsyncCall = true;
+  //     },
+  //   );
+  //   Future.delayed(Duration(seconds: 1), () async {});
+  // }
 
 //NOTE - Controller
   TextEditingController nik = TextEditingController();

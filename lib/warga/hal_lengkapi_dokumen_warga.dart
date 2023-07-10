@@ -245,8 +245,6 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     getKelamin();
     super.initState();
   }

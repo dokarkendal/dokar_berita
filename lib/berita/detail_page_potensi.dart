@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'package:share/share.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:badges/badges.dart' as badges;
 
 class DetailPotensi extends StatefulWidget {
   final String dGambar,

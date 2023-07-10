@@ -50,7 +50,7 @@ class _HalFasumKesehatanState extends State<HalFasumKesehatan> {
         child: ListView.builder(
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: dataJSON == null ? 0 : dataJSON.length,
+          itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
           itemBuilder: (context, index) {
             return new Container(
               color: Colors.grey[100],

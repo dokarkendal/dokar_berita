@@ -33,7 +33,7 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
   String? cAlamatDomisili = "";
   TextEditingController cKeterangan = TextEditingController();
 
-  List KategoriSuratAPI = [];
+  List kategoriSuratAPI = [];
   var _pilihSurat;
   Future<void> getKatSurat() async {
     final response = await http.get(
@@ -43,7 +43,7 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
     var getsuratJSON = json.decode(response.body);
     if (mounted) {
       setState(() {
-        KategoriSuratAPI = getsuratJSON;
+        kategoriSuratAPI = getsuratJSON;
         print(getsuratJSON);
       });
     }
@@ -342,7 +342,7 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
               ),
               hint: Text('Pilih Kategori Surat'),
               isExpanded: true,
-              items: KategoriSuratAPI.map(
+              items: kategoriSuratAPI.map(
                 (item0) {
                   return DropdownMenuItem(
                     child: Text(item0['nama'].toString()),
@@ -412,55 +412,55 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
     );
   }
 
-  bool _isExpanded = false;
-  Widget _cardExpanded() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height * 0.005,
-        bottom: MediaQuery.of(context).size.height * 0.005,
-      ),
-      // height: mediaQueryData.size.height * 0.11,
-      decoration: BoxDecoration(
-        color: Colors.lightBlue[600],
-        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              offset: const Offset(0.0, 5.0),
-              blurRadius: 7.0),
-        ],
-      ),
-      child: ExpansionTile(
-        title: Text(
-          'Catatan',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(
-          'Klik disini!. Pastikan data diri anda sudah benar, jika belum silahkan perbarui di menu Data Diri',
-          style: TextStyle(
-            color: Colors.white,
-            // fontWeight: FontWeight.bold,
-          ),
-        ),
-        trailing: Icon(
-          _isExpanded ? Icons.expand_less : Icons.expand_more,
-          color: _isExpanded ? Colors.white : Colors.white,
-        ),
-        onExpansionChanged: (value) {
-          setState(() {
-            _isExpanded = value;
-          });
-        },
-        children: <Widget>[
-          _profil(),
-        ],
-      ),
-    );
-  }
+  // bool _isExpanded = false;
+  // Widget _cardExpanded() {
+  //   MediaQueryData mediaQueryData = MediaQuery.of(context);
+  //   return Container(
+  //     padding: EdgeInsets.only(
+  //       top: MediaQuery.of(context).size.height * 0.005,
+  //       bottom: MediaQuery.of(context).size.height * 0.005,
+  //     ),
+  //     // height: mediaQueryData.size.height * 0.11,
+  //     decoration: BoxDecoration(
+  //       color: Colors.lightBlue[600],
+  //       borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+  //       boxShadow: [
+  //         BoxShadow(
+  //             color: Colors.black.withOpacity(0.1),
+  //             offset: const Offset(0.0, 5.0),
+  //             blurRadius: 7.0),
+  //       ],
+  //     ),
+  //     child: ExpansionTile(
+  //       title: Text(
+  //         'Catatan',
+  //         style: TextStyle(
+  //           color: Colors.white,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       subtitle: Text(
+  //         'Klik disini!. Pastikan data diri anda sudah benar, jika belum silahkan perbarui di menu Data Diri',
+  //         style: TextStyle(
+  //           color: Colors.white,
+  //           // fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       trailing: Icon(
+  //         _isExpanded ? Icons.expand_less : Icons.expand_more,
+  //         color: _isExpanded ? Colors.white : Colors.white,
+  //       ),
+  //       onExpansionChanged: (value) {
+  //         setState(() {
+  //           _isExpanded = value;
+  //         });
+  //       },
+  //       children: <Widget>[
+  //         _profil(),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _peringatanpengajuan() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);

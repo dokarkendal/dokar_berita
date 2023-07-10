@@ -141,7 +141,7 @@ class ListPenulisState extends State<ListPenulis> {
     return ListView.builder(
       physics: ClampingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: databerita == null ? 0 : databerita.length,
+      itemCount: databerita.isEmpty ? 0 : databerita.length,
       // ignore: missing_return
       itemBuilder: (context, i) {
         if (databerita[i]["status"] == 'Admin') {

@@ -78,7 +78,7 @@ class _HalFasumDetailState extends State<HalFasumDetail> {
         child: ListView.builder(
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: dataJSON == null ? 0 : dataJSON.length,
+          itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
           itemBuilder: (context, index) {
             if (dataJSON[index]["nama"] == 'NotFound') {
               return Container(

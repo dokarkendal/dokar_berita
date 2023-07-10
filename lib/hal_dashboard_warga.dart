@@ -159,7 +159,6 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _cekUserWarga();
     _cekKelengkapan();
@@ -168,7 +167,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       floatingActionButton: status == "Lengkap"
           ? FloatingActionButton.extended(
@@ -262,39 +261,41 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : ListView(
-              children: [
-                _header(),
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Column(
-                    children: [
-                      status == "Lengkap"
-                          ? Column(
-                              children: [
-                                _cardlengkap(),
-                                _paddingTop1(),
-                                _riwayatSurat(),
-                              ],
-                            )
-                          : Column(
-                              children: [
-                                datadiri == "1"
-                                    ? Center()
-                                    : _cardbelumlengkapData(),
-                                _paddingTop1(),
-                                dokumen == "1"
-                                    ? Center()
-                                    : _cardbelumlengkapDokumen(),
-                              ],
-                            ),
-                      // _paddingTop1(),
-                      // _riwayatSurat(),
-                    ],
-                  ),
+          : hasThrownError == true
+              ? _errorGalery()
+              : ListView(
+                  children: [
+                    _header(),
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Column(
+                        children: [
+                          status == "Lengkap"
+                              ? Column(
+                                  children: [
+                                    _cardlengkap(),
+                                    _paddingTop1(),
+                                    _riwayatSurat(),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                    datadiri == "1"
+                                        ? Center()
+                                        : _cardbelumlengkapData(),
+                                    _paddingTop1(),
+                                    dokumen == "1"
+                                        ? Center()
+                                        : _cardbelumlengkapDokumen(),
+                                  ],
+                                ),
+                          // _paddingTop1(),
+                          // _riwayatSurat(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
     );
   }
 
@@ -455,7 +456,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
   }
 
   Widget _riwayatSurat() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
     return GestureDetector(
       onTap: () {
         // Navigator.pushNamed(context, '/HalProfilWarga');
@@ -469,7 +470,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
           boxShadow: [
             BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                offset: const Offset(0.0, 5.0),
+                offset: const Offset(0.0, 3.0),
                 blurRadius: 7.0),
           ],
         ),

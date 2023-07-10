@@ -90,7 +90,7 @@ class _SearchState extends State<Search> {
         : ListView.builder(
             physics: ClampingScrollPhysics(),
             shrinkWrap: true,
-            itemCount: dataJSON == null ? 0 : dataJSON.length,
+            itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
             itemBuilder: (context, i) {
               if (dataJSON[i]["kabar_id"] == 'NotFound') {
                 print(dataJSON[i]["kabar_id"]);
@@ -394,7 +394,7 @@ class _SearchState extends State<Search> {
               childAspectRatio: MediaQuery.of(context).size.width /
                   (MediaQuery.of(context).size.height / 5.5),
             ),
-            itemCount: dataDesa == null ? 0 : dataDesa.length,
+            itemCount: dataDesa.isEmpty ? 0 : dataDesa.length,
             itemBuilder: (context, i) {
               if (dataDesa[i]["id"] == 'NotFound') {
                 return Container(

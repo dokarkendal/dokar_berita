@@ -3,8 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter/src/widgets/container.dart';
+// import 'package:flutter/src/widgets/framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -66,7 +66,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
 
   late List dataTambahJSON = [];
   void detailDataTambah() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    // SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       loadingdataTambahan = true;
     });

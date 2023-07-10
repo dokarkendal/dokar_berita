@@ -1032,7 +1032,7 @@ class _HalduaState extends State<Haldua> {
                               physics: ClampingScrollPhysics(),
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
-                              itemCount: dataJSON == null ? 0 : dataJSON.length,
+                              itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
                               itemBuilder: (context, i) {
                                 if (dataJSON[i]["status"] == 'Not Found') {
                                   return Container(

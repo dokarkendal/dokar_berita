@@ -72,7 +72,7 @@ class _ProfilDesaState extends State<ProfilDesa> {
   }
 
   Future jumlahAgenda() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    // SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       isLoading = true;
     });

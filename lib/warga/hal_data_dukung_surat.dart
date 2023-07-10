@@ -12,7 +12,7 @@ import 'dart:async';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:async/async.dart';
-import 'package:share/share.dart';
+// import 'package:share/share.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../style/styleset.dart';
@@ -34,7 +34,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
   bool _loading = false;
   bool _inProcess = false;
   List dokumenAPI = [];
-  var _pilihDokumen;
+  // var _pilihDokumen;
   TextEditingController cKeterangan = TextEditingController();
   Future<void> getKelamin() async {
     final response = await http.get(
@@ -252,8 +252,6 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     getKelamin();
     super.initState();
   }
@@ -629,54 +627,54 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
     }
   }
 
-  Widget _formJenisDokumen() {
-    return Container(
-      width: MediaQuery.of(this.context).size.width,
-      child: Column(
-        children: <Widget>[
-          Container(
-            decoration: decorationTextField,
-            child: DropdownButtonFormField(
-              isDense: true,
-              decoration: InputDecoration(
-                prefixIcon:
-                    Icon(Icons.document_scanner, color: Colors.brown[800]),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
-                  ),
-                ),
-                hintStyle: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey[400],
-                ),
-              ),
-              hint: Text('Pilih Jenis Dokumen'),
-              isExpanded: true,
-              items: dokumenAPI.map(
-                (item0) {
-                  return DropdownMenuItem(
-                    child: Text(item0['nama'].toString()),
-                    value: item0['id'].toString(),
-                  );
-                },
-              ).toList(),
-              onChanged: (val) async {
-                setState(() {
-                  _pilihDokumen = val as String;
-                  print("KLIK");
-                  print(_pilihDokumen);
-                });
+  // Widget _formJenisDokumen() {
+  //   return Container(
+  //     width: MediaQuery.of(this.context).size.width,
+  //     child: Column(
+  //       children: <Widget>[
+  //         Container(
+  //           decoration: decorationTextField,
+  //           child: DropdownButtonFormField(
+  //             isDense: true,
+  //             decoration: InputDecoration(
+  //               prefixIcon:
+  //                   Icon(Icons.document_scanner, color: Colors.brown[800]),
+  //               border: new OutlineInputBorder(
+  //                 borderRadius: const BorderRadius.all(
+  //                   const Radius.circular(10.0),
+  //                 ),
+  //               ),
+  //               hintStyle: TextStyle(
+  //                 fontSize: 15,
+  //                 color: Colors.grey[400],
+  //               ),
+  //             ),
+  //             hint: Text('Pilih Jenis Dokumen'),
+  //             isExpanded: true,
+  //             items: dokumenAPI.map(
+  //               (item0) {
+  //                 return DropdownMenuItem(
+  //                   child: Text(item0['nama'].toString()),
+  //                   value: item0['id'].toString(),
+  //                 );
+  //               },
+  //             ).toList(),
+  //             onChanged: (val) async {
+  //               setState(() {
+  //                 _pilihDokumen = val as String;
+  //                 print("KLIK");
+  //                 print(_pilihDokumen);
+  //               });
 
-                // Wait for getKecamatan() to complete before rebuilding the widget
-              },
-              value: _pilihDokumen,
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  //               // Wait for getKecamatan() to complete before rebuilding the widget
+  //             },
+  //             value: _pilihDokumen,
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _formKeterangan() {
     return Container(

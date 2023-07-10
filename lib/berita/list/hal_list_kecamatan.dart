@@ -429,7 +429,7 @@ class _ListKecamatanState extends State<ListKecamatan> {
       physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       controller: _scrollController,
-      itemCount: dataJSON == null ? 0 : dataJSON.length,
+      itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
       itemBuilder: (context, index) {
         return Container(
           padding: EdgeInsets.all(3.0),

@@ -108,7 +108,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
     }
   }
 
-  bool _isInAsyncCall = false;
+  // bool _isInAsyncCall = false;
   Future cekPrint(pilihKelamin, pilihAgama, pilihKawin, pilihPekerjaaan) async {
     MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     // FocusScope.of(context).requestFocus(FocusNode());
