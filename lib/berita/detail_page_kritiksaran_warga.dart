@@ -467,7 +467,7 @@ class _DetailKritikSaranWargaState extends State<DetailKritikSaranWarga> {
       child: Html(
         style: {
           "p": Style(
-            padding: EdgeInsets.all(10.0),
+            padding: HtmlPaddings.all(10.0),
           )
         },
         // padding: new EdgeInsets.all(10.0),

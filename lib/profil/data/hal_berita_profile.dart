@@ -85,7 +85,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
       final response = await dio.get(nextPage + "/${widget.idDesa}/");
       List tempList = [];
       nextPage = response.data['next'];
-
+      print(response.toString());
       for (int i = 0; i < response.data['result'].length; i++) {
         tempList.add(response.data['result'][i]);
       }

@@ -94,37 +94,38 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: appbarIcon, //change your color here
-          ),
-          title: Text(
-            'SURAT',
-            style: TextStyle(
-              color: appbarTitle,
-              fontWeight: FontWeight.bold,
-              // fontSize: 25.0,
-            ),
-          ),
-          centerTitle: true,
-          elevation: 0,
-          backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: appbarIcon, //change your color here
         ),
-        body: isloading
-            ? hasThrownError == true
-                ? _errorGalery()
-                : Center(
-                    child: CircularProgressIndicator(),
-                  )
-            : Container(
-                child: ListView(
-                physics: BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
+        title: Text(
+          'SURAT',
+          style: TextStyle(
+            color: appbarTitle,
+            fontWeight: FontWeight.bold,
+            // fontSize: 25.0,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: isloading
+          ? hasThrownError == true
+              ? _errorGalery()
+              : Center(
+                  child: CircularProgressIndicator(),
+                )
+          : Container(
+              child: ListView(
+                physics: ClampingScrollPhysics(),
                 children: [
                   _text(),
                   _suratPengajuan(),
                 ],
-              )));
+              ),
+            ),
+    );
   }
 
   Widget _text() {
@@ -236,6 +237,70 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                     ],
                   ),
                 );
+              } else if (dataSurat[i]["status"] == "Pengajuan di Tolak") {
+                status = Material(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.red[800],
+                  child: Column(
+                    children: [
+                      IconButton(
+                        padding: EdgeInsets.only(
+                          left: mediaQueryData.size.height * 0.012,
+                          right: mediaQueryData.size.height * 0.012,
+                          // bottom: mediaQueryData.size.height * 0.01,
+                          top: mediaQueryData.size.height * 0.011,
+                        ),
+                        icon: Icon(Icons.unsubscribe),
+                        color: Colors.white,
+                        iconSize: 50.0,
+                        onPressed: () {
+                          // Navigator.pushNamed(context, '/DetailSurat');
+                        },
+                      ),
+                      Text(
+                        "Ditolak",
+                        style: new TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          //fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (dataSurat[i]["status"] == "Surat Diajukan") {
+                status = Material(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.blue[800],
+                  child: Column(
+                    children: [
+                      IconButton(
+                        padding: EdgeInsets.only(
+                          left: mediaQueryData.size.height * 0.012,
+                          right: mediaQueryData.size.height * 0.012,
+                          // bottom: mediaQueryData.size.height * 0.01,
+                          top: mediaQueryData.size.height * 0.011,
+                        ),
+                        icon: Icon(Icons.outgoing_mail),
+                        color: Colors.white,
+                        iconSize: 50.0,
+                        onPressed: () {
+                          // Navigator.pushNamed(context, '/DetailSurat');
+                        },
+                      ),
+                      Text(
+                        "Diajukan",
+                        style: new TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          //fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               }
               return Container(
                 padding: EdgeInsets.only(
@@ -276,7 +341,7 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                               dIdSurat: dataSurat[i]["id_surat"],
                             ),
                           ),
-                        );
+                        ).then((value) => suratPengajuan());
                       },
                       child: Row(
                         children: [

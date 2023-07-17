@@ -1,17 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
-import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../style/styleset.dart';
 
-class HalDetailSurat extends StatefulWidget {
+class HalDetailSuratTolak extends StatefulWidget {
   final String dNama,
       dNik,
       dStatus,
@@ -20,8 +18,9 @@ class HalDetailSurat extends StatefulWidget {
       dTanggal,
       dKode,
       dKeterangan,
-      dIdSurat;
-  HalDetailSurat({
+      dIdSurat,
+      dUid;
+  HalDetailSuratTolak({
     required this.dNama,
     required this.dNik,
     required this.dStatus,
@@ -31,21 +30,21 @@ class HalDetailSurat extends StatefulWidget {
     required this.dKode,
     required this.dKeterangan,
     required this.dIdSurat,
+    required this.dUid,
   });
 
   @override
-  State<HalDetailSurat> createState() => _HalDetailSuratState();
+  State<HalDetailSuratTolak> createState() => _HalDetailSuratTolakState();
 }
 
-class _HalDetailSuratState extends State<HalDetailSurat> {
+class _HalDetailSuratTolakState extends State<HalDetailSuratTolak> {
   bool loadingdata = false;
   bool loadingdatadukung = false;
   bool loadingdataTambahan = false;
-  bool loadingajukansurat = false;
   bool loadingactivity = false;
   late List dataDukungJSON = [];
   void detailDataDukung() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    // SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       loadingdatadukung = true;
     });
@@ -53,7 +52,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
       Uri.parse(
           "http://dokar.kendalkab.go.id/webservice/android/account/DataDukungByUid"),
       body: {
-        "uid": pref.getString("uid")!,
+        "uid": '${widget.dUid}',
       },
     );
     if (mounted) {
@@ -134,129 +133,14 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
           print(dataTambahJSON);
         });
       } else {
+        // Handle case when "Data" field is "notfound"
+        // For example, you can display an error message
         setState(() {
           loadingdataTambahan = false;
         });
-        // Handle case when "Data" field is "notfound"
-        // For example, you can display an error message
         print("Data not found");
       }
     }
-  }
-
-  void _ajukanSuratApi() async {
-    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
-    setState(
-      () {
-        loadingajukansurat = true;
-      },
-    );
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    Future.delayed(Duration(seconds: 3), () async {
-      final response = await http.post(
-        Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/surat/AjukanSurat"),
-        body: {
-          "uid": pref.getString("uid").toString(),
-          "id_surat": widget.dIdSurat.toString(),
-          "username": pref.getString("userAdmin").toString(),
-        },
-      );
-      var ajukansurat = json.decode(response.body);
-      print(
-        pref.getString("uid").toString(),
-      );
-      print(widget.dIdSurat.toString());
-      print(pref.getString("userAdmin").toString());
-      print(ajukansurat);
-      if (ajukansurat['Status'] == "Sukses") {
-        setState(() {
-          loadingajukansurat = false;
-        });
-        ScaffoldMessenger.of(this.context).showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 3),
-            elevation: 6.0,
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.done,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: mediaQueryData.size.width * 0.02,
-                ),
-                Flexible(
-                  child: Text(
-                    ajukansurat['Notif'],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            action: SnackBarAction(
-              label: 'OK',
-              textColor: Colors.white,
-              onPressed: () {
-                // Navigator.pushReplacementNamed(context, '/HalDashboard');
-                // Navigator.pop(context);
-              },
-            ),
-          ),
-        );
-        Navigator.pop(context);
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => HalSuratMenunggu()),
-        // );
-        // Navigator.popUntil(context, ModalRoute.withName('/HalSuratAdmin'));
-        // Navigator.pushReplacementNamed(context, '/HalSuratMenunggu');
-      } else {
-        print("Failed");
-        setState(
-          () {
-            loadingajukansurat = false;
-          },
-        );
-
-        ScaffoldMessenger.of(this.context).showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 3),
-            elevation: 6.0,
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.warning,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: mediaQueryData.size.width * 0.02,
-                ),
-                Flexible(
-                  child: Text(
-                    ajukansurat['Notif'],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            action: SnackBarAction(
-              label: 'ULANGI',
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-      }
-    });
   }
 
   @override
@@ -273,12 +157,12 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: appbarIcon, //change your color here
+          color: Colors.white, //change your color here
         ),
         title: Text(
           "${widget.dKode}",
           style: TextStyle(
-            color: appbarTitle,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             // fontSize: 25.0,
           ),
@@ -297,7 +181,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
         ],
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.red,
       ),
       body: ListView(
         children: [
@@ -329,8 +213,8 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor,
-            Colors.orange.shade200,
+            Colors.red,
+            Colors.red.shade200,
             Colors.white,
           ],
           begin: Alignment.topCenter,
@@ -457,7 +341,9 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                     elevation: 0,
                     backgroundColor: widget.dStatus == 'Menunggu'
                         ? Colors.grey[600]
-                        : Colors.green,
+                        : widget.dStatus == 'Pengajuan di Tolak'
+                            ? Colors.red
+                            : Colors.green,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -474,7 +360,9 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       Icon(
                         widget.dStatus == 'Menunggu'
                             ? Icons.access_time
-                            : Icons.check,
+                            : widget.dStatus == 'Pengajuan di Tolak'
+                                ? Icons.cancel
+                                : Icons.check,
                         size: 14,
                         color: Colors.white,
                       )
@@ -636,132 +524,6 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _listActivity() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return Padding(
-      padding: EdgeInsets.only(
-        // top: mediaQueryData.size.height * 0.78,
-        // left: mediaQueryData.size.height * 0.015,
-        // right: mediaQueryData.size.height * 0.015,
-        bottom: mediaQueryData.size.height * 0.03,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  "Activity",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-              ),
-              // IconButton(
-              //   icon: Icon(Icons.add_box_rounded),
-              //   color: Colors.brown[800],
-              //   iconSize: 25.0,
-              //   onPressed: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => HalDataDukungSurat(
-              //           dIdTambah: "${widget.dIdSurat}",
-              //         ),
-              //       ),
-              //     ).then((value) => detailDataTambah());
-              //     // Navigator.pushNamed(context, '/HalDataDukungSurat');
-              //   },
-              // ),
-            ],
-          ),
-          loadingactivity
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  physics: ClampingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: activityJSON.length > 0 ? activityJSON.length : 1,
-                  itemBuilder: (context, i) {
-                    if (activityJSON.length <= 0) {
-                      return Container(
-                        child: Center(
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 150.0, vertical: 15.0),
-                                child: Icon(
-                                  Icons.trending_up_rounded,
-                                  size: 50.0,
-                                  color: Colors.grey[350],
-                                ),
-                              ),
-                              Text(
-                                "Belum ada aktivitas",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.grey[350],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        child: Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          elevation: 1.0,
-                          color: Colors.white,
-                          child: InkWell(
-                            onTap: () {},
-                            child: ListTile(
-                              dense: true,
-                              leading: Icon(
-                                Icons
-                                    .error_outline_rounded, // Replace with the desired icon
-                                color: Colors.red,
-                                size:
-                                    35.0, // Replace with the desired icon size
-                              ),
-                              title: Text(
-                                activityJSON[i]["keterangan_log"],
-                                style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                activityJSON[i]["waktu"],
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-        ],
       ),
     );
   }
@@ -944,22 +706,22 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       color: Colors.black),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.add_box_rounded),
-                color: Colors.brown[800],
-                iconSize: 25.0,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HalDataDukungSurat(
-                        dIdTambah: "${widget.dIdSurat}",
-                      ),
-                    ),
-                  ).then((value) => detailDataTambah());
-                  // Navigator.pushNamed(context, '/HalDataDukungSurat');
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.add_box_rounded),
+              //   color: Colors.brown[800],
+              //   iconSize: 25.0,
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => HalDataDukungSurat(
+              //           dIdTambah: "${widget.dIdSurat}",
+              //         ),
+              //       ),
+              //     ).then((value) => detailDataTambah());
+              //     // Navigator.pushNamed(context, '/HalDataDukungSurat');
+              //   },
+              // ),
             ],
           ),
           loadingdataTambahan
@@ -1087,72 +849,135 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                   },
                 ),
           _listActivity(),
-          widget.dStatus == 'Menunggu' || widget.dStatus == 'Pengajuan di Tolak'
-              ? Column(
-                  children: [
-                    _paddingtop01(),
-                    _paddingtop01(),
-                    _ajukanSurat(),
-                  ],
-                )
-              : Center()
         ],
       ),
     );
   }
 
-  Widget _ajukanSurat() {
+  Widget _listActivity() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return loadingajukansurat == true
-        ? Container(
-            width: double.infinity,
-            height: mediaQueryData.size.height * 0.06,
-            child: ElevatedButton(
-              onPressed: () {
-                // tolakSurat(widget.dUid, widget.dIdSurat);
-              },
-              style: ElevatedButton.styleFrom(
-                // padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
-                // elevation: 2.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // <-- Radius
+    return Padding(
+      padding: EdgeInsets.only(
+        // top: mediaQueryData.size.height * 0.78,
+        // left: mediaQueryData.size.height * 0.015,
+        // right: mediaQueryData.size.height * 0.015,
+        bottom: mediaQueryData.size.height * 0.03,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  "Activity",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                 ),
               ),
-              child: const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
+              // IconButton(
+              //   icon: Icon(Icons.add_box_rounded),
+              //   color: Colors.brown[800],
+              //   iconSize: 25.0,
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => HalDataDukungSurat(
+              //           dIdTambah: "${widget.dIdSurat}",
+              //         ),
+              //       ),
+              //     ).then((value) => detailDataTambah());
+              //     // Navigator.pushNamed(context, '/HalDataDukungSurat');
+              //   },
+              // ),
+            ],
+          ),
+          loadingactivity
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  physics: ClampingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: activityJSON.length > 0 ? activityJSON.length : 1,
+                  itemBuilder: (context, i) {
+                    if (activityJSON.length <= 0) {
+                      return Container(
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 150.0, vertical: 15.0),
+                                child: Icon(
+                                  Icons.trending_up_rounded,
+                                  size: 50.0,
+                                  color: Colors.grey[350],
+                                ),
+                              ),
+                              Text(
+                                "Belum ada aktivitas",
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.grey[350],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          elevation: 1.0,
+                          color: Colors.white,
+                          child: InkWell(
+                            onTap: () {},
+                            child: ListTile(
+                              dense: true,
+                              leading: Icon(
+                                Icons
+                                    .error_outline_rounded, // Replace with the desired icon
+                                color: Colors.red,
+                                size:
+                                    35.0, // Replace with the desired icon size
+                              ),
+                              title: Text(
+                                activityJSON[i]["keterangan_log"],
+                                style: TextStyle(
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                activityJSON[i]["waktu"],
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
-              ),
-            ),
-          )
-        : Container(
-            width: double.infinity,
-            height: mediaQueryData.size.height * 0.06,
-            child: ElevatedButton(
-              onPressed: () {
-                _ajukanSuratApi();
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
-                elevation: 2.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // <-- Radius
-                ),
-              ),
-              child: Text(
-                'AJUKAN SURAT',
-                style: TextStyle(
-                  color: Colors.white,
-                  letterSpacing: 1.5,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'OpenSans',
-                ),
-              ),
-            ),
-          );
+        ],
+      ),
+    );
   }
 
   Widget _paddingleft01() {

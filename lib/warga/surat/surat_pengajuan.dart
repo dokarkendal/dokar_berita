@@ -88,60 +88,62 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
     setState(() {
       loadingajukan = true;
     });
-    final response = await http.post(
-      Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/surat/Pengajuan"),
-      body: {
-        "uid": pref.getString("uid")!,
-        "id_desa": pref.getString("id_desa")!,
-        "kategori": _pilihSurat,
-        "keterangan": cKeterangan.text,
-      },
-    );
-    var ajukanSurat = json.decode(response.body);
-    print(ajukanSurat);
-    if (ajukanSurat["Status"] == "Sukses") {
-      setState(() {
-        loadingajukan = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            ajukanSurat['Notif'],
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.green,
-          action: SnackBarAction(
-            label: 'OK',
-            textColor: Colors.white,
-            onPressed: () {
-              print('OK snackbar');
-            },
-          ),
-        ),
+    Future.delayed(Duration(seconds: 2), () async {
+      final response = await http.post(
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/surat/Pengajuan"),
+        body: {
+          "uid": pref.getString("uid")!,
+          "id_desa": pref.getString("id_desa")!,
+          "kategori": _pilihSurat,
+          "keterangan": cKeterangan.text,
+        },
       );
-      Navigator.pop(context);
-    } else {
-      setState(() {
-        loadingajukan = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            ajukanSurat['Notif'],
-            style: TextStyle(color: Colors.white),
+      var ajukanSurat = json.decode(response.body);
+      print(ajukanSurat);
+      if (ajukanSurat["Status"] == "Sukses") {
+        setState(() {
+          loadingajukan = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              ajukanSurat['Notif'],
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                print('OK snackbar');
+              },
+            ),
           ),
-          backgroundColor: Colors.red,
-          action: SnackBarAction(
-            label: 'ULANGI',
-            textColor: Colors.white,
-            onPressed: () {
-              print('ULANGI snackbar');
-            },
+        );
+        Navigator.pop(context);
+      } else {
+        setState(() {
+          loadingajukan = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              ajukanSurat['Notif'],
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'ULANGI',
+              textColor: Colors.white,
+              onPressed: () {
+                print('ULANGI snackbar');
+              },
+            ),
           ),
-        ),
-      );
-    }
+        );
+      }
+    });
   }
 
   @override

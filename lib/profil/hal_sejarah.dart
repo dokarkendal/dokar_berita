@@ -129,7 +129,7 @@ class _HalSejarahDesaState extends State<HalSejarahDesa> {
                 shrinkWrap: true,
                 style: {
                   "p": Style(
-                    padding: EdgeInsets.all(10.0),
+                    padding: HtmlPaddings.all(10.0),
                   )
                 },
                 // padding: new EdgeInsets.all(10.0),

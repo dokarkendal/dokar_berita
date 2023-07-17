@@ -67,6 +67,14 @@ import 'package:dokar_aplikasi/berita/hal_berita.dart';
 import 'package:dokar_aplikasi/hal_pilih_user.dart';
 import 'package:dokar_aplikasi/hal_dashboard_admin.dart';
 import 'package:dokar_aplikasi/version/version.dart';
+import 'package:dokar_aplikasi/warga/admin/detail/detail_surat_acc.dart';
+import 'package:dokar_aplikasi/warga/admin/detail/detail_surat_ajukan.dart';
+import 'package:dokar_aplikasi/warga/admin/detail/detail_surat_menunggu.dart';
+import 'package:dokar_aplikasi/warga/admin/detail/detail_surat_tolak.dart';
+import 'package:dokar_aplikasi/warga/admin/list/list_surat_acc.dart';
+import 'package:dokar_aplikasi/warga/admin/list/list_surat_menunggu.dart';
+import 'package:dokar_aplikasi/warga/admin/hal_surat_admin.dart';
+import 'package:dokar_aplikasi/warga/admin/list/list_surat_tolak.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:dokar_aplikasi/warga/edit/form_edit_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
@@ -82,6 +90,7 @@ import 'berita/detail_page_kritiksaran.dart';
 import 'berita/hal_kritiksaran.dart';
 import 'berita/tes.dart';
 import 'hal_daftar_warga.dart';
+import 'warga/admin/list/list_surat_ajukan.dart';
 import 'warga/edit/hal_edit_warga.dart';
 
 void main() {
@@ -338,6 +347,35 @@ void main() {
         '/FormEditWarga': (BuildContext context) => FormEditWarga(),
         '/PengajuanSurat': (BuildContext context) => PengajuanSurat(),
         '/HalSemuaSurat': (BuildContext context) => HalSemuaSurat(),
+        '/HalSuratAdmin': (BuildContext context) => HalSuratAdmin(),
+        '/HalSuratTolak': (BuildContext context) => HalSuratTolak(),
+        '/HalSuratMenunggu': (BuildContext context) => HalSuratMenunggu(),
+        '/HalSuratACC': (BuildContext context) => HalSuratACC(),
+        '/HalDetailSuratTolak': (BuildContext context) => HalDetailSuratTolak(
+              dIdSurat: '',
+              dKategori: '',
+              dKeterangan: '',
+              dKode: '',
+              dNama: '',
+              dNik: '',
+              dNoSurat: '',
+              dStatus: '',
+              dTanggal: '',
+              dUid: '',
+            ),
+        '/HalDetailSuratMenunggu': (BuildContext context) =>
+            HalDetailSuratMenunggu(
+              dIdSurat: '',
+              dKategori: '',
+              dKeterangan: '',
+              dKode: '',
+              dNama: '',
+              dNik: '',
+              dNoSurat: '',
+              dStatus: '',
+              dTanggal: '',
+              dUid: '',
+            ),
         '/HalDataDukungSurat': (BuildContext context) => HalDataDukungSurat(
               dIdTambah: '',
             ),
@@ -352,6 +390,34 @@ void main() {
               dKeterangan: '',
               dIdSurat: '',
             ),
+        '/HalDetailSuratAjukan': (BuildContext context) => HalDetailSuratAjukan(
+              dIdSurat: '',
+              dKategori: '',
+              dKeterangan: '',
+              dKode: '',
+              dNama: '',
+              dNik: '',
+              dNoSurat: '',
+              dStatus: '',
+              dTanggal: '',
+              dUid: '',
+              dIdDesa: '',
+            ),
+
+        '/HalDetailSuratACC': (BuildContext context) => HalDetailSuratACC(
+              dIdSurat: '',
+              dKategori: '',
+              dKeterangan: '',
+              dKode: '',
+              dNama: '',
+              dNik: '',
+              dNoSurat: '',
+              dStatus: '',
+              dTanggal: '',
+              dUid: '',
+              dIdDesa: '',
+            ),
+        '/HalSuratAjukan': (BuildContext context) => HalSuratAjukan(),
       },
       home: SplashScreenPage(),
     ),

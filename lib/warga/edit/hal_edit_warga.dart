@@ -82,6 +82,9 @@ class _HalEditWargaState extends State<HalEditWarga> {
           print(dataDukungJSON);
         });
       } else {
+        setState(() {
+          loadingdata = false;
+        });
         // Handle case when "Data" field is "notfound"
         // For example, you can display an error message
         print("Data not found");

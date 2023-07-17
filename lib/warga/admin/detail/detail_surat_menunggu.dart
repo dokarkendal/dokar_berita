@@ -1,17 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
-import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../style/styleset.dart';
 
-class HalDetailSurat extends StatefulWidget {
+class HalDetailSuratMenunggu extends StatefulWidget {
   final String dNama,
       dNik,
       dStatus,
@@ -20,8 +19,9 @@ class HalDetailSurat extends StatefulWidget {
       dTanggal,
       dKode,
       dKeterangan,
-      dIdSurat;
-  HalDetailSurat({
+      dIdSurat,
+      dUid;
+  HalDetailSuratMenunggu({
     required this.dNama,
     required this.dNik,
     required this.dStatus,
@@ -31,21 +31,21 @@ class HalDetailSurat extends StatefulWidget {
     required this.dKode,
     required this.dKeterangan,
     required this.dIdSurat,
+    required this.dUid,
   });
 
   @override
-  State<HalDetailSurat> createState() => _HalDetailSuratState();
+  State<HalDetailSuratMenunggu> createState() => _HalDetailSuratMenungguState();
 }
 
-class _HalDetailSuratState extends State<HalDetailSurat> {
+class _HalDetailSuratMenungguState extends State<HalDetailSuratMenunggu> {
   bool loadingdata = false;
   bool loadingdatadukung = false;
   bool loadingdataTambahan = false;
-  bool loadingajukansurat = false;
-  bool loadingactivity = false;
+  bool loadingtolaksurat = false;
   late List dataDukungJSON = [];
   void detailDataDukung() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+    // SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       loadingdatadukung = true;
     });
@@ -53,7 +53,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
       Uri.parse(
           "http://dokar.kendalkab.go.id/webservice/android/account/DataDukungByUid"),
       body: {
-        "uid": pref.getString("uid")!,
+        "uid": '${widget.dUid}',
       },
     );
     if (mounted) {
@@ -67,47 +67,118 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
     }
   }
 
-  late List activityJSON = [];
-  void activityadmin() async {
-    // SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      loadingactivity = true;
-    });
-    final response = await http.post(
-      Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/surat/Aktivity"),
-      body: {
-        "id_surat": '${widget.dIdSurat}',
+  void tolakSurat(pUid, pIdDesa) async {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    setState(
+      () {
+        loadingtolaksurat = true;
       },
     );
-    final decodedData = json.decode(response.body)["Data"];
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    Future.delayed(Duration(seconds: 3), () async {
+      final response = await http.post(
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/surat/TolakSurat"),
+        body: {
+          "uid": pUid.toString(),
+          "id_surat": pIdDesa.toString(),
+          "username": pref.getString("userAdmin").toString(),
+          "keterangan": cKeterangan.text
+        },
+      );
+      var datauser = json.decode(response.body);
+      print(pUid.toString());
+      print(pIdDesa.toString());
+      print(pref.getString("userAdmin").toString());
+      print(datauser);
+      if (datauser['Status'] == "Sukses") {
+        setState(() {
+          loadingtolaksurat = false;
+        });
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 3),
+            elevation: 6.0,
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.done,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: mediaQueryData.size.width * 0.02,
+                ),
+                Flexible(
+                  child: Text(
+                    datauser['Notif'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                // Navigator.pushReplacementNamed(context, '/HalDashboard');
+                // Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+        // Navigator.pop(context);
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HalSuratMenunggu()),
+        // );
+        Navigator.popUntil(context, ModalRoute.withName('/HalSuratAdmin'));
+        // Navigator.pushReplacementNamed(context, '/HalSuratMenunggu');
+      } else {
+        print("Failed");
+        setState(
+          () {
+            loadingtolaksurat = false;
+          },
+        );
 
-    if (decodedData is List) {
-      // "Data" is an array of objects
-      this.setState(() {
-        loadingactivity = false;
-        activityJSON = decodedData;
-        print(activityJSON);
-      });
-    } else if (decodedData is String &&
-        decodedData.toLowerCase() == "notfound") {
-      // "Data" is a string with value "notfound"
-      // Handle the case where the data is not found
-      // For example, you can show an error message or set activityJSON to an empty list
-      this.setState(() {
-        loadingactivity = false;
-        activityJSON = [];
-        print("Data not found");
-      });
-    } else {
-      // Handle any other unexpected cases
-      // For example, you can show an error message or set activityJSON to an empty list
-      this.setState(() {
-        loadingactivity = false;
-        activityJSON = [];
-        print("Unexpected data format");
-      });
-    }
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 3),
+            elevation: 6.0,
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.warning,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: mediaQueryData.size.width * 0.02,
+                ),
+                Flexible(
+                  child: Text(
+                    datauser['Notif'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            action: SnackBarAction(
+              label: 'ULANGI',
+              textColor: Colors.white,
+              onPressed: () {},
+            ),
+          ),
+        );
+      }
+    });
   }
 
   late List dataTambahJSON = [];
@@ -134,151 +205,36 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
           print(dataTambahJSON);
         });
       } else {
+        // Handle case when "Data" field is "notfound"
+        // For example, you can display an error message
         setState(() {
           loadingdataTambahan = false;
         });
-        // Handle case when "Data" field is "notfound"
-        // For example, you can display an error message
         print("Data not found");
       }
     }
-  }
-
-  void _ajukanSuratApi() async {
-    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
-    setState(
-      () {
-        loadingajukansurat = true;
-      },
-    );
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    Future.delayed(Duration(seconds: 3), () async {
-      final response = await http.post(
-        Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/surat/AjukanSurat"),
-        body: {
-          "uid": pref.getString("uid").toString(),
-          "id_surat": widget.dIdSurat.toString(),
-          "username": pref.getString("userAdmin").toString(),
-        },
-      );
-      var ajukansurat = json.decode(response.body);
-      print(
-        pref.getString("uid").toString(),
-      );
-      print(widget.dIdSurat.toString());
-      print(pref.getString("userAdmin").toString());
-      print(ajukansurat);
-      if (ajukansurat['Status'] == "Sukses") {
-        setState(() {
-          loadingajukansurat = false;
-        });
-        ScaffoldMessenger.of(this.context).showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 3),
-            elevation: 6.0,
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.done,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: mediaQueryData.size.width * 0.02,
-                ),
-                Flexible(
-                  child: Text(
-                    ajukansurat['Notif'],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            action: SnackBarAction(
-              label: 'OK',
-              textColor: Colors.white,
-              onPressed: () {
-                // Navigator.pushReplacementNamed(context, '/HalDashboard');
-                // Navigator.pop(context);
-              },
-            ),
-          ),
-        );
-        Navigator.pop(context);
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => HalSuratMenunggu()),
-        // );
-        // Navigator.popUntil(context, ModalRoute.withName('/HalSuratAdmin'));
-        // Navigator.pushReplacementNamed(context, '/HalSuratMenunggu');
-      } else {
-        print("Failed");
-        setState(
-          () {
-            loadingajukansurat = false;
-          },
-        );
-
-        ScaffoldMessenger.of(this.context).showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 3),
-            elevation: 6.0,
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.warning,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: mediaQueryData.size.width * 0.02,
-                ),
-                Flexible(
-                  child: Text(
-                    ajukansurat['Notif'],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-            action: SnackBarAction(
-              label: 'ULANGI',
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-      }
-    });
   }
 
   @override
   void initState() {
     detailDataDukung();
     detailDataTambah();
-    activityadmin();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: appbarIcon, //change your color here
+          color: Colors.white, //change your color here
         ),
         title: Text(
           "${widget.dKode}",
           style: TextStyle(
-            color: appbarTitle,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             // fontSize: 25.0,
           ),
@@ -297,7 +253,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
         ],
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.grey,
       ),
       body: ListView(
         children: [
@@ -309,6 +265,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                   detailSuratdata(),
                   cardWargaDetail(),
                   _listDataDukung(),
+
                   // _listDataTambahan(),
                 ],
               )
@@ -329,8 +286,8 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor,
-            Colors.orange.shade200,
+            Colors.grey,
+            Colors.grey.shade200,
             Colors.white,
           ],
           begin: Alignment.topCenter,
@@ -640,132 +597,6 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
     );
   }
 
-  Widget _listActivity() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return Padding(
-      padding: EdgeInsets.only(
-        // top: mediaQueryData.size.height * 0.78,
-        // left: mediaQueryData.size.height * 0.015,
-        // right: mediaQueryData.size.height * 0.015,
-        bottom: mediaQueryData.size.height * 0.03,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  "Activity",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ),
-              ),
-              // IconButton(
-              //   icon: Icon(Icons.add_box_rounded),
-              //   color: Colors.brown[800],
-              //   iconSize: 25.0,
-              //   onPressed: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => HalDataDukungSurat(
-              //           dIdTambah: "${widget.dIdSurat}",
-              //         ),
-              //       ),
-              //     ).then((value) => detailDataTambah());
-              //     // Navigator.pushNamed(context, '/HalDataDukungSurat');
-              //   },
-              // ),
-            ],
-          ),
-          loadingactivity
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  physics: ClampingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: activityJSON.length > 0 ? activityJSON.length : 1,
-                  itemBuilder: (context, i) {
-                    if (activityJSON.length <= 0) {
-                      return Container(
-                        child: Center(
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 150.0, vertical: 15.0),
-                                child: Icon(
-                                  Icons.trending_up_rounded,
-                                  size: 50.0,
-                                  color: Colors.grey[350],
-                                ),
-                              ),
-                              Text(
-                                "Belum ada aktivitas",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.grey[350],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        child: Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          elevation: 1.0,
-                          color: Colors.white,
-                          child: InkWell(
-                            onTap: () {},
-                            child: ListTile(
-                              dense: true,
-                              leading: Icon(
-                                Icons
-                                    .error_outline_rounded, // Replace with the desired icon
-                                color: Colors.red,
-                                size:
-                                    35.0, // Replace with the desired icon size
-                              ),
-                              title: Text(
-                                activityJSON[i]["keterangan_log"],
-                                style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              subtitle: Text(
-                                activityJSON[i]["waktu"],
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-        ],
-      ),
-    );
-  }
-
   Widget _listDataDukung() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Padding(
@@ -944,22 +775,22 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       color: Colors.black),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.add_box_rounded),
-                color: Colors.brown[800],
-                iconSize: 25.0,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HalDataDukungSurat(
-                        dIdTambah: "${widget.dIdSurat}",
-                      ),
-                    ),
-                  ).then((value) => detailDataTambah());
-                  // Navigator.pushNamed(context, '/HalDataDukungSurat');
-                },
-              ),
+              // IconButton(
+              //   icon: Icon(Icons.add_box_rounded),
+              //   color: Colors.brown[800],
+              //   iconSize: 25.0,
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => HalDataDukungSurat(
+              //           dIdTambah: "${widget.dIdSurat}",
+              //         ),
+              //       ),
+              //     ).then((value) => detailDataTambah());
+              //     // Navigator.pushNamed(context, '/HalDataDukungSurat');
+              //   },
+              // ),
             ],
           ),
           loadingdataTambahan
@@ -1086,26 +917,27 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                     }
                   },
                 ),
-          _listActivity(),
-          widget.dStatus == 'Menunggu' || widget.dStatus == 'Pengajuan di Tolak'
-              ? Column(
-                  children: [
-                    _paddingtop01(),
-                    _paddingtop01(),
-                    _ajukanSurat(),
-                  ],
-                )
-              : Center()
+          // _paddingtop01(),
+          // _paddingtop01(),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     _tolakSurat(),
+          //     _accSurat(),
+          //   ],
+          // )
         ],
       ),
     );
   }
 
-  Widget _ajukanSurat() {
+  TextEditingController cKeterangan = TextEditingController();
+  // ignore: unused_element
+  Widget _tolakSurat() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return loadingajukansurat == true
+    return loadingtolaksurat == true
         ? Container(
-            width: double.infinity,
+            width: mediaQueryData.size.width * 0.45,
             height: mediaQueryData.size.height * 0.06,
             child: ElevatedButton(
               onPressed: () {
@@ -1113,7 +945,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               },
               style: ElevatedButton.styleFrom(
                 // padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
+                backgroundColor: Colors.red[600],
                 // elevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // <-- Radius
@@ -1127,22 +959,199 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
             ),
           )
         : Container(
-            width: double.infinity,
+            width: mediaQueryData.size.width * 0.45,
             height: mediaQueryData.size.height * 0.06,
             child: ElevatedButton(
               onPressed: () {
-                _ajukanSuratApi();
+                showMaterialModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) => Padding(
+                    padding: EdgeInsets.only(
+                      left: mediaQueryData.size.height * 0.02,
+                      right: mediaQueryData.size.height * 0.02,
+                      // bottom: mediaQueryData.size.height * 0.03,
+                      // top: mediaQueryData.size.height * 0.03,
+                    ),
+                    child: SizedBox(
+                      height: mediaQueryData.size.height * 0.7,
+                      child: ListView(
+                        children: <Widget>[
+                          Text(
+                            "Tolak Surat",
+                            style: TextStyle(
+                                fontSize: 25.0,
+                                color: Colors.grey[800],
+                                fontWeight: FontWeight.bold),
+                          ),
+                          _paddingtop01(),
+                          _paddingtop01(),
+                          _formKeterangan(),
+                          _paddingtop01(),
+                          _paddingtop01(),
+                          _tombolTolakSurat(),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
+                backgroundColor: Colors.red,
                 elevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // <-- Radius
                 ),
               ),
               child: Text(
-                'AJUKAN SURAT',
+                'TOLAK',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+          );
+  }
+
+  Widget _formKeterangan() {
+    return Container(
+      // padding: EdgeInsets.all(3),
+      width: MediaQuery.of(this.context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: TextFormField(
+              maxLines: null,
+              controller: cKeterangan,
+              keyboardType: TextInputType.emailAddress,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(200),
+              ],
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(10.0),
+                  ),
+                ),
+                prefixIcon: Icon(
+                  Icons.my_library_books_rounded,
+                  color: Colors.brown[800],
+                ),
+                hintText: loadingdata ? "Memuat.." : "Keterangan",
+                hintStyle: TextStyle(
+                  color: Colors.grey[400],
+                ),
+              ),
+              autovalidateMode: AutovalidateMode.always,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Keterangan tidak boleh kosong';
+                }
+                return null; // Return null if the validation passes
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ignore: unused_element
+  Widget _accSurat() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      width: mediaQueryData.size.width * 0.45,
+      height: mediaQueryData.size.height * 0.06,
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(15.0),
+          backgroundColor: Colors.green[600],
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // <-- Radius
+          ),
+        ),
+        child: Text(
+          'ACC',
+          style: TextStyle(
+            color: Colors.white,
+            letterSpacing: 1.5,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _tombolTolakSurat() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return loadingtolaksurat == true
+        ? Container(
+            // width: mediaQueryData.size.width * 0.45,
+            height: mediaQueryData.size.height * 0.06,
+            child: ElevatedButton(
+              onPressed: () {
+                // tolakSurat(widget.dUid, widget.dIdSurat);
+              },
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                backgroundColor: Colors.red[600],
+                // elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          )
+        : Container(
+            // width: mediaQueryData.size.width * 0.45,
+            height: mediaQueryData.size.height * 0.06,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (cKeterangan.text == "" || cKeterangan.text.isEmpty) {
+                  Container();
+                } else {
+                  tolakSurat(widget.dUid, widget.dIdSurat);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(15.0),
+                backgroundColor: Colors.red[600],
+                elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
+              ),
+              child: Text(
+                'TOLAK SURAT',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 1.5,

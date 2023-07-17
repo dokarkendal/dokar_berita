@@ -327,7 +327,7 @@ class _HalduaState extends State<Haldua> {
 
 //NOTE Widget Penulis
   Widget penulis() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
     if (status == '02') {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 40.0),
@@ -500,96 +500,14 @@ class _HalduaState extends State<Haldua> {
               children: <Widget>[
                 Material(
                   borderRadius: BorderRadius.circular(20.0),
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.blueGrey.withOpacity(0.2),
                   child: IconButton(
                     padding: EdgeInsets.all(15.0),
                     icon: Icon(Icons.mail),
-                    color: Colors.grey,
+                    color: Colors.blueGrey,
                     iconSize: 30.0,
                     onPressed: () async {
-                      ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        duration: const Duration(seconds: 3),
-                        elevation: 6.0,
-                        backgroundColor: Colors.purple,
-                        behavior: SnackBarBehavior.floating,
-                        content: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              size: 30,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: mediaQueryData.size.width * 0.02,
-                            ),
-                            Flexible(
-                              child: Text(
-                                "Cooming soon",
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                        action: SnackBarAction(
-                          label: 'OK',
-                          textColor: Colors.white,
-                          onPressed: () {
-                            // Navigator.pushReplacementNamed(context, '/HalDashboard');
-                          },
-                        ),
-                      ));
-                      // Dialogs.bottomMaterialDialog(
-                      //   msg: 'Anda yakin ingin keluar aplikasi?',
-                      //   title: "Keluar",
-                      //   color: Colors.white,
-                      //   lottieBuilder: Lottie.asset(
-                      //     'assets/animation/exit2.json',
-                      //     fit: BoxFit.contain,
-                      //     repeat: false,
-                      //   ),
-                      //   // animation:'assets/logo/animation/exit.json',
-                      //   context: context,
-                      //   actions: [
-                      //     IconsOutlineButton(
-                      //       onPressed: () {
-                      //         Navigator.pop(context);
-                      //       },
-                      //       text: 'Tidak',
-                      //       iconData: Icons.cancel_outlined,
-                      //       textStyle: const TextStyle(color: Colors.grey),
-                      //       iconColor: Colors.grey,
-                      //     ),
-                      //     IconsButton(
-                      //       onPressed: () async {
-                      //         // SharedPreferences pref = await SharedPreferences.getInstance();
-                      //         // pref.clear();
-                      //         // events.clear();
-                      //         // _cekLogout();
-                      //         // Navigator.pop(context);
-                      //         SharedPreferences pref =
-                      //             await SharedPreferences.getInstance();
-                      //         pref.clear();
-
-                      //         int launchCount = 0;
-                      //         pref.setInt('counter', launchCount + 1);
-                      //         _cekLogout();
-                      //       },
-                      //       text: 'Exit',
-                      //       iconData: Icons.exit_to_app,
-                      //       color: Colors.red,
-                      //       textStyle: const TextStyle(color: Colors.white),
-                      //       iconColor: Colors.white,
-                      //     ),
-                      //   ],
-                      // );
-                      // SharedPreferences pref =
-                      //     await SharedPreferences.getInstance();
-                      // pref.clear();
-
-                      // int launchCount = 0;
-                      // pref.setInt('counter', launchCount + 1);
-                      // _cekLogout();
+                      Navigator.pushNamed(context, '/HalSuratAdmin');
                     },
                   ),
                 ),
@@ -769,15 +687,30 @@ class _HalduaState extends State<Haldua> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                ClipPath(
-                  clipper: CustomShapeClipper(),
-                  child: Container(
-                    height: mediaQueryData.size.height * 0.4,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                Container(
+                  height: mediaQueryData.size.height * 0.4,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).primaryColor,
+                        Colors.orange.shade200,
+                        Colors.white,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
+                    // borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                // ClipPath(
+                //   clipper: CustomShapeClipper(),
+                //   child: Container(
+                //     height: mediaQueryData.size.height * 0.4,
+                //     decoration: BoxDecoration(
+                //       color: Theme.of(context).primaryColor,
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: EdgeInsets.all(mediaQueryData.size.height * 0.03),
                   child: Row(
@@ -1136,8 +1069,7 @@ class _HalduaState extends State<Haldua> {
                                                                 EdgeInsets.all(
                                                                     5.0),
                                                             child: Column(
-                                                              children: <
-                                                                  Widget>[
+                                                              children: <Widget>[
                                                                 Align(
                                                                   alignment:
                                                                       Alignment

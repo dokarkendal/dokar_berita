@@ -172,7 +172,8 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
       floatingActionButton: status == "Lengkap"
           ? FloatingActionButton.extended(
               onPressed: () {
-                Navigator.pushNamed(context, '/PengajuanSurat');
+                Navigator.pushNamed(context, '/PengajuanSurat')
+                    .then((value) => suratPengajuan5());
               },
               label: const Text(
                 'Surat',
@@ -462,7 +463,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
         // Navigator.pushNamed(context, '/HalProfilWarga');
       },
       child: Container(
-        padding: EdgeInsets.all(15.0),
+        padding: EdgeInsets.all(10.0),
         // height: mediaQueryData.size.height * 0.07,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -741,6 +742,70 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                       ),
                       Text(
                         "Menunggu",
+                        style: new TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          //fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (data5Surat[i]["status"] == "Pengajuan di Tolak") {
+                status = Material(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.red[800],
+                  child: Column(
+                    children: [
+                      IconButton(
+                        padding: EdgeInsets.only(
+                          left: mediaQueryData.size.height * 0.012,
+                          right: mediaQueryData.size.height * 0.012,
+                          // bottom: mediaQueryData.size.height * 0.01,
+                          top: mediaQueryData.size.height * 0.011,
+                        ),
+                        icon: Icon(Icons.unsubscribe),
+                        color: Colors.white,
+                        iconSize: 50.0,
+                        onPressed: () {
+                          // Navigator.pushNamed(context, '/DetailSurat');
+                        },
+                      ),
+                      Text(
+                        "Ditolak",
+                        style: new TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          //fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (data5Surat[i]["status"] == "Surat Diajukan") {
+                status = Material(
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.blue[800],
+                  child: Column(
+                    children: [
+                      IconButton(
+                        padding: EdgeInsets.only(
+                          left: mediaQueryData.size.height * 0.012,
+                          right: mediaQueryData.size.height * 0.012,
+                          // bottom: mediaQueryData.size.height * 0.01,
+                          top: mediaQueryData.size.height * 0.011,
+                        ),
+                        icon: Icon(Icons.outgoing_mail),
+                        color: Colors.white,
+                        iconSize: 50.0,
+                        onPressed: () {
+                          // Navigator.pushNamed(context, '/DetailSurat');
+                        },
+                      ),
+                      Text(
+                        "Diajukan",
                         style: new TextStyle(
                           fontSize: 12.0,
                           color: Colors.white,
