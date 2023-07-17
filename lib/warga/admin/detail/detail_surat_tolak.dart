@@ -996,3 +996,13 @@ class _HalDetailSuratTolakState extends State<HalDetailSuratTolak> {
     );
   }
 }
+
+// q: apa itu statefulwidget?
+// a: statefulwidget adalah widget yang bisa diubah state nya
+// q: apa bedanya dengan statelesswidget?
+// a: statelesswidget adalah widget yang tidak bisa diubah state nya
+
+/// cretae elevated button
+
+
+
