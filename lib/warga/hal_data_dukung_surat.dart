@@ -180,7 +180,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
               label: 'OK',
               textColor: Colors.white,
               onPressed: () {
-                Navigator.pop(this.context);
+                // Navigator.pop(this.context);
                 // Navigator.pushReplacementNamed(this.context, '/ListDokter');
                 if (kDebugMode) {
                   print('Berhasil');

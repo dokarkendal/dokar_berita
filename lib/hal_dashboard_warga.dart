@@ -492,7 +492,8 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, '/HalSemuaSurat');
+                    Navigator.pushNamed(context, '/HalSemuaSurat')
+                        .then((value) => suratPengajuan5());
                   },
                   child: Icon(
                     Icons.arrow_forward_ios_rounded,
@@ -856,7 +857,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                               dIdSurat: data5Surat[i]["id_surat"],
                             ),
                           ),
-                        );
+                        ).then((value) => suratPengajuan5());
                       },
                       child: Row(
                         children: [

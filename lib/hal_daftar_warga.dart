@@ -822,7 +822,10 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
             child: DropdownButtonFormField(
               isDense: true,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.location_city),
+                prefixIcon: Icon(
+                  Icons.location_city,
+                  color: Colors.brown[800],
+                ),
                 border: new OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(10.0),
@@ -869,7 +872,10 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
             child: DropdownButtonFormField(
               isDense: true,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.location_city),
+                prefixIcon: Icon(
+                  Icons.location_city,
+                  color: Colors.brown[800],
+                ),
                 border: new OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(10.0),
@@ -915,7 +921,10 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
             child: DropdownButtonFormField(
               isDense: true,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.location_city),
+                prefixIcon: Icon(
+                  Icons.location_city,
+                  color: Colors.brown[800],
+                ),
                 border: new OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
                     const Radius.circular(10.0),

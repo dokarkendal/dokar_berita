@@ -13,11 +13,12 @@
          android:name="androidx.multidex.MultiDexApplication"
          -->
         <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
         <uses-permission android:name="android.permission.VIBRATE" /> <!--tambah-->
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!--tambah-->
     <application
         android:requestLegacyExternalStorage="true"
-       android:name="${applicationName}"
+        android:name="${applicationName}"
         android:label="Dokar Kendal"
         android:icon="@mipmap/ic_launcher">
         <activity

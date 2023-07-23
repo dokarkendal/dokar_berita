@@ -234,7 +234,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
   }
 
   List kelaminAPI = [];
-  var _pilihKelamin;
+  String? _pilihKelamin;
   Future<void> getKelamin() async {
     final response = await http.get(
       Uri.parse(
@@ -250,7 +250,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
   }
 
   List agamaAPI = [];
-  var _pilihAgama;
+  String? _pilihAgama;
   Future<void> getAgama() async {
     final response = await http.get(
       Uri.parse(
@@ -266,7 +266,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
   }
 
   List kawinAPI = [];
-  var _pilihKawin;
+  String? _pilihKawin;
   Future<void> getKawin() async {
     final response = await http.get(
       Uri.parse(
@@ -282,7 +282,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
   }
 
   List pekerjaanAPI = [];
-  var _pilihPekerjaaan;
+  String? _pilihPekerjaaan;
   Future<void> getPekerjaan() async {
     final response = await http.get(
       Uri.parse(
@@ -480,25 +480,25 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
             child: ElevatedButton(
               onPressed: () async {
                 if (_pilihKelamin == null || _pilihKelamin == "") {
-                  _pilihKelamin = cKelaminID;
+                  _pilihKelamin = cKelaminID.text;
                 } else {
                   _pilihKelamin = _pilihKelamin;
                 }
 
                 if (_pilihAgama == null || _pilihAgama == "") {
-                  _pilihAgama = cAgamaID;
+                  _pilihAgama = cAgamaID.text;
                 } else {
                   _pilihAgama = _pilihAgama;
                 }
 
                 if (_pilihKawin == null || _pilihKawin == "") {
-                  _pilihKawin = cStstusKawinID;
+                  _pilihKawin = cStstusKawinID.text;
                 } else {
                   _pilihKawin = _pilihKawin;
                 }
 
                 if (_pilihPekerjaaan == null || _pilihPekerjaaan == "") {
-                  _pilihPekerjaaan = cPekerjaanID;
+                  _pilihPekerjaaan = cPekerjaanID.text;
                 } else {
                   _pilihPekerjaaan = _pilihPekerjaaan;
                 }

@@ -4,12 +4,15 @@ import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../style/styleset.dart';
+
+import 'package:timeline_tile/timeline_tile.dart';
+// import '../../style/styleset.dart';
 
 class HalDetailSurat extends StatefulWidget {
   final String dNama,
@@ -43,6 +46,24 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
   bool loadingdataTambahan = false;
   bool loadingajukansurat = false;
   bool loadingactivity = false;
+  double? _progress;
+  String _status = '';
+
+  final TextEditingController name = TextEditingController();
+  final TextEditingController url = TextEditingController(
+    text: "https://pusdik.mkri.id/uploadedfiles/materi/Materi_3.pdf",
+    // text: "https://tinypng.com/images/social/website.jpg",
+  );
+  String extractDate(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+  }
+
+  String extractTime(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+  }
+
   late List dataDukungJSON = [];
   void detailDataDukung() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -269,16 +290,29 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
 
   @override
   Widget build(BuildContext context) {
+    var colorappbar;
+    if (widget.dStatus == "Menunggu") {
+      colorappbar = Colors.grey;
+    } else if (widget.dStatus == "Pengajuan di Tolak") {
+      colorappbar = Colors.red;
+    } else if (widget.dStatus == "Surat Sudah Dibuat") {
+      colorappbar = Colors.green;
+    } else if (widget.dStatus == "Surat Diajukan") {
+      colorappbar = Colors.blue;
+    } else {
+      colorappbar = Colors.black;
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: appbarIcon, //change your color here
+          color: Colors.white, //change your color here
         ),
         title: Text(
           "${widget.dKode}",
           style: TextStyle(
-            color: appbarTitle,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             // fontSize: 25.0,
           ),
@@ -297,7 +331,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
         ],
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: colorappbar,
       ),
       body: ListView(
         children: [
@@ -314,9 +348,6 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               )
             ],
           ),
-
-          // _headerWarga(),
-          // CardWargaDetail(),
         ],
       ),
     );
@@ -324,99 +355,90 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
 
   Widget _headerWarga() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
+
+    var colorheader;
+    if (widget.dStatus == "Menunggu") {
+      colorheader = LinearGradient(
+        colors: [
+          Colors.grey,
+          Colors.grey.shade200,
+          Colors.white,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+    } else if (widget.dStatus == "Pengajuan di Tolak") {
+      colorheader = LinearGradient(
+        colors: [
+          Colors.red,
+          Colors.red.shade200,
+          Colors.white,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+    } else if (widget.dStatus == "Surat Sudah Dibuat") {
+      colorheader = LinearGradient(
+        colors: [
+          Colors.green,
+          Colors.green.shade200,
+          Colors.white,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+    } else if (widget.dStatus == "Surat Diajukan") {
+      colorheader = LinearGradient(
+        colors: [
+          Colors.blue,
+          Colors.blue.shade200,
+          Colors.white,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+    } else {
+      colorheader = LinearGradient(
+        colors: [
+          Colors.black,
+          Colors.black.withOpacity(0.2),
+          Colors.white,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+    }
+
     return Container(
       height: mediaQueryData.size.height * 0.4,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).primaryColor,
-            Colors.orange.shade200,
-            Colors.white,
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+        gradient: colorheader,
         // borderRadius: BorderRadius.circular(5),
       ),
-      // child: Stack(
-      //   children: [
-      //     SizedBox(
-      //       width: mediaQueryData.size.width,
-      //       height: mediaQueryData.size.height * 0.3,
-      //     ),
-      //     Padding(
-      //       padding: EdgeInsets.symmetric(
-      //         vertical: mediaQueryData.size.height * 0.03,
-      //         horizontal: mediaQueryData.size.width * 0.07,
-      //       ),
-      //       child: Column(
-      //         mainAxisAlignment: MainAxisAlignment.start,
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           AutoSizeText(
-      //             '${widget.dNama}',
-      //             minFontSize: 14,
-      //             style: TextStyle(
-      //               color: Color(0xFF2e2e2e),
-      //               fontSize: 20.0,
-      //               fontWeight: FontWeight.bold,
-      //             ),
-      //           ),
-      //           _paddingtop01(),
-      //           Row(
-      //             children: [
-      //               AutoSizeText(
-      //                 '${widget.dNik}',
-      //                 minFontSize: 14,
-      //                 style: TextStyle(
-      //                   color: Color(0xFF2e2e2e),
-      //                   fontSize: 16.0,
-      //                   // fontWeight: FontWeight.bold,
-      //                 ),
-      //               ),
-      //               _paddingleft01(),
-      //               SizedBox(
-      //                 width: mediaQueryData.size.width * 0.3,
-      //                 height: 25,
-      //                 child: ElevatedButton(
-      //                   style: ElevatedButton.styleFrom(
-      //                     // padding: EdgeInsets.all(15.0),
-      //                     elevation: 0,
-      //                     backgroundColor: Colors.grey,
-      //                   ),
-      //                   child: Row(
-      //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //                     children: [
-      //                       Text(
-      //                         '${widget.dStatus}',
-      //                         style: TextStyle(
-      //                           fontSize: 12,
-      //                           fontWeight: FontWeight.w700,
-      //                           color: Colors.white,
-      //                         ),
-      //                       ),
-      //                       Icon(
-      //                         Icons.access_time,
-      //                         size: 14,
-      //                         color: Colors.white,
-      //                       )
-      //                     ],
-      //                   ),
-      //                   onPressed: () {},
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
   Widget detailSuratdata() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
+    var iconstatus;
+    var colorstatus;
+
+    if (widget.dStatus == "Menunggu") {
+      iconstatus = Icons.access_time;
+      colorstatus = Colors.grey;
+    } else if (widget.dStatus == "Pengajuan di Tolak") {
+      iconstatus = Icons.close;
+      colorstatus = Colors.red;
+    } else if (widget.dStatus == "Surat Sudah Dibuat") {
+      iconstatus = Icons.check;
+      colorstatus = Colors.green;
+    } else if (widget.dStatus == "Surat Diajukan") {
+      iconstatus = Icons.arrow_forward;
+      colorstatus = Colors.blue;
+    } else {
+      iconstatus = Icons.check;
+      colorstatus = Colors.black;
+    }
     return Padding(
       padding: EdgeInsets.all(mediaQueryData.size.height * 0.03),
       child: Column(
@@ -455,9 +477,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                           15.0), // Adjust the value as per your preference
                     ),
                     elevation: 0,
-                    backgroundColor: widget.dStatus == 'Menunggu'
-                        ? Colors.grey[600]
-                        : Colors.green,
+                    backgroundColor: colorstatus,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -472,9 +492,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       ),
                       _paddingleft01(),
                       Icon(
-                        widget.dStatus == 'Menunggu'
-                            ? Icons.access_time
-                            : Icons.check,
+                        iconstatus,
                         size: 14,
                         color: Colors.white,
                       )
@@ -666,22 +684,6 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       color: Colors.black),
                 ),
               ),
-              // IconButton(
-              //   icon: Icon(Icons.add_box_rounded),
-              //   color: Colors.brown[800],
-              //   iconSize: 25.0,
-              //   onPressed: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => HalDataDukungSurat(
-              //           dIdTambah: "${widget.dIdSurat}",
-              //         ),
-              //       ),
-              //     ).then((value) => detailDataTambah());
-              //     // Navigator.pushNamed(context, '/HalDataDukungSurat');
-              //   },
-              // ),
             ],
           ),
           loadingactivity
@@ -719,45 +721,120 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                         ),
                       );
                     } else {
-                      return Container(
-                        child: Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          elevation: 1.0,
-                          color: Colors.white,
-                          child: InkWell(
-                            onTap: () {},
-                            child: ListTile(
-                              dense: true,
-                              leading: Icon(
-                                Icons
-                                    .error_outline_rounded, // Replace with the desired icon
-                                color: Colors.red,
-                                size:
-                                    35.0, // Replace with the desired icon size
+                      final event = activityJSON[i];
+                      final indicatorNumber =
+                          (activityJSON.length - i).toString();
+                      return TimelineTile(
+                        alignment: TimelineAlign.center,
+                        axis: TimelineAxis.vertical, // Set the axis to vertical
+                        isFirst: i == 0,
+                        isLast: i == activityJSON.length - 1,
+
+                        indicatorStyle: IndicatorStyle(
+                          height: 20,
+                          width: 20,
+                          color: Colors.grey,
+                          // padding: EdgeInsets.only(
+                          //   left: 5,
+                          // ),
+                          indicator: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey,
+                                ),
                               ),
-                              title: Text(
-                                activityJSON[i]["keterangan_log"],
+                              Text(
+                                indicatorNumber,
                                 style: TextStyle(
-                                  fontSize: 13.0,
+                                  color: Colors.white,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                              subtitle: Text(
-                                activityJSON[i]["waktu"],
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.grey[500],
-                                ),
+                            ],
+                          ),
+                        ),
+                        beforeLineStyle: LineStyle(
+                          color: Colors.grey,
+                          thickness: 2,
+                        ),
+                        startChild: Center(
+                            child: Text(
+                          extractDate('${event["waktu"]}'),
+                        )),
+                        endChild: SizedBox(
+                          height: mediaQueryData.size.height * 0.07,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Transform.translate(
+                              offset: Offset(10, 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${event["keterangan_log"]}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    extractTime('${event["waktu"]}'),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       );
+                      // Container(
+                      //   child: Card(
+                      //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(5.0),
+                      //     ),
+                      //     elevation: 1.0,
+                      //     color: Colors.white,
+                      //     child: InkWell(
+                      //       onTap: () {},
+                      //       child: ListTile(
+                      //         dense: true,
+                      //         leading: Icon(
+                      //           Icons
+                      //               .error_outline_rounded, // Replace with the desired icon
+                      //           color: Colors.red,
+                      //           size:
+                      //               35.0, // Replace with the desired icon size
+                      //         ),
+                      //         title: Text(
+                      //           activityJSON[i]["keterangan_log"],
+                      //           style: TextStyle(
+                      //             fontSize: 13.0,
+                      //             fontWeight: FontWeight.bold,
+                      //           ),
+                      //           maxLines: 2,
+                      //           overflow: TextOverflow.ellipsis,
+                      //         ),
+                      //         subtitle: Text(
+                      //           activityJSON[i]["waktu"],
+                      //           style: TextStyle(
+                      //             fontSize: 12.0,
+                      //             color: Colors.grey[500],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // );
                     }
                   },
                 ),
@@ -1095,7 +1172,22 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                     _ajukanSurat(),
                   ],
                 )
-              : Center()
+              : Column(
+                  children: [
+                    if (_status.isNotEmpty) ...[
+                      Text(_status, textAlign: TextAlign.center),
+                      const SizedBox(height: 16),
+                    ],
+                    if (_progress != null) ...[
+                      LinearProgressIndicator(
+                        value: _progress! / 100,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                    const SizedBox(height: 16),
+                    _unduhSurat(),
+                  ],
+                )
         ],
       ),
     );
@@ -1143,6 +1235,80 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               ),
               child: Text(
                 'AJUKAN SURAT',
+                style: TextStyle(
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            ),
+          );
+  }
+
+  Widget _unduhSurat() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return loadingajukansurat == true
+        ? Container(
+            width: double.infinity,
+            height: mediaQueryData.size.height * 0.06,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.all(15.0),
+                backgroundColor: Colors.green[600],
+                // elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          )
+        : Container(
+            width: double.infinity,
+            height: mediaQueryData.size.height * 0.06,
+            child: ElevatedButton(
+              onPressed: () async {
+                FileDownloader.downloadFile(
+                    url: url.text.trim(),
+                    name: name.text.trim(),
+                    onProgress: (name, progress) {
+                      setState(() {
+                        _progress = progress;
+                        _status = 'Progress: $progress%';
+                      });
+                    },
+                    onDownloadCompleted: (path) {
+                      setState(() {
+                        _progress = null;
+                        _status = 'File downloaded to: $path';
+                      });
+                    },
+                    onDownloadError: (error) {
+                      setState(() {
+                        _progress = null;
+                        _status = 'Download error: $error';
+                      });
+                    }).then((file) {
+                  debugPrint('file path: ${file?.path}');
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(15.0),
+                backgroundColor: Colors.green[600],
+                elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // <-- Radius
+                ),
+              ),
+              child: Text(
+                'UNDUH SURAT',
                 style: TextStyle(
                   color: Colors.white,
                   letterSpacing: 1.5,

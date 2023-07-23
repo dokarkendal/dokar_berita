@@ -122,7 +122,8 @@ class _HalProfilWargaState extends State<HalProfilWarga> {
             icon: Icon(Icons.edit),
             iconSize: 23.0,
             onPressed: () async {
-              Navigator.pushNamed(context, '/HalLengkapiDataWarga');
+              Navigator.pushNamed(context, '/HalLengkapiDataWarga')
+                  .then((value) => _cekProfil());
               // .then((value) => detailAkunWarga());
             },
           )
