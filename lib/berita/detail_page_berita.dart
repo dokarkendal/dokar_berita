@@ -8,7 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import 'package:http/http.dart' as http; //api
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
+import 'package:badges/badges.dart' as badges;
 import '../style/styleset.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +31,8 @@ class DetailBerita extends StatefulWidget {
       dVideo,
       dKecamatan,
       dWaktu,
-      dDesa;
+      dDesa,
+      dDesaid;
 
   DetailBerita(
       {required this.dDesa,
@@ -47,7 +48,8 @@ class DetailBerita extends StatefulWidget {
       required this.dId,
       required this.dIdDesa,
       required this.dWaktu,
-      required this.dVideo});
+      required this.dVideo,
+      required this.dDesaid});
 
   @override
   _DetailBeritaState createState() => _DetailBeritaState();
@@ -313,6 +315,14 @@ class _DetailBeritaState extends State<DetailBerita> {
         iconTheme: IconThemeData(
           color: appbarIcon, //change your color here
         ),
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(Icons.share), // Replace this with the desired icon
+        //     onPressed: () {
+        //       Share.share("${widget.dUrl}");
+        //     },
+        //   ),
+        // ],
         centerTitle: true,
         elevation: 0,
         title: Text(
@@ -676,15 +686,54 @@ class _DetailBeritaState extends State<DetailBerita> {
       padding: new EdgeInsets.only(
         left: mediaQueryData.size.height * 0.02,
         top: mediaQueryData.size.height * 0.01,
-        // bottom: mediaQueryData.size.height * 0.01,
+        bottom: mediaQueryData.size.height * 0.01,
       ),
       child: Row(
         children: [
+          // GestureDetector(
+          //   child: Chip(
+          //     backgroundColor: Colors.blue[800],
+          //     label: Row(
+          //       children: [
+          //         Text(
+          //           '${widget.dDesa}'.toUpperCase(),
+          //           style: new TextStyle(
+          //             color: Colors.white,
+          //             fontSize: 12.0,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => ProfilDesa(
+          //           id: "${widget.dIdDesa}",
+          //           desa: "${widget.dDesa}",
+          //           kecamatan: "${widget.dKecamatan}",
+          //           title: '',
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
           GestureDetector(
-            child: Chip(
-              backgroundColor: Colors.blue[800],
-              label: Text(
-                '${widget.dDesa}'.toUpperCase(),
+            child: Container(
+              padding: EdgeInsets.only(
+                top: mediaQueryData.size.height * 0.006,
+                left: mediaQueryData.size.height * 0.007,
+                right: mediaQueryData.size.height * 0.007,
+                bottom: mediaQueryData.size.height * 0.006,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              // margin: const EdgeInsets.only(top: 10.0),
+              child: Text(
+                '${widget.dDesa}',
                 style: new TextStyle(
                   color: Colors.white,
                   fontSize: 12.0,
@@ -706,9 +755,29 @@ class _DetailBeritaState extends State<DetailBerita> {
             },
           ),
           SizedBox(width: 5.0),
-          Chip(
-            backgroundColor: Colors.blue[800],
-            label: Text(
+          // Chip(
+          //   backgroundColor: Colors.blue[800],
+          //   label: Text(
+          //     '${widget.dKecamatan}',
+          //     style: new TextStyle(
+          //       color: Colors.white,
+          //       fontSize: 12.0,
+          //     ),
+          //   ),
+          // ),
+          Container(
+            padding: EdgeInsets.only(
+              top: mediaQueryData.size.height * 0.006,
+              left: mediaQueryData.size.height * 0.007,
+              right: mediaQueryData.size.height * 0.007,
+              bottom: mediaQueryData.size.height * 0.006,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            ),
+            // margin: const EdgeInsets.only(top: 10.0),
+            child: Text(
               '${widget.dKecamatan}',
               style: new TextStyle(
                 color: Colors.white,
@@ -716,6 +785,52 @@ class _DetailBeritaState extends State<DetailBerita> {
               ),
             ),
           ),
+          SizedBox(width: 5.0),
+          widget.dDesaid == '0'
+              ? Container()
+              : Container(
+                  padding: EdgeInsets.only(
+                    top: mediaQueryData.size.height * 0.003,
+                    left: mediaQueryData.size.height * 0.002,
+                    right: mediaQueryData.size.height * 0.002,
+                    bottom: mediaQueryData.size.height * 0.003,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 241, 240, 240),
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 1.0,
+                    ),
+                  ),
+                  // margin: const EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    children: [
+                      badges.Badge(
+                        position: badges.BadgePosition.center(),
+                        badgeContent: Icon(
+                          Icons.check,
+                          size: 8,
+                          color: Colors.white,
+                        ),
+                        badgeStyle: badges.BadgeStyle(
+                          badgeColor: Colors.blue,
+                          shape: badges.BadgeShape.twitter,
+                        ),
+                      ),
+                      SizedBox(
+                        width: mediaQueryData.size.height * 0.005,
+                      ),
+                      new Text(
+                        "desa.id ",
+                        style: new TextStyle(
+                          color: Colors.blue,
+                          fontSize: 10.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
         ],
       ),
     );
@@ -732,8 +847,8 @@ class _DetailBeritaState extends State<DetailBerita> {
       child: Row(
         children: [
           Icon(
-            Icons.person,
-            size: 12,
+            Icons.account_circle,
+            size: 16,
             color: Colors.grey[500],
           ),
           new Padding(
@@ -741,8 +856,11 @@ class _DetailBeritaState extends State<DetailBerita> {
                 new EdgeInsets.only(right: mediaQueryData.size.height * 0.01),
           ),
           Text(
-            '${widget.dAdmin}',
-            maxLines: 3,
+            '${widget.dAdmin}'.length <= 12
+                ? '${widget.dAdmin}'
+                : '${widget.dAdmin}'.substring(0, 12) + '...',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: new TextStyle(
               color: Colors.grey[500],
               fontSize: 12.0,

@@ -391,7 +391,7 @@ class BeritaState extends State<Berita> {
                           dHtml: databerita[index]["kabar_isi"],
                           dUrl: databerita[index]["url"],
                           dVideo: databerita[index]["kabar_video"] ?? "",
-                          // dDesaid: databerita[index]["desa_id"],
+                          dDesaid: databerita[index]["desa_id"],
                         ),
                       ),
                     );
@@ -414,6 +414,7 @@ class BeritaState extends State<Berita> {
                           dVideo: databerita[index]["kabar_video"] ?? "",
                           dUrl: databerita[index]["url"],
                           dWaktu: databerita[index]["kabar_waktu"],
+                          dDesaid: databerita[index]["desa_id"],
                         ),
                       ),
                     );

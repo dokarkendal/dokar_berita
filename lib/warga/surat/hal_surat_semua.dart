@@ -339,6 +339,7 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                               dKode: dataSurat[i]["kode"],
                               dKeterangan: dataSurat[i]["keterangan"],
                               dIdSurat: dataSurat[i]["id_surat"],
+                              dFile: dataSurat[i]["file"],
                             ),
                           ),
                         ).then((value) => suratPengajuan());

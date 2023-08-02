@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'package:share/share.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:badges/badges.dart' as badges;
 
 class DetailPotensi extends StatefulWidget {
   final String dGambar,
@@ -23,7 +24,8 @@ class DetailPotensi extends StatefulWidget {
       dIdDesa,
       dDesa,
       dKecamatan,
-      dKategori;
+      dKategori,
+      dDesaid;
 
   DetailPotensi(
       {required this.dGambar,
@@ -39,7 +41,8 @@ class DetailPotensi extends StatefulWidget {
       required this.dIdDesa,
       required this.dDesa,
       required this.dKecamatan,
-      required this.dKategori});
+      required this.dKategori,
+      required this.dDesaid});
 
   @override
   _DetailPotensiState createState() => _DetailPotensiState();
@@ -655,14 +658,53 @@ class _DetailPotensiState extends State<DetailPotensi> {
       padding: new EdgeInsets.only(
         left: mediaQueryData.size.height * 0.02,
         top: mediaQueryData.size.height * 0.01,
-        // bottom: mediaQueryData.size.height * 0.01,
+        bottom: mediaQueryData.size.height * 0.01,
       ),
       child: Row(
         children: [
+          // GestureDetector(
+          //   child: Chip(
+          //     backgroundColor: Colors.blue[800],
+          //     label: Row(
+          //       children: [
+          //         Text(
+          //           '${widget.dDesa}'.toUpperCase(),
+          //           style: new TextStyle(
+          //             color: Colors.white,
+          //             fontSize: 12.0,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => ProfilDesa(
+          //           id: "${widget.dIdDesa}",
+          //           desa: "${widget.dDesa}",
+          //           kecamatan: "${widget.dKecamatan}",
+          //           title: '',
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
           GestureDetector(
-            child: Chip(
-              backgroundColor: Colors.blue[800],
-              label: Text(
+            child: Container(
+              padding: EdgeInsets.only(
+                top: mediaQueryData.size.height * 0.006,
+                left: mediaQueryData.size.height * 0.007,
+                right: mediaQueryData.size.height * 0.007,
+                bottom: mediaQueryData.size.height * 0.006,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              // margin: const EdgeInsets.only(top: 10.0),
+              child: Text(
                 '${widget.dDesa}',
                 style: new TextStyle(
                   color: Colors.white,
@@ -685,9 +727,29 @@ class _DetailPotensiState extends State<DetailPotensi> {
             },
           ),
           SizedBox(width: 5.0),
-          Chip(
-            backgroundColor: Colors.blue[800],
-            label: Text(
+          // Chip(
+          //   backgroundColor: Colors.blue[800],
+          //   label: Text(
+          //     '${widget.dKecamatan}',
+          //     style: new TextStyle(
+          //       color: Colors.white,
+          //       fontSize: 12.0,
+          //     ),
+          //   ),
+          // ),
+          Container(
+            padding: EdgeInsets.only(
+              top: mediaQueryData.size.height * 0.006,
+              left: mediaQueryData.size.height * 0.007,
+              right: mediaQueryData.size.height * 0.007,
+              bottom: mediaQueryData.size.height * 0.006,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            ),
+            // margin: const EdgeInsets.only(top: 10.0),
+            child: Text(
               '${widget.dKecamatan}',
               style: new TextStyle(
                 color: Colors.white,
@@ -695,6 +757,52 @@ class _DetailPotensiState extends State<DetailPotensi> {
               ),
             ),
           ),
+          SizedBox(width: 5.0),
+          widget.dDesaid == '0'
+              ? Container()
+              : Container(
+                  padding: EdgeInsets.only(
+                    top: mediaQueryData.size.height * 0.003,
+                    left: mediaQueryData.size.height * 0.002,
+                    right: mediaQueryData.size.height * 0.002,
+                    bottom: mediaQueryData.size.height * 0.003,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 241, 240, 240),
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 1.0,
+                    ),
+                  ),
+                  // margin: const EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    children: [
+                      badges.Badge(
+                        position: badges.BadgePosition.center(),
+                        badgeContent: Icon(
+                          Icons.check,
+                          size: 8,
+                          color: Colors.white,
+                        ),
+                        badgeStyle: badges.BadgeStyle(
+                          badgeColor: Colors.blue,
+                          shape: badges.BadgeShape.twitter,
+                        ),
+                      ),
+                      SizedBox(
+                        width: mediaQueryData.size.height * 0.005,
+                      ),
+                      new Text(
+                        "desa.id ",
+                        style: new TextStyle(
+                          color: Colors.blue,
+                          fontSize: 10.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
         ],
       ),
     );

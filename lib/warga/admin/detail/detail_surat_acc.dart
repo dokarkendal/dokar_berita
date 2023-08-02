@@ -4,6 +4,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class HalDetailSuratACC extends StatefulWidget {
@@ -24,7 +26,8 @@ class HalDetailSuratACC extends StatefulWidget {
       dKeterangan,
       dIdSurat,
       dUid,
-      dIdDesa;
+      dIdDesa,
+      dFile;
   HalDetailSuratACC({
     required this.dNama,
     required this.dNik,
@@ -37,6 +40,7 @@ class HalDetailSuratACC extends StatefulWidget {
     required this.dIdSurat,
     required this.dUid,
     required this.dIdDesa,
+    required this.dFile,
   });
 
   @override
@@ -49,6 +53,15 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
   bool loadingdataTambahan = false;
   bool loadingactivity = false;
   bool loadingbuat = false;
+  double? _progress;
+  String _status = '';
+
+  final TextEditingController name = TextEditingController();
+  final TextEditingController url = TextEditingController(
+    text: "https://dokarinfo.kendalkab.go.id/upload/srt/SRT-1.docx",
+    // text: "https://pusdik.mkri.id/uploadedfiles/materi/Materi_3.pdf",
+    // text: "https://tinypng.com/images/social/website.jpg",
+  );
   final format = DateFormat("yyyy-MM-dd");
   TextEditingController cMulai = TextEditingController();
   TextEditingController cSampai = TextEditingController();
@@ -94,6 +107,59 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
           print(nomorSurat);
         },
       );
+    }
+  }
+
+  String extractDate(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+  }
+
+  String extractTime(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+  }
+
+  late List activityJSON = [];
+  void activityadmin() async {
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      loadingactivity = true;
+    });
+    final response = await http.post(
+      Uri.parse(
+          "http://dokar.kendalkab.go.id/webservice/android/surat/Aktivity"),
+      body: {
+        "id_surat": '${widget.dIdSurat}',
+      },
+    );
+    final decodedData = json.decode(response.body)["Data"];
+
+    if (decodedData is List) {
+      // "Data" is an array of objects
+      this.setState(() {
+        loadingactivity = false;
+        activityJSON = decodedData;
+        print(activityJSON);
+      });
+    } else if (decodedData is String &&
+        decodedData.toLowerCase() == "notfound") {
+      // "Data" is a string with value "notfound"
+      // Handle the case where the data is not found
+      // For example, you can show an error message or set activityJSON to an empty list
+      this.setState(() {
+        loadingactivity = false;
+        activityJSON = [];
+        print("Data not found");
+      });
+    } else {
+      // Handle any other unexpected cases
+      // For example, you can show an error message or set activityJSON to an empty list
+      this.setState(() {
+        loadingactivity = false;
+        activityJSON = [];
+        print("Unexpected data format");
+      });
     }
   }
 
@@ -255,7 +321,7 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     detailDataDukung();
     detailDataTambah();
     getnomor();
-
+    activityadmin();
     super.initState();
   }
 
@@ -951,13 +1017,31 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
                     }
                   },
                 ),
+          _listActivity(),
           _paddingtop01(),
           _paddingtop01(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
             children: [
-              _buatSurat(),
-              _unduhSurat(),
+              if (_status.isNotEmpty) ...[
+                Text(
+                  _status,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+              ],
+              if (_progress != null) ...[
+                LinearProgressIndicator(
+                  value: _progress! / 100,
+                ),
+                const SizedBox(height: 16),
+              ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buatSurat(),
+                  _unduhSurat(),
+                ],
+              ),
             ],
           )
         ],
@@ -1244,7 +1328,49 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
       width: mediaQueryData.size.width * 0.45,
       height: mediaQueryData.size.height * 0.06,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () async {
+          FileDownloader.downloadFile(
+              // url: url.text.trim(),
+              // name: name.text.trim(),
+              url: "${widget.dFile}",
+              name: "SRT-" + "${widget.dKode}",
+              onProgress: (name, progress) {
+                setState(() {
+                  _progress = progress;
+                  _status = 'Progress: $progress%';
+                });
+              },
+              onDownloadCompleted: (path) {
+                setState(() {
+                  _progress = null;
+                  _status = 'File downloaded to: $path';
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'File downloaded to: $path',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.blue,
+                      action: SnackBarAction(
+                        label: 'OK',
+                        textColor: Colors.white,
+                        onPressed: () {
+                          print('ULANGI snackbar');
+                        },
+                      ),
+                    ),
+                  );
+                });
+              },
+              onDownloadError: (error) {
+                setState(() {
+                  _progress = null;
+                  _status = 'Download error: $error';
+                });
+              }).then((file) {
+            debugPrint('file path: ${file?.path}');
+          });
+        },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
           backgroundColor: Colors.blue[600],
@@ -1324,6 +1450,191 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
               ),
             ),
           );
+  }
+
+  Widget _listActivity() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Padding(
+      padding: EdgeInsets.only(
+        // top: mediaQueryData.size.height * 0.78,
+        // left: mediaQueryData.size.height * 0.015,
+        // right: mediaQueryData.size.height * 0.015,
+        bottom: mediaQueryData.size.height * 0.03,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  "Activity",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+          loadingactivity
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  physics: ClampingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: activityJSON.length > 0 ? activityJSON.length : 1,
+                  itemBuilder: (context, i) {
+                    if (activityJSON.length <= 0) {
+                      return Container(
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 150.0, vertical: 15.0),
+                                child: Icon(
+                                  Icons.trending_up_rounded,
+                                  size: 50.0,
+                                  color: Colors.grey[350],
+                                ),
+                              ),
+                              Text(
+                                "Belum ada aktivitas",
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Colors.grey[350],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      final event = activityJSON[i];
+                      final indicatorNumber =
+                          (activityJSON.length - i).toString();
+                      return TimelineTile(
+                        alignment: TimelineAlign.center,
+                        axis: TimelineAxis.vertical, // Set the axis to vertical
+                        isFirst: i == 0,
+                        isLast: i == activityJSON.length - 1,
+
+                        indicatorStyle: IndicatorStyle(
+                          height: 20,
+                          width: 20,
+                          color: Colors.grey,
+                          // padding: EdgeInsets.only(
+                          //   left: 5,
+                          // ),
+                          indicator: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                indicatorNumber,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        beforeLineStyle: LineStyle(
+                          color: Colors.grey,
+                          thickness: 2,
+                        ),
+                        startChild: Center(
+                            child: Text(
+                          extractDate('${event["waktu"]}'),
+                        )),
+                        endChild: SizedBox(
+                          height: mediaQueryData.size.height * 0.07,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Transform.translate(
+                              offset: Offset(10, 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${event["keterangan_log"]}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    extractTime('${event["waktu"]}'),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    // Container(
+                    //   child: Card(
+                    //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(5.0),
+                    //     ),
+                    //     elevation: 1.0,
+                    //     color: Colors.white,
+                    //     child: InkWell(
+                    //       onTap: () {},
+                    //       child: ListTile(
+                    //         dense: true,
+                    //         leading: Icon(
+                    //           Icons
+                    //               .error_outline_rounded, // Replace with the desired icon
+                    //           color: Colors.red,
+                    //           size:
+                    //               35.0, // Replace with the desired icon size
+                    //         ),
+                    //         title: Text(
+                    //           activityJSON[i]["keterangan_log"],
+                    //           style: TextStyle(
+                    //             fontSize: 13.0,
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //           maxLines: 2,
+                    //           overflow: TextOverflow.ellipsis,
+                    //         ),
+                    //         subtitle: Text(
+                    //           activityJSON[i]["waktu"],
+                    //           style: TextStyle(
+                    //             fontSize: 12.0,
+                    //             color: Colors.grey[500],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
+                  },
+                ),
+        ],
+      ),
+    );
   }
 
   Widget _paddingleft01() {

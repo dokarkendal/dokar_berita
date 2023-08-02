@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'dart:async';
 import 'dart:convert';
 import '../style/styleset.dart';
+import 'package:badges/badges.dart' as badges;
 
 // ignore: must_be_immutable
 class Search extends StatefulWidget {
@@ -85,6 +86,7 @@ class _SearchState extends State<Search> {
   }
 
   Widget hasilberita() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return isLoading
         ? _buildProgressIndicator()
         : ListView.builder(
@@ -92,6 +94,54 @@ class _SearchState extends State<Search> {
             shrinkWrap: true,
             itemCount: dataJSON.isEmpty ? 0 : dataJSON.length,
             itemBuilder: (context, i) {
+              var check;
+              if (dataJSON[i]["desa_id"] == "0") {
+                check = Center();
+              } else if (dataJSON[i]["desa_id"] == "1") {
+                check = Container(
+                  padding: EdgeInsets.only(
+                    top: mediaQueryData.size.height * 0.001,
+                    left: mediaQueryData.size.height * 0.002,
+                    right: mediaQueryData.size.height * 0.002,
+                    bottom: mediaQueryData.size.height * 0.001,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 241, 240, 240),
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 1.0,
+                    ),
+                  ),
+                  // margin: const EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    children: [
+                      badges.Badge(
+                        position: badges.BadgePosition.center(),
+                        badgeContent: Icon(
+                          Icons.check,
+                          size: 8,
+                          color: Colors.white,
+                        ),
+                        badgeStyle: badges.BadgeStyle(
+                          badgeColor: Colors.blue,
+                          shape: badges.BadgeShape.twitter,
+                        ),
+                      ),
+                      SizedBox(
+                        width: mediaQueryData.size.height * 0.005,
+                      ),
+                      new Text(
+                        "desa.id ",
+                        style: new TextStyle(
+                          color: Colors.blue,
+                          fontSize: 10.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
               if (dataJSON[i]["kabar_id"] == 'NotFound') {
                 print(dataJSON[i]["kabar_id"]);
                 return Container(
@@ -152,6 +202,7 @@ class _SearchState extends State<Search> {
                                 dDesa: dataJSON[i]["data_nama"],
                                 dTempat: dataJSON[i]["kabar_tempat"],
                                 dUrl: dataJSON[i]["url"],
+                                dDesaid: dataJSON[i]["desa_id"],
                               ),
                             ),
                           );
@@ -174,6 +225,7 @@ class _SearchState extends State<Search> {
                                 dDesa: dataJSON[i]["data_nama"],
                                 dUrl: dataJSON[i]["url"],
                                 dWaktu: '',
+                                dDesaid: dataJSON[i]["desa_id"],
                               ),
                             ),
                           );
@@ -231,6 +283,10 @@ class _SearchState extends State<Search> {
                                         ),
                                       ),
                                     ),
+                                    SizedBox(
+                                      width: mediaQueryData.size.width * 0.01,
+                                    ),
+                                    check,
                                   ],
                                 ),
                                 Container(
@@ -416,8 +472,25 @@ class _SearchState extends State<Search> {
                   ),
                 );
               } else {
+                var check;
+                if (dataDesa[i]["desa_id"] == "0") {
+                  check = Center();
+                } else if (dataDesa[i]["desa_id"] == "1") {
+                  check = badges.Badge(
+                    position: badges.BadgePosition.center(),
+                    badgeContent: Icon(
+                      Icons.check,
+                      size: 5,
+                      color: Colors.white,
+                    ),
+                    badgeStyle: badges.BadgeStyle(
+                      badgeColor: Colors.blue,
+                      shape: badges.BadgeShape.twitter,
+                    ),
+                  );
+                }
                 return Container(
-                  padding: EdgeInsets.all(3.0),
+                  padding: EdgeInsets.all(2.0),
                   child: ElevatedButton(
                     // color: Theme.of(context).primaryColor,
                     // textColor: Colors.white,
@@ -425,8 +498,8 @@ class _SearchState extends State<Search> {
                     //   borderRadius: BorderRadius.circular(10.0),
                     // ),
                     style: ElevatedButton.styleFrom(
-                      // padding: EdgeInsets.all(15.0),
-                      // elevation: 0,
+                      padding: EdgeInsets.all(3),
+                      // contentPadding: EdgeInsets.zero,
                       backgroundColor: Theme.of(context).primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10), // <-- Radius
@@ -439,15 +512,22 @@ class _SearchState extends State<Search> {
                           // padding: EdgeInsets.only(
                           //   top: 5.0,
                           // ),
-                          child: Text(
-                            dataDesa[i]["desa"],
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.brown[800],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                dataDesa[i]["desa"],
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.brown[800],
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              check,
+                            ],
                           ),
                         ),
                         Container(

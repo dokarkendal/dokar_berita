@@ -366,63 +366,70 @@ class _ProfilDesaState extends State<ProfilDesa> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: desaid == "0"
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("  " + website),
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("  " + website),
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: mediaQueryData.size.height * 0.001,
-                                  left: mediaQueryData.size.height * 0.002,
-                                  right: mediaQueryData.size.height * 0.002,
-                                  bottom: mediaQueryData.size.height * 0.001,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 241, 240, 240),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)),
-                                  border: Border.all(
-                                    color: Colors.blue,
-                                    width: 1.0,
-                                  ),
-                                ),
-                                // margin: const EdgeInsets.only(top: 10.0),
-                                child: Row(
-                                  children: [
-                                    badges.Badge(
-                                      position: badges.BadgePosition.center(),
-                                      badgeContent: Icon(
-                                        Icons.check,
-                                        size: 10,
-                                        color: Colors.white,
-                                      ),
-                                      badgeStyle: badges.BadgeStyle(
-                                        badgeColor: Colors.blue,
-                                        shape: badges.BadgeShape.twitter,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: mediaQueryData.size.height * 0.005,
-                                    ),
-                                    new Text(
-                                      "desa.id ",
-                                      style: new TextStyle(
-                                        color: Colors.blue,
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                    child: isLoading == true
+                        ? Center()
+                        : desaid == "0"
+                            ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("  " + website),
+                                ],
                               )
-                            ],
-                          ),
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("  " + website),
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      top: mediaQueryData.size.height * 0.001,
+                                      left: mediaQueryData.size.height * 0.002,
+                                      right: mediaQueryData.size.height * 0.002,
+                                      bottom:
+                                          mediaQueryData.size.height * 0.001,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 241, 240, 240),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15.0)),
+                                      border: Border.all(
+                                        color: Colors.blue,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    // margin: const EdgeInsets.only(top: 10.0),
+                                    child: Row(
+                                      children: [
+                                        badges.Badge(
+                                          position:
+                                              badges.BadgePosition.center(),
+                                          badgeContent: Icon(
+                                            Icons.check,
+                                            size: 10,
+                                            color: Colors.white,
+                                          ),
+                                          badgeStyle: badges.BadgeStyle(
+                                            badgeColor: Colors.blue,
+                                            shape: badges.BadgeShape.twitter,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: mediaQueryData.size.height *
+                                              0.005,
+                                        ),
+                                        Text(
+                                          "desa.id ",
+                                          style: new TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                   ),
                 ),
               ),
@@ -780,16 +787,14 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                                                 .withOpacity(
                                                                     0.6),
                                                             child: Column(
-                                                              children: <
-                                                                  Widget>[
+                                                              children: <Widget>[
                                                                 Container(
                                                                   padding:
                                                                       EdgeInsets
                                                                           .all(
                                                                               5.0),
                                                                   child: Column(
-                                                                    children: <
-                                                                        Widget>[
+                                                                    children: <Widget>[
                                                                       Align(
                                                                         alignment:
                                                                             Alignment.centerLeft,

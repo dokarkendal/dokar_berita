@@ -137,6 +137,7 @@ class _KegiatanState extends State<Kegiatan> {
                         dKategori: '',
                         dKecamatan: '',
                         dUrl: '',
+                        dDesaid: databerita[index]["desa_id"],
                       ),
                     ),
                   );

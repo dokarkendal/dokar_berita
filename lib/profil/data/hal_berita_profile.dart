@@ -213,6 +213,7 @@ class HalberitaProfileState extends State<HalberitaProfile> {
                               dIdDesa: databerita[i]["id_desa"],
                               dVideo: databerita[i]["video"],
                               dWaktu: '',
+                              dDesaid: databerita[i]["desa_id"],
                             ),
                           ),
                         );

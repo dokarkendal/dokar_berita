@@ -310,6 +310,7 @@ void main() {
               dUrl: '',
               dVideo: '',
               dWaktu: '',
+              dDesaid: '',
             ),
         '/FormAgenda': (BuildContext context) => FormAgenda(),
         '/Galeri': (BuildContext context) => Galeri(),
@@ -389,6 +390,7 @@ void main() {
               dKode: '',
               dKeterangan: '',
               dIdSurat: '',
+              dFile: '',
             ),
         '/HalDetailSuratAjukan': (BuildContext context) => HalDetailSuratAjukan(
               dIdSurat: '',
@@ -416,6 +418,7 @@ void main() {
               dTanggal: '',
               dUid: '',
               dIdDesa: '',
+              dFile: '',
             ),
         '/HalSuratAjukan': (BuildContext context) => HalSuratAjukan(),
       },

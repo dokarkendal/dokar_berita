@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:timeline_tile/timeline_tile.dart';
+
 class HalDetailSuratTolak extends StatefulWidget {
   final String dNama,
       dNik,
@@ -43,6 +45,16 @@ class _HalDetailSuratTolakState extends State<HalDetailSuratTolak> {
   bool loadingdataTambahan = false;
   bool loadingactivity = false;
   late List dataDukungJSON = [];
+  String extractDate(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+  }
+
+  String extractTime(String dateTimeString) {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+  }
+
   void detailDataDukung() async {
     // SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
@@ -933,48 +945,123 @@ class _HalDetailSuratTolakState extends State<HalDetailSuratTolak> {
                         ),
                       );
                     } else {
-                      return Container(
-                        child: Card(
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          elevation: 1.0,
-                          color: Colors.white,
-                          child: InkWell(
-                            onTap: () {},
-                            child: ListTile(
-                              dense: true,
-                              leading: Icon(
-                                Icons
-                                    .error_outline_rounded, // Replace with the desired icon
-                                color: Colors.red,
-                                size:
-                                    35.0, // Replace with the desired icon size
+                      final event = activityJSON[i];
+                      final indicatorNumber =
+                          (activityJSON.length - i).toString();
+                      return TimelineTile(
+                        alignment: TimelineAlign.center,
+                        axis: TimelineAxis.vertical, // Set the axis to vertical
+                        isFirst: i == 0,
+                        isLast: i == activityJSON.length - 1,
+
+                        indicatorStyle: IndicatorStyle(
+                          height: 20,
+                          width: 20,
+                          color: Colors.grey,
+                          // padding: EdgeInsets.only(
+                          //   left: 5,
+                          // ),
+                          indicator: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey,
+                                ),
                               ),
-                              title: Text(
-                                activityJSON[i]["keterangan_log"],
+                              Text(
+                                indicatorNumber,
                                 style: TextStyle(
-                                  fontSize: 13.0,
+                                  color: Colors.white,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                              subtitle: Text(
-                                activityJSON[i]["waktu"],
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: Colors.grey[500],
-                                ),
+                            ],
+                          ),
+                        ),
+                        beforeLineStyle: LineStyle(
+                          color: Colors.grey,
+                          thickness: 2,
+                        ),
+                        startChild: Center(
+                            child: Text(
+                          extractDate('${event["waktu"]}'),
+                        )),
+                        endChild: SizedBox(
+                          height: mediaQueryData.size.height * 0.07,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Transform.translate(
+                              offset: Offset(10, 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${event["keterangan_log"]}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    extractTime('${event["waktu"]}'),
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                       );
                     }
-                  },
-                ),
+                    // return
+                    // Container(
+                    //   child: Card(
+                    //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(5.0),
+                    //     ),
+                    //     elevation: 1.0,
+                    //     color: Colors.white,
+                    //     child: InkWell(
+                    //       onTap: () {},
+                    //       child: ListTile(
+                    //         dense: true,
+                    //         leading: Icon(
+                    //           Icons
+                    //               .error_outline_rounded, // Replace with the desired icon
+                    //           color: Colors.red,
+                    //           size:
+                    //               35.0, // Replace with the desired icon size
+                    //         ),
+                    //         title: Text(
+                    //           activityJSON[i]["keterangan_log"],
+                    //           style: TextStyle(
+                    //             fontSize: 13.0,
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //           maxLines: 2,
+                    //           overflow: TextOverflow.ellipsis,
+                    //         ),
+                    //         subtitle: Text(
+                    //           activityJSON[i]["waktu"],
+                    //           style: TextStyle(
+                    //             fontSize: 12.0,
+                    //             color: Colors.grey[500],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
+                  }),
         ],
       ),
     );
@@ -1003,6 +1090,3 @@ class _HalDetailSuratTolakState extends State<HalDetailSuratTolak> {
 // a: statelesswidget adalah widget yang tidak bisa diubah state nya
 
 /// cretae elevated button
-
-
-

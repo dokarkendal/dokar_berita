@@ -203,6 +203,7 @@ class HalKegiatanProfileState extends State<HalKegiatanProfile> {
                               dIdDesa: databerita[i]["id_desa"],
                               dVideo: databerita[i]["video"],
                               dWaktu: '',
+                              dDesaid: databerita[i]["desa_id"],
                             ),
                           ),
                         );

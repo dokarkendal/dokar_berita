@@ -23,6 +23,7 @@ class HalDashboardWarga extends StatefulWidget {
 class _HalDashboardWargaState extends State<HalDashboardWarga> {
   String nama = "";
   String namadesa = "";
+  String namakec = "";
   String datadiri = "";
   String dokumen = "";
   String status = "";
@@ -30,7 +31,8 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
   // ignore: unused_field
   bool _isLoggedIn = false;
   TextEditingController uID = TextEditingController();
-
+  late GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   Future _cekKelengkapan() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
@@ -71,6 +73,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
       setState(() {
         nama = pref.getString("nama")!;
         namadesa = pref.getString("nama_desa")!;
+        namakec = pref.getString("nama_kecamatan")!;
       });
     }
   }
@@ -264,38 +267,44 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
             )
           : hasThrownError == true
               ? _errorGalery()
-              : ListView(
-                  children: [
-                    _header(),
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Column(
-                        children: [
-                          status == "Lengkap"
-                              ? Column(
-                                  children: [
-                                    _cardlengkap(),
-                                    _paddingTop1(),
-                                    _riwayatSurat(),
-                                  ],
-                                )
-                              : Column(
-                                  children: [
-                                    datadiri == "1"
-                                        ? Center()
-                                        : _cardbelumlengkapData(),
-                                    _paddingTop1(),
-                                    dokumen == "1"
-                                        ? Center()
-                                        : _cardbelumlengkapDokumen(),
-                                  ],
-                                ),
-                          // _paddingTop1(),
-                          // _riwayatSurat(),
-                        ],
+              : RefreshIndicator(
+                  key: refreshKey,
+                  onRefresh: () async {
+                    suratPengajuan5();
+                  },
+                  child: ListView(
+                    children: [
+                      _header(),
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Column(
+                          children: [
+                            status == "Lengkap"
+                                ? Column(
+                                    children: [
+                                      _cardlengkap(),
+                                      _paddingTop1(),
+                                      _riwayatSurat(),
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      datadiri == "1"
+                                          ? Center()
+                                          : _cardbelumlengkapData(),
+                                      _paddingTop1(),
+                                      dokumen == "1"
+                                          ? Center()
+                                          : _cardbelumlengkapDokumen(),
+                                    ],
+                                  ),
+                            // _paddingTop1(),
+                            // _riwayatSurat(),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
     );
   }
@@ -619,7 +628,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   ),
                 ),
                 AutoSizeText(
-                  namadesa,
+                  "Pelayanan desa " + namadesa + " Kec. " + namakec,
                   minFontSize: 14,
                   style: TextStyle(
                     color: Color(0xFF2e2e2e),
@@ -855,6 +864,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                               dKode: data5Surat[i]["kode"],
                               dKeterangan: data5Surat[i]["keterangan"],
                               dIdSurat: data5Surat[i]["id_surat"],
+                              dFile: data5Surat[i]["file"],
                             ),
                           ),
                         ).then((value) => suratPengajuan5());

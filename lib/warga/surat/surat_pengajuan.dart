@@ -253,7 +253,7 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
                 ajukanSurat();
               },
               child: const Text(
-                'AJUKAN SURAT',
+                'BUAT SURAT',
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

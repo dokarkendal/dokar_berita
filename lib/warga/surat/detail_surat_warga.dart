@@ -23,7 +23,8 @@ class HalDetailSurat extends StatefulWidget {
       dTanggal,
       dKode,
       dKeterangan,
-      dIdSurat;
+      dIdSurat,
+      dFile;
   HalDetailSurat({
     required this.dNama,
     required this.dNik,
@@ -34,6 +35,7 @@ class HalDetailSurat extends StatefulWidget {
     required this.dKode,
     required this.dKeterangan,
     required this.dIdSurat,
+    required this.dFile,
   });
 
   @override
@@ -51,7 +53,8 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
 
   final TextEditingController name = TextEditingController();
   final TextEditingController url = TextEditingController(
-    text: "https://pusdik.mkri.id/uploadedfiles/materi/Materi_3.pdf",
+    text: "https://dokarinfo.kendalkab.go.id/upload/srt/SRT-1.docx",
+    // text: "https://pusdik.mkri.id/uploadedfiles/materi/Materi_3.pdf",
     // text: "https://tinypng.com/images/social/website.jpg",
   );
   String extractDate(String dateTimeString) {
@@ -796,46 +799,46 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                           ),
                         ),
                       );
-                      // Container(
-                      //   child: Card(
-                      //     clipBehavior: Clip.antiAliasWithSaveLayer,
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(5.0),
-                      //     ),
-                      //     elevation: 1.0,
-                      //     color: Colors.white,
-                      //     child: InkWell(
-                      //       onTap: () {},
-                      //       child: ListTile(
-                      //         dense: true,
-                      //         leading: Icon(
-                      //           Icons
-                      //               .error_outline_rounded, // Replace with the desired icon
-                      //           color: Colors.red,
-                      //           size:
-                      //               35.0, // Replace with the desired icon size
-                      //         ),
-                      //         title: Text(
-                      //           activityJSON[i]["keterangan_log"],
-                      //           style: TextStyle(
-                      //             fontSize: 13.0,
-                      //             fontWeight: FontWeight.bold,
-                      //           ),
-                      //           maxLines: 2,
-                      //           overflow: TextOverflow.ellipsis,
-                      //         ),
-                      //         subtitle: Text(
-                      //           activityJSON[i]["waktu"],
-                      //           style: TextStyle(
-                      //             fontSize: 12.0,
-                      //             color: Colors.grey[500],
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // );
                     }
+                    // Container(
+                    //   child: Card(
+                    //     clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(5.0),
+                    //     ),
+                    //     elevation: 1.0,
+                    //     color: Colors.white,
+                    //     child: InkWell(
+                    //       onTap: () {},
+                    //       child: ListTile(
+                    //         dense: true,
+                    //         leading: Icon(
+                    //           Icons
+                    //               .error_outline_rounded, // Replace with the desired icon
+                    //           color: Colors.red,
+                    //           size:
+                    //               35.0, // Replace with the desired icon size
+                    //         ),
+                    //         title: Text(
+                    //           activityJSON[i]["keterangan_log"],
+                    //           style: TextStyle(
+                    //             fontSize: 13.0,
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //           maxLines: 2,
+                    //           overflow: TextOverflow.ellipsis,
+                    //         ),
+                    //         subtitle: Text(
+                    //           activityJSON[i]["waktu"],
+                    //           style: TextStyle(
+                    //             fontSize: 12.0,
+                    //             color: Colors.grey[500],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // );
                   },
                 ),
         ],
@@ -1021,22 +1024,25 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       color: Colors.black),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.add_box_rounded),
-                color: Colors.brown[800],
-                iconSize: 25.0,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HalDataDukungSurat(
-                        dIdTambah: "${widget.dIdSurat}",
-                      ),
+              widget.dStatus == 'Surat Sudah Dibuat' ||
+                      widget.dStatus == 'Surat Diajukan'
+                  ? Center()
+                  : IconButton(
+                      icon: Icon(Icons.add_box_rounded),
+                      color: Colors.brown[800],
+                      iconSize: 25.0,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HalDataDukungSurat(
+                              dIdTambah: "${widget.dIdSurat}",
+                            ),
+                          ),
+                        ).then((value) => detailDataTambah());
+                        // Navigator.pushNamed(context, '/HalDataDukungSurat');
+                      },
                     ),
-                  ).then((value) => detailDataTambah());
-                  // Navigator.pushNamed(context, '/HalDataDukungSurat');
-                },
-              ),
             ],
           ),
           loadingdataTambahan
@@ -1175,7 +1181,10 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               : Column(
                   children: [
                     if (_status.isNotEmpty) ...[
-                      Text(_status, textAlign: TextAlign.center),
+                      Text(
+                        _status,
+                        textAlign: TextAlign.center,
+                      ),
                       const SizedBox(height: 16),
                     ],
                     if (_progress != null) ...[
@@ -1185,7 +1194,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                       const SizedBox(height: 16),
                     ],
                     const SizedBox(height: 16),
-                    _unduhSurat(),
+                    widget.dFile == '-' ? Center() : _unduhSurat(),
                   ],
                 )
         ],
@@ -1205,7 +1214,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               },
               style: ElevatedButton.styleFrom(
                 // padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
+                backgroundColor: Colors.blue[600],
                 // elevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // <-- Radius
@@ -1227,7 +1236,7 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
+                backgroundColor: Colors.blue[600],
                 elevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // <-- Radius
@@ -1270,55 +1279,75 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               ),
             ),
           )
-        : Container(
-            width: double.infinity,
-            height: mediaQueryData.size.height * 0.06,
-            child: ElevatedButton(
-              onPressed: () async {
-                FileDownloader.downloadFile(
-                    url: url.text.trim(),
-                    name: name.text.trim(),
-                    onProgress: (name, progress) {
-                      setState(() {
-                        _progress = progress;
-                        _status = 'Progress: $progress%';
-                      });
-                    },
-                    onDownloadCompleted: (path) {
-                      setState(() {
-                        _progress = null;
-                        _status = 'File downloaded to: $path';
-                      });
-                    },
-                    onDownloadError: (error) {
-                      setState(() {
-                        _progress = null;
-                        _status = 'Download error: $error';
-                      });
-                    }).then((file) {
-                  debugPrint('file path: ${file?.path}');
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(15.0),
-                backgroundColor: Colors.green[600],
-                elevation: 2.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // <-- Radius
+        : _progress != null
+            ? Center()
+            : Container(
+                width: double.infinity,
+                height: mediaQueryData.size.height * 0.06,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    FileDownloader.downloadFile(
+                        // url: url.text.trim(),
+                        // name: name.text.trim(),
+                        url: "${widget.dFile}",
+                        name: "SRT-" + "${widget.dKode}",
+                        onProgress: (name, progress) {
+                          setState(() {
+                            _progress = progress;
+                            _status = 'Progress: $progress%';
+                          });
+                        },
+                        onDownloadCompleted: (path) {
+                          setState(() {
+                            _progress = null;
+                            _status = 'File downloaded to: $path';
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'File downloaded to: $path',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.blue,
+                                action: SnackBarAction(
+                                  label: 'OK',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    print('ULANGI snackbar');
+                                  },
+                                ),
+                              ),
+                            );
+                          });
+                        },
+                        onDownloadError: (error) {
+                          setState(() {
+                            _progress = null;
+                            _status = 'Download error: $error';
+                          });
+                        }).then((file) {
+                      debugPrint('file path: ${file?.path}');
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(15.0),
+                    backgroundColor: Colors.green[600],
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // <-- Radius
+                    ),
+                  ),
+                  child: Text(
+                    'UNDUH SURAT',
+                    style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 1.5,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'OpenSans',
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                'UNDUH SURAT',
-                style: TextStyle(
-                  color: Colors.white,
-                  letterSpacing: 1.5,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'OpenSans',
-                ),
-              ),
-            ),
-          );
+              );
   }
 
   Widget _paddingleft01() {
