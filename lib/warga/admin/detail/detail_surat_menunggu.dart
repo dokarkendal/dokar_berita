@@ -153,7 +153,7 @@ class _HalDetailSuratMenungguState extends State<HalDetailSuratMenunggu> {
         });
         ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
@@ -203,7 +203,7 @@ class _HalDetailSuratMenungguState extends State<HalDetailSuratMenunggu> {
 
         ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
@@ -616,7 +616,7 @@ class _HalDetailSuratMenungguState extends State<HalDetailSuratMenunggu> {
                     ),
                     _paddingtop01(),
                     Text(
-                      "${widget.dTanggal}",
+                      "${widget.dKode}",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

@@ -1,4 +1,6 @@
 //ANCHOR package navigator
+import 'dart:io';
+
 import 'package:dokar_aplikasi/akun/hal_akun.dart';
 import 'package:dokar_aplikasi/berita/detail_page_kritiksaran_warga.dart';
 import 'package:dokar_aplikasi/berita/form/form_kritik_warga.dart';
@@ -93,7 +95,17 @@ import 'hal_daftar_warga.dart';
 import 'warga/admin/list/list_surat_ajukan.dart';
 import 'warga/edit/hal_edit_warga.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = new MyHttpOverrides();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,

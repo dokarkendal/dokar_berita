@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -22,6 +23,20 @@ class _HalEditWargaState extends State<HalEditWarga> {
   String? username = "";
 
   bool loadingdata = false;
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+  );
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
 
   Future<void> detailAkunWarga() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -97,6 +112,7 @@ class _HalEditWargaState extends State<HalEditWarga> {
     super.initState();
     detailAkunWarga();
     detailDataDukung();
+    _initPackageInfo();
   }
 
   @override
@@ -137,10 +153,89 @@ class _HalEditWargaState extends State<HalEditWarga> {
                   _akun(),
 
                   _dataDukung(),
+                  _version(),
                   // _buttoneditAkun(),
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _version() {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _versiontext(),
+              _listversion(),
+              // _dividerHeight1(),
+              // _nipatasan(),
+              // _dividerHeight1(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _listversion() {
+    return ListTile(
+      onLongPress: () {
+        Navigator.pushNamed(context, '/Version');
+      },
+      leading: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.numbers,
+            size: 25,
+            color: Theme.of(context).primaryColor,
+          ),
+        ],
+      ),
+      title: const AutoSizeText(
+        "Versi Aplikasi",
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        // textAlign: TextAlign.center,
+      ),
+      subtitle: Text(
+        _packageInfo.version.toString(),
+        style: const TextStyle(
+          fontSize: 14,
+          // fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _versiontext() {
+    return Container(
+      padding: const EdgeInsets.only(
+        top: 10.0,
+        bottom: 0.0,
+        left: 10.0,
+        right: 10.0,
+      ),
+      child: const Text(
+        "Info Aplikasi",
+        style: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+      ),
     );
   }
 

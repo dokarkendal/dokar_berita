@@ -315,8 +315,7 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
       child: TextButton(
         onPressed: () async {
           //LINK Whatsapp Link
-          final Uri url = Uri.parse(
-              'https://api.whatsapp.com/send?phone=6285726926557&text=Kecamatan%20%3A%0ADesa%20%3A%0A%0AHai%20Admin%2C%20Saya%20lupa%20password%20Dokar');
+          final Uri url = Uri.parse('https://t.me/c/1836747029/60');
           if (!await launchUrl(
             url,
             mode: LaunchMode.externalApplication,

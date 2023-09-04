@@ -165,7 +165,7 @@ class _HalduaState extends State<Haldua> {
 
       if (data['version'] == versi) {
         setState(() {
-          update = "Updated";
+          update = "Tidak perlu updated";
           versi = data['version'];
           descript = data['description'];
           isLoading = false;
@@ -175,13 +175,46 @@ class _HalduaState extends State<Haldua> {
         print(descript);
       } else {
         setState(() {
-          update = "NotUpdate";
+          update = "Perlu Update";
           versi = data['version'];
           descript = data['description'];
           isLoading = false;
         });
+        Dialogs.bottomMaterialDialog(
+          msg: descript,
+          title: "UPDATE DOKAR " + versi,
+          color: Colors.white,
+          lottieBuilder: Lottie.asset(
+            'assets/animation/update.json',
+            fit: BoxFit.contain,
+          ),
+          context: context,
+          actions: [
+            IconsOutlineButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              text: 'Tidak',
+              iconData: Icons.cancel_outlined,
+              textStyle: const TextStyle(color: Colors.grey),
+              iconColor: Colors.grey,
+            ),
+            IconsButton(
+              onPressed: () async {
+                //REVIEW Tombol ke playstore
+                Navigator.pop(context);
+                StoreRedirect.redirect(androidAppId: "com.dokar.kendalkab");
+              },
+              text: 'Update',
+              iconData: Icons.system_update_alt_rounded,
+              color: Colors.green,
+              textStyle: const TextStyle(color: Colors.white),
+              iconColor: Colors.white,
+            ),
+          ],
+        );
         print(update);
-        print(versi + data['versioncode']);
+        print(versi + "." + data['versioncode']);
         print(descript);
       }
     } catch (e) {

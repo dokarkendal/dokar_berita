@@ -70,10 +70,10 @@ class _VersionState extends State<Version> {
         // mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           _infoTile('App name', _packageInfo.appName),
-          _infoTile('Package name', _packageInfo.packageName),
+          // _infoTile('Package name', _packageInfo.packageName),
           _infoTile('App version', _packageInfo.version),
           _infoTile('Build number', _packageInfo.buildNumber),
-          _infoTile('Build signature', _packageInfo.buildSignature),
+          // _infoTile('Build signature', _packageInfo.buildSignature),
         ],
       ),
     );

@@ -84,7 +84,7 @@ class _HalSuratAjukanState extends State<HalSuratAjukan> {
           color: appbarIcon, //change your color here
         ),
         title: Text(
-          'SURAT ACC',
+          'SURAT AJUKAN',
           style: TextStyle(
             color: appbarTitle,
             fontWeight: FontWeight.bold,

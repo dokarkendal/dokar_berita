@@ -64,7 +64,7 @@ class FormBumdesState extends State<FormBumdes> {
     if (image != null) {
       File? cropped = await ImageCropper().cropImage(
         sourcePath: image.path,
-       aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
+        aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
         compressQuality: 100,
         maxWidth: 572,
         maxHeight: 396,
@@ -226,7 +226,7 @@ class FormBumdesState extends State<FormBumdes> {
       // );
       ScaffoldMessenger.of(this.context).showSnackBar(
         SnackBar(
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
           elevation: 6.0,
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
@@ -267,7 +267,7 @@ class FormBumdesState extends State<FormBumdes> {
     } else {
       print("Upload Failed");
       SnackBar(
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
         elevation: 6.0,
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,

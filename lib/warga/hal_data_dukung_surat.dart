@@ -155,7 +155,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
             },
           );
           ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             behavior: SnackBarBehavior.floating,
             content: Row(
@@ -202,7 +202,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
             },
           );
           ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             behavior: SnackBarBehavior.floating,
             content: Row(
@@ -375,7 +375,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
 
                     if (cKeterangan.text.isEmpty) {
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        duration: const Duration(seconds: 5),
+                        duration: const Duration(seconds: 2),
                         elevation: 6.0,
                         behavior: SnackBarBehavior.floating,
                         content: Row(
@@ -408,7 +408,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
                       ));
                     } else if (_selectedFile == null) {
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        duration: const Duration(seconds: 5),
+                        duration: const Duration(seconds: 2),
                         elevation: 6.0,
                         behavior: SnackBarBehavior.floating,
                         content: Row(

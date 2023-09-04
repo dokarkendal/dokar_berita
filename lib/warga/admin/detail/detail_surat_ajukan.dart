@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // import 'package:flutter/src/widgets/container.dart';
@@ -52,6 +53,13 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
   bool loadingbuat = false;
   bool loadingbuatsurat = false;
   bool loadingactivity = false;
+  var _mySelection;
+  // List masterSurat = [];
+  List<Map<String, dynamic>> jenissurat = [
+    {"value": "1", "nama": "Dokar"},
+    {"value": "2", "nama": "Srikandi"},
+  ];
+
   final format = DateFormat("yyyy-MM-dd");
   late List dataDukungJSON = [];
   TextEditingController cMulai = TextEditingController();
@@ -196,7 +204,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
         });
         ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
@@ -246,7 +254,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
 
         ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
@@ -321,6 +329,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
           "nomor": _nomorSuratController.text,
           "mulai": cMulai.text,
           "sampai": cSampai.text,
+          "pembuatan": _mySelection,
           "keterangan": cTujuan.text
         },
       );
@@ -334,13 +343,14 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
       print(cSampai.text);
       print(cTujuan.text);
       print(datauser);
+      print(_mySelection);
       if (datauser['Status'] == "Sukses") {
         setState(() {
           loadingbuatsurat = false;
         });
         ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
@@ -390,7 +400,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
 
         ScaffoldMessenger.of(this.context).showSnackBar(
           SnackBar(
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
@@ -622,7 +632,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                     elevation: 0,
                     backgroundColor: widget.dStatus == 'Menunggu'
                         ? Colors.grey[600]
-                        : Colors.green,
+                        : Colors.blue[800],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -767,7 +777,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                     ),
                     _paddingtop01(),
                     Text(
-                      "${widget.dTanggal}",
+                      "${widget.dKode}",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -1382,7 +1392,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                       // top: mediaQueryData.size.height * 0.03,
                     ),
                     child: SizedBox(
-                      height: mediaQueryData.size.height * 0.8,
+                      height: mediaQueryData.size.height * 0.9,
                       child: ListView(
                         children: <Widget>[
                           Text(
@@ -1400,6 +1410,8 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                           _formTglMulai(),
                           _paddingtop01(),
                           _formTglSampai(),
+                          _paddingtop01(),
+                          _pilihSurat(),
                           _paddingtop01(),
                           _formTujuan(),
                           _paddingtop01(),
@@ -1648,6 +1660,22 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                 Navigator.pop(context);
                 if (cTujuan.text == "" || cTujuan.text.isEmpty) {
                   Container();
+                } else if (_mySelection == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                      'Pilih jenis surat',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.orange[700],
+                    action: SnackBarAction(
+                      label: 'ULANGI',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        print('ULANGI snackbar');
+                      },
+                    ),
+                  ));
+                  // scaffoldKey.currentState.showSnackBar(snackBar);
                 } else {
                   buatSurat();
                 }
@@ -1856,6 +1884,57 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                 ),
         ],
       ),
+    );
+  }
+
+  Widget _pilihSurat() {
+    return Column(
+      children: <Widget>[
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: DropdownButtonFormField(
+            //icon: Icon(Icons.accessibility_),
+            // underline: SizedBox(),
+            isDense: true,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.mail),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
+                ),
+              ),
+              // hintText: 'Judul Berita',
+              hintStyle: TextStyle(
+                fontSize: 15,
+                color: Colors.brown[800],
+              ),
+              // prefixIcon: Icon(
+              //   Icons.text_fields,
+              //   color: Colors.grey,
+              // ),
+            ),
+            hint: Text('Pilih Jenis Surat'),
+            items: jenissurat.map((item) {
+              return DropdownMenuItem(
+                child: Text(item['nama']),
+                value: item['value'],
+              );
+            }).toList(),
+            onChanged: (selectedItem) {
+              _mySelection = selectedItem as String;
+              // print(val);
+              if (kDebugMode) {
+                print(_mySelection);
+              }
+            },
+            value: _mySelection,
+          ),
+        )
+      ],
     );
   }
 

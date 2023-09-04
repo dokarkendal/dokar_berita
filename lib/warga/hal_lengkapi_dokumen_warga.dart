@@ -149,7 +149,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
             },
           );
           ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             behavior: SnackBarBehavior.floating,
             content: Row(
@@ -195,7 +195,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
             },
           );
           ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 5),
+            duration: const Duration(seconds: 2),
             elevation: 6.0,
             behavior: SnackBarBehavior.floating,
             content: Row(
@@ -365,7 +365,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
                   onPressed: () async {
                     if (_pilihDokumen == null) {
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        duration: const Duration(seconds: 5),
+                        duration: const Duration(seconds: 2),
                         elevation: 6.0,
                         behavior: SnackBarBehavior.floating,
                         content: Row(
@@ -398,7 +398,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
                       ));
                     } else if (_selectedFile == null) {
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-                        duration: const Duration(seconds: 5),
+                        duration: const Duration(seconds: 2),
                         elevation: 6.0,
                         behavior: SnackBarBehavior.floating,
                         content: Row(

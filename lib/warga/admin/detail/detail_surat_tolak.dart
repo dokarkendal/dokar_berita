@@ -502,7 +502,7 @@ class _HalDetailSuratTolakState extends State<HalDetailSuratTolak> {
                     ),
                     _paddingtop01(),
                     Text(
-                      "${widget.dTanggal}",
+                      "${widget.dKode}",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
