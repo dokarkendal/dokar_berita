@@ -26,7 +26,8 @@ class HalDetailSuratAjukan extends StatefulWidget {
       dKeterangan,
       dIdSurat,
       dUid,
-      dIdDesa;
+      dIdDesa,
+      dPembuatan;
   HalDetailSuratAjukan({
     required this.dNama,
     required this.dNik,
@@ -39,6 +40,7 @@ class HalDetailSuratAjukan extends StatefulWidget {
     required this.dIdSurat,
     required this.dUid,
     required this.dIdDesa,
+    required this.dPembuatan,
   });
 
   @override
@@ -84,6 +86,59 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
           print(dataDukungJSON);
         },
       );
+    }
+  }
+
+  String? cNIK = "";
+  String? cTempatlahir = "";
+  String? cTanggallahir = "";
+  String? cAlamat = "";
+  String? cKota = "";
+  String? cKecamatan = "";
+  String? cDesa = "";
+  String? cRT = "";
+  String? cRW = "";
+  String? cKelamin = "";
+  String? cStatusKawin = "";
+  String? cAgama = "";
+  String? cPekerjaan = "";
+
+  Future _detailWarga() async {
+    setState(() {
+      loadingdata = true;
+    });
+    final response = await http.post(
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/surat/GetDetailSurat"),
+        body: {
+          "id_surat": '${widget.dIdSurat}',
+          "id_desa": '${widget.dIdDesa}',
+        });
+
+    if (mounted) {
+      if (response.statusCode == 200) {
+        var detailWargaJSON = json.decode(response.body)["Data"];
+        print(detailWargaJSON);
+        setState(() {
+          loadingdata = false;
+          cTempatlahir = detailWargaJSON['tmp_lahir'];
+          cTanggallahir = detailWargaJSON['tgl_lahir'];
+          cAlamat = detailWargaJSON['alamat'];
+          cKota = detailWargaJSON['kota'];
+          cKecamatan = detailWargaJSON['kecamatan'];
+          cDesa = detailWargaJSON['desa'];
+          cPekerjaan = detailWargaJSON['pekerjaan'];
+          cRT = detailWargaJSON['rt'];
+          cRW = detailWargaJSON['rw'];
+          cKelamin = detailWargaJSON['kelamin'];
+          cStatusKawin = detailWargaJSON['kawin'];
+          cAgama = detailWargaJSON['agama'];
+        });
+      } else {
+        setState(() {
+          loadingdata = false;
+        });
+      }
     }
   }
 
@@ -440,11 +495,13 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
     detailDataTambah();
     getnomor();
     activityadmin();
+    _detailWarga();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -461,12 +518,213 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.copy),
+              icon: Icon(Icons.info_outline),
               onPressed: () {
-                Clipboard.setData(ClipboardData(text: "${widget.dKode}"));
-                // Show a snackbar or any other notification to indicate that the value has been copied
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Copied "${widget.dKode}"')),
+                showMaterialModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) => Padding(
+                    padding: EdgeInsets.only(
+                      left: mediaQueryData.size.height * 0.02,
+                      right: mediaQueryData.size.height * 0.02,
+                      // bottom: mediaQueryData.size.height * 0.03,
+                      // top: mediaQueryData.size.height * 0.03,
+                    ),
+                    child: SizedBox(
+                      height: mediaQueryData.size.height * 0.8,
+                      child: ListView(
+                        children: <Widget>[
+                          Text(
+                            "Info Warga",
+                            style: TextStyle(
+                                fontSize: 25.0,
+                                color: Colors.grey[800],
+                                fontWeight: FontWeight.bold),
+                          ),
+                          _paddingtop01(),
+                          _paddingtop01(),
+                          Text(
+                            "Tempat/Tgl lahir :",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Row(
+                            children: [
+                              Text(
+                                cTempatlahir.toString() + ", ",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                              Text(
+                                cTanggallahir.toString(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          Text(
+                            "Alamat:",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cAlamat.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "RT/RW:",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cRT.toString() + "/" + cRW.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "Kota",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cKota.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "Kecamatan",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cKecamatan.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "Desa",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cDesa.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "Pekerjaan",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cPekerjaan.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "Kelamin",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cKelamin.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                          Divider(),
+                          Text(
+                            "Status",
+                            style: TextStyle(
+                              fontSize: 14,
+                              // fontWeight: FontWeight.w700,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          _paddingtop01(),
+                          Text(
+                            cStatusKawin.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
@@ -693,13 +951,54 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "No.Surat :",
-              style: TextStyle(
-                fontSize: 14,
-                // fontWeight: FontWeight.w700,
-                color: Colors.grey[600],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "No.Surat :",
+                  style: TextStyle(
+                    fontSize: 14,
+                    // fontWeight: FontWeight.w700,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                SizedBox(
+                  // width: mediaQueryData.size.width * 0.5,
+                  height: 23,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            15.0), // Adjust the value as per your preference
+                      ),
+                      elevation: 0,
+                      backgroundColor: widget.dPembuatan == 'Dokar'
+                          ? Colors.red[600]
+                          : Colors.blue,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${widget.dPembuatan}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        _paddingleft01(),
+                        Icon(
+                          Icons.mail,
+                          size: 14,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
             ),
             _paddingtop01(),
             Text(
@@ -776,13 +1075,39 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                       ),
                     ),
                     _paddingtop01(),
-                    Text(
-                      "${widget.dKode}",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[800],
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          "${widget.dKode}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        Container(
+                          width: 40, // Set your desired width
+                          // height: 40, // Set your desired height
+                          child: GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: "${widget.dKode}"));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Copied "${widget.dKode}"')),
+                              );
+                            },
+                            child: Center(
+                              child: Icon(
+                                Icons.copy,
+                                size: 20, // Set your desired icon size
+                                color:
+                                    Colors.grey, // Set your desired icon color
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ],
                 ),

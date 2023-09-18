@@ -51,6 +51,7 @@ import 'package:dokar_aplikasi/profil/data/hal_fasum_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_galeri_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_kegiatan_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_potensi_profile.dart';
+import 'package:dokar_aplikasi/profil/data/hal_ppid_profile.dart';
 import 'package:dokar_aplikasi/profil/data/hal_siskeudes_profile.dart';
 import 'package:dokar_aplikasi/profil/hal_aparatur.dart';
 import 'package:dokar_aplikasi/profil/hal_profil.dart';
@@ -90,6 +91,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'berita/detail_page_kritiksaran.dart';
 import 'berita/hal_kritiksaran.dart';
+import 'berita/list/hal_list_ppid.dart';
 import 'berita/tes.dart';
 import 'hal_daftar_warga.dart';
 import 'warga/admin/list/list_surat_ajukan.dart';
@@ -375,6 +377,8 @@ void main() {
               dStatus: '',
               dTanggal: '',
               dUid: '',
+              dIdDesa: '',
+              dPembuatan: '',
             ),
         '/HalDetailSuratMenunggu': (BuildContext context) =>
             HalDetailSuratMenunggu(
@@ -388,6 +392,8 @@ void main() {
               dStatus: '',
               dTanggal: '',
               dUid: '',
+              dIdDesa: '',
+              dPembuatan: '',
             ),
         '/HalDataDukungSurat': (BuildContext context) => HalDataDukungSurat(
               dIdTambah: '',
@@ -416,6 +422,7 @@ void main() {
               dTanggal: '',
               dUid: '',
               dIdDesa: '',
+              dPembuatan: '',
             ),
 
         '/HalDetailSuratACC': (BuildContext context) => HalDetailSuratACC(
@@ -431,8 +438,19 @@ void main() {
               dUid: '',
               dIdDesa: '',
               dFile: '',
+              dPembuatan: '',
             ),
         '/HalSuratAjukan': (BuildContext context) => HalSuratAjukan(),
+        '/HalPpidProfile': (BuildContext context) => HalPpidProfile(
+              idDesa: '',
+              namaDesa: '',
+            ),
+        '/HalPPIDList': (BuildContext context) => HalPPIDList(
+              idDesa: '',
+              idKategori: '',
+              namaDesa: '',
+              namaKategori: '',
+            ),
       },
       home: SplashScreenPage(),
     ),

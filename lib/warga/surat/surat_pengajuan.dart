@@ -88,7 +88,7 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
     setState(() {
       loadingajukan = true;
     });
-    Future.delayed(Duration(seconds: 2), () async {
+    Future.delayed(Duration(seconds: 1), () async {
       final response = await http.post(
         Uri.parse(
             "http://dokar.kendalkab.go.id/webservice/android/surat/Pengajuan"),
@@ -121,7 +121,9 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
             ),
           ),
         );
-        Navigator.pop(context);
+        Future.delayed(Duration(seconds: 2), () async {
+          Navigator.pop(context);
+        });
       } else {
         setState(() {
           loadingajukan = false;

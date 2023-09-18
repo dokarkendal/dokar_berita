@@ -245,7 +245,7 @@ class _HalduaState extends State<Haldua> {
 
 //NOTE Widget Update
   Widget updateNotification() {
-    if (update == 'Updated') {
+    if (update == 'Tidak perlu updated') {
       return Container(
         width: 1,
         height: 1,

@@ -276,6 +276,8 @@ class _HalSuratTolakState extends State<HalSuratTolak> {
                             dKeterangan: datasurattolak[i]["keterangan"],
                             dIdSurat: datasurattolak[i]["id_surat"],
                             dUid: datasurattolak[i]["uid"],
+                            dIdDesa: datasurattolak[i]["id_desa"],
+                            dPembuatan: datasurattolak[i]["pembuatan"],
                           ),
                         ),
                       );

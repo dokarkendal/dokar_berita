@@ -124,14 +124,14 @@ class KritikSaranState extends State<KritikSaran> {
             } else {
               if (kritiksaran[i]["kritik_id"] == 'Notfound') {
                 return new Container(
-                    /*child: Center(
+                  child: Center(
                     child: new Column(
                       children: <Widget>[
                         new Padding(
                           padding: new EdgeInsets.all(100.0),
                         ),
                         new Text(
-                          "DATA KOSONG",
+                          "Tidak ada kritik saran",
                           style: new TextStyle(
                             fontSize: 30.0,
                             color: Colors.grey[350],
@@ -140,12 +140,12 @@ class KritikSaranState extends State<KritikSaran> {
                         new Padding(
                           padding: new EdgeInsets.all(20.0),
                         ),
-                        new Icon(Icons.help_outline,
-                            size: 150.0, color: Colors.grey[350]),
+                        new Icon(Icons.my_library_books_outlined,
+                            size: 100.0, color: Colors.grey[350]),
                       ],
                     ),
-                  ),*/
-                    );
+                  ),
+                );
               } else {
                 return Container(
                   color: Colors.grey[100],

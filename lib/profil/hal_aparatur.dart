@@ -137,7 +137,7 @@ class _HalAparaturDesaState extends State<HalAparaturDesa> {
                             ),
                           ),
                           width: mediaQueryData.size.width,
-                          height: mediaQueryData.size.height * 0.23,
+                          height: mediaQueryData.size.height * 0.2,
                           fit: BoxFit.cover,
                         ),
                       ),

@@ -310,6 +310,7 @@ class _HalSuratAjukanState extends State<HalSuratAjukan> {
                             dIdSurat: datasuratajukan[i]["id_surat"],
                             dUid: datasuratajukan[i]["uid"],
                             dIdDesa: datasuratajukan[i]["id_desa"],
+                            dPembuatan: datasuratajukan[i]["pembuatan"],
                           ),
                         ),
                       );

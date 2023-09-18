@@ -278,6 +278,7 @@ class _HalSuratACCState extends State<HalSuratACC> {
                             dUid: datasuratacc[i]["uid"],
                             dIdDesa: datasuratacc[i]["id_desa"],
                             dFile: datasuratacc[i]["file"],
+                            dPembuatan: datasuratacc[i]["pembuatan"],
                           ),
                         ),
                       );

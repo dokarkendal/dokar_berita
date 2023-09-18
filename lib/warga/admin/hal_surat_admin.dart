@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../style/styleset.dart';
+import 'dart:convert';
 
 class HalSuratAdmin extends StatefulWidget {
   const HalSuratAdmin({super.key});
@@ -10,6 +12,50 @@ class HalSuratAdmin extends StatefulWidget {
 }
 
 class _HalSuratAdminState extends State<HalSuratAdmin> {
+  bool loadingdata = false;
+
+  String? acc = "";
+  String? ditolak = "";
+  String? diajukan = "";
+  String? menunggu = "";
+
+  Future _jumlahSurat() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      loadingdata = true;
+    });
+    final response = await http.post(
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/surat/jumlahsurat"),
+        body: {
+          "id_desa": pref.getString("IdDesa"),
+        });
+
+    if (mounted) {
+      if (response.statusCode == 200) {
+        var jumlahsurat = json.decode(response.body)["Data"];
+        print(jumlahsurat);
+        setState(() {
+          acc = jumlahsurat['ACC'];
+          ditolak = jumlahsurat['Ditolak'];
+          diajukan = jumlahsurat['Diajukan'];
+          menunggu = jumlahsurat['Menunggu'];
+          loadingdata = false;
+        });
+      } else {
+        setState(() {
+          loadingdata = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _jumlahSurat();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,32 +75,36 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                suratBelumAcc(),
-                suratAjukan(),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.01,
+      body: loadingdata
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      suratBelumAcc(),
+                      suratAjukan(),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.01,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      suratTolak(),
+                      suratAcc(),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                suratTolak(),
-                suratAcc(),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -90,10 +140,27 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(
-                  Icons.mark_email_unread_rounded,
-                  color: Colors.blueGrey,
-                  size: 50,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.mark_email_unread_rounded,
+                      color: Colors.blueGrey,
+                      size: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: mediaQueryData.size.width * 0.01,
+                      ),
+                    ),
+                    Text(
+                      menunggu.toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -166,10 +233,27 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(
-                  Icons.outgoing_mail,
-                  color: Colors.blue[800],
-                  size: 50,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.outgoing_mail,
+                      color: Colors.blue[800],
+                      size: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: mediaQueryData.size.width * 0.01,
+                      ),
+                    ),
+                    Text(
+                      diajukan.toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[800],
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -242,10 +326,27 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(
-                  Icons.unsubscribe_rounded,
-                  color: Colors.red,
-                  size: 50,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.unsubscribe_rounded,
+                      color: Colors.red,
+                      size: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: mediaQueryData.size.width * 0.01,
+                      ),
+                    ),
+                    Text(
+                      ditolak.toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -318,10 +419,27 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Icon(
-                  Icons.mark_email_read_rounded,
-                  color: Colors.green,
-                  size: 50,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.mark_email_read_rounded,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: mediaQueryData.size.width * 0.01,
+                      ),
+                    ),
+                    Text(
+                      acc.toString(),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(

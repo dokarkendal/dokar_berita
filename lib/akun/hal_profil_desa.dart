@@ -21,7 +21,9 @@ import 'dart:async'; // api syn
 import 'dart:convert';
 import 'package:badges/badges.dart' as badges;
 
-import 'package:shimmer/shimmer.dart'; // api to json
+import 'package:shimmer/shimmer.dart';
+
+import '../profil/data/hal_ppid_profile.dart'; // api to json
 
 class ProfilDesa extends StatefulWidget {
   final String title, id, desa, kecamatan;
@@ -1064,17 +1066,44 @@ class _ProfilDesaState extends State<ProfilDesa> {
                                   fontSize: 12.0))
                         ],
                       ),
+                      // Column(
+                      //   children: <Widget>[
+                      //     IconButton(
+                      //         padding: EdgeInsets.all(15.0),
+                      //         icon: Icon(
+                      //           Icons.check_box_outline_blank_outlined,
+                      //           color: Colors.white.withOpacity(0.1),
+                      //         ),
+                      //         // color: Colors.white.withOpacity(0.1),
+                      //         iconSize: 30.0,
+                      //         onPressed: null),
+                      //   ],
+                      // ),
                       Column(
                         children: <Widget>[
                           IconButton(
-                              padding: EdgeInsets.all(15.0),
-                              icon: Icon(
-                                Icons.check_box_outline_blank_outlined,
-                                color: Colors.white.withOpacity(0.1),
-                              ),
-                              // color: Colors.white.withOpacity(0.1),
-                              iconSize: 30.0,
-                              onPressed: null),
+                            padding: EdgeInsets.all(15.0),
+                            icon: Icon(Icons.auto_stories_sharp),
+                            color: Colors.grey[400],
+                            iconSize: 30.0,
+                            onPressed: () {
+                              // Navigator.pushNamed(context, '/HalPpidProfile');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HalPpidProfile(
+                                    idDesa: "${widget.id}",
+                                    namaDesa: "${widget.desa}",
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          Text('PPID',
+                              style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12.0))
                         ],
                       ),
                     ],

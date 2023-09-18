@@ -276,6 +276,8 @@ class _HalSuratMenungguState extends State<HalSuratMenunggu> {
                             dKeterangan: datasuratmenunggu[i]["keterangan"],
                             dIdSurat: datasuratmenunggu[i]["id_surat"],
                             dUid: datasuratmenunggu[i]["uid"],
+                            dIdDesa: datasuratmenunggu[i]["id_desa"],
+                            dPembuatan: datasuratmenunggu[i]["pembuatan"],
                           ),
                         ),
                       );

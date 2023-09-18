@@ -347,10 +347,10 @@ class _DetailBeritaState extends State<DetailBerita> {
                     wHeader(),
                     Container(
                       padding: new EdgeInsets.only(
-                        left: mediaQueryData.size.height * 0.01,
+                        left: mediaQueryData.size.height * 0.005,
                         top: mediaQueryData.size.height * 0.3,
                         // bottom: mediaQueryData.size.height * 0.01,
-                        right: mediaQueryData.size.height * 0.01,
+                        right: mediaQueryData.size.height * 0.005,
                       ),
                       child: Card(
                         elevation: 1,
@@ -778,7 +778,10 @@ class _DetailBeritaState extends State<DetailBerita> {
             ),
             // margin: const EdgeInsets.only(top: 10.0),
             child: Text(
-              '${widget.dKecamatan}',
+              '${widget.dKecamatan}'.toLowerCase().replaceFirstMapped(
+                    RegExp(r'^[a-z]'),
+                    (match) => match.group(0)!.toUpperCase(),
+                  ),
               style: new TextStyle(
                 color: Colors.white,
                 fontSize: 12.0,
