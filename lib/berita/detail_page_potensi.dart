@@ -750,7 +750,10 @@ class _DetailPotensiState extends State<DetailPotensi> {
             ),
             // margin: const EdgeInsets.only(top: 10.0),
             child: Text(
-              '${widget.dKecamatan}',
+              '${widget.dKecamatan}'.toLowerCase().replaceFirstMapped(
+                    RegExp(r'^[a-z]'),
+                    (match) => match.group(0)!.toUpperCase(),
+                  ),
               style: new TextStyle(
                 color: Colors.white,
                 fontSize: 12.0,

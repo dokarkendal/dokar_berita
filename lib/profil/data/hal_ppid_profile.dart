@@ -112,22 +112,27 @@ class _HalPpidProfileState extends State<HalPpidProfile> {
 
   Widget cariPPID() {
     TextEditingController _textController = TextEditingController();
-    // TextEditingController _tahunController =
-    //     TextEditingController(); // Create a TextEditingController
+
     void submitForm() {
-      // String tahunPPID = _tahunController.text;
       String valuePPID = _textController.text;
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => HalSearchPPID(
-            value: valuePPID,
-            tahun: _pilihtahun,
-            idDesa: "${widget.idDesa}",
-            namaDesa: "${widget.namaDesa}",
+      if (valuePPID.isEmpty && _pilihtahun == null) {
+        // Show a Snackbar with an error message
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('idDesa and/or namaDesa is empty or null.'),
+        ));
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => HalSearchPPID(
+              value: valuePPID,
+              tahun: _pilihtahun,
+              idDesa: "${widget.idDesa}",
+              namaDesa: "${widget.namaDesa}",
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     return Container(
@@ -136,29 +141,6 @@ class _HalPpidProfileState extends State<HalPpidProfile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // SizedBox(
-          //   width: MediaQuery.of(context).size.width * 0.22,
-          //   child: TextField(
-          //     controller:
-          //         _tahunController, // Assign the controller to the TextField
-          //     // onSubmitted: (tahun) {
-          //     //   tahunPPID = tahun;
-          //     //   Navigator.of(context).push(
-          //     //     MaterialPageRoute(
-          //     //       builder: (context) => HalSearchPPID(
-          //     //         value: valuePPID,
-          //     //         idDesa: "${widget.idDesa}",
-          //     //         namaDesa: "${widget.namaDesa}",
-          //     //       ),
-          //     //     ),
-          //     //   );
-          //     // },
-          //     decoration: InputDecoration(
-          //       hintText: 'Tahun',
-          //       border: OutlineInputBorder(),
-          //     ),
-          //   ),
-          // ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.24,
             height: MediaQuery.of(context).size.height * 0.07,
@@ -204,23 +186,7 @@ class _HalPpidProfileState extends State<HalPpidProfile> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.69,
             child: TextField(
-              controller:
-                  _textController, // Assign the controller to the TextField
-              // onSubmitted: (text) {
-              //   valuePPID = text;
-
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => HalSearchPPID(
-              //       value: valuePPID,
-              //       tahun: tahunPPID,
-              //       idDesa: "${widget.idDesa}",
-              //       namaDesa: "${widget.namaDesa}",
-
-              //     ),
-              //   ),
-              // );
-              // },
+              controller: _textController,
               decoration: InputDecoration(
                 border: new OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
@@ -233,8 +199,6 @@ class _HalPpidProfileState extends State<HalPpidProfile> {
                   icon: Icon(Icons.search), // Add a clear icon
                   onPressed: () {
                     submitForm();
-                    // _textController
-                    //     .clear(); // Clear the text when the icon is pressed
                   },
                 ),
               ),

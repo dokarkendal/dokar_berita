@@ -222,7 +222,8 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
         ),
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(context, '/HalSuratAjukan');
+            Navigator.pushNamed(context, '/HalSuratAjukan')
+                .then((value) => _jumlahSurat());
           },
           child: Container(
             decoration: BoxDecoration(

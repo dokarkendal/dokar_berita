@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dokar_aplikasi/warga/surat/detail_surat_warga.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:material_dialogs/dialogs.dart';
-import 'package:material_dialogs/widgets/buttons/icon_button.dart';
-import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+// import 'package:lottie/lottie.dart';
+// import 'package:material_dialogs/dialogs.dart';
+// import 'package:material_dialogs/widgets/buttons/icon_button.dart';s
+// import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -79,6 +79,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
   }
 
   //NOTE Fungsi Cek Logout
+  // ignore: unused_element
   Future _cekLogout() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (pref.getBool("_isLoggedIn") == null) {
@@ -204,7 +205,7 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
         ),
         centerTitle: true,
         title: Text(
-          "DOKAR ",
+          "DOKAR",
           style: TextStyle(
             color: appbarTitle,
             fontSize: 25.0,
@@ -214,51 +215,51 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
         backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.newspaper_rounded),
             iconSize: 25.0,
             onPressed: () async {
-              // Navigator.pushNamed(context, '/MyEditor');
-              Dialogs.bottomMaterialDialog(
-                msg: 'Anda yakin ingin keluar aplikasi?',
-                title: "Keluar",
-                color: Colors.white,
-                lottieBuilder: Lottie.asset(
-                  'assets/animation/exit2.json',
-                  fit: BoxFit.contain,
-                  repeat: false,
-                ),
-                // animation:'assets/logo/animation/exit.json',
-                context: context,
-                actions: [
-                  IconsOutlineButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    text: 'Tidak',
-                    iconData: Icons.cancel_outlined,
-                    textStyle: const TextStyle(color: Colors.grey),
-                    iconColor: Colors.grey,
-                  ),
-                  IconsButton(
-                    onPressed: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      pref.clear();
+              Navigator.pushNamed(context, '/HalamanBeritaWarga');
+              // Dialogs.bottomMaterialDialog(
+              //   msg: 'Anda yakin ingin keluar aplikasi?',
+              //   title: "Keluar",
+              //   color: Colors.white,
+              //   lottieBuilder: Lottie.asset(
+              //     'assets/animation/exit2.json',
+              //     fit: BoxFit.contain,
+              //     repeat: false,
+              //   ),
+              //   // animation:'assets/logo/animation/exit.json',
+              //   context: context,
+              //   actions: [
+              //     IconsOutlineButton(
+              //       onPressed: () {
+              //         Navigator.pop(context);
+              //       },
+              //       text: 'Tidak',
+              //       iconData: Icons.cancel_outlined,
+              //       textStyle: const TextStyle(color: Colors.grey),
+              //       iconColor: Colors.grey,
+              //     ),
+              //     IconsButton(
+              //       onPressed: () async {
+              //         SharedPreferences pref =
+              //             await SharedPreferences.getInstance();
+              //         pref.clear();
 
-                      // int launchCount = 0;
-                      // pref.setInt('counter', launchCount + 1);
-                      _cekLogout();
-                    },
-                    text: 'Exit',
-                    iconData: Icons.exit_to_app,
-                    color: Colors.red,
-                    textStyle: const TextStyle(color: Colors.white),
-                    iconColor: Colors.white,
-                  ),
-                ],
-              );
+              //         // int launchCount = 0;
+              //         // pref.setInt('counter', launchCount + 1);
+              //         _cekLogout();
+              //       },
+              //       text: 'Exit',
+              //       iconData: Icons.exit_to_app,
+              //       color: Colors.red,
+              //       textStyle: const TextStyle(color: Colors.white),
+              //       iconColor: Colors.white,
+              //     ),
+              //   ],
+              // );
             },
-          )
+          ),
         ],
       ),
       body: _isLoggedIn == true

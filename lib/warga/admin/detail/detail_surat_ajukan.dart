@@ -1599,7 +1599,7 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                   Icons.my_library_books_rounded,
                   color: Colors.brown[800],
                 ),
-                hintText: loadingdata ? "Memuat.." : "Tujuan",
+                hintText: loadingdata ? "Memuat.." : "Keterangan",
                 hintStyle: TextStyle(
                   color: Colors.grey[400],
                 ),

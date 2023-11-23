@@ -2,6 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:material_dialogs/dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +25,8 @@ class _HalEditWargaState extends State<HalEditWarga> {
   String? email = "";
   String? hp = "";
   String? username = "";
-
+  // ignore: unused_field
+  bool _isLoggedIn = false;
   bool loadingdata = false;
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -30,6 +35,20 @@ class _HalEditWargaState extends State<HalEditWarga> {
     buildNumber: 'Unknown',
     buildSignature: 'Unknown',
   );
+  Future _cekLogout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    if (pref.getBool("_isLoggedIn") == null) {
+      _isLoggedIn = false;
+      // Navigator.pushReplacementNamed(context, '/PilihAkun');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/PilihAkun',
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      _isLoggedIn = true;
+    }
+  }
 
   Future<void> _initPackageInfo() async {
     final info = await PackageInfo.fromPlatform();
@@ -134,14 +153,60 @@ class _HalEditWargaState extends State<HalEditWarga> {
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
+          // IconButton(
+          //   icon: Icon(Icons.edit),
+          //   iconSize: 23.0,
+          //   onPressed: () async {
+          //     Navigator.pushNamed(context, '/FormEditWarga')
+          //         .then((value) => detailAkunWarga());
+          //   },
+          // )
           IconButton(
-            icon: Icon(Icons.edit),
-            iconSize: 23.0,
+            icon: Icon(Icons.logout),
+            iconSize: 25.0,
             onPressed: () async {
-              Navigator.pushNamed(context, '/FormEditWarga')
-                  .then((value) => detailAkunWarga());
+              // Navigator.pushNamed(context, '/MyEditor');
+              Dialogs.bottomMaterialDialog(
+                msg: 'Anda yakin ingin keluar aplikasi?',
+                title: "Keluar",
+                color: Colors.white,
+                lottieBuilder: Lottie.asset(
+                  'assets/animation/exit2.json',
+                  fit: BoxFit.contain,
+                  repeat: false,
+                ),
+                // animation:'assets/logo/animation/exit.json',
+                context: context,
+                actions: [
+                  IconsOutlineButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    text: 'Tidak',
+                    iconData: Icons.cancel_outlined,
+                    textStyle: const TextStyle(color: Colors.grey),
+                    iconColor: Colors.grey,
+                  ),
+                  IconsButton(
+                    onPressed: () async {
+                      SharedPreferences pref =
+                          await SharedPreferences.getInstance();
+                      pref.clear();
+
+                      // int launchCount = 0;
+                      // pref.setInt('counter', launchCount + 1);
+                      _cekLogout();
+                    },
+                    text: 'Exit',
+                    iconData: Icons.exit_to_app,
+                    color: Colors.red,
+                    textStyle: const TextStyle(color: Colors.white),
+                    iconColor: Colors.white,
+                  ),
+                ],
+              );
             },
-          )
+          ),
         ],
       ),
       body: loadingdata
@@ -485,13 +550,26 @@ class _HalEditWargaState extends State<HalEditWarga> {
   }
 
   Widget _akunText() {
-    return Container(
-      padding: EdgeInsets.all(10.0),
-      child: Text(
-        "Akun",
-        style: TextStyle(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            "Akun",
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.edit),
+          iconSize: 23.0,
+          onPressed: () async {
+            Navigator.pushNamed(context, '/FormEditWarga')
+                .then((value) => detailAkunWarga());
+          },
+        )
+      ],
     );
   }
 
