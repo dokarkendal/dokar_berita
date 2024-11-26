@@ -55,20 +55,20 @@ class _PilihAKunState extends State<PilihAKun> {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(top: mediaQueryData.size.height * 0.5),
+              margin: EdgeInsets.only(top: mediaQueryData.size.height * 0.45),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 color: Colors.white,
               ),
               child: Padding(
-                padding: EdgeInsets.all(mediaQueryData.size.height * 0.04),
+                padding: EdgeInsets.all(mediaQueryData.size.height * 0.03),
                 child: Container(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(
-                            top: mediaQueryData.size.height * 0.03),
+                            top: mediaQueryData.size.height * 0.02),
                       ),
                       _tombolAdmin(),
                       Padding(
@@ -78,12 +78,43 @@ class _PilihAKunState extends State<PilihAKun> {
                       _tombolWarga(),
                       Padding(
                         padding: EdgeInsets.only(
-                            top: mediaQueryData.size.height * 0.02),
+                            top: mediaQueryData.size.height * 0.03),
                       ),
-                      _privacy(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey[400],
+                              thickness: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text(
+                              'Atau',
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey[400],
+                              thickness: 1,
+                            ),
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                            top: mediaQueryData.size.height * 0.11),
+                            top: mediaQueryData.size.height * 0.02),
+                      ),
+                      _lanjut(),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: mediaQueryData.size.height * 0.1),
                       ),
                       _youtubeDokar(),
                     ],
@@ -297,29 +328,54 @@ class _PilihAKunState extends State<PilihAKun> {
   }
 
 //NOTE Link Privacy Dokar
-  Widget _privacy() {
+  // Widget _privacy() {
+  //   return Container(
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: <Widget>[
+  //         GestureDetector(
+  //           onTap: () async {
+  //             final Uri url =
+  //                 Uri.parse('https://dokar.kendalkab.go.id/privacy');
+  //             if (!await launchUrl(
+  //               url,
+  //               mode: LaunchMode.externalApplication,
+  //             )) {
+  //               throw 'Could not launch $url';
+  //             }
+  //           },
+  //           child: Text(
+  //             "Syarat & Ketentuan",
+  //             style: TextStyle(
+  //               fontSize: 14.0,
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.blue[800],
+  //             ),
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  //NOTE Link Privacy Dokar
+  Widget _lanjut() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Text("Lanjut tanpa mendaftar "),
+          Padding(
+            padding: EdgeInsets.only(top: mediaQueryData.size.height * 0.01),
+          ),
           GestureDetector(
-            onTap: () async {
-              final Uri url =
-                  Uri.parse('https://dokar.kendalkab.go.id/privacy');
-              if (!await launchUrl(
-                url,
-                mode: LaunchMode.externalApplication,
-              )) {
-                throw 'Could not launch $url';
-              }
+            onTap: () {
+              Navigator.pushNamed(context, '/HalamanBeritaWarga');
             },
-            child: Text(
-              "Syarat & Ketentuan",
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue[800],
-              ),
+            child: Icon(
+              Icons.arrow_circle_right_outlined,
+              color: Colors.blue[800],
             ),
           )
         ],

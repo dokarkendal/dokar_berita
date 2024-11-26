@@ -177,7 +177,7 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
                         _paddingtop02(),
                         _daftarWarga(),
                         _paddingtop02(),
-                        _lanjutWarga(),
+                        // _lanjutWarga(),
                       ],
                     ),
                   ),
@@ -300,7 +300,7 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
           style: TextStyle(
             color: Colors.brown[800],
             letterSpacing: 1.5,
-            fontSize: 18.0,
+            fontSize: 20.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
