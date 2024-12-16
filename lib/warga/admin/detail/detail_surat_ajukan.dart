@@ -55,12 +55,47 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
   bool loadingbuat = false;
   bool loadingbuatsurat = false;
   bool loadingactivity = false;
-  var _mySelection;
+
   // List masterSurat = [];
-  List<Map<String, dynamic>> jenissurat = [
-    {"value": "1", "nama": "Dokar"},
-    {"value": "2", "nama": "Srikandi"},
-  ];
+  List templateSUratAPI = [];
+  var _mySelection;
+  Future templateSurat() async {
+    final response = await http.get(
+      Uri.parse(
+          "https://dokar.kendalkab.go.id/webservice/android/surat/getPembuatan"),
+      headers: {
+        'key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09',
+      },
+    );
+    var templateJSON = json.decode(response.body);
+    if (mounted) {
+      setState(() {
+        templateSUratAPI = templateJSON;
+        print(templateJSON);
+        print("XXXXXX");
+      });
+    }
+  }
+
+  List listPenandatanganAPI = [];
+  var _penandatanganPilih;
+  Future penandatanganGET() async {
+    final response = await http.get(
+      Uri.parse(
+          "https://dokar.kendalkab.go.id/webservice/android/surat/getPenandatangan"),
+      headers: {
+        'key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09',
+      },
+    );
+    var ttdJSON = json.decode(response.body);
+    if (mounted) {
+      setState(() {
+        listPenandatanganAPI = ttdJSON;
+        print(ttdJSON);
+        print("TTD");
+      });
+    }
+  }
 
   final format = DateFormat("yyyy-MM-dd");
   late List dataDukungJSON = [];
@@ -375,17 +410,23 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
     Future.delayed(Duration(seconds: 3), () async {
       final response = await http.post(
         Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/surat/BuatSurat"),
+            "http://dokar.kendalkab.go.id/webservice/android/surat/BuatSuratAdmin"),
+        headers: {
+          "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+        },
         body: {
           "id_surat": '${widget.dIdSurat}',
           "id_desa": '${widget.dIdDesa}',
           "uid": '${widget.dUid}',
           "username": '${widget.dNama}',
-          "nomor": _nomorSuratController.text,
+          // "nomor": _nomorSuratController.text,
           "mulai": cMulai.text,
           "sampai": cSampai.text,
+          "maksudtujuan": cTujuan.text,
+          "penandatangan": _penandatanganPilih,
+          "ketlain": cKeteranganlain.text,
           "pembuatan": _mySelection,
-          "keterangan": cTujuan.text
+          // "keterangan": cTujuan.text
         },
       );
       var datauser = json.decode(response.body);
@@ -393,12 +434,13 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
       print('${widget.dIdDesa}');
       print('${widget.dUid}');
       print('${widget.dNama}');
-      print(_nomorSuratController.text);
       print(cMulai.text);
       print(cSampai.text);
       print(cTujuan.text);
-      print(datauser);
+      print(_penandatanganPilih);
+      print(cKeteranganlain.text);
       print(_mySelection);
+      Navigator.pop(context);
       if (datauser['Status'] == "Sukses") {
         setState(() {
           loadingbuatsurat = false;
@@ -496,6 +538,8 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
     getnomor();
     activityadmin();
     _detailWarga();
+    templateSurat();
+    penandatanganGET();
     super.initState();
   }
 
@@ -1670,7 +1714,60 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
     );
   }
 
+  Widget _formKeteranganlain() {
+    return Container(
+      // padding: EdgeInsets.all(3),
+      width: MediaQuery.of(this.context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: TextFormField(
+              maxLines: null,
+              controller: cKeteranganlain,
+              keyboardType: TextInputType.emailAddress,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(200),
+              ],
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(10.0),
+                  ),
+                ),
+                prefixIcon: Icon(
+                  Icons.my_library_books_rounded,
+                  color: Colors.brown[800],
+                ),
+                hintText: loadingdata ? "Memuat.." : "Keterangan",
+                hintStyle: TextStyle(
+                  color: Colors.grey[400],
+                ),
+              ),
+              autovalidateMode: AutovalidateMode.always,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Keterangan tidak boleh kosong';
+                }
+                return null; // Return null if the validation passes
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   TextEditingController cTujuan = TextEditingController();
+  TextEditingController cKeteranganlain = TextEditingController();
   Widget _accSurat() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return loadingbuatsurat == true
@@ -1739,6 +1836,11 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
                           _pilihSurat(),
                           _paddingtop01(),
                           _formTujuan(),
+                          _paddingtop01(),
+                          _formKeteranganlain(),
+                          _paddingtop01(),
+                          _pilihPenandatangan(),
+                          _paddingtop01(),
                           _paddingtop01(),
                           _tombolBuatSurat(),
                         ],
@@ -1982,8 +2084,21 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
             height: mediaQueryData.size.height * 0.06,
             child: ElevatedButton(
               onPressed: () {
+                // print('${widget.dIdSurat}');
+                // print('${widget.dIdDesa}');
+                // print('${widget.dUid}');
+                // print('${widget.dNama}');
+                // print(cMulai.text);
+                // print(cSampai.text);
+                // print(cTujuan.text);
+                // print(_penandatanganPilih);
+                // print(cKeteranganlain.text);
+                // print(_mySelection);
                 Navigator.pop(context);
                 if (cTujuan.text == "" || cTujuan.text.isEmpty) {
+                  Container();
+                } else if (cKeteranganlain.text == "" ||
+                    cKeteranganlain.text.isEmpty) {
                   Container();
                 } else if (_mySelection == null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -2212,6 +2327,57 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
     );
   }
 
+  Widget _pilihPenandatangan() {
+    return Column(
+      children: <Widget>[
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: DropdownButtonFormField(
+            //icon: Icon(Icons.accessibility_),
+            // underline: SizedBox(),
+            isDense: true,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.edit),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
+                ),
+              ),
+              // hintText: 'Judul Berita',
+              hintStyle: TextStyle(
+                fontSize: 15,
+                color: Colors.brown[800],
+              ),
+              // prefixIcon: Icon(
+              //   Icons.text_fields,
+              //   color: Colors.grey,
+              // ),
+            ),
+            hint: Text('Pilih Penandatangan'),
+            items: listPenandatanganAPI.map((item) {
+              return DropdownMenuItem(
+                child: Text(item['penandatangan'].toString()),
+                value: item['id'],
+              );
+            }).toList(),
+            onChanged: (selectedItem) {
+              _penandatanganPilih = selectedItem as String;
+              // print(val);
+              if (kDebugMode) {
+                print(_penandatanganPilih);
+              }
+            },
+            value: _penandatanganPilih,
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _pilihSurat() {
     return Column(
       children: <Widget>[
@@ -2243,10 +2409,10 @@ class _HalDetailSuratAjukanState extends State<HalDetailSuratAjukan> {
               // ),
             ),
             hint: Text('Pilih Jenis Surat'),
-            items: jenissurat.map((item) {
+            items: templateSUratAPI.map((item) {
               return DropdownMenuItem(
-                child: Text(item['nama']),
-                value: item['value'],
+                child: Text(item['pembuatan'].toString()),
+                value: item['id'],
               );
             }).toList(),
             onChanged: (selectedItem) {

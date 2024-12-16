@@ -36,14 +36,24 @@ def keystoreProperties = new Properties()
 
 
 android {
+    namespace "com.dokar.kendalkab"
     compileSdkVersion 34
     ndkVersion "25.1.8937393"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-
-     lintOptions {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // kotlinOptions {
+    //     jvmTarget = "1.8"
+    // }
+    // kotlin {
+    //     jvmToolchain(8)
+    // }
+    lintOptions {
         disable 'InvalidPackage'
         disable "Instantiatable"
         checkReleaseBuilds false
@@ -82,6 +92,8 @@ android {
         }
     }
 }
+
+
 
 flutter {
     source '../..'

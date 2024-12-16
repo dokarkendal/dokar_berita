@@ -76,7 +76,8 @@ class _DaftarAdminState extends State<DaftarAdmin> {
       Duration(seconds: 1),
       () async {
         final response = await http.post(
-            Uri.parse("http://dokar.kendalkab.go.id/webservice/android/login"),
+            Uri.parse(
+                "http://dokar.kendalkab.go.id/webservice/android/login/admin"),
             body: {
               "username": user.text,
               "password": pass.text,

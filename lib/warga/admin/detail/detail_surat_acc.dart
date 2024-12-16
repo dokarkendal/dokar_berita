@@ -57,7 +57,7 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
   bool loadingbuat = false;
   double? _progress;
   String _status = '';
-  var _mySelection;
+
   List<Map<String, dynamic>> jenissurat = [
     {"value": "1", "nama": "Dokar"},
     {"value": "2", "nama": "Srikandi"},
@@ -257,6 +257,46 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     }
   }
 
+  List listPenandatanganAPI = [];
+  var _penandatanganPilih;
+  Future penandatanganGET() async {
+    final response = await http.get(
+      Uri.parse(
+          "https://dokar.kendalkab.go.id/webservice/android/surat/getPenandatangan"),
+      headers: {
+        'key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09',
+      },
+    );
+    var ttdJSON = json.decode(response.body);
+    if (mounted) {
+      setState(() {
+        listPenandatanganAPI = ttdJSON;
+        print(ttdJSON);
+        print("TTD");
+      });
+    }
+  }
+
+  List templateSUratAPI = [];
+  var _mySelection;
+  Future templateSurat() async {
+    final response = await http.get(
+      Uri.parse(
+          "https://dokar.kendalkab.go.id/webservice/android/surat/getPembuatan"),
+      headers: {
+        'key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09',
+      },
+    );
+    var templateJSON = json.decode(response.body);
+    if (mounted) {
+      setState(() {
+        templateSUratAPI = templateJSON;
+        print(templateJSON);
+        print("XXXXXX");
+      });
+    }
+  }
+
   void buatSurat() async {
     MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     setState(
@@ -268,26 +308,37 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     Future.delayed(Duration(seconds: 3), () async {
       final response = await http.post(
         Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/surat/BuatSurat"),
+            "http://dokar.kendalkab.go.id/webservice/android/surat/BuatSuratAdmin"),
+        headers: {
+          "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+        },
         body: {
           "id_surat": '${widget.dIdSurat}',
           "id_desa": '${widget.dIdDesa}',
           "uid": '${widget.dUid}',
           "username": '${widget.dNama}',
-          "nomor": _nomorSuratController.text,
+          // "nomor": _nomorSuratController.text,
           "mulai": cMulai.text,
           "sampai": cSampai.text,
+          "maksudtujuan": cTujuan.text,
+          "penandatangan": _penandatanganPilih,
+          "ketlain": cKeteranganlain.text,
           "pembuatan": _mySelection,
-          "keterangan": cKeterangan.text
+          // "keterangan": cTujuan.text
         },
       );
       var datauser = json.decode(response.body);
-      print(_nomorSuratController.text);
+      print('${widget.dIdSurat}');
+      print('${widget.dIdDesa}');
+      print('${widget.dUid}');
+      print('${widget.dNama}');
       print(cMulai.text);
       print(cSampai.text);
-      print(cKeterangan.text);
-      print(datauser);
+      print(cTujuan.text);
+      print(_penandatanganPilih);
+      print(cKeteranganlain.text);
       print(_mySelection);
+      Navigator.pop(context);
       if (datauser['Status'] == "Sukses") {
         setState(() {
           loadingbuat = false;
@@ -385,6 +436,8 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     getnomor();
     activityadmin();
     _detailWarga();
+    templateSurat();
+    penandatanganGET();
     super.initState();
   }
 
@@ -1381,7 +1434,8 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     );
   }
 
-  TextEditingController cKeterangan = TextEditingController();
+  TextEditingController cTujuan = TextEditingController();
+  TextEditingController cKeteranganlain = TextEditingController();
   Widget _buatSurat() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return loadingbuat == true
@@ -1449,9 +1503,14 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
                           _paddingtop01(),
                           _pilihSurat(),
                           _paddingtop01(),
-                          _formKeterangan(),
+                          _formTujuan(),
                           _paddingtop01(),
-                          _tombolTolakSurat(),
+                          _formKeteranganlain(),
+                          _paddingtop01(),
+                          _pilihPenandatangan(),
+                          _paddingtop01(),
+                          _paddingtop01(),
+                          _tombolBuatSurat(),
                         ],
                       ),
                     ),
@@ -1480,7 +1539,58 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
           );
   }
 
-  Widget _formKeterangan() {
+  Widget _pilihPenandatangan() {
+    return Column(
+      children: <Widget>[
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: DropdownButtonFormField(
+            //icon: Icon(Icons.accessibility_),
+            // underline: SizedBox(),
+            isDense: true,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.edit),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(10.0),
+                ),
+              ),
+              // hintText: 'Judul Berita',
+              hintStyle: TextStyle(
+                fontSize: 15,
+                color: Colors.brown[800],
+              ),
+              // prefixIcon: Icon(
+              //   Icons.text_fields,
+              //   color: Colors.grey,
+              // ),
+            ),
+            hint: Text('Pilih Penandatangan'),
+            items: listPenandatanganAPI.map((item) {
+              return DropdownMenuItem(
+                child: Text(item['penandatangan'].toString()),
+                value: item['id'],
+              );
+            }).toList(),
+            onChanged: (selectedItem) {
+              _penandatanganPilih = selectedItem as String;
+              // print(val);
+              if (kDebugMode) {
+                print(_penandatanganPilih);
+              }
+            },
+            value: _penandatanganPilih,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _formKeteranganlain() {
     return Container(
       // padding: EdgeInsets.all(3),
       width: MediaQuery.of(this.context).size.width,
@@ -1495,7 +1605,59 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
             ),
             child: TextFormField(
               maxLines: null,
-              controller: cKeterangan,
+              controller: cKeteranganlain,
+              keyboardType: TextInputType.emailAddress,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(200),
+              ],
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(10.0),
+                  ),
+                ),
+                prefixIcon: Icon(
+                  Icons.my_library_books_rounded,
+                  color: Colors.brown[800],
+                ),
+                hintText: loadingdata ? "Memuat.." : "Keterangan",
+                hintStyle: TextStyle(
+                  color: Colors.grey[400],
+                ),
+              ),
+              autovalidateMode: AutovalidateMode.always,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Keterangan tidak boleh kosong';
+                }
+                return null; // Return null if the validation passes
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _formTujuan() {
+    return Container(
+      // padding: EdgeInsets.all(3),
+      width: MediaQuery.of(this.context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: TextFormField(
+              maxLines: null,
+              controller: cTujuan,
               keyboardType: TextInputType.emailAddress,
               style: TextStyle(
                 color: Colors.black,
@@ -1532,6 +1694,58 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     );
   }
 
+  // Widget _formKeteranganl() {
+  //   return Container(
+  //     // padding: EdgeInsets.all(3),
+  //     width: MediaQuery.of(this.context).size.width,
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: <Widget>[
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(10),
+  //             color: Colors.white,
+  //           ),
+  //           child: TextFormField(
+  //             maxLines: null,
+  //             controller: cKeteranganlain,
+  //             keyboardType: TextInputType.emailAddress,
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //             ),
+  //             inputFormatters: [
+  //               LengthLimitingTextInputFormatter(200),
+  //             ],
+  //             decoration: InputDecoration(
+  //               border: OutlineInputBorder(
+  //                 borderRadius: const BorderRadius.all(
+  //                   const Radius.circular(10.0),
+  //                 ),
+  //               ),
+  //               prefixIcon: Icon(
+  //                 Icons.my_library_books_rounded,
+  //                 color: Colors.brown[800],
+  //               ),
+  //               hintText: loadingdata ? "Memuat.." : "Tujuan",
+  //               hintStyle: TextStyle(
+  //                 color: Colors.grey[400],
+  //               ),
+  //             ),
+  //             autovalidateMode: AutovalidateMode.always,
+  //             validator: (value) {
+  //               if (value == null || value.isEmpty) {
+  //                 return 'Keterangan tidak boleh kosong';
+  //               }
+  //               return null; // Return null if the validation passes
+  //             },
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   Widget _formNomor() {
     return Container(
       // padding: EdgeInsets.all(3),
@@ -1547,8 +1761,11 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
             ),
             child: TextFormField(
               enabled: false,
+
               // maxLines: null,
-              controller: _nomorSuratController,
+              // controller: _nomorSuratController, //
+              controller:
+                  TextEditingController(text: 'Nomor Otomatis'), // Example text
               keyboardType: TextInputType.emailAddress,
               style: TextStyle(
                 color: Colors.black,
@@ -1727,7 +1944,7 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
     );
   }
 
-  Widget _tombolTolakSurat() {
+  Widget _tombolBuatSurat() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return loadingbuat == true
         ? Container(
@@ -1758,7 +1975,10 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                if (cKeterangan.text == "" || cKeterangan.text.isEmpty) {
+                if (cTujuan.text == "" || cTujuan.text.isEmpty) {
+                  Container();
+                } else if (cKeteranganlain.text == "" ||
+                    cKeteranganlain.text.isEmpty) {
                   Container();
                 } else if (_mySelection == null) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

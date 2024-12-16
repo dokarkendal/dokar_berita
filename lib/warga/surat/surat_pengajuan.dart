@@ -45,6 +45,7 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
       setState(() {
         kategoriSuratAPI = getsuratJSON;
         print(getsuratJSON);
+        print("XXXXXX");
       });
     }
   }

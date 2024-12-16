@@ -55,22 +55,6 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
               '/HalDashboardWarga', ModalRoute.withName('/HalDashboardWarga'));
         });
         print(loginwargaJSON);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(
-        //     content: Text(
-        //       loginwargaJSON[0]['notif'],
-        //       style: TextStyle(color: Colors.white),
-        //     ),
-        //     backgroundColor: Colors.green,
-        //     action: SnackBarAction(
-        //       label: 'OK',
-        //       textColor: Colors.white,
-        //       onPressed: () {
-        //         print('ULANGI snackbar');
-        //       },
-        //     ),
-        //   ),
-        // );
       } else {
         SharedPreferences pref = await SharedPreferences.getInstance();
         pref.setBool("_isLoggedIn", false);
@@ -218,6 +202,7 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
     );
   }
 
+  // ignore: unused_element
   Widget _lanjutWarga() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(

@@ -18,6 +18,7 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
   String? ditolak = "";
   String? diajukan = "";
   String? menunggu = "";
+  String? nomorSurat = "";
 
   Future _jumlahSurat() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -50,10 +51,78 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
     }
   }
 
+  Future fetchNomorSurat() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      loadingdata = true;
+    });
+    final response = await http.post(
+        Uri.parse(
+            "https://dokar.kendalkab.go.id/webservice/android/surat/KodeInisial"),
+        headers: {
+          "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+        },
+        body: {
+          "id_desa": pref.getString("IdDesa"),
+        });
+
+    if (mounted) {
+      if (response.statusCode == 200) {
+        var kode = json.decode(response.body)["kode"];
+        print(kode);
+        setState(() {
+          nomorSurat = kode;
+          loadingdata = false;
+        });
+      } else {
+        setState(() {
+          loadingdata = false;
+        });
+      }
+    }
+    // final response = await http.post(
+    //     Uri.parse(
+    //         "https://dokar.kendalkab.go.id/webservice/android/surat/KodeInisial"),
+    //     headers: {
+    //       "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+    //     },
+    //     body: {
+    //       "id_desa": pref.getString("IdDesa").toString(),
+    //     });
+    // var datauser = json.decode(response.body);
+    // print(datauser);
+    // try {
+    //   if (response.statusCode == 200) {
+    //     final data = json.decode(response.body);
+    //     setState(() {
+    //       nomorSurat = data['kode'] ?? "Data tidak ditemukan";
+    //     });
+    //     print(nomorSurat);
+    //   } else {
+    //     setState(() {
+    //       nomorSurat = "Gagal memuat data: ${response.statusCode}";
+    //     });
+    //     print(nomorSurat);
+    //   }
+    // } catch (e) {
+    //   setState(() {
+    //     nomorSurat = "Terjadi kesalahan: $e";
+    //   });
+    //   print(nomorSurat);
+    // }
+  }
+
   @override
   void initState() {
     super.initState();
+    fetchNomorSurat();
     _jumlahSurat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchNomorSurat();
   }
 
   @override
@@ -83,6 +152,8 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
               padding: EdgeInsets.all(10),
               child: Column(
                 children: [
+                  editNomor(),
+                  Divider(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -170,7 +241,7 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
                 const Text(
                   'Surat menunggu', //IBADAH
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -264,7 +335,7 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
                 const Text(
                   'Surat diajukan', //IBADAH
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -357,7 +428,7 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
                 const Text(
                   'Surat ditolak', //IBADAH
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -450,7 +521,7 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
                 const Text(
                   'Surat sudah verif', //IBADAH
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -472,6 +543,96 @@ class _HalSuratAdminState extends State<HalSuratAdmin> {
                       ),
                     ),
                   ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget editNomor() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      width: mediaQueryData.size.width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(0.0, 3.0),
+              blurRadius: 7.0),
+        ],
+        border: Border.all(width: 2, color: Colors.green),
+      ),
+      child: Material(
+        color: Colors.green.withOpacity(0.2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, '/HalNomorSurat')
+                .then((value) => fetchNomorSurat());
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.numbers_rounded,
+                      color: Colors.green,
+                      size: 50,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: mediaQueryData.size.width * 0.01,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Kode Nomor Surat',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          nomorSurat!,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/HalNomorSurat');
+                  },
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
                 ),
               ],
             ),

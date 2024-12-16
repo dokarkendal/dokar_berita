@@ -34,19 +34,48 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
   bool _loading = false;
   bool _inProcess = false;
   List dokumenAPI = [];
-  // var _pilihDokumen;
+  bool _showKeterangan = false;
   TextEditingController cKeterangan = TextEditingController();
+  var _pilihDokumen;
+  // Future<void> getKelamin() async {
+  //   final response = await http.get(
+  //     Uri.parse(
+  //         "http://dokar.kendalkab.go.id/webservice/android/surat/JenisDataDukung"),
+  //   );
+  //   var getdokumenJSON = json.decode(response.body);
+  //   if (mounted) {
+  //     setState(() {
+  //       dokumenAPI = getdokumenJSON;
+  //       print(getdokumenJSON);
+  //     });
+  //   }
+  // }
   Future<void> getKelamin() async {
-    final response = await http.get(
-      Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/dashbord/jenisdatadukung"),
-    );
-    var getdokumenJSON = json.decode(response.body);
-    if (mounted) {
-      setState(() {
-        dokumenAPI = getdokumenJSON;
-        print(getdokumenJSON);
-      });
+    try {
+      final response = await http.get(
+        Uri.parse(
+            "http://dokar.kendalkab.go.id/webservice/android/surat/JenisDataDukung"),
+        headers: {
+          'Key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09', // Tambahkan header di sini
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData["Status"] == "Sukses") {
+          setState(() {
+            dokumenAPI = responseData["Data"]; // Ambil array Data
+            print(dokumenAPI);
+          });
+        } else {
+          print("Data gagal dimuat: ${responseData["Status"]}");
+        }
+      } else {
+        print("Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
     }
   }
 
@@ -60,47 +89,35 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
     XFile? image = await ImagePicker().pickImage(source: source);
 
     if (image != null) {
-      File? cropped = await ImageCropper().cropImage(
+      _inProcess = true;
+      CroppedFile? cropped = await ImageCropper().cropImage(
         sourcePath: image.path,
-        // aspectRatioPresets: [
-        //   CropAspectRatioPreset.original, // Add the "Free Crop" option
-        //   CropAspectRatioPreset.square,
-        //   CropAspectRatioPreset.ratio3x2,
-        //   CropAspectRatioPreset.ratio4x3,
-        //   CropAspectRatioPreset.ratio16x9
-        // ],
-
-        // aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-
+        aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
         compressQuality: 100,
-        maxWidth:
-            850, // Sesuaikan dengan ukuran maksimum lebar kartu identitas dalam piksel
-        maxHeight: 540,
+        maxWidth: 572,
+        maxHeight: 396,
         cropStyle: CropStyle.rectangle,
         compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: const AndroidUiSettings(
-          toolbarColor: Colors.black,
-          toolbarTitle: "Crop",
-          statusBarColor: Colors.black,
-          backgroundColor: Colors.black,
-          toolbarWidgetColor: Colors.white,
-          hideBottomControls: true,
-          lockAspectRatio: false,
-        ),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarColor: Colors.black,
+            toolbarTitle: "Crop",
+            statusBarColor: Color.fromARGB(255, 53, 23, 23),
+            backgroundColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            hideBottomControls: true,
+          ),
+        ],
       );
 
-      setState(
-        () {
-          _selectedFile = cropped;
-          _inProcess = false;
-        },
-      );
+      setState(() {
+        _selectedFile = File(cropped!.path); // Convert CroppedFile to File
+        _inProcess = false;
+      });
     } else {
-      setState(
-        () {
-          _inProcess = false;
-        },
-      );
+      setState(() {
+        _inProcess = false;
+      });
     }
   }
 
@@ -131,8 +148,9 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
         );
         var length = await _selectedFile.length();
         var uri = Uri.parse(
-            "https://dokar.kendalkab.go.id/webservice/android/surat/UploadDtDukungPengajuan");
+            "https://dokar.kendalkab.go.id/webservice/android/surat/UploadDtDukungPengajuanWarga");
         var request = http.MultipartRequest("POST", uri);
+        request.headers['Key'] = 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09';
         var multipartFile = http.MultipartFile(
           "file",
           stream,
@@ -141,6 +159,7 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
         );
         request.fields['id_surat'] = "${widget.dIdTambah}";
         request.fields['uid'] = pref.getString("uid")!;
+        request.fields['jenis'] = _pilihDokumen;
         request.fields['nama'] = cKeterangan.text;
         request.files.add(multipartFile);
         var response = await request.send();
@@ -191,6 +210,9 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
           // ignore: deprecated_member_use
           // scaffoldKey.currentState?.showSnackBar(snackBar);
           clearimage();
+          setState(() {
+            _pilihDokumen = null;
+          });
           cKeterangan.clear();
           // setState(() {
           //   _pilihDokumen = null;
@@ -286,7 +308,10 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
               _paddingTop2(),
               // _formJenisDokumen(),
               // _paddingTop2(),
-              _formKeterangan(),
+              _formJenisDokumen(),
+              _paddingTop2(),
+              _paddingTop2(),
+              if (_showKeterangan) _formKeterangan(),
               _paddingTop2(),
               _paddingTop2(),
               Row(
@@ -368,12 +393,13 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
                   onPressed: () async {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
+                    print("keterangan UID: ${prefs.getString("uid")}");
                     print(cKeterangan.text);
                     print("${widget.dIdTambah}");
-                    print(prefs.getString("uid"));
+
                     print(_selectedFile);
 
-                    if (cKeterangan.text.isEmpty) {
+                    if (_showKeterangan && cKeterangan.text.isEmpty) {
                       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
                         duration: const Duration(seconds: 2),
                         elevation: 6.0,
@@ -627,55 +653,6 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
     }
   }
 
-  // Widget _formJenisDokumen() {
-  //   return Container(
-  //     width: MediaQuery.of(this.context).size.width,
-  //     child: Column(
-  //       children: <Widget>[
-  //         Container(
-  //           decoration: decorationTextField,
-  //           child: DropdownButtonFormField(
-  //             isDense: true,
-  //             decoration: InputDecoration(
-  //               prefixIcon:
-  //                   Icon(Icons.document_scanner, color: Colors.brown[800]),
-  //               border: new OutlineInputBorder(
-  //                 borderRadius: const BorderRadius.all(
-  //                   const Radius.circular(10.0),
-  //                 ),
-  //               ),
-  //               hintStyle: TextStyle(
-  //                 fontSize: 15,
-  //                 color: Colors.grey[400],
-  //               ),
-  //             ),
-  //             hint: Text('Pilih Jenis Dokumen'),
-  //             isExpanded: true,
-  //             items: dokumenAPI.map(
-  //               (item0) {
-  //                 return DropdownMenuItem(
-  //                   child: Text(item0['nama'].toString()),
-  //                   value: item0['id'].toString(),
-  //                 );
-  //               },
-  //             ).toList(),
-  //             onChanged: (val) async {
-  //               setState(() {
-  //                 _pilihDokumen = val as String;
-  //                 print("KLIK");
-  //                 print(_pilihDokumen);
-  //               });
-
-  //               // Wait for getKecamatan() to complete before rebuilding the widget
-  //             },
-  //             value: _pilihDokumen,
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _formKeterangan() {
     return Container(
       // padding: EdgeInsets.all(3),
@@ -714,6 +691,57 @@ class _HalDataDukungSuratState extends State<HalDataDukungSurat> {
                   color: Colors.grey[400],
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _formJenisDokumen() {
+    return Container(
+      width: MediaQuery.of(this.context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "Jenis Dokumen",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Container(
+            decoration: decorationTextField, // Dekorasi khusus TextField
+            child: DropdownButtonFormField<String>(
+              isDense: true,
+              decoration: InputDecoration(
+                prefixIcon:
+                    Icon(Icons.document_scanner, color: Colors.brown[800]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
+                  ),
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[400],
+                ),
+              ),
+              hint: Text('Pilih Jenis Dokumen'),
+              isExpanded: true,
+              items: dokumenAPI.map<DropdownMenuItem<String>>((item) {
+                return DropdownMenuItem<String>(
+                  value: item['id'], // ID dokumen
+                  child: Text(item['nama']), // Nama dokumen
+                );
+              }).toList(),
+              onChanged: (String? val) {
+                setState(() {
+                  _pilihDokumen = val!; // Update dokumen terpilih
+                  _showKeterangan = (val == "3"); //
+                  print("Dokumen Terpilih: $_pilihDokumen");
+                });
+              },
+              value: _pilihDokumen,
             ),
           ),
         ],

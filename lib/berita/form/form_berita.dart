@@ -47,7 +47,8 @@ class FormBeritaState extends State<FormBerita> {
     XFile? image = await ImagePicker().pickImage(source: source);
 
     if (image != null) {
-      File? cropped = await ImageCropper().cropImage(
+      _inProcess = true;
+      CroppedFile? cropped = await ImageCropper().cropImage(
         sourcePath: image.path,
         aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 2),
         compressQuality: 100,
@@ -55,29 +56,26 @@ class FormBeritaState extends State<FormBerita> {
         maxHeight: 396,
         cropStyle: CropStyle.rectangle,
         compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: const AndroidUiSettings(
-          toolbarColor: Colors.black,
-          toolbarTitle: "Crop",
-          statusBarColor: Colors.black,
-          backgroundColor: Colors.black,
-          toolbarWidgetColor: Colors.white,
-          hideBottomControls: true,
-        ),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarColor: Colors.black,
+            toolbarTitle: "Crop",
+            statusBarColor: Color.fromARGB(255, 53, 23, 23),
+            backgroundColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            hideBottomControls: true,
+          ),
+        ],
       );
 
-      setState(
-        () {
-          _selectedFile = cropped;
-          _inProcess = false;
-          print(_selectedFile);
-        },
-      );
+      setState(() {
+        _selectedFile = File(cropped!.path); // Convert CroppedFile to File
+        _inProcess = false;
+      });
     } else {
-      setState(
-        () {
-          _inProcess = false;
-        },
-      );
+      setState(() {
+        _inProcess = false;
+      });
     }
   }
 

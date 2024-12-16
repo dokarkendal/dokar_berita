@@ -179,20 +179,23 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
     Future.delayed(Duration(seconds: 3), () async {
       final response = await http.post(
         Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/surat/AjukanSurat"),
+            "http://dokar.kendalkab.go.id/webservice/android/surat/AjukanSuratwarga"),
+        headers: {
+          'Key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09',
+        },
         body: {
           "uid": pref.getString("uid").toString(),
           "id_surat": widget.dIdSurat.toString(),
-          "username": pref.getString("userAdmin").toString(),
+          "username": pref.getString("user_name").toString(),
         },
       );
       var ajukansurat = json.decode(response.body);
       print(
-        pref.getString("uid").toString(),
+        'UID: ${pref.getString("uid").toString()}',
       );
-      print(widget.dIdSurat.toString());
-      print(pref.getString("userAdmin").toString());
-      print(ajukansurat);
+      print('ID Surat: ${widget.dIdSurat.toString()}');
+      print('Useradmin: ${pref.getString("user_name").toString()}');
+      print('Response: $ajukansurat');
       if (ajukansurat['Status'] == "Sukses") {
         setState(() {
           loadingajukansurat = false;
@@ -281,6 +284,82 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
         );
       }
     });
+  }
+
+  Future<void> _deleteItem(String uid, String idSurat, String id) async {
+    // Define the API URL
+    final String apiUrl =
+        "https://dokar.kendalkab.go.id/webservice/android/surat/DeleteDtDukungPengajuanWarga";
+
+    // Define the headers with the provided key
+    final Map<String, String> headers = {
+      'Key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09', // Your header key
+    };
+
+    // Prepare the request body as a map
+    final Map<String, String> requestBody = {
+      'uid': uid,
+      'id_surat': idSurat,
+      'id': id,
+    };
+
+    try {
+      // Send POST request with headers
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: headers,
+        body: requestBody,
+      );
+
+      // Check the response status
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        // Check if the response indicates success
+        if (responseData['Status'] == 'Sukses') {
+          // Notify the user of successful deletion
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(responseData['Notif']),
+              backgroundColor: Colors.green,
+            ),
+          );
+
+          // Reload the page by calling setState
+          // Check if the list only has one item left
+          if (dataTambahJSON.length == 1) {
+            // Clear the list
+            setState(() {
+              dataTambahJSON.clear();
+            });
+          } else {
+            // Reload the page by calling setState
+            setState(() {
+              detailDataTambah();
+            }); // Trigger a UI rebuild (reload)
+          }
+        } else {
+          // Handle API failure (if any)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Failed to delete: ${responseData['Notif']}')),
+          );
+        }
+      } else {
+        // Handle HTTP error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('Request failed with status: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      // Handle any other errors (network issues, etc.)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   @override
@@ -1027,10 +1106,16 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
               widget.dStatus == 'Surat Sudah Dibuat' ||
                       widget.dStatus == 'Surat Diajukan'
                   ? Center()
-                  : IconButton(
-                      icon: Icon(Icons.add_box_rounded),
-                      color: Colors.brown[800],
-                      iconSize: 25.0,
+                  : ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(40, 30),
+                        padding: EdgeInsets.all(5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -1042,6 +1127,16 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                         ).then((value) => detailDataTambah());
                         // Navigator.pushNamed(context, '/HalDataDukungSurat');
                       },
+                      icon: Icon(
+                        Icons.add_box_rounded,
+                        size: 18,
+                      ),
+                      label: Text(
+                        "Tambah",
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),
+                      ),
                     ),
             ],
           ),
@@ -1089,79 +1184,182 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                           ),
                           elevation: 1.0,
                           color: Colors.white,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailGaleriWarga(
-                                    dGambar: dataTambahJSON[i]["file"],
-                                    dJudul: dataTambahJSON[i]["nama"],
-                                  ),
-                                ),
+                          child: Dismissible(
+                            key: Key(dataTambahJSON[i]
+                                ["nama"]), // Unique key for each item
+                            background: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: EdgeInsets.only(right: 20.0),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                            confirmDismiss: (direction) async {
+                              // Show confirmation dialog
+                              return await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("Konfirmasi Hapus"),
+                                    content: Text(
+                                        "Apakah Anda yakin ingin menghapus item ini?"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: Text("Batal"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          // Call your delete API here
+                                          try {
+                                            // Replace with your actual API call
+                                            // final response = await deleteItemApi(dataTambahJSON[i]["id"]);
+
+                                            // If API call is successful
+                                            Navigator.of(context).pop(true);
+                                          } catch (e) {
+                                            // Handle error
+                                            Navigator.of(context).pop(false);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                  content: Text(
+                                                      "Gagal menghapus item")),
+                                            );
+                                          }
+                                        },
+                                        child: Text("Hapus"),
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
                             },
-                            child: Row(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(right: 15.0),
-                                  width: 70.0,
-                                  height: 50.0,
-                                  child: CachedNetworkImage(
-                                    imageUrl: dataTambahJSON[i]["file"],
-                                    placeholder: (context, url) => Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            "assets/images/load.png",
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                            onDismissed: (direction) {
+                              // Remove the item from the list
+                              setState(() {
+                                dataTambahJSON.removeAt(i);
+                              });
+                            },
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailGaleriWarga(
+                                      dGambar: dataTambahJSON[i]["file"],
+                                      dJudul: dataTambahJSON[i]["nama"],
                                     ),
-                                    fit: BoxFit.cover,
-                                    height: 150.0,
-                                    width: 110.0,
                                   ),
-                                ),
-                                Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        right: 10.0,
-                                        // top: 5.0,
-                                      ),
-                                      child: Text(
-                                        dataTambahJSON[i]["nama"],
-                                        style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                            child: Text(
-                                              "Klik untuk melihat",
-                                              style: TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.grey[500],
-                                              ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 15.0),
+                                    width: 70.0,
+                                    height: 50.0,
+                                    child: CachedNetworkImage(
+                                      imageUrl: dataTambahJSON[i]["file"],
+                                      placeholder: (context, url) => Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                              "assets/images/load.png",
                                             ),
+                                            fit: BoxFit.cover,
                                           ),
-                                        ],
+                                        ),
                                       ),
+                                      fit: BoxFit.cover,
+                                      height: 150.0,
+                                      width: 110.0,
                                     ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 10.0,
+                                          ),
+                                          child: Text(
+                                            dataTambahJSON[i]["nama"],
+                                            style: TextStyle(
+                                              fontSize: 13.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                child: Text(
+                                                  "Klik untuk melihat",
+                                                  style: TextStyle(
+                                                    fontSize: 12.0,
+                                                    color: Colors.grey[500],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Delete button
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Konfirmasi Hapus"),
+                                            content: Text(
+                                                "Apakah Anda yakin ingin menghapus item ini?"),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context).pop(),
+                                                child: Text("Batal"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  SharedPreferences pref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  // Panggil metode delete dengan parameter yang sesuai
+                                                  _deleteItem(
+                                                      pref
+                                                          .getString("uid")
+                                                          .toString(), // Ganti dengan uid aktual
+                                                      dataTambahJSON[i]
+                                                          ['id_surat'],
+                                                      dataTambahJSON[i]['id']);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Hapus"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

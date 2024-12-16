@@ -85,6 +85,7 @@ import 'package:dokar_aplikasi/warga/hal_lengkapi_data_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_lengkapi_dokumen_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_profil_warga.dart';
 import 'package:dokar_aplikasi/warga/surat/detail_surat_warga.dart';
+import 'package:dokar_aplikasi/warga/surat/hal_nomor_surat.dart';
 import 'package:dokar_aplikasi/warga/surat/hal_surat_semua.dart';
 import 'package:dokar_aplikasi/warga/surat/surat_pengajuan.dart';
 import 'package:flutter/material.dart';
@@ -257,6 +258,7 @@ void main() {
               nama: '',
             ),
         '/Berita': (BuildContext context) => Berita(),
+        '/HalNomorSurat': (BuildContext context) => HalNomorSurat(),
         '/Agenda': (BuildContext context) => Agenda(),
         '/HalAkun': (BuildContext context) => HalAkun(),
         '/PilihAKun': (BuildContext context) => PilihAKun(),

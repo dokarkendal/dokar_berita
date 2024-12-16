@@ -1,5 +1,6 @@
 buildscript {
-    ext.kotlin_version = '1.8.10'
+    // ext.kotlin_version = '1.8.10'
+    ext.kotlin_version = '1.9.10'
     repositories {
         google()
         mavenCentral()
@@ -7,15 +8,31 @@ buildscript {
 
     dependencies {
         //  classpath 'com.android.tools.build:gradle:4.1.0'
-        classpath 'com.android.tools.build:gradle:7.1.2' 
+        // classpath 'com.android.tools.build:gradle:7.1.2' 
+        classpath 'com.android.tools.build:gradle:8.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-
+// java {
+//     toolchain {
+//         languageVersion = JavaLanguageVersion.of(17)
+//     }
+// }
 allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -26,7 +43,20 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(':app')
 }
-
+// subprojects {
+//     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+//         kotlinOptions {
+//             jvmTarget = "1.8" // Atau "11" jika Anda memerlukan JVM yang lebih baru
+//         }
+//     }
+// }
+subprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+}
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
