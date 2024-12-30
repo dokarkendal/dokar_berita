@@ -54,7 +54,10 @@ class ListPenulisState extends State<ListPenulis> {
     // });
     final response = await http.post(
         Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/account/deletepenulis"),
+            "http://dokar.kendalkab.go.id/webservice/android/account/deletepenulisadmin"),
+        headers: {
+          "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+        },
         body: {
           "IdAdmin": beritaAdmin,
           "IdDesa": pref.getString("IdDesa"),
@@ -64,16 +67,37 @@ class ListPenulisState extends State<ListPenulis> {
     var deleted = json.decode(response.body);
 
     print(deleted);
-    if (deleted[0]["Notif"] == "Delete Berhasil.") {
+    if (deleted[0]["Status"] == "Sukses") {
       setState(
         () {
           // _isInAsyncCall = false;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
-              'Akun berhasil di hapus',
+              deleted[0]["Notif"],
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.green,
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                print('ULANGI snackbar');
+              },
+            ),
+          ));
+          // Navigator.pushReplacementNamed(context, '/ListPenulis');
+        },
+      );
+    } else {
+      setState(
+        () {
+          // _isInAsyncCall = false;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              deleted[0]["Notif"],
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
             action: SnackBarAction(
               label: 'OK',
               textColor: Colors.white,

@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:path/path.dart';
 import 'dart:async';
 
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:async/async.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/api_service.dart';
 import '../style/styleset.dart';
 // api to json
 
@@ -95,140 +94,242 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
     );
   }
 
-  Future upload(File _selectedFile) async {
+  // Future upload(File _selectedFile) async {
+  //   MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   setState(
+  //     () {
+  //       _loading = true;
+  //     },
+  //   );
+  //   Future.delayed(
+  //     const Duration(seconds: 2),
+  //     () async {
+  //       var stream = http.ByteStream(
+  //         // ignore: deprecated_member_use
+  //         DelegatingStream.typed(
+  //           _selectedFile.openRead(),
+  //         ),
+  //       );
+  //       var length = await _selectedFile.length();
+  //       var uri = Uri.parse(
+  //           "https://dokar.kendalkab.go.id/webservice/android/account/UploadDatadukung");
+  //       var request = http.MultipartRequest("POST", uri);
+  //       var multipartFile = http.MultipartFile(
+  //         "file",
+  //         stream,
+  //         length,
+  //         filename: basename(_selectedFile.path),
+  //       );
+  //       request.fields['uid'] = pref.getString("uid")!;
+  //       request.fields['keterangan'] = _pilihDokumen;
+  //       request.files.add(multipartFile);
+  //       var response = await request.send();
+  //       if (response.statusCode == 200) {
+  //         if (kDebugMode) {
+  //           print(_selectedFile);
+  //           print("Image Uploaded");
+  //         }
+  //         setState(
+  //           () {
+  //             _loading = false;
+  //           },
+  //         );
+  //         ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
+  //           duration: const Duration(seconds: 2),
+  //           elevation: 6.0,
+  //           behavior: SnackBarBehavior.floating,
+  //           content: Row(
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: [
+  //               const Icon(
+  //                 Icons.check_circle,
+  //                 size: 30,
+  //                 color: Colors.white,
+  //               ),
+  //               SizedBox(
+  //                 width: mediaQueryData.size.width * 0.01,
+  //               ),
+  //               const Text(
+  //                 'Dokumen berhasil diunggah',
+  //                 style: TextStyle(color: Colors.white),
+  //               ),
+  //             ],
+  //           ),
+  //           backgroundColor: Colors.green,
+  //           action: SnackBarAction(
+  //             label: 'OK',
+  //             textColor: Colors.white,
+  //             onPressed: () {
+  //               Navigator.pop(this.context);
+  //               // Navigator.pushReplacementNamed(this.context, '/ListDokter');
+  //               if (kDebugMode) {
+  //                 print('Berhasil');
+  //               }
+  //             },
+  //           ),
+  //         ));
+  //         // ignore: deprecated_member_use
+  //         // scaffoldKey.currentState?.showSnackBar(snackBar);
+  //         clearimage();
+  //         setState(() {
+  //           _pilihDokumen = null;
+  //         });
+  //       } else {
+  //         setState(
+  //           () {
+  //             _loading = false;
+  //           },
+  //         );
+  //         ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
+  //           duration: const Duration(seconds: 2),
+  //           elevation: 6.0,
+  //           behavior: SnackBarBehavior.floating,
+  //           content: Row(
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: [
+  //               const Icon(
+  //                 Icons.error,
+  //                 size: 30,
+  //                 color: Colors.white,
+  //               ),
+  //               SizedBox(
+  //                 width: mediaQueryData.size.width * 0.01,
+  //               ),
+  //               const Text(
+  //                 'Upload gagal',
+  //                 style: TextStyle(color: Colors.white),
+  //               ),
+  //             ],
+  //           ),
+  //           backgroundColor: Colors.red,
+  //           action: SnackBarAction(
+  //             label: 'GAGAL',
+  //             textColor: Colors.white,
+  //             onPressed: () {
+  //               if (kDebugMode) {
+  //                 print('Gagal');
+  //               }
+  //             },
+  //           ),
+  //         ));
+  //         // ignore: deprecated_member_use
+  //         // scaffoldKey.currentState?.showSnackBar(snackBar);
+  //         if (kDebugMode) {
+  //           print("Upload Failed");
+  //         }
+  //       }
+  //       response.stream.transform(utf8.decoder).listen(
+  //         (value) {
+  //           if (kDebugMode) {
+  //             print(value);
+  //           }
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+  Future<void> _uploadData() async {
     MediaQueryData mediaQueryData = MediaQuery.of(this.context);
     SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(
-      () {
-        _loading = true;
-      },
-    );
-    Future.delayed(
-      const Duration(seconds: 2),
-      () async {
-        var stream = http.ByteStream(
-          // ignore: deprecated_member_use
-          DelegatingStream.typed(
-            _selectedFile.openRead(),
-          ),
-        );
-        var length = await _selectedFile.length();
-        var uri = Uri.parse(
-            "https://dokar.kendalkab.go.id/webservice/android/account/UploadDatadukung");
-        var request = http.MultipartRequest("POST", uri);
-        var multipartFile = http.MultipartFile(
-          "file",
-          stream,
-          length,
-          filename: basename(_selectedFile.path),
-        );
-        request.fields['uid'] = pref.getString("uid")!;
-        request.fields['keterangan'] = _pilihDokumen;
-        request.files.add(multipartFile);
-        var response = await request.send();
-        if (response.statusCode == 200) {
-          if (kDebugMode) {
-            print(_selectedFile);
-            print("Image Uploaded");
-          }
-          setState(
-            () {
-              _loading = false;
-            },
+    setState(() {
+      _loading = true;
+    });
+    try {
+      // Hapus penundaan buatan (Future.delayed)
+      final response = await ApiService.uploadDataDukungWarga(
+        _selectedFile!,
+        pref.getString("uid")!,
+        _pilihDokumen!,
+      );
+
+      if (response != null && response.statusCode == 200) {
+        // Tangani respons sukses
+        print("Image Uploaded");
+        final responseBody = await response.stream.bytesToString();
+        try {
+          final decodedResponse = jsonDecode(responseBody);
+          final notifMessage = decodedResponse['Notif'] ?? 'Upload Berhasil';
+          print(decodedResponse);
+          print(notifMessage);
+
+          ScaffoldMessenger.of(this.context).showSnackBar(
+            SnackBar(
+              duration: const Duration(seconds: 2),
+              elevation: 6.0,
+              behavior: SnackBarBehavior.floating,
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.check_circle,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: mediaQueryData.size.width * 0.01,
+                  ),
+                  Text(
+                    notifMessage,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              action: SnackBarAction(
+                label: 'OK',
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.pop(this.context);
+                  // Navigator.pushReplacementNamed(context, '/ListDokter');
+                  if (kDebugMode) {
+                    print('Berhasil');
+                  }
+                },
+              ),
+            ),
           );
-          ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 2),
-            elevation: 6.0,
-            behavior: SnackBarBehavior.floating,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.check_circle,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: mediaQueryData.size.width * 0.01,
-                ),
-                const Text(
-                  'Dokumen berhasil diunggah',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.green,
-            action: SnackBarAction(
-              label: 'OK',
-              textColor: Colors.white,
-              onPressed: () {
-                Navigator.pop(this.context);
-                // Navigator.pushReplacementNamed(this.context, '/ListDokter');
-                if (kDebugMode) {
-                  print('Berhasil');
-                }
-              },
-            ),
-          ));
-          // ignore: deprecated_member_use
-          // scaffoldKey.currentState?.showSnackBar(snackBar);
           clearimage();
           setState(() {
             _pilihDokumen = null;
           });
-        } else {
-          setState(
-            () {
-              _loading = false;
-            },
+        } catch (e) {
+          print("Error decoding JSON: $e");
+          ScaffoldMessenger.of(this.context).showSnackBar(
+            const SnackBar(
+              content: Text("Terjadi kesalahan pada format data"),
+              backgroundColor: Colors.red,
+            ),
           );
-          ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 2),
-            elevation: 6.0,
-            behavior: SnackBarBehavior.floating,
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.error,
-                  size: 30,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: mediaQueryData.size.width * 0.01,
-                ),
-                const Text(
-                  'Upload gagal',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.red,
-            action: SnackBarAction(
-              label: 'GAGAL',
-              textColor: Colors.white,
-              onPressed: () {
-                if (kDebugMode) {
-                  print('Gagal');
-                }
-              },
-            ),
-          ));
-          // ignore: deprecated_member_use
-          // scaffoldKey.currentState?.showSnackBar(snackBar);
-          if (kDebugMode) {
-            print("Upload Failed");
-          }
         }
-        response.stream.transform(utf8.decoder).listen(
-          (value) {
-            if (kDebugMode) {
-              print(value);
-            }
-          },
+      } else {
+        // Tangani respons error dari API
+        final errorResponse =
+            await response?.stream.bytesToString(); // Mengambil body error
+        print('Error from API: ${response?.statusCode} $errorResponse');
+
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Upload gagal: ${response?.statusCode ?? 'Unknown Error'}. $errorResponse'),
+            backgroundColor: Colors.red,
+          ),
         );
-      },
-    );
+      }
+    } catch (e) {
+      // Tangani error koneksi atau error lain di sisi client
+      print('Client-side error: $e');
+      ScaffoldMessenger.of(this.context).showSnackBar(
+        SnackBar(
+          content: Text('Terjadi kesalahan saat upload: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -418,7 +519,7 @@ class _HalLengkapiDokumenWargaState extends State<HalLengkapiDokumenWarga> {
                         ),
                       ));
                     } else {
-                      upload(_selectedFile!);
+                      _uploadData();
                     }
                   },
                   child: const Text(

@@ -5,6 +5,7 @@ import 'dart:async'; //NOTE  api syn
 import 'dart:convert'; //NOTE api to json
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'config/api_config.dart';
 import 'style/styleset.dart';
 
 class HalLoginWarga extends StatefulWidget {
@@ -54,7 +55,8 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
     Future.delayed(Duration(seconds: 2), () async {
       final response = await http.post(
           Uri.parse(
-              "http://dokar.kendalkab.go.id/webservice/android/account/Daftarwarga/"),
+              "${ApiConfig.baseUrl}/webservice/android/account/Daftarwarganew/"),
+          headers: ApiConfig.headers,
           body: {
             "nik": nik.text,
             "nama": nama.text,
@@ -74,6 +76,9 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
           loadingdaftar = false;
           Navigator.pop(context);
         });
+        Clipboard.setData(
+          ClipboardData(text: "NIK: ${nik.text}\nPassword: ${password.text}"),
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -121,58 +126,130 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
   }
 
   Future<void> getKota() async {
-    final response = await http.get(
-      Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/dashbord/kabupaten"),
-    );
-    var getkota = json.decode(response.body);
-    if (mounted) {
-      setState(() {
-        namaKota = getkota;
-        print(getkota);
-      });
+    try {
+      final response = await http.get(
+        Uri.parse("${ApiConfig.baseUrl}/webservice/android/dashbord/kabupaten"),
+      );
+
+      if (response.statusCode == 200) {
+        var getkota = json.decode(response.body);
+        if (mounted) {
+          setState(() {
+            namaKota = getkota ?? [];
+            print(getkota);
+          });
+        }
+      } else {
+        // Tangani error HTTP
+        print('Gagal memuat data kota. Status code: ${response.statusCode}');
+        if (mounted) {
+          setState(() {
+            namaKota = [];
+          });
+        }
+      }
+    } catch (e) {
+      print('Error saat mengambil data kota: $e');
+      if (mounted) {
+        setState(() {
+          namaKota = [];
+        });
+      }
     }
   }
 
   Future<void> getKecamatan() async {
-    final response = await http.get(
-      Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/dashbord/KecamatanByKab/$_pilihKota"),
-    );
-    var getKecamatan = json.decode(response.body);
+    // Pastikan kota sudah dipilih
+    if (_pilihKota == null) {
+      print('Pilih kota terlebih dahulu');
+      return;
+    }
 
-    if (getKecamatan is List<dynamic>) {
-      setState(() {
-        namaKecamatan = getKecamatan;
-        print(namaKecamatan);
-      });
-    } else {
-      // Handle the case when getKecamatan is not a list
-      // For example, you can display an error message or initialize kecamatanData as an empty list
-      setState(() {
-        namaKecamatan = [];
-      });
+    try {
+      final response = await http.get(
+        Uri.parse(
+            '${ApiConfig.baseUrl}/webservice/android/dashbord/KecamatanByKab/$_pilihKota'),
+      );
+
+      if (response.statusCode == 200) {
+        var getKecamatan = json.decode(response.body);
+
+        if (mounted) {
+          setState(() {
+            // Reset pilihan kecamatan dan desa
+            _pilihKecamatan = null;
+            _pilihDesa = null;
+            namaDesa = [];
+
+            // Set nama kecamatan
+            namaKecamatan = getKecamatan is List ? getKecamatan : [];
+            print(namaKecamatan);
+          });
+        }
+      } else {
+        print(
+            'Gagal memuat data kecamatan. Status code: ${response.statusCode}');
+        if (mounted) {
+          setState(() {
+            namaKecamatan = [];
+            _pilihKecamatan = null;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error saat mengambil data kecamatan: $e');
+      if (mounted) {
+        setState(() {
+          namaKecamatan = [];
+          _pilihKecamatan = null;
+        });
+      }
     }
   }
 
   Future<void> getDesa() async {
-    final response = await http.get(
-      Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/dashbord/desa/$_pilihKecamatan"),
-    );
-    var getDesa = json.decode(response.body);
+    // Pastikan kecamatan sudah dipilih
+    if (_pilihKecamatan == null) {
+      print('Pilih kecamatan terlebih dahulu');
+      return;
+    }
 
-    if (getDesa is List<dynamic>) {
-      setState(() {
-        namaDesa = getDesa;
-        print(namaDesa);
-      });
-    } else {
-      // Handle the case when getKecamatan is not a list
-      // For example, you can display an error message or initialize kecamatanData as an empty list
-      setState(() {
-        namaDesa = [];
-      });
+    try {
+      final response = await http.get(
+        Uri.parse(
+            "${ApiConfig.baseUrl}/webservice/android/dashbord/desa/$_pilihKecamatan"),
+      );
+
+      if (response.statusCode == 200) {
+        var getDesa = json.decode(response.body);
+
+        if (mounted) {
+          setState(() {
+            // Reset pilihan desa
+            _pilihDesa = null;
+
+            // Set nama desa
+            namaDesa = getDesa is List ? getDesa : [];
+            print(namaDesa);
+          });
+        }
+      } else {
+        print('Gagal memuat data desa. Status code: ${response.statusCode}');
+        if (mounted) {
+          setState(() {
+            namaDesa = [];
+            _pilihDesa = null;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error saat mengambil data desa: $e');
+      if (mounted) {
+        setState(() {
+          namaDesa = [];
+          _pilihDesa = null;
+        });
+      }
     }
   }
 
@@ -374,10 +451,10 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                       },
                     ),
                   ));
-                } else if (password.text.isEmpty) {
+                } else if (_validatePassword(password.text).isNotEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(
-                      'Password masih kosong',
+                      'Password tidak memenuhi kriteria',
                       style: TextStyle(color: Colors.white),
                     ),
                     backgroundColor: Colors.red,
@@ -601,6 +678,21 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
     );
   }
 
+  String? validateHp(String? value) {
+    if (value?.isEmpty ?? true) {
+      return 'No. HP tidak boleh kosong';
+    }
+
+    final hpRegex =
+        r'^[0-9]{9,13}$'; // Regular expression for Indonesian phone number validation
+    final regExp = RegExp(hpRegex);
+    if (!regExp.hasMatch(value!)) {
+      return 'No. HP tidak valid';
+    }
+
+    return null; // Return null to indicate the input is valid
+  }
+
   Widget _formHp() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -637,16 +729,8 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                   color: Colors.grey[400],
                 ),
               ),
-
-              // validator: (value) {
-              //   if (value?.isEmpty ?? true) {
-              //     return 'NIK tidak boleh kosong';
-              //   }
-              //   if (value!.length != 16) {
-              //     return 'NIK harus memiliki 16 digit';
-              //   }
-              //   return null; // Return null to indicate the input is valid
-              // },
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: validateHp,
             ),
           ),
         ],
@@ -733,7 +817,7 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                 color: Colors.black,
               ),
               inputFormatters: [
-                LengthLimitingTextInputFormatter(100),
+                LengthLimitingTextInputFormatter(16),
               ],
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -745,11 +829,19 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                   Icons.person,
                   color: Colors.brown[800],
                 ),
-                hintText: 'username',
+                hintText: 'NIK',
                 hintStyle: TextStyle(
                   color: Colors.grey[400],
                 ),
               ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                if (value == nik.text) {
+                  return null; // Return null to indicate the input is valid
+                } else {
+                  return 'NIK tidak sama';
+                }
+              },
             ),
           ),
         ],
@@ -782,7 +874,7 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+                    Radius.circular(10.0),
                   ),
                 ),
                 prefixIcon: Icon(
@@ -805,10 +897,142 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                   color: Colors.grey[400],
                 ),
               ),
+              onChanged: (value) {
+                setState(() {});
+              },
+              validator: (value) {
+                final errors = _validatePassword(value ?? '');
+                return errors.isNotEmpty
+                    ? errors.first
+                    : null; // Hanya tampilkan error pertama
+              },
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: _passwordStrength(password.text),
           ),
         ],
       ),
+    );
+  }
+
+  List<String> _validatePassword(String value) {
+    List<String> errors = [];
+    if (value.isEmpty) {
+      errors.add('Password tidak boleh kosong');
+    }
+    if (value.length < 8) {
+      errors.add('Password minimal 8 karakter');
+    }
+    if (!value.contains(RegExp(r'[A-Z]'))) {
+      errors.add('Password harus mengandung huruf besar');
+    }
+    if (!value.contains(RegExp(r'[a-z]'))) {
+      errors.add('Password harus mengandung huruf kecil');
+    }
+    if (!value.contains(RegExp(r'[0-9]'))) {
+      errors.add('Password harus mengandung angka');
+    }
+    if (!value.contains(RegExp(r'[!@#$%^&*()_+=-{};:"<>,./?~`|]'))) {
+      errors.add('Password harus mengandung karakter spesial');
+    }
+    if (!_checkUniqueChars(value)) {
+      errors.add('Password harus mengandung minimal 2 karakter unik');
+    }
+    return errors;
+  }
+
+  bool _checkUniqueChars(String value) {
+    // Cek jumlah karakter spesial yang unik
+    final uniqueChars =
+        value.replaceAll(RegExp(r'[a-zA-Z0-9]'), '').split('').toSet();
+    return uniqueChars.length >= 1;
+  }
+
+  Widget _passwordStrength(String value) {
+    // ignore: unused_local_variable
+    final errors = _validatePassword(value);
+    final passwordChecks = [
+      value.isNotEmpty,
+      value.length >= 8,
+      value.contains(RegExp(r'[A-Z]')),
+      value.contains(RegExp(r'[a-z]')),
+      value.contains(RegExp(r'[0-9]')),
+      _checkUniqueChars(value),
+    ];
+
+    final checkLabels = [
+      'Tidak kosong',
+      'Min 8 karakter',
+      'Huruf besar',
+      'Huruf kecil',
+      'Mengandung angka',
+      'Minimal 1 karakter unik'
+    ];
+
+    // Hitung jumlah validasi yang lolos
+    final passedChecks = passwordChecks.where((check) => check).length;
+
+    // Tentukan level kekuatan password
+    String strengthText;
+    Color strengthColor;
+    if (passedChecks <= 4) {
+      strengthText = 'Lemah 👀';
+      strengthColor = Colors.red;
+    } else if (passedChecks <= 5) {
+      strengthText = 'Sedang 👍';
+      strengthColor = Colors.orange;
+    } else {
+      strengthText = 'Kuat 🔒';
+      strengthColor = Colors.green;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              'Kekuatan Password: ',
+              style: TextStyle(
+                color: strengthColor,
+              ),
+            ),
+            Text(
+              strengthText,
+              style: TextStyle(
+                color: strengthColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 5),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+            passwordChecks.length,
+            (index) => Row(
+              children: [
+                Icon(
+                  passwordChecks[index] ? Icons.check_circle : Icons.cancel,
+                  size: 16,
+                  color: passwordChecks[index] ? Colors.green : Colors.red,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  checkLabels[index],
+                  style: TextStyle(
+                    color: passwordChecks[index] ? Colors.green : Colors.red,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -819,16 +1043,16 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
         children: <Widget>[
           Container(
             decoration: decorationTextField,
-            child: DropdownButtonFormField(
+            child: DropdownButtonFormField<String>(
               isDense: true,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.location_city,
                   color: Colors.brown[800],
                 ),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
                   ),
                 ),
                 hintStyle: TextStyle(
@@ -846,15 +1070,24 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
                   );
                 },
               ).toList(),
-              onChanged: (val) async {
+              onChanged: (val) {
                 setState(() {
-                  _pilihKota = val as String;
-                  print(_pilihKota);
+                  _pilihKota = val;
+                  _pilihKecamatan = null; // Reset kecamatan
+                  _pilihDesa = null; // Reset desa
+                  namaKecamatan.clear(); // Kosongkan list kecamatan
+                  namaDesa.clear(); // Kosongkan list desa
                 });
 
-                await getKecamatan(); // Wait for getKecamatan() to complete before rebuilding the widget
+                getKecamatan();
               },
               value: _pilihKota,
+              validator: (value) {
+                if (value == null) {
+                  return 'Harap pilih kota';
+                }
+                return null;
+              },
             ),
           )
         ],
@@ -869,16 +1102,16 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
         children: <Widget>[
           Container(
             decoration: decorationTextField,
-            child: DropdownButtonFormField(
+            child: DropdownButtonFormField<String>(
               isDense: true,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.location_city,
                   color: Colors.brown[800],
                 ),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
                   ),
                 ),
                 hintStyle: TextStyle(
@@ -888,22 +1121,38 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
               ),
               hint: Text('Pilih Kecamatan'),
               isExpanded: true,
-              items: namaKecamatan.map(
-                (item) {
-                  return DropdownMenuItem(
-                    child: Text(item['kecamatan'].toString()),
-                    value: item['kode'].toString(),
-                  );
-                },
-              ).toList(),
-              onChanged: (val) async {
+              // Pastikan dropdown hanya muncul jika ada kecamatan
+              items: namaKecamatan.isEmpty
+                  ? null
+                  : namaKecamatan.map(
+                      (item) {
+                        return DropdownMenuItem(
+                          child: Text(item['kecamatan'].toString()),
+                          value: item['kode'].toString(),
+                        );
+                      },
+                    ).toList(),
+              onChanged: (val) {
                 setState(() {
-                  _pilihKecamatan = val as String;
-                  print(_pilihKecamatan);
+                  _pilihKecamatan = val;
+                  _pilihDesa = null; // Reset desa saat memilih kecamatan baru
+                  namaDesa.clear(); // Kosongkan list desa
                 });
-                await getDesa();
+
+                getDesa();
               },
               value: _pilihKecamatan,
+              validator: (value) {
+                if (value == null) {
+                  return 'Harap pilih kecamatan';
+                }
+                return null;
+              },
+              // Nonaktifkan dropdown jika tidak ada kecamatan
+              // isExpanded: true,
+              disabledHint: _pilihKota == null
+                  ? Text('Pilih Kota Terlebih Dahulu')
+                  : Text('Tidak Ada Kecamatan'),
             ),
           )
         ],
@@ -918,16 +1167,16 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
         children: <Widget>[
           Container(
             decoration: decorationTextField,
-            child: DropdownButtonFormField(
+            child: DropdownButtonFormField<String>(
               isDense: true,
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.location_city,
                   color: Colors.brown[800],
                 ),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10.0),
                   ),
                 ),
                 hintStyle: TextStyle(
@@ -937,21 +1186,33 @@ class _HalLoginWargaState extends State<HalLoginWarga> {
               ),
               hint: Text('Pilih Desa'),
               isExpanded: true,
-              items: namaDesa.map(
-                (item) {
-                  return DropdownMenuItem(
-                    child: Text(item['desa'].toString()),
-                    value: item['kode'].toString(),
-                  );
-                },
-              ).toList(),
+              // Pastikan dropdown hanya muncul jika ada desa
+              items: namaDesa.isEmpty
+                  ? null
+                  : namaDesa.map(
+                      (item) {
+                        return DropdownMenuItem(
+                          child: Text(item['desa'].toString()),
+                          value: item['kode'].toString(),
+                        );
+                      },
+                    ).toList(),
               onChanged: (val) {
                 setState(() {
-                  _pilihDesa = val as String;
-                  print(_pilihDesa);
+                  _pilihDesa = val;
                 });
               },
               value: _pilihDesa,
+              validator: (value) {
+                if (value == null) {
+                  return 'Harap pilih desa';
+                }
+                return null;
+              },
+              // Nonaktifkan dropdown jika tidak ada desa
+              disabledHint: _pilihKecamatan == null
+                  ? Text('Pilih Kecamatan Terlebih Dahulu')
+                  : Text('Tidak Ada Desa'),
             ),
           )
         ],

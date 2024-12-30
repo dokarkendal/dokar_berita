@@ -92,9 +92,13 @@ class FormAkunEditSemuaState extends State<FormAkunEditSemua> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
       Uri.parse(
-          "http://dokar.kendalkab.go.id/webservice/android/account/editpenulis"),
+          "http://dokar.kendalkab.go.id/webservice/android/account/editpenulisadmin"),
+      headers: {
+        "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+      },
       body: {
         "IdAdmin": "${widget.dIdAdmin}",
+        "IdDesa": pref.getString("IdDesa"),
         "nama": dNama.text,
         "email": dEmail.text,
         "hp": dHp.text,

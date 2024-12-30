@@ -18,7 +18,7 @@ class _HalSuratACCState extends State<HalSuratACC> {
   final dio = Dio();
   ScrollController _scrollController = ScrollController();
   String nextPage =
-      "http://dokar.kendalkab.go.id/webservice/android/surat/GetPengajuanSurat/";
+      "http://dokar.kendalkab.go.id/webservice/android/surat/GetPengajuanSuratAdmin/";
 
   void _moreSuratACC() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -36,7 +36,16 @@ class _HalSuratACCState extends State<HalSuratACC> {
         "id_desa": pref.getString("IdDesa"),
         "status": "1",
       });
-      final response = await dio.post(nextPage, data: formData);
+
+      final response = await dio.post(
+        nextPage,
+        data: formData,
+        options: Options(
+          headers: {
+            "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09",
+          },
+        ),
+      );
       print(response.toString());
       List tempList = [];
       nextPage = response.data['next'];
@@ -261,8 +270,8 @@ class _HalSuratACCState extends State<HalSuratACC> {
                 child: Material(
                   color: Colors.white,
                   child: InkWell(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => HalDetailSuratACC(
@@ -278,10 +287,26 @@ class _HalSuratACCState extends State<HalSuratACC> {
                             dUid: datasuratacc[i]["uid"],
                             dIdDesa: datasuratacc[i]["id_desa"],
                             dFile: datasuratacc[i]["file"],
+                            dPDFFile: datasuratacc[i]["pdf_file"],
                             dPembuatan: datasuratacc[i]["pembuatan"],
                           ),
                         ),
                       );
+                      // 3. Tangani Hasil dari Navigator.pop
+                      if (result != null && result == true) {
+                        // Upload berhasil, muat ulang data
+                        setState(() {
+                          datasuratacc.clear(); // Bersihkan data sebelumnya
+                          nextPage =
+                              "http://dokar.kendalkab.go.id/webservice/android/surat/GetPengajuanSuratAdmin/"; // Reset nextPage
+                          _moreSuratACC(); // Panggil fungsi untuk memuat ulang data
+                        });
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //     SnackBar(content: Text('Surat berhasil diupload')));
+                      } else if (result != null && result == false) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Upload Gagal')));
+                      }
                     },
                     child: Row(
                       children: [
@@ -334,16 +359,72 @@ class _HalSuratACCState extends State<HalSuratACC> {
                               margin:
                                   const EdgeInsets.only(right: 10.0, top: 5.0),
                               // child: Expanded(
-                              child: new Text(
-                                datasuratacc[i]["nomor"],
-                                //  dataJSON[i]["jenisAudit"],
-                                style: new TextStyle(
-                                  color: Colors.green[800],
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  new Text(
+                                    datasuratacc[i]["nomor"],
+                                    style: new TextStyle(
+                                      color: Colors.green[800],
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Row(
+                                    children: [
+                                      datasuratacc[i]["pembuatan"] == "-"
+                                          ? Container()
+                                          : Container(
+                                              padding: EdgeInsets.all(
+                                                mediaQueryData.size.height *
+                                                    0.003,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: datasuratacc[i]
+                                                            ["pembuatan"] ==
+                                                        "Srikandi"
+                                                    ? Colors.blue
+                                                    : Colors.orange,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(3.0)),
+                                              ),
+                                              // margin: const EdgeInsets.only(top: 10.0),
+                                              child: Text(
+                                                datasuratacc[i]["pembuatan"],
+                                                style: new TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 8.0,
+                                                ),
+                                              ),
+                                            ),
+                                      SizedBox(width: 2.0),
+                                      datasuratacc[i]["pdf_file"] == "-"
+                                          ? Container()
+                                          : Container(
+                                              padding: EdgeInsets.all(
+                                                mediaQueryData.size.height *
+                                                    0.003,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(3.0)),
+                                              ),
+                                              // margin: const EdgeInsets.only(top: 10.0),
+                                              child: Text(
+                                                "PDF",
+                                                style: new TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 8.0,
+                                                ),
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                             Row(

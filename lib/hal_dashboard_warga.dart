@@ -421,14 +421,14 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
   }
 
   Widget _cardlengkap() {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    // MediaQueryData mediaQueryData = MediaQuery.of(context);
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/HalProfilWarga');
       },
       child: Container(
         padding: EdgeInsets.all(15.0),
-        height: mediaQueryData.size.height * 0.07,
+        // height: mediaQueryData.size.height * 0.07,
         decoration: BoxDecoration(
           color: Colors.green,
           borderRadius: const BorderRadius.all(Radius.circular(10.0)),
@@ -446,13 +446,23 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Data diri lengkap",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      "Data diri lengkap",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                      size: 20,
+                    )
+                  ],
                 ),
                 Icon(
                   Icons.more_vert_sharp,
@@ -629,7 +639,8 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                   ),
                 ),
                 AutoSizeText(
-                  "Pelayanan desa " + namadesa + " Kec. " + namakec,
+                  // "Pelayanan Desa\n" +
+                  namadesa.toUpperCase() + "\nKec. " + namakec,
                   minFontSize: 14,
                   style: TextStyle(
                     color: Color(0xFF2e2e2e),
@@ -922,16 +933,42 @@ class _HalDashboardWargaState extends State<HalDashboardWarga> {
                                 margin: const EdgeInsets.only(
                                     right: 10.0, top: 5.0),
                                 // child: Expanded(
-                                child: new Text(
-                                  data5Surat[i]["nomor"],
-                                  //  dataJSON[i]["jenisAudit"],
-                                  style: new TextStyle(
-                                    color: Colors.green[800],
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    new Text(
+                                      data5Surat[i]["nomor"],
+                                      style: new TextStyle(
+                                        color: Colors.green[800],
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    data5Surat[i]["file"] == "-"
+                                        ? Container()
+                                        : Container(
+                                            padding: EdgeInsets.all(
+                                              mediaQueryData.size.height *
+                                                  0.003,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(3.0)),
+                                            ),
+                                            // margin: const EdgeInsets.only(top: 10.0),
+                                            child: Text(
+                                              "PDF",
+                                              style: new TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 8.0,
+                                              ),
+                                            ),
+                                          ),
+                                  ],
                                 ),
                               ),
                               Row(

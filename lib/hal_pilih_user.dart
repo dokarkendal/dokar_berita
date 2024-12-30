@@ -305,7 +305,7 @@ class _PilihAKunState extends State<PilihAKun> {
             onTap: () async {
               //LINK Channel Youtube DOKAR
               final Uri url = Uri.parse(
-                  'https://www.youtube.com/watch?v=Aa7eKzqp3PA&list=PLkNaCvRUXZ8f3Kta00_Ks_hGMa_hlpyyy');
+                  'https://www.youtube.com/watch?v=ya5KAIdLOok&list=PLkNaCvRUXZ8c08Pn1R4bL9yDOgjzU66UW');
               if (!await launchUrl(
                 url,
                 mode: LaunchMode.externalApplication,

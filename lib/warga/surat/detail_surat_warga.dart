@@ -4,6 +4,7 @@ import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:dokar_aplikasi/warga/hal_data_dukung_surat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
@@ -1319,45 +1320,54 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
                                     ),
                                   ),
                                   // Delete button
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Konfirmasi Hapus"),
-                                            content: Text(
-                                                "Apakah Anda yakin ingin menghapus item ini?"),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).pop(),
-                                                child: Text("Batal"),
-                                              ),
-                                              TextButton(
-                                                onPressed: () async {
-                                                  SharedPreferences pref =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  // Panggil metode delete dengan parameter yang sesuai
-                                                  _deleteItem(
-                                                      pref
-                                                          .getString("uid")
-                                                          .toString(), // Ganti dengan uid aktual
-                                                      dataTambahJSON[i]
-                                                          ['id_surat'],
-                                                      dataTambahJSON[i]['id']);
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("Hapus"),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
+                                  widget.dStatus == 'Surat Sudah Dibuat' ||
+                                          widget.dStatus == 'Surat Diajukan'
+                                      ? Center()
+                                      : IconButton(
+                                          icon: Icon(Icons.delete,
+                                              color: Colors.red),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title:
+                                                      Text("Konfirmasi Hapus"),
+                                                  content: Text(
+                                                      "Apakah Anda yakin ingin menghapus item ini?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.of(context)
+                                                              .pop(),
+                                                      child: Text("Batal"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        SharedPreferences pref =
+                                                            await SharedPreferences
+                                                                .getInstance();
+                                                        // Panggil metode delete dengan parameter yang sesuai
+                                                        _deleteItem(
+                                                            pref
+                                                                .getString(
+                                                                    "uid")
+                                                                .toString(), // Ganti dengan uid aktual
+                                                            dataTambahJSON[i]
+                                                                ['id_surat'],
+                                                            dataTambahJSON[i]
+                                                                ['id']);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text("Hapus"),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                 ],
                               ),
                             ),
@@ -1479,72 +1489,195 @@ class _HalDetailSuratState extends State<HalDetailSurat> {
           )
         : _progress != null
             ? Center()
-            : Container(
-                width: double.infinity,
-                height: mediaQueryData.size.height * 0.06,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    FileDownloader.downloadFile(
-                        // url: url.text.trim(),
-                        // name: name.text.trim(),
-                        url: "${widget.dFile}",
-                        name: "SRT-" + "${widget.dKode}",
-                        onProgress: (name, progress) {
-                          setState(() {
-                            _progress = progress;
-                            _status = 'Progress: $progress%';
-                          });
-                        },
-                        onDownloadCompleted: (path) {
-                          setState(() {
-                            _progress = null;
-                            _status = 'File downloaded to: $path';
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'File downloaded to: $path',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                backgroundColor: Colors.blue,
-                                action: SnackBarAction(
-                                  label: 'OK',
-                                  textColor: Colors.white,
-                                  onPressed: () {
-                                    print('ULANGI snackbar');
-                                  },
-                                ),
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: mediaQueryData.size.width * 0.45,
+                    height: mediaQueryData.size.height * 0.06,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        FileDownloader.downloadFile(
+                            // url: url.text.trim(),
+                            // name: name.text.trim(),
+                            url: "${widget.dFile}",
+                            name: "SRT-" + "${widget.dKode}",
+                            onProgress: (name, progress) {
+                              setState(() {
+                                _progress = progress;
+                                _status = 'Progress: $progress%';
+                              });
+                            },
+                            onDownloadCompleted: (path) {
+                              setState(() {
+                                _progress = null;
+                                _status = 'File downloaded to: $path';
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'File downloaded to: $path',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    backgroundColor: Colors.blue,
+                                    action: SnackBarAction(
+                                      label: 'OK',
+                                      textColor: Colors.white,
+                                      onPressed: () {
+                                        print('ULANGI snackbar');
+                                      },
+                                    ),
+                                  ),
+                                );
+                              });
+                            },
+                            onDownloadError: (error) {
+                              setState(() {
+                                _progress = null;
+                                _status = 'Download error: $error';
+                              });
+                            }).then((file) {
+                          debugPrint('file path: ${file?.path}');
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(15.0),
+                        backgroundColor: Colors.green[600],
+                        elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // <-- Radius
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'UNDUH  ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'OpenSans',
+                            ),
+                          ),
+                          Icon(
+                            Icons.file_download,
+                            color: Colors.white,
+                            size: 20.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: mediaQueryData.size.width * 0.45,
+                    height: mediaQueryData.size.height * 0.06,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return Container(
+                              height: mediaQueryData.size.height * 0.8,
+                              color: Colors.white,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(15.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${widget.dKategori}",
+                                          style: TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${widget.dNoSurat}",
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(),
+                                  Expanded(
+                                    child: Center(
+                                      child: PDF().cachedFromUrl(
+                                        "${widget.dFile}",
+                                        placeholder: (progress) =>
+                                            Center(child: Text('$progress %')),
+                                        errorWidget: (error) => Center(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  top: mediaQueryData
+                                                          .size.height *
+                                                      0.2,
+                                                ),
+                                              ),
+                                              Text(
+                                                "PDF Kosong",
+                                                style: TextStyle(
+                                                  fontSize: 25.0,
+                                                  color: Colors.grey[350],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(5.0),
+                                              ),
+                                              Icon(Icons.picture_as_pdf_rounded,
+                                                  size: 100.0,
+                                                  color: Colors.grey[350]),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
-                          });
-                        },
-                        onDownloadError: (error) {
-                          setState(() {
-                            _progress = null;
-                            _status = 'Download error: $error';
-                          });
-                        }).then((file) {
-                      debugPrint('file path: ${file?.path}');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(15.0),
-                    backgroundColor: Colors.green[600],
-                    elevation: 2.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // <-- Radius
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(15.0),
+                        backgroundColor: Colors.blue,
+                        elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // <-- Radius
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'LIHAT  ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'OpenSans',
+                            ),
+                          ),
+                          Icon(
+                            Icons.remove_red_eye_sharp,
+                            color: Colors.white,
+                            size: 20.0,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Text(
-                    'UNDUH SURAT',
-                    style: TextStyle(
-                      color: Colors.white,
-                      letterSpacing: 1.5,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'OpenSans',
-                    ),
-                  ),
-                ),
+                ],
               );
   }
 

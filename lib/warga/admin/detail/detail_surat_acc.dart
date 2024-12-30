@@ -5,6 +5,7 @@ import 'package:dokar_aplikasi/warga/detail_galeri_warga.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
@@ -12,8 +13,13 @@ import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:path/path.dart' as path;
 import 'package:timeline_tile/timeline_tile.dart';
+
+// import '../list/list_surat_acc.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class HalDetailSuratACC extends StatefulWidget {
@@ -29,6 +35,7 @@ class HalDetailSuratACC extends StatefulWidget {
       dUid,
       dIdDesa,
       dFile,
+      dPDFFile,
       dPembuatan;
   HalDetailSuratACC(
       {required this.dNama,
@@ -43,6 +50,7 @@ class HalDetailSuratACC extends StatefulWidget {
       required this.dUid,
       required this.dIdDesa,
       required this.dFile,
+      required this.dPDFFile,
       required this.dPembuatan});
 
   @override
@@ -86,13 +94,34 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
       },
     );
     if (mounted) {
-      this.setState(
-        () {
-          loadingdatadukung = false;
-          dataDukungJSON = json.decode(response.body)["Data"];
-          print(dataDukungJSON);
-        },
-      );
+      final decodedResponse = json.decode(response.body);
+      final responseData = decodedResponse["Data"];
+
+      if (responseData is List) {
+        this.setState(
+          () {
+            loadingdatadukung = false;
+            dataDukungJSON = responseData;
+            print(dataDukungJSON);
+          },
+        );
+      } else if (responseData == "notfound") {
+        this.setState(
+          () {
+            loadingdatadukung = false;
+            dataDukungJSON = [];
+            print("Data not found");
+          },
+        );
+      } else {
+        this.setState(
+          () {
+            loadingdatadukung = false;
+            dataDukungJSON = [];
+            print("Unexpected data format");
+          },
+        );
+      }
     }
   }
 
@@ -427,6 +456,146 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
         );
       }
     });
+  }
+
+  Future<http.StreamedResponse> uploadFile({
+    required String url,
+    required Map<String, String> headers,
+    required Map<String, String> body,
+    required File file,
+  }) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers.addAll(headers);
+
+      // Menambahkan field body
+      request.fields.addAll(body);
+
+      // Menambahkan file
+      var stream = http.ByteStream(file.openRead().cast());
+      var length = await file.length();
+      var multipartFile = http.MultipartFile(
+        'file',
+        stream,
+        length,
+        filename: path.basename(file.path),
+      );
+
+      request.files.add(multipartFile);
+
+      return await request.send();
+    } catch (e) {
+      print('Error during file upload: $e');
+      throw e; // Melempar kembali error untuk ditangani di tempat lain
+    }
+  }
+
+  File? _selectedFile;
+  bool _isLoading = false;
+
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        _selectedFile = File(result.files.first.path!);
+      });
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  Future<void> _uploadSurat() async {
+    MediaQueryData mediaQueryData = MediaQuery.of(this.context);
+    if (_selectedFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Silahkan pilih file terlebih dahulu'),
+      ));
+      return;
+    }
+    setState(() {
+      _isLoading = true; // Mulai loading
+    });
+    // Data yang diperlukan untuk upload
+    String apiUrl =
+        'https://dokar.kendalkab.go.id/webservice/android/surat/UploadHasilPdf';
+    Map<String, String> headers = {
+      'Key': 'VmZNRWVGTjhFeVptSUFJcjdURDlaQT09'
+    }; // Ganti dengan API Key Anda
+    Map<String, String> body = {
+      'uid': '${widget.dUid}', // Ganti dengan UID pengguna
+      'id_surat': '${widget.dIdSurat}', // Ganti dengan ID surat
+    };
+
+    try {
+      // Memanggil fungsi uploadFile
+      http.StreamedResponse response = await uploadFile(
+          url: apiUrl, headers: headers, body: body, file: _selectedFile!);
+
+      final String responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        await Future.delayed(const Duration(milliseconds: 2000));
+        print('Upload berhasil');
+        final decodedResponse = jsonDecode(responseBody);
+        ScaffoldMessenger.of(this.context).showSnackBar(
+          SnackBar(
+            duration: const Duration(seconds: 2),
+            elevation: 6.0,
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.done,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: mediaQueryData.size.width * 0.02,
+                ),
+                Flexible(
+                  child: Text(
+                    decodedResponse['Notif'],
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                // Navigator.pushReplacementNamed(context, '/HalDashboard');
+                // Navigator.pop(context);
+              },
+            ),
+          ),
+        );
+        // Navigator.popUntil(context, ModalRoute.withName('/HalSuratAdmin'));
+        Navigator.pop(context, true);
+      } else {
+        print('Upload gagal. Status code: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Upload Gagal, status code: ${response.statusCode}'),
+        ));
+        Navigator.pop(context, false);
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: $e'),
+      ));
+      Navigator.pop(context, false);
+    } finally {
+      setState(() {
+        _isLoading = false; // Akhiri loading
+      });
+    }
   }
 
   @override
@@ -1425,6 +1594,8 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
                 children: [
                   _buatSurat(),
                   _unduhSurat(),
+                  _upload(),
+                  _lihatSurat(),
                 ],
               ),
             ],
@@ -1876,52 +2047,86 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
   Widget _unduhSurat() {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     return Container(
-      width: mediaQueryData.size.width * 0.45,
+      // width: mediaQueryData.size.width * 0.45,
       height: mediaQueryData.size.height * 0.06,
       child: ElevatedButton(
-        onPressed: () async {
-          FileDownloader.downloadFile(
-              // url: url.text.trim(),
-              // name: name.text.trim(),
-              url: "${widget.dFile}",
-              name: "SRT-" + "${widget.dKode}",
-              onProgress: (name, progress) {
-                setState(() {
-                  _progress = progress;
-                  _status = 'Progress: $progress%';
+        onPressed: widget.dPDFFile == "-"
+            ? null
+            : () async {
+                FileDownloader.downloadFile(
+                    url: "${widget.dFile}",
+                    name: "SRT-Test${widget.dKode}.pdf",
+                    onProgress: (name, progress) {
+                      setState(() {
+                        // Validasi rentang progress
+                        double clampedProgress = progress.clamp(0.0, 1.0);
+                        _progress =
+                            clampedProgress * 100; // Konversi ke persentase
+                        _status = 'Progress: ${_progress?.toStringAsFixed(0)}%';
+                      });
+                    },
+                    onDownloadCompleted: (path) {
+                      setState(() {
+                        _progress = null;
+                        _status = 'File downloaded to: $path';
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'File downloaded to: $path',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.blue,
+                            action: SnackBarAction(
+                              label: 'OK',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                print('ULANGI snackbar');
+                              },
+                            ),
+                          ),
+                        );
+                      });
+                    },
+                    onDownloadError: (error) {
+                      setState(() {
+                        _progress = null;
+                        _status = 'Download error: $error';
+                      });
+                    }).then((file) {
+                  debugPrint('file path: ${file?.path}');
                 });
               },
-              onDownloadCompleted: (path) {
-                setState(() {
-                  _progress = null;
-                  _status = 'File downloaded to: $path';
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'File downloaded to: $path',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Colors.blue,
-                      action: SnackBarAction(
-                        label: 'OK',
-                        textColor: Colors.white,
-                        onPressed: () {
-                          print('ULANGI snackbar');
-                        },
-                      ),
-                    ),
-                  );
-                });
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(15.0),
+          backgroundColor: Colors.orange[600],
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // <-- Radius
+          ),
+        ),
+        child: Icon(
+          Icons.download,
+          color: Colors.white,
+          size: 26.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _upload() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      // width: mediaQueryData.size.width * 0.45,
+      height: mediaQueryData.size.height * 0.06,
+      child: ElevatedButton(
+        onPressed: _isLoading
+            ? null
+            : () async {
+                await _pickFile();
+                if (_selectedFile != null) {
+                  await _uploadSurat();
+                }
               },
-              onDownloadError: (error) {
-                setState(() {
-                  _progress = null;
-                  _status = 'Download error: $error';
-                });
-              }).then((file) {
-            debugPrint('file path: ${file?.path}');
-          });
-        },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(15.0),
           backgroundColor: Colors.blue[600],
@@ -1930,15 +2135,113 @@ class _HalDetailSuratACCState extends State<HalDetailSuratACC> {
             borderRadius: BorderRadius.circular(10), // <-- Radius
           ),
         ),
-        child: Text(
-          'UNDUH',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
+        child: _isLoading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              )
+            : const Icon(
+                Icons.upload,
+                color: Colors.white,
+                size: 26.0,
+              ),
+      ),
+    );
+  }
+
+  Widget _lihatSurat() {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Container(
+      // width: mediaQueryData.size.width * 0.45,
+      height: mediaQueryData.size.height * 0.06,
+      child: ElevatedButton(
+        onPressed: widget.dPDFFile == "-"
+            ? null
+            : () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: mediaQueryData.size.height * 0.8,
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "${widget.dKategori}",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "${widget.dNoSurat}",
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(),
+                          Expanded(
+                            child: Center(
+                              child: PDF().cachedFromUrl(
+                                "${widget.dPDFFile}",
+                                placeholder: (progress) =>
+                                    Center(child: Text('$progress %')),
+                                errorWidget: (error) => Center(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: mediaQueryData.size.height * 0.2,
+                                        ),
+                                      ),
+                                      Text(
+                                        "PDF Kosong",
+                                        style: TextStyle(
+                                          fontSize: 25.0,
+                                          color: Colors.grey[350],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5.0),
+                                      ),
+                                      Icon(Icons.picture_as_pdf_rounded,
+                                          size: 100.0, color: Colors.grey[350]),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(15.0),
+          backgroundColor: widget.dPDFFile == "-" ? Colors.grey : Colors.red,
+          elevation: 2.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10), // <-- Radius
           ),
+        ),
+        child: Icon(
+          Icons.remove_red_eye,
+          color: Colors.white,
+          size: 26.0,
         ),
       ),
     );

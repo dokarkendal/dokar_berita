@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../style/styleset.dart';
@@ -325,49 +326,101 @@ class _PengajuanSuratState extends State<PengajuanSurat> {
 
   Widget _formKatSurat() {
     return Container(
-      // padding: EdgeInsets.all(3),
       width: MediaQuery.of(context).size.width,
       child: Column(
         children: <Widget>[
           Container(
             decoration: decorationTextField,
-            child: DropdownButtonFormField(
-              isDense: true,
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.mail, color: Colors.brown[800]),
-                border: new OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+            child: DropdownSearch<Map<String, dynamic>>(
+              popupProps: PopupProps.modalBottomSheet(
+                showSearchBox: true,
+                itemBuilder: _customPopupItemBuilder,
+                searchFieldProps: TextFieldProps(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                    hintText: "Cari Kategori Surat",
                   ),
                 ),
-                hintStyle: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey[400],
+              ),
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                  prefixIcon: Icon(Icons.mail, color: Colors.brown[800]),
+                  border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
+                  ),
+                  hintStyle: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey[400],
+                  ),
+                  hintText: loadingdata
+                      ? 'Memuat'
+                      : _pilihSurat == null
+                          ? 'Pilih Kategori Surat'
+                          : kategoriSuratAPI
+                              .firstWhere(
+                                  (item) =>
+                                      item['id'].toString() == _pilihSurat,
+                                  orElse: () => {'nama': ''})['nama']
+                              .toString(),
                 ),
               ),
-              hint: Text('Pilih Kategori Surat'),
-              isExpanded: true,
-              items: kategoriSuratAPI.map(
-                (item0) {
-                  return DropdownMenuItem(
-                    child: Text(item0['nama'].toString()),
-                    value: item0['id'].toString(),
-                  );
-                },
-              ).toList(),
-              onChanged: (val) async {
-                setState(() {
-                  _pilihSurat = val as String;
-                  print("KLIK");
-                  print(_pilihSurat);
-                });
-
-                // Wait for getKecamatan() to complete before rebuilding the widget
+              asyncItems: (String filter) async {
+                final response = await http.get(
+                  Uri.parse(
+                      "http://dokar.kendalkab.go.id/webservice/android/dashbord/kategorisurat"),
+                );
+                if (response.statusCode == 200) {
+                  var getsuratJSON = json.decode(response.body);
+                  List<Map<String, dynamic>> kategoriSuratAPI =
+                      List<Map<String, dynamic>>.from(getsuratJSON);
+                  return kategoriSuratAPI
+                      .where((kategori) => kategori['nama']
+                          .toString()
+                          .toLowerCase()
+                          .contains(filter.toLowerCase()))
+                      .toList();
+                } else {
+                  return [];
+                }
               },
-              value: _pilihSurat,
+              itemAsString: (Map<String, dynamic> u) => u['nama'].toString(),
+              onChanged: (Map<String, dynamic>? data) {
+                if (data != null) {
+                  setState(() {
+                    _pilihSurat = data['id'].toString();
+                    print("KLIK");
+                    print(_pilihSurat);
+                  });
+                }
+              },
+              selectedItem: kategoriSuratAPI.isNotEmpty && _pilihSurat != null
+                  ? kategoriSuratAPI.firstWhere(
+                      (item) => item['id'].toString() == _pilihSurat)
+                  : null,
             ),
-          )
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _customPopupItemBuilder(
+      BuildContext context, Map<String, dynamic> item, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: !isSelected
+          ? null
+          : BoxDecoration(
+              border: Border.all(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white,
+            ),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item['nama'].toString()),
       ),
     );
   }

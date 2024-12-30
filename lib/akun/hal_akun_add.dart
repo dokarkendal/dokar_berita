@@ -58,9 +58,13 @@ class FormAddAkunState extends State<FormAddAkun> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     final response = await http.post(
         Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/account/tambahpenulis"),
+            "http://dokar.kendalkab.go.id/webservice/android/account/tambahpenulisadmin"),
+        headers: {
+          "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09"
+        },
         body: {
           "IdDesa": pref.getString("IdDesa"),
+          "uid": pref.getString("IdAdmin"),
           "nama": cNama.text,
           "email": cEmail.text,
           "hp": cHp.text,
@@ -73,11 +77,11 @@ class FormAddAkunState extends State<FormAddAkun> {
     setState(
       () {
         _notif = datauser['Notif'];
-        _kode = datauser['Kode'];
+        _kode = datauser['Status'];
       },
     );
 
-    if (_kode == 'Success') {
+    if (_kode == 'Sukses') {
       print("Succes");
       setState(
         () {

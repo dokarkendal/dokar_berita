@@ -396,16 +396,42 @@ class _HalSemuaSuratState extends State<HalSemuaSurat> {
                                 margin: const EdgeInsets.only(
                                     right: 10.0, top: 5.0),
                                 // child: Expanded(
-                                child: new Text(
-                                  dataSurat[i]["nomor"],
-                                  //  dataJSON[i]["jenisAudit"],
-                                  style: new TextStyle(
-                                    color: Colors.green[800],
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    new Text(
+                                      dataSurat[i]["nomor"],
+                                      style: new TextStyle(
+                                        color: Colors.green[800],
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    dataSurat[i]["file"] == "-"
+                                        ? Container()
+                                        : Container(
+                                            padding: EdgeInsets.all(
+                                              mediaQueryData.size.height *
+                                                  0.003,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(3.0)),
+                                            ),
+                                            // margin: const EdgeInsets.only(top: 10.0),
+                                            child: Text(
+                                              "PDF",
+                                              style: new TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 8.0,
+                                              ),
+                                            ),
+                                          ),
+                                  ],
                                 ),
                               ),
                               Row(

@@ -1,9 +1,10 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http; //api
+import '../services/api_service.dart';
 import '../style/styleset.dart';
 import 'dart:async'; // api syn
 import 'dart:convert'; // api to json
@@ -52,58 +53,72 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
   TextEditingController cKodepos = TextEditingController();
   TextEditingController cKodeposKTP = TextEditingController();
   late String iddesa;
+
+  Map<String, dynamic>? akunwarga;
   Future<void> getAkunWarga() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       loadingdata = true;
     });
-    final response = await http.post(
-        Uri.parse(
-            "http://dokar.kendalkab.go.id/webservice/android/account/DatawargabyUid"),
-        body: {
-          "uid": pref.getString("uid")!,
-        });
-    var akunwarga = json.decode(response.body)["Data"];
-    print(akunwarga);
-
-    if (mounted) {
-      setState(
-        () {
-          loadingdata = false;
-
-          cId = TextEditingController(text: akunwarga['id']);
-          cUid = TextEditingController(text: akunwarga['uid']);
-          cNIK = TextEditingController(text: akunwarga['nik']);
-          cNama = TextEditingController(text: akunwarga['nama']);
-          cTempatlahir = TextEditingController(text: akunwarga['tmp_lahir']);
-          cTanggallahir = TextEditingController(text: akunwarga['tgl_lahir']);
-          cKelamin = TextEditingController(text: akunwarga['kelamin']);
-          cKelaminID = TextEditingController(text: akunwarga['kelamin_id']);
-          cStstusKawin = TextEditingController(text: akunwarga['kawin']);
-          cStstusKawinID = TextEditingController(text: akunwarga['kawin_id']);
-          cAgama = TextEditingController(text: akunwarga['agama']);
-          cAgamaID = TextEditingController(text: akunwarga['agama_id']);
-          cPekerjaan = TextEditingController(text: akunwarga['pekerjaan']);
-          cPekerjaanID = TextEditingController(text: akunwarga['pekerjaan_id']);
-          cKewarganegaraan =
-              TextEditingController(text: akunwarga['kewarganegaraan']);
-          cAlamatKTP = TextEditingController(text: akunwarga['alamat']);
-          cKotaKTP = TextEditingController(text: akunwarga['kota']);
-          cKecamatanKTP = TextEditingController(text: akunwarga['kecamatan']);
-          cDesaKTP = TextEditingController(text: akunwarga['desa']);
-          cRTKTP = TextEditingController(text: akunwarga['rt']);
-          cRWKTP = TextEditingController(text: akunwarga['rw']);
-          cKodeposKTP = TextEditingController(text: akunwarga['kodepos']);
-          cAlamat = TextEditingController(text: akunwarga['domisili_alamat']);
-          cKota = TextEditingController(text: akunwarga['domisili_kota']);
-          cKecamatan =
-              TextEditingController(text: akunwarga['domisili_kecamatan']);
-          cDesa = TextEditingController(text: akunwarga['domisili_desa']);
-          cRT = TextEditingController(text: akunwarga['domisili_rt']);
-          cRW = TextEditingController(text: akunwarga['domisili_rw']);
-          cKodepos = TextEditingController(text: akunwarga['domisili_pos']);
-          iddesa = akunwarga['id_desa'];
-        },
+    akunwarga = await ApiService.editAkunWarga();
+    setState(() {
+      loadingdata = false;
+    });
+    if (akunwarga != null) {
+      setState(() {
+        cId = TextEditingController(text: akunwarga!['id'].toString());
+        // ... inisialisasi controller lainnya dengan null safety
+        cUid = TextEditingController(text: akunwarga!['uid'].toString());
+        cNIK = TextEditingController(text: akunwarga!['nik'].toString());
+        cNama = TextEditingController(text: akunwarga!['nama'].toString());
+        cTempatlahir =
+            TextEditingController(text: akunwarga!['tmp_lahir'].toString());
+        cTanggallahir =
+            TextEditingController(text: akunwarga!['tgl_lahir'].toString());
+        cKelamin =
+            TextEditingController(text: akunwarga!['kelamin'].toString());
+        cKelaminID =
+            TextEditingController(text: akunwarga!['kelamin_id'].toString());
+        cStstusKawin =
+            TextEditingController(text: akunwarga!['kawin'].toString());
+        cStstusKawinID =
+            TextEditingController(text: akunwarga!['kawin_id'].toString());
+        cAgama = TextEditingController(text: akunwarga!['agama'].toString());
+        cAgamaID =
+            TextEditingController(text: akunwarga!['agama_id'].toString());
+        cPekerjaan =
+            TextEditingController(text: akunwarga!['pekerjaan'].toString());
+        cPekerjaanID =
+            TextEditingController(text: akunwarga!['pekerjaan_id'].toString());
+        cKewarganegaraan = TextEditingController(
+            text: akunwarga!['kewarganegaraan'].toString());
+        cAlamatKTP =
+            TextEditingController(text: akunwarga!['alamat'].toString());
+        cKotaKTP = TextEditingController(text: akunwarga!['kota'].toString());
+        cKecamatanKTP =
+            TextEditingController(text: akunwarga!['kecamatan'].toString());
+        cDesaKTP = TextEditingController(text: akunwarga!['desa'].toString());
+        cRTKTP = TextEditingController(text: akunwarga!['rt'].toString());
+        cRWKTP = TextEditingController(text: akunwarga!['rw'].toString());
+        cKodeposKTP =
+            TextEditingController(text: akunwarga!['kodepos'].toString());
+        cAlamat = TextEditingController(
+            text: akunwarga!['domisili_alamat'].toString());
+        cKota =
+            TextEditingController(text: akunwarga!['domisili_kota'].toString());
+        cKecamatan = TextEditingController(
+            text: akunwarga!['domisili_kecamatan'].toString());
+        cDesa =
+            TextEditingController(text: akunwarga!['domisili_desa'].toString());
+        cRT = TextEditingController(text: akunwarga!['domisili_rt'].toString());
+        cRW = TextEditingController(text: akunwarga!['domisili_rw'].toString());
+        cKodepos =
+            TextEditingController(text: akunwarga!['domisili_pos'].toString());
+        iddesa = akunwarga!['id_desa'];
+      });
+    } else {
+      // Handle jika data null (error atau data tidak ada)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal memuat data akun.')),
       );
     }
   }
@@ -226,11 +241,14 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
         );
       }
     });
-    print("PRIINT DARI POST");
-    print(pilihKelamin);
-    print(pilihAgama);
-    print(pilihKawin);
-    print(pilihPekerjaaan);
+    print("PRINT DARI POST");
+    print("Kelamin: $pilihKelamin");
+    print("Agama: $pilihAgama");
+    print("Kawin: $pilihKawin");
+    print("Pekerjaan: $pilihPekerjaaan");
+    // print(pilihAgama);
+    // print(pilihKawin);
+    // print(pilihPekerjaaan);
   }
 
   List kelaminAPI = [];
@@ -276,6 +294,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
     if (mounted) {
       setState(() {
         kawinAPI = getkawinJSON;
+        print("KAWIN");
         print(getkawinJSON);
       });
     }
@@ -454,7 +473,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
                   onPressed: () async {},
                   style: ElevatedButton.styleFrom(
                     // padding: EdgeInsets.all(15.0),
-                    backgroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Colors.green,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10), // <-- Radius
@@ -479,29 +498,10 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
             height: mediaQueryData.size.height * 0.07,
             child: ElevatedButton(
               onPressed: () async {
-                if (_pilihKelamin == null || _pilihKelamin == "") {
-                  _pilihKelamin = cKelaminID.text;
-                } else {
-                  _pilihKelamin = _pilihKelamin;
-                }
-
-                if (_pilihAgama == null || _pilihAgama == "") {
-                  _pilihAgama = cAgamaID.text;
-                } else {
-                  _pilihAgama = _pilihAgama;
-                }
-
-                if (_pilihKawin == null || _pilihKawin == "") {
-                  _pilihKawin = cStstusKawinID.text;
-                } else {
-                  _pilihKawin = _pilihKawin;
-                }
-
-                if (_pilihPekerjaaan == null || _pilihPekerjaaan == "") {
-                  _pilihPekerjaaan = cPekerjaanID.text;
-                } else {
-                  _pilihPekerjaaan = _pilihPekerjaaan;
-                }
+                _pilihKelamin ??= cKelaminID.text;
+                _pilihAgama ??= cAgamaID.text;
+                _pilihKawin ??= cStstusKawinID.text;
+                _pilihPekerjaaan ??= cPekerjaanID.text;
 
                 if (cNIK.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -816,7 +816,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(15.0),
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Colors.green,
                 elevation: 2.0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // <-- Radius
@@ -825,7 +825,7 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
               child: Text(
                 'SIMPAN',
                 style: TextStyle(
-                  color: Colors.brown[800],
+                  color: Colors.white,
                   letterSpacing: 1.5,
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -1175,6 +1175,57 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
     );
   }
 
+  // Widget _formPekerjaan() {
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width,
+  //     child: Column(
+  //       children: <Widget>[
+  //         Container(
+  //           decoration: decorationTextField,
+  //           child: DropdownButtonFormField(
+  //             isDense: true,
+  //             decoration: InputDecoration(
+  //               prefixIcon: Icon(
+  //                 Icons.work,
+  //                 color: Colors.brown[800],
+  //               ),
+  //               border: new OutlineInputBorder(
+  //                 borderRadius: const BorderRadius.all(
+  //                   const Radius.circular(10.0),
+  //                 ),
+  //               ),
+  //               hintStyle: TextStyle(
+  //                 fontSize: 15,
+  //                 color: Colors.grey[400],
+  //               ),
+  //             ),
+  //             hint: loadingdata
+  //                 ? Text('Memuat')
+  //                 : cPekerjaan.text.isEmpty
+  //                     ? Text('Pilih Pekerjaan')
+  //                     : Text(cPekerjaan.text),
+  //             isExpanded: true,
+  //             items: pekerjaanAPI.map(
+  //               (item4) {
+  //                 return DropdownMenuItem(
+  //                   child: Text(item4['nama'].toString()),
+  //                   value: item4['id'].toString(),
+  //                 );
+  //               },
+  //             ).toList(),
+  //             onChanged: (val4) async {
+  //               setState(() {
+  //                 _pilihPekerjaaan = val4 as String;
+  //                 print(_pilihPekerjaaan);
+  //               });
+  //             },
+  //             value: _pilihPekerjaaan,
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _formPekerjaan() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -1182,9 +1233,20 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
         children: <Widget>[
           Container(
             decoration: decorationTextField,
-            child: DropdownButtonFormField(
-              isDense: true,
-              decoration: InputDecoration(
+            child: DropdownSearch<Map<String, dynamic>>(
+              // Perhatikan tipe datanya
+              popupProps: PopupProps.modalBottomSheet(
+                  showSearchBox: true, // Aktifkan kotak pencarian
+                  itemBuilder:
+                      _customPopupItemBuilder, // Widget custom untuk item popup
+                  searchFieldProps: TextFieldProps(
+                      decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+                    hintText: "Cari Pekerjaan",
+                  ))),
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
                 prefixIcon: Icon(
                   Icons.work,
                   color: Colors.brown[800],
@@ -1198,33 +1260,68 @@ class _HalLengkapiDataWargaState extends State<HalLengkapiDataWarga> {
                   fontSize: 15,
                   color: Colors.grey[400],
                 ),
-              ),
-              hint: loadingdata
-                  ? Text('Memuat')
-                  : cPekerjaan.text.isEmpty
-                      ? Text('Pilih Pekerjaan')
-                      : Text(cPekerjaan.text),
-              isExpanded: true,
-              items: pekerjaanAPI.map(
-                (item4) {
-                  return DropdownMenuItem(
-                    child: Text(item4['nama'].toString()),
-                    value: item4['id'].toString(),
-                  );
-                },
-              ).toList(),
-              onChanged: (val4) async {
-                setState(() {
-                  _pilihPekerjaaan = val4 as String;
-                  print(_pilihPekerjaaan);
-                });
-
-                // Wait for getKecamatan() to complete before rebuilding the widget
+                hintText: loadingdata
+                    ? 'Memuat'
+                    : cPekerjaan.text.isEmpty
+                        ? 'Pilih Pekerjaan'
+                        : cPekerjaan.text,
+              )),
+              asyncItems: (String filter) async {
+                final response = await http.get(
+                  Uri.parse(
+                      "http://dokar.kendalkab.go.id/webservice/android/dashbord/pekerjaan"),
+                );
+                if (response.statusCode == 200) {
+                  var getpekerjaanJSON = json.decode(response.body);
+                  List<Map<String, dynamic>> pekerjaanAPI =
+                      List<Map<String, dynamic>>.from(getpekerjaanJSON);
+                  return pekerjaanAPI
+                      .where((pekerjaan) => pekerjaan['nama']
+                          .toString()
+                          .toLowerCase()
+                          .contains(filter.toLowerCase()))
+                      .toList();
+                } else {
+                  return []; // Return list kosong jika error
+                }
               },
-              value: _pilihPekerjaaan,
+              itemAsString: (Map<String, dynamic> u) =>
+                  u['nama'].toString(), // Menentukan teks yang ditampilkan
+              onChanged: (Map<String, dynamic>? data) {
+                if (data != null) {
+                  setState(() {
+                    _pilihPekerjaaan = data['id'].toString();
+                    print(_pilihPekerjaaan);
+                    cPekerjaan.text = data['nama'];
+                  });
+                }
+              },
+              selectedItem: pekerjaanAPI.isNotEmpty && _pilihPekerjaaan != null
+                  ? pekerjaanAPI.firstWhere(
+                      (item) => item['id'].toString() == _pilihPekerjaaan)
+                  : null,
             ),
-          )
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _customPopupItemBuilder(
+      BuildContext context, Map<String, dynamic> item, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: !isSelected
+          ? null
+          : BoxDecoration(
+              border: Border.all(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item['nama'] ?? ''),
+        // subtitle: Text(item['id'].toString() ?? ''),
       ),
     );
   }

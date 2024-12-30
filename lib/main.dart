@@ -441,6 +441,7 @@ void main() {
               dIdDesa: '',
               dFile: '',
               dPembuatan: '',
+              dPDFFile: '',
             ),
         '/HalSuratAjukan': (BuildContext context) => HalSuratAjukan(),
         '/HalPpidProfile': (BuildContext context) => HalPpidProfile(

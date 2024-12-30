@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'config/api_config.dart';
+
 class DaftarAdmin extends StatefulWidget {
   // DaftarAdmin({Key key}) : super(key: key);
   @override
@@ -75,81 +77,89 @@ class _DaftarAdminState extends State<DaftarAdmin> {
     Future.delayed(
       Duration(seconds: 1),
       () async {
+        // final response = await http.post(
+        //     Uri.parse(
+        //         "http://dokar.kendalkab.go.id/webservice/android/login/admin"),
+        //     body: {
+        //       "username": user.text,
+        //       "password": pass.text,
+        //     });
         final response = await http.post(
-            Uri.parse(
-                "http://dokar.kendalkab.go.id/webservice/android/login/admin"),
+            Uri.parse("${ApiConfig.baseUrl}/webservice/android/login/admin"),
+            headers: ApiConfig.headers,
             body: {
               "username": user.text,
               "password": pass.text,
             });
         var datauser = json.decode(response.body);
-        if (datauser[0]['notif'] == 'Empty') {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setBool("_isLoggedIn", false);
-          setState(() {
-            _isInAsyncCall = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'User dan password perlu diisi',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.red,
-              action: SnackBarAction(
-                label: 'ULANGI',
-                textColor: Colors.white,
-                onPressed: () {
-                  print('ULANGI snackbar');
-                },
-              ),
-            ),
-          );
-        } else if (datauser[0]['notif'] == 'NoUser') {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setBool("_isLoggedIn", false);
-          setState(
-            () {
-              _isInAsyncCall = false;
-            },
-          );
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              'Username anda salah',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-            action: SnackBarAction(
-              label: 'ULANGI',
-              textColor: Colors.white,
-              onPressed: () {
-                print('ULANGI snackbar');
-              },
-            ),
-          ));
-        } else if (datauser[0]['notif'] == 'NoPassword') {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setBool("_isLoggedIn", false);
-          setState(
-            () {
-              _isInAsyncCall = false;
-            },
-          );
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              'Password anda salah',
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.red,
-            action: SnackBarAction(
-              label: 'ULANGI',
-              textColor: Colors.white,
-              onPressed: () {
-                print('ULANGI snackbar');
-              },
-            ),
-          ));
-        } else if (datauser[0]["active"] == "1") {
+        // if (datauser[0]['notif'] == 'Empty') {
+        //   SharedPreferences pref = await SharedPreferences.getInstance();
+        //   pref.setBool("_isLoggedIn", false);
+        //   setState(() {
+        //     _isInAsyncCall = false;
+        //   });
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(
+        //       content: Text(
+        //         datauser[0]['notif'],
+        //         style: TextStyle(color: Colors.white),
+        //       ),
+        //       backgroundColor: Colors.red,
+        //       action: SnackBarAction(
+        //         label: 'ULANGI',
+        //         textColor: Colors.white,
+        //         onPressed: () {
+        //           print('ULANGI snackbar');
+        //         },
+        //       ),
+        //     ),
+        //   );
+        // } else if (datauser[0]['notif'] == 'NoUser') {
+        //   SharedPreferences pref = await SharedPreferences.getInstance();
+        //   pref.setBool("_isLoggedIn", false);
+        //   setState(
+        //     () {
+        //       _isInAsyncCall = false;
+        //     },
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //     content: Text(
+        //       datauser[0]['notif'],
+        //       style: TextStyle(color: Colors.white),
+        //     ),
+        //     backgroundColor: Colors.red,
+        //     action: SnackBarAction(
+        //       label: 'ULANGI',
+        //       textColor: Colors.white,
+        //       onPressed: () {
+        //         print('ULANGI snackbar');
+        //       },
+        //     ),
+        //   ));
+        // } else if (datauser[0]['notif'] == 'NoPassword') {
+        //   SharedPreferences pref = await SharedPreferences.getInstance();
+        //   pref.setBool("_isLoggedIn", false);
+        //   setState(
+        //     () {
+        //       _isInAsyncCall = false;
+        //     },
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //     content: Text(
+        //       datauser[0]['notif'],
+        //       style: TextStyle(color: Colors.white),
+        //     ),
+        //     backgroundColor: Colors.red,
+        //     action: SnackBarAction(
+        //       label: 'ULANGI',
+        //       textColor: Colors.white,
+        //       onPressed: () {
+        //         print('ULANGI snackbar');
+        //       },
+        //     ),
+        //   ));
+        // } else
+        if (datauser[0]["Status"] == "Sukses") {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool("_isLoggedIn", true);
           String userStatus = 'Admin';
@@ -191,12 +201,12 @@ class _DaftarAdminState extends State<DaftarAdmin> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Akun anda telah nonaktif',
+                datauser[0]['Notif'],
                 style: TextStyle(color: Colors.white),
               ),
-              backgroundColor: Colors.grey,
+              backgroundColor: Colors.red,
               action: SnackBarAction(
-                label: 'NON AKTIF',
+                label: 'ULANGI',
                 textColor: Colors.white,
                 onPressed: () {
                   print('ULANGI snackbar');
@@ -280,7 +290,10 @@ class _DaftarAdminState extends State<DaftarAdmin> {
                   color: Colors.brown[800],
                 ),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.remove_red_eye),
+                  icon: Icon(
+                    _obscureText ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
                   color: Colors.brown[800],
                   iconSize: 20.0,
                   onPressed: _toggle,

@@ -1,11 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+// import 'services/api_service.dart';
+import 'services/api_service.dart';
 
 class HalDaftarWarga extends StatefulWidget {
   const HalDaftarWarga({super.key});
@@ -15,6 +16,75 @@ class HalDaftarWarga extends StatefulWidget {
 }
 
 class _HalDaftarWargaState extends State<HalDaftarWarga> {
+  // Future _loginWarga() async {
+  //   FocusScope.of(context).requestFocus(FocusNode());
+  //   setState(
+  //     () {
+  //       _isInAsyncCall = true;
+  //     },
+  //   );
+  //   Future.delayed(Duration(seconds: 1), () async {
+  //     final response = await http.post(
+  //         Uri.parse(
+  //             "http://dokar.kendalkab.go.id/webservice/android/login/warganew"),
+  //         headers: {
+  //           "Key": "VmZNRWVGTjhFeVptSUFJcjdURDlaQT09"
+  //         },
+  //         body: {
+  //           "username": userwarga.text,
+  //           "password": passwarga.text,
+  //         });
+  //     var loginwargaJSON = json.decode(response.body);
+  //     if (loginwargaJSON[0]['notif'] == 'Sukses') {
+  //       SharedPreferences pref = await SharedPreferences.getInstance();
+  //       pref.setBool("_isLoggedIn", true);
+  //       String userStatus = 'Warga';
+  //       setState(() {
+  //         _isInAsyncCall = false;
+  //         pref.setString('userStatus', userStatus);
+  //         pref.setString("uid", loginwargaJSON[0]["uid"]);
+  //         pref.setString("nama", loginwargaJSON[0]["nama"]);
+  //         pref.setString("hp", loginwargaJSON[0]["hp"]);
+  //         pref.setString("email", loginwargaJSON[0]["email"]);
+  //         pref.setString("user_name", loginwargaJSON[0]["user_name"]);
+  //         pref.setString("status", loginwargaJSON[0]["status"]);
+  //         pref.setString("id_desa", loginwargaJSON[0]["id_desa"]);
+  //         pref.setString("nama_desa", loginwargaJSON[0]["nama_desa"]);
+  //         pref.setString("kode_kecamatan", loginwargaJSON[0]["kode_kecamatan"]);
+  //         pref.setString("nama_kecamatan", loginwargaJSON[0]["nama_kecamatan"]);
+  //         pref.setString("kode_kota", loginwargaJSON[0]["kode_kota"]);
+  //         pref.setString("nama_kota", loginwargaJSON[0]["nama_kota"]);
+  //         pref.setString("active", loginwargaJSON[0]["active"]);
+  //         Navigator.of(context).pushNamedAndRemoveUntil(
+  //             '/HalDashboardWarga', ModalRoute.withName('/HalDashboardWarga'));
+  //       });
+  //       print(loginwargaJSON);
+  //     } else {
+  //       SharedPreferences pref = await SharedPreferences.getInstance();
+  //       pref.setBool("_isLoggedIn", false);
+  //       setState(() {
+  //         _isInAsyncCall = false;
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //             loginwargaJSON[0]['notif'],
+  //             style: TextStyle(color: Colors.white),
+  //           ),
+  //           backgroundColor: Colors.red,
+  //           action: SnackBarAction(
+  //             label: 'ULANGI',
+  //             textColor: Colors.white,
+  //             onPressed: () {
+  //               print('ULANGI snackbar');
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   });
+  // }
+
   Future _loginWarga() async {
     FocusScope.of(context).requestFocus(FocusNode());
     setState(
@@ -23,14 +93,11 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
       },
     );
     Future.delayed(Duration(seconds: 1), () async {
-      final response = await http.post(
-          Uri.parse(
-              "http://dokar.kendalkab.go.id/webservice/android/login/warga"),
-          body: {
-            "username": userwarga.text,
-            "password": passwarga.text,
-          });
-      var loginwargaJSON = json.decode(response.body);
+      final apiService = ApiService();
+      var loginwargaJSON = await apiService.loginWarga(
+        userwarga.text,
+        passwarga.text,
+      );
       if (loginwargaJSON[0]['notif'] == 'Sukses') {
         SharedPreferences pref = await SharedPreferences.getInstance();
         pref.setBool("_isLoggedIn", true);
@@ -347,7 +414,10 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
                   color: Colors.brown[800],
                 ),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.remove_red_eye),
+                  icon: Icon(
+                    _obscureText ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
                   color: Colors.brown[800],
                   iconSize: 20.0,
                   onPressed: _toggle,
@@ -394,25 +464,40 @@ class _HalDaftarWargaState extends State<HalDaftarWarga> {
             ),
             child: TextFormField(
               controller: userwarga,
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.number,
               style: TextStyle(
                 color: Colors.black,
               ),
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(16),
+              ],
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(10.0),
+                    ),
                   ),
-                ),
-                prefixIcon: Icon(
-                  Icons.person,
-                  color: Colors.brown[800],
-                ),
-                hintText: 'Masukan Username',
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                ),
-              ),
+                  prefixIcon: Icon(
+                    Icons.credit_card_rounded,
+                    color: Colors.brown[800],
+                  ),
+                  hintText: 'NIK',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[400],
+                  ),
+                  counterText: ''),
+              // maxLength: 16,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) {
+                // Only validate if the user has started typing
+                if (value != null && value.isNotEmpty) {
+                  if (value.length != 16) {
+                    return 'NIK harus memiliki 16 digit';
+                  }
+                  return null; // Return null to indicate the input is valid
+                }
+                return null; // Return null when the field is empty to not show any error
+              },
             ),
           ),
         ],
